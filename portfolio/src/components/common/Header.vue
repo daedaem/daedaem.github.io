@@ -16,7 +16,7 @@
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav">
           <li>
-            <router-link :t0="{ name: 'About' }" class="nav-link"
+            <router-link :to="{ name: 'About' }" class="nav-link"
               >About Me</router-link
             >
             <!-- <a class="nav-link" href="/about">About Me</a> -->
