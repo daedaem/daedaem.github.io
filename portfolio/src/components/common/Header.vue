@@ -15,11 +15,14 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="/about">About Me</a>
+          <li>
+            <router-link :t0="{ name: 'About' }" class="nav-link"
+              >About Me</router-link
+            >
+            <!-- <a class="nav-link" href="/about">About Me</a> -->
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Skill</a>
+            <!-- <a class="nav-link" href="#">Skill</a> -->
           </li>
           <li class="nav-item">
             <a class="nav-link" herf="#">Portfolio</a>
