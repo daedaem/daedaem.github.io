@@ -3,6 +3,11 @@ import styled from '@emotion/styled'
 import PostItem from 'components/Main/PostItem'
 import { PostListItemType } from 'types/PostItem.types'
 
+// type PostListProps = {
+//   selectedCategory: string
+//   posts: PostListItemType[]
+// }
+
 export type PostType = {
   node: {
     id: string

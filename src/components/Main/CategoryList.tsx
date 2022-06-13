@@ -9,6 +9,7 @@ type GatsbyLinkProps = {
   className?: string
   to: string
 } & CategoryItemProps
+
 export type CategoryListProps = {
   selectedCategory: string
   categoryList: {
