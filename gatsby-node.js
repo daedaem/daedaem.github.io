@@ -55,6 +55,9 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
               fields {
                 slug
               }
+              frontmatter {
+                title
+              }
             }
           }
         }
@@ -67,28 +70,27 @@ exports.createPages = async ({ actions, graphql, reporter }) => {
     reporter.panicOnBuild(`Error while running query`)
     return
   }
-
   // Import Post Template Component
-  // const PostTemplateComponent = path.resolve(
-  //   __dirname,
-  //   'src/templates/post_template.tsx',
-  // )
+  const PostTemplateComponent = path.resolve(
+    __dirname,
+    'src/templates/post_template.tsx',
+  )
 
   // Page Generating Function
-  // const generatePostPage = ({
-  //   node: {
-  //     fields: { slug },
-  //   },
-  // }) => {
-  //   const pageOptions = {
-  //     path: slug,
-  //     component: PostTemplateComponent,
-  //     context: { slug },
-  //   }
+  const generatePostPage = ({
+    node: {
+      fields: { slug },
+    },
+  }) => {
+    const pageOptions = {
+      path: slug,
+      component: PostTemplateComponent,
+      context: { slug },
+    }
 
-  //   createPage(pageOptions)
-  // }
+    createPage(pageOptions)
+  }
 
   // Generate Post Page And Passing Slug Props for Query
-  // queryAllMarkdownData.data.allMarkdownRemark.edges.forEach(generatePostPage)
+  queryAllMarkdownData.data.allMarkdownRemark.edges.forEach(generatePostPage)
 }
