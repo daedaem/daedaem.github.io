@@ -6,26 +6,6 @@ import useInfiniteScroll, {
   useInfiniteScrollType,
 } from 'hooks/useInfiniteScroll'
 
-// type PostListProps = {
-//   selectedCategory: string
-//   posts: PostListItemType[]
-// }
-
-export type PostType = {
-  node: {
-    id: string
-    frontmatter: {
-      title: string
-      summary: string
-      date: string
-      categories: string[]
-      thumbnail: {
-        publicURL: string
-      }
-    }
-  }
-}
-
 type PostListProps = {
   selectedCategory: string
   posts: PostListItemType[]
@@ -71,5 +51,20 @@ const PostList: FunctionComponent<PostListProps> = function ({
     </PostListWrapper>
   )
 }
+
+// export type PostType = {
+//   node: {
+//     id: string
+//     frontmatter: {
+//       title: string
+//       summary: string
+//       date: string
+//       categories: string[]
+//       thumbnail: {
+//         publicURL: string
+//       }
+//     }
+//   }
+// }
 
 export default PostList
