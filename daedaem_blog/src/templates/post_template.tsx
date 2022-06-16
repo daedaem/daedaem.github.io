@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react'
 import { graphql } from 'gatsby'
-import { PostPageItemType } from 'types/PostItem.types' // 바로 아래에서 정의할 것입니다
+import { PostPageItemType } from 'types/PostItem.types'
 import Template from 'components/Common/Template'
 import PostHead from 'components/Post/PostHead'
 import PostContent from 'components/Post/PostContent'
@@ -9,14 +9,19 @@ import CommentWidget from 'components/Post/CommentWidget'
 type PostTemplateProps = {
   data: {
     allMarkdownRemark: {
-      edges: PostPageItemType[] // 존재하지 않는 타입이므로 에러가 발생하지만 일단 작성해주세요
+      edges: PostPageItemType[]
     }
   }
+  location: {
+    href: string
+  }
 }
+
 const PostTemplate: FunctionComponent<PostTemplateProps> = function ({
   data: {
     allMarkdownRemark: { edges },
   },
+  location: { href },
 }) {
   const {
     node: {
@@ -28,13 +33,14 @@ const PostTemplate: FunctionComponent<PostTemplateProps> = function ({
         categories,
         thumbnail: {
           childImageSharp: { gatsbyImageData },
+          publicURL,
         },
       },
     },
   } = edges[0]
 
   return (
-    <Template>
+    <Template title={title} description={summary} url={href} image={publicURL}>
       <PostHead
         title={title}
         date={date}
@@ -64,6 +70,7 @@ export const queryMarkdownDataBySlug = graphql`
               childImageSharp {
                 gatsbyImageData
               }
+              publicURL
             }
           }
         }
@@ -71,9 +78,3 @@ export const queryMarkdownDataBySlug = graphql`
     }
   }
 `
-export type PostPageItemType = {
-  node: {
-    html: string
-    frontmatter: PostFrontmatterType
-  }
-}
