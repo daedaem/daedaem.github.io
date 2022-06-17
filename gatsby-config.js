@@ -3,7 +3,7 @@ module.exports = {
     title: `주니어 프론트엔드 개발자 대댐의 개발 블로그`,
     description: `주니어 프론트엔드 개발자로서의 생각과 공부하는 내용을 정리하는 블로그입니다.`,
     author: `Hae-sung Cho`,
-    siteUrl: 'https://daedaem.github.io/', // 배포 후 변경 예정
+    siteUrl: 'https://daedaem.netlify.app/', // 배포 후 변경 예정
   },
   plugins: [
     {
@@ -84,7 +84,7 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-canonical-urls',
       options: {
-        siteUrl: 'https://daedaem.github.io/',
+        siteUrl: 'https://daedaem.netlify.app/',
         stripQueryString: true,
       },
     },
