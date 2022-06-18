@@ -1,0 +1,1 @@
+(self.webpackChunkgatsby_starter_default=self.webpackChunkgatsby_starter_default||[]).push([[49],{5666:function(){}}]);
