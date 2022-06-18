@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://daedaem.netlify.app/sitemap/sitemap-index.xml
-Host: https://daedaem.netlify.app
