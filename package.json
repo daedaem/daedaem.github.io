@@ -1,9 +1,9 @@
 {
-  "name": "gatsby-starter-default",
+  "name": "Daedaem's blog",
   "private": true,
-  "description": "A simple starter to get up and developing quickly with Gatsby",
+  "description": "주니어프론트엔드 개발자 대댐의 블로그",
   "version": "0.1.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
+  "author": "Hae-sung Cho <tg8685@gmail.com>",
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
