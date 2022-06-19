@@ -11,17 +11,16 @@ thumbnail: './SemanticHTML.png'
 모 기업 코딩테스트를 치면서 시멘틱 태그의 중요성을 깨닫게 되었다. 평소 별 생각없이 대부분의 Html태그를 div태그로 사용하고 있었다. 올바른 코드 작성 습관을 알고 있었다면 쉽게 풀 수 있는 문제였다. 오늘은 시멘틱 태그에 대해 학습하고 무한 div태그로 만들어 놓은 내 프로젝트의 코드들을 수정해보려고한다.
 
 <figure style="display:flex;">
-<img src="https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_high_level.jpg" alt="https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_high_level.jpg" style="zoom:100%;" /> <img src="https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_specific_post.jpg" alt="https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_specific_post.jpg" style="zoom:100%;" />
+<img src="https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_high_level.jpg" alt="https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_high_level.jpg" style="zoom:46%;" /> <img src="https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_specific_post.jpg" alt="https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_specific_post.jpg" style="zoom:46%;" />
 </figure>
-
 
 ## **What are Semantic Elements?**
 
 시멘틱(Semantic) 요소는 명백하게 브라우저와 개발자들에게 그 의미를 묘사한다.
 - **non-semantic** elements: `<div>` and `<span>` - Tells nothing about its content.
 - **semantic** elements: `<form>`, `<table>`, and `<article>` - Clearly defines its content.
-![semanticTags](Semantic HTML.assets/semanticTags.png)
-
+![./semanticTags.png](./semanticTags.png)
+  
 ## **Why Semantic Elements?**
 
 W3C에 따르면 "시맨틱 웹을 사용하면 애플리케이션, 기업 및 커뮤니티에서 데이터를 공유하고 재사용할 수 있다"고 한다. (의미가 있는 요소는 개발자 모두에게 명확한 의미를 전달한다)
@@ -36,9 +35,7 @@ W3C에 따르면 "시맨틱 웹을 사용하면 애플리케이션, 기업 및 �
 - 일반적인 브라우저에서는 차이가 없지만 스크린리더(시각장애인을 위한 웹 서핑 프로그램)과 같은 환경에서는 웹 접근성과 사용성을 향상시켜준다.
 
 ### 3. 유지보수 및 코드 가독성
-
 - 여러 사람과 함께 작업을 할 때, 굳이 클래스를 지정하지 않아도 쉽게 어느 부분이 헤더 영역이고, 본문 영역인지 쉽게 알 수 있다. 그래서 유지보수를 하기도 쉬워진다.
-
   ![https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FOoVlo%2FbtqEvv86MDB%2FpH5YeMeDg1z0K6SLX4arMK%2Fimg.png](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FOoVlo%2FbtqEvv86MDB%2FpH5YeMeDg1z0K6SLX4arMK%2Fimg.png)
 
 ---
