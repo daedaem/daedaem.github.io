@@ -12,6 +12,8 @@ thumbnail: './SemanticHTML.png'
 
 ![https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_high_level.jpg](https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_high_level.jpg)
 
+![https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_specific_post.jpg](https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_specific_post.jpg)
+
 ## **What are Semantic Elements?**
 
 시멘틱(Semantic) 요소는 명백하게 브라우저와 개발자들에게 그 의미를 묘사한다.
@@ -19,9 +21,21 @@ thumbnail: './SemanticHTML.png'
 - **non-semantic** elements: `<div>` and `<span>` - Tells nothing about its content.
 - **semantic** elements: `<form>`, `<table>`, and `<article>` - Clearly defines its content.
 
-  [제목 없음](https://www.notion.so/a3d63c37bf5648b8a05757efc05c2e7f)
-
-![Untitled](%E1%84%89%E1%85%B5%E1%84%86%E1%85%A6%E1%86%AB%E1%84%90%E1%85%B5%E1%86%A8%20%E1%84%90%E1%85%A2%E1%84%80%E1%85%B3%20be09574e88f54067aebba4b8c00c5518/Untitled.png)
+| <address>    | 콘텐츠 작성자나 사이트 소유자의 정보등을 부가적으로 담는 기능                                                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <article>    | Defines independent, self-contained content 독립적, 그자체로 포함된 내용을 의미                                                                                                       |
+| <aside>      | Defines content aside from the page content 페이지의 한쪽 사이드에 있는 컨텐츠를 의미                                                                                                 |
+| <details>    | Defines additional details that the user can view or hide 유저가 볼 수 있거나 숨길 수 있는 추가적인 추가정보 영역을 의미                                                              |
+| <figcaption> | Defines a caption for a <figure> element <figure> 요소의 캡션을 의미                                                                                                                  |
+| <figure>     | Specifies self-contained content, like illustrations, diagrams, photos, code listings, etc. 특정 self-contained 된 컨텐츠나, 일러스트레이션, 다이어그램, 사진, 코드리스팅, 등을 의미. |
+| <footer>     | Defines a footer for a document or section 문서나 Section의 하단 정보 영역                                                                                                            |
+| <header>     | Specifies a header for a document or section 문서나 Serction의 상단 정보 영역                                                                                                         |
+| <main>       | Specifies the main content of a document 문서의 메인 컨텐츠영역                                                                                                                       |
+| <mark>       | Defines marked/highlighted text 마크되거나 하이라이트된 텍스트를 의미                                                                                                                 |
+| <nav>        | Defines navigation links 네비게이션 링크를 의미                                                                                                                                       |
+| <section>    | Defines a section in a document 긴 글의 세부사항과 같은 관련 컨텐츠의 묶음, 또는 탭 키 사용을 요하는 인터페이스를 가진 웹 어플리케이션에서의 페이지의 묶음 단위                       |
+| <summary>    | Defines a visible heading for a <details> element <details> 태그의 보여지는 헤딩을 의미                                                                                               |
+| <time>       | Defines a date/time 날짜/시간을 의미                                                                                                                                                  |
 
 ## **Why Semantic Elements?**
 
@@ -42,7 +56,7 @@ W3C에 따르면 "시맨틱 웹을 사용하면 애플리케이션, 기업 및 �
 
 - 여러 사람과 함께 작업을 할 때, 굳이 클래스를 지정하지 않아도 쉽게 어느 부분이 헤더 영역이고, 본문 영역인지 쉽게 알 수 있다. 그래서 유지보수를 하기도 쉬워진다.
 
-  [https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FOoVlo%2FbtqEvv86MDB%2FpH5YeMeDg1z0K6SLX4arMK%2Fimg.png](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FOoVlo%2FbtqEvv86MDB%2FpH5YeMeDg1z0K6SLX4arMK%2Fimg.png)
+  ![https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FOoVlo%2FbtqEvv86MDB%2FpH5YeMeDg1z0K6SLX4arMK%2Fimg.png](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FOoVlo%2FbtqEvv86MDB%2FpH5YeMeDg1z0K6SLX4arMK%2Fimg.png)
 
 ---
 
