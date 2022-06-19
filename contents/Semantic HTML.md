@@ -8,7 +8,7 @@ thumbnail: './SemanticHTML.png'
 
 # 시멘틱 태그
 
-모 기업 코딩테스트를 치면서 시멘틱 태그의 중요성을 깨닫게 되었다. 평소 별 생각없이 대부분의 Html태그를 div태그로 사용하고 있었다. 올바른 코드 작성 습관을 알고 있었다면 쉽게 풀 수 있는 문제였다.
+모 기업 코딩테스트를 치면서 시멘틱 태그의 중요성을 깨닫게 되었다. 평소 별 생각없이 대부분의 Html태그를 div태그로 사용하고 있었다. 올바른 코드 작성 습관을 알고 있었다면 쉽게 풀 수 있는 문제였다. 오늘은 시멘틱 태그에 대해 학습하고 무한 div태그로 만들어 놓은 내 프로젝트의 코드들을 수정해보려고한다.
 
 ![https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_high_level.jpg](https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_high_level.jpg)
 
