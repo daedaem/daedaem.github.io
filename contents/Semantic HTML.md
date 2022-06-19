@@ -20,8 +20,7 @@ thumbnail: './SemanticHTML.png'
 시멘틱(Semantic) 요소는 명백하게 브라우저와 개발자들에게 그 의미를 묘사한다.
 - **non-semantic** elements: `<div>` and `<span>` - Tells nothing about its content.
 - **semantic** elements: `<form>`, `<table>`, and `<article>` - Clearly defines its content.
-
-<img src="./semanticTags.png" alt="./semanticTags.png"  />
+![semanticTags](Semantic HTML.assets/semanticTags.png)
 
 ## **Why Semantic Elements?**
 
