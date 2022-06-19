@@ -10,7 +10,7 @@ thumbnail: './SemanticHTML.png'
 
 모 기업 코딩테스트를 치면서 시멘틱 태그의 중요성을 깨닫게 되었다. 평소 별 생각없이 대부분의 Html태그를 div태그로 사용하고 있었다. 올바른 코드 작성 습관을 알고 있었다면 쉽게 풀 수 있는 문제였다. 오늘은 시멘틱 태그에 대해 학습하고 무한 div태그로 만들어 놓은 내 프로젝트의 코드들을 수정해보려고한다.
 
-<figure style="display:flex; width: 100%;">
+<figure style="display:flex; max-width: 800px;">
 <img src="https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_high_level.jpg" alt="https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_high_level.jpg" /> <img src="https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_specific_post.jpg" alt="https://s3.amazonaws.com/viking_education/web_development/web_app_eng/html5_sectioning_specific_post.jpg" />
 </figure>
 
@@ -36,7 +36,8 @@ W3C에 따르면 "시맨틱 웹을 사용하면 애플리케이션, 기업 및 �
 
 ### 3. 유지보수 및 코드 가독성
 - 여러 사람과 함께 작업을 할 때, 굳이 클래스를 지정하지 않아도 쉽게 어느 부분이 헤더 영역이고, 본문 영역인지 쉽게 알 수 있다. 그래서 유지보수를 하기도 쉬워진다.
-  ![https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FOoVlo%2FbtqEvv86MDB%2FpH5YeMeDg1z0K6SLX4arMK%2Fimg.png](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FOoVlo%2FbtqEvv86MDB%2FpH5YeMeDg1z0K6SLX4arMK%2Fimg.png)
+  <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FOoVlo%2FbtqEvv86MDB%2FpH5YeMeDg1z0K6SLX4arMK%2Fimg.png" style="max-width: 800px;"></img>
+  
 
 ---
 
