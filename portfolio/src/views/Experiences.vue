@@ -71,7 +71,27 @@ export default {
   //   color: #fafafa;
   color: black;
 }
-
+h1 {
+  font-size: 4rem;
+  font-weight: bold;
+  font-family: "SF Pro Display", -apple-system, system-ui, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+h2 {
+  font-size: 3.5rem;
+}
+h3 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  font-family: "SF Pro Display", -apple-system, system-ui, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+h4 {
+  font-size: 2rem;
+}
+h5 {
+  font-size: 1.5rem;
+}
 .total-experience-box {
   //   max-width: 1200px;
   //   max-width: 1000px;

@@ -160,6 +160,27 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+h1 {
+  font-size: 4rem;
+  font-weight: bold;
+  font-family: "SF Pro Display", -apple-system, system-ui, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+h2 {
+  font-size: 3.5rem;
+}
+h3 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  font-family: "SF Pro Display", -apple-system, system-ui, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+h4 {
+  font-size: 2rem;
+}
+h5 {
+  font-size: 1.5rem;
+}
 .total-portfolio-box {
   //   height: 100vh;
   max-width: 1000px;
@@ -242,5 +263,15 @@ export default {
     text-decoration: none;
     color: white;
   }
+}
+@media screen and (max-width: 768px) {
+  .portfolio-boxes {
+    margin: 0rem 1rem 0rem 1rem;
+    display: grid;
+    grid-gap: 2rem;
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+@media screen and (max-width: 576px) {
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="total-frame">
-    <div class="total-info-box">
+    <div class="firstinfo-total-info-box">
       <div class="info-box col-6">
         <h1 class="mb-4">Haesung Cho</h1>
         <h5 class="mb-2">Frontend Developer.</h5>
@@ -83,7 +83,7 @@ export default {
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 h1 {
   font-size: 4rem;
   font-weight: bold;
@@ -111,7 +111,7 @@ a {
   text-decoration: none;
 }
 
-.total-info-box {
+.firstinfo-total-info-box {
   max-width: 1000px;
   height: 90vh;
   margin: 0rem auto 0rem auto;

@@ -34,6 +34,7 @@ module.exports = {
           "Pairplay",
           "Unique",
           "Campus",
+          "Moving",
           "Introduce",
         ],
       },

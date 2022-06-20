@@ -1,6 +1,6 @@
 <template>
   <div class="total-frame">
-    <div class="total-info-box">
+    <div class="about-totalinfo-box">
       <div class="image-box">
         <!-- <img class="profile-image" src="@/assets/profile/profileImage.jpg" alt="" /> -->
         <!-- <img class="profile-image" src="@/assets/profile/motorcycleAndMe.jpg" alt="" /> -->
@@ -39,37 +39,47 @@
       <div class="col d-flex justify-content-center"></div>
     </div>
     <Introduce></Introduce>
-    <div class="my-5">
-      <swiper
-        class="swiper"
-        :modules="modules"
-        navigation
-        :pagination="{ clickable: true }"
-        :scrollbar="{ draggable: true }"
-        :slides-per-view="2"
-        :space-between="10"
-        @swiper="onSwiper"
-        @slideChange="onSlideChange"
-      >
-        <swiper-slide>
-          <img class="swiper-image" src="@/assets/profile/ssafyEnd1.png" alt=""
-        /></swiper-slide>
-        <swiper-slide>
-          <img class="swiper-image" src="@/assets/profile/sleeping.jpg" alt=""
-        /></swiper-slide>
-        <swiper-slide>
-          <img
-            class="swiper-image"
-            src="@/assets/profile/masterDegree.jpg"
-            alt=""
-        /></swiper-slide>
-        <swiper-slide>
-          <img
-            class="swiper-image"
-            src="@/assets/profile/motorcycleAndMe.jpg"
-            alt=""
-        /></swiper-slide>
-      </swiper>
+    <div class="pictures-box">
+      <h3 class="mt-5">Pictures</h3>
+      <div class="hr-1"></div>
+      <div class="my-2">
+        <swiper
+          class="swiper"
+          :modules="modules"
+          navigation
+          :pagination="{ clickable: true }"
+          :scrollbar="{ draggable: true }"
+          :slides-per-view="2"
+          :space-between="10"
+          @swiper="onSwiper"
+          @slideChange="onSlideChange"
+        >
+          <swiper-slide>
+            <img
+              class="swiper-image"
+              src="@/assets/profile/ssafyEnd1.png"
+              alt=""
+          /></swiper-slide>
+          <swiper-slide>
+            <img
+              class="swiper-image"
+              src="@/assets/profile/sleeping.jpg"
+              alt=""
+          /></swiper-slide>
+          <swiper-slide>
+            <img
+              class="swiper-image"
+              src="@/assets/profile/masterDegree.jpg"
+              alt=""
+          /></swiper-slide>
+          <swiper-slide>
+            <img
+              class="swiper-image"
+              src="@/assets/profile/motorcycleAndMe.jpg"
+              alt=""
+          /></swiper-slide>
+        </swiper>
+      </div>
     </div>
     <ETC></ETC>
   </div>
@@ -115,7 +125,7 @@ export default {
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 h1 {
   font-size: 4rem;
   font-weight: bold;
@@ -126,7 +136,7 @@ h2 {
   font-size: 3.5rem;
 }
 h3 {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: bold;
   font-family: "SF Pro Display", -apple-system, system-ui, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -142,13 +152,22 @@ a {
   // font-size: 1rem;
   text-decoration: none;
 }
-
-.total-info-box {
+.hr-1 {
+  width: 15%;
+  margin: 1rem auto 2rem auto;
+  //   padding: 0rem auto 0rem auto;
+  //   color: rgb(0, 0, 0, 0.4);
+  border-bottom: 1px solid white;
+}
+.about-totalinfo-box {
   max-width: 1000px;
-  height: 94vh;
+  height: 90vh;
   margin: 0rem auto 0rem auto;
   display: flex;
   align-items: center;
+}
+.pictures-box {
+  min-height: 600px;
 }
 .info-box {
   text-align: start;

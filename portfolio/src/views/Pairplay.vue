@@ -1,5 +1,5 @@
 <template>
-  <div class="total-info-box">
+  <div class="pairplay-total-info-box">
     <div class="info-box">
       <h1 class="my-5">Pairplay</h1>
       <div class="portfolio-detail-info-box">
@@ -7,7 +7,7 @@
         <div class="portfolio-detail-info-titles col-1">
           <div class="portfolio-detail-info-title">개발 기간</div>
           <div class="portfolio-detail-info-title">서비스</div>
-          <div class="portfolio-detail-info-title">기술 스택</div>
+          <div class="portfolio-detail-info-title">담당 기술</div>
           <div class="portfolio-detail-info-title">관련 링크</div>
           <div class="portfolio-detail-info-title">담당 업무</div>
         </div>
@@ -19,7 +19,7 @@
             전국 체육시설 조회, 예약 및 운동 메이트 중개 플랫폼
           </div>
           <div class="portfolio-detail-info-content">
-            Javascript , Vue 3, Scss
+            Javascript, Vue 3, Scss, bootstrap
           </div>
           <div class="portfolio-detail-info-content">
             <a href="https://pairplay.site/" target="_blan`k">
@@ -92,7 +92,7 @@ export default {
   },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 h1 {
   font-size: 4rem;
   font-weight: bold;
@@ -120,9 +120,8 @@ a {
   text-decoration: none;
 }
 
-.total-info-box {
+.pairplay-total-info-box {
   max-width: 1000px;
-  //   height: 94vh;
   margin: 0rem auto 0rem auto;
   //   display: flex;
   align-items: center;

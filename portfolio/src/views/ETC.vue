@@ -144,7 +144,12 @@ export default {
   //   color: #fafafa;
   color: black;
 }
-
+h3 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  font-family: "SF Pro Display", -apple-system, system-ui, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
 .total-ETC-box {
   //   max-width: 1200px;
   //   max-width: 1000px;

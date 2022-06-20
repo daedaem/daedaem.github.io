@@ -20,7 +20,7 @@ export default {
   components: { FirstInfo, Skills, Portfolio, Experiences },
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 * {
   // font-family: "SF Pro Display", -apple-system, system-ui, BlinkMacSystemFont,
   //   "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

@@ -79,7 +79,7 @@
 <script>
 import { reactive } from "vue";
 export default {
-  name: "Campus",
+  name: "Moving",
   setup() {
     const links = reactive({
       facebook: "https://www.facebook.com/tanggae",
