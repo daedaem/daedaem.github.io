@@ -21,7 +21,7 @@
               </p>
             </div>
             <div>
-              <img src="@/assets/etc/lactate.png" alt="" style="width: 200px" />
+              <img src="@/assets/etc/lactate.jpg" alt="" style="width: 200px" />
             </div>
           </div>
           <div class="text-start mt-4 d-flex justify-content start my-5">
@@ -58,7 +58,7 @@
               </p>
             </div>
             <div>
-              <img src="@/assets/etc/EV.png" alt="" style="width: 200px" />
+              <img src="@/assets/etc/EV.jpg" alt="" style="width: 200px" />
             </div>
           </div>
           <div class="text-start mt-4 d-flex justify-content start my-5">

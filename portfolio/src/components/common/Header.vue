@@ -15,7 +15,7 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <ul class="navbar-nav">
-          <li>
+          <li class="nav-item">
             <router-link :to="{ name: 'About' }" class="nav-link"
               >About Me</router-link
             >
@@ -26,31 +26,6 @@
               >Skills</router-link
             >
           </li>
-          <li
-            class="d-none d-lg-inline-block dropdown"
-            style="font-weight: bold"
-          >
-            <ul
-              class="dropdown-menu card-generic card-generic-s3 dropdown-menu-end mt-2"
-            >
-              <li>
-                <p class="dropdown-item" @click="moveToPairplay()">Pairplay</p>
-                <!-- <router-link :to="{ name: 'Pairplay' }" class="nav-link"
-                  >Pairplay</router-link
-                > -->
-              </li>
-              <li>
-                <p class="dropdown-item" @click="moveToUnique()">Unique</p>
-              </li>
-              <li>
-                <p class="dropdown-item" @click="moveToCampus()">Campus</p>
-              </li>
-              <li>
-                <p class="dropdown-item" @click="moveToMoving()">Moving</p>
-              </li>
-              <!-- <li><router-link class="dropdown-item card-generic-item" :to="`/account/${userId}`"><em class="ni me-2 ni-setting"></em>Account Settings</router-link></li> -->
-            </ul>
-          </li>
           <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
@@ -59,16 +34,22 @@
               role="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
-              @click="moveToPortfolio()"
-            >
-              Portfolio
+              >Portfolio
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li>
+                <p class="dropdown-item" @click="moveToPortfolio()">
+                  포트폴리오 리스트
+                </p>
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+
               <li>
                 <p class="dropdown-item" @click="moveToPairplay()">
                   프로젝트1. <em class="fw-bold"> Pairplay</em>
                 </p>
               </li>
+
               <li>
                 <p class="dropdown-item" @click="moveToUnique()">
                   프로젝트2. <em class="fw-bold"> Unique</em>
@@ -141,14 +122,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-nav {
-  // padding: 30px;
+// nav {
+//   // padding: 30px;
 
-  a {
-    // font-weight: bold;
-    // color: #2c3e50;
-  }
-}
+//   a {
+//     // font-weight: bold;
+//     // color: #2c3e50;
+//   }
+// }
 .navbar {
   background: transparent;
   // height: 100px;
@@ -162,11 +143,7 @@ nav {
 .container-fluid {
   max-width: 1000px;
 }
-.nav-link.portfolio-link:hover {
-  .dropdown-menu {
-    display: block;
-  }
-}
+
 .dropdown-item {
   cursor: pointer;
 }

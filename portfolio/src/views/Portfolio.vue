@@ -22,11 +22,13 @@
             <!-- <div class="my-3 skilbutton"> -->
             <!-- <img v-for="link in logos" :key="link.id" :src="`${link}`" /> -->
             <!-- </div> -->
-            <a href="https://github.com/daedaem/Pairplay" target="_blank">
-              <button type="button" class="btn btn-dark mt-5">
-                저장소로 이동 <i class="bi bi-arrow-right-short"></i>
-              </button>
-            </a>
+            <button
+              type="button"
+              class="btn btn-dark mt-5"
+              @click="moveToPairplay"
+            >
+              프로젝트 상세 <i class="bi bi-arrow-right-short"></i>
+            </button>
           </div>
           <div>
             <img
@@ -55,14 +57,13 @@
             <!-- <div class="my-3 skilbutton"> -->
             <!-- <img v-for="link in logos" :key="link.id" :src="`${link}`" /> -->
             <!-- </div> -->
-            <a
-              href="https://github.com/daedaem/Unique-NFT_MarketExhibition"
-              target="_blank"
+            <button
+              type="button"
+              class="btn btn-dark mt-5"
+              @click="moveToUnique"
             >
-              <button type="button" class="btn btn-dark mt-5">
-                저장소로 이동 <i class="bi bi-arrow-right-short"></i>
-              </button>
-            </a>
+              프로젝트 상세 <i class="bi bi-arrow-right-short"></i>
+            </button>
           </div>
           <div>
             <img
@@ -91,11 +92,13 @@
             <!-- <div class="my-3 skilbutton"> -->
             <!-- <img v-for="link in logos" :key="link.id" :src="`${link}`" /> -->
             <!-- </div> -->
-            <a href="https://github.com/daedaem/Campus" target="_blank">
-              <button type="button" class="btn btn-dark mt-5">
-                저장소로 이동 <i class="bi bi-arrow-right-short"></i>
-              </button>
-            </a>
+            <button
+              type="button"
+              class="btn btn-dark mt-5"
+              @click="moveToCampus"
+            >
+              프로젝트 상세 <i class="bi bi-arrow-right-short"></i>
+            </button>
           </div>
 
           <div>
@@ -125,14 +128,13 @@
             <!-- <div class="my-3 skilbutton"> -->
             <!-- <img v-for="link in logos" :key="link.id" :src="`${link}`" /> -->
             <!-- </div> -->
-            <a
-              href="https://github.com/daedaem/Moving_SSAFY-1th-Project"
-              target="_blank"
+            <button
+              type="button"
+              class="btn btn-dark mt-5"
+              @click="moveToMoving"
             >
-              <button type="button" class="btn btn-dark mt-5">
-                저장소로 이동 <i class="bi bi-arrow-right-short"></i>
-              </button>
-            </a>
+              프로젝트 상세 <i class="bi bi-arrow-right-short"></i>
+            </button>
           </div>
 
           <div>
@@ -151,12 +153,48 @@
 </template>
 <script>
 // import { reactive } from "@vue/reactivity";
+import { useRouter } from "vue-router";
 export default {
   name: "Portfolio",
   setup() {
-    // const logos = reactive([]);
-    // return { logos };
+    const router = useRouter();
+    const moveToPairplay = () => {
+      router
+        .push({
+          name: "Pairplay",
+        })
+        .then(() => window.scrollTo(0, 0));
+    };
+    const moveToUnique = () => {
+      router
+        .push({
+          name: "Unique",
+        })
+        .then(() => window.scrollTo(0, 0));
+    };
+    const moveToCampus = () => {
+      router
+        .push({
+          name: "Campus",
+        })
+        .then(() => window.scrollTo(0, 0));
+    };
+    const moveToMoving = () => {
+      router
+        .push({
+          name: "Moving",
+        })
+        .then(() => window.scrollTo(0, 0));
+    };
+    return {
+      moveToPairplay,
+      moveToUnique,
+      moveToCampus,
+      moveToMoving,
+    };
   },
+  // const logos = reactive([]);
+  // return { logos };
 };
 </script>
 <style lang="scss" scoped>

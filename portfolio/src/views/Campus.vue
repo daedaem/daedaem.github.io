@@ -1,45 +1,53 @@
 <template>
-  <div class="pairplay-total-info-box">
+  <div class="campus-total-info-box">
     <div class="info-box">
-      <h1 class="my-5">Pairplay</h1>
+      <h1 class="my-5">Campus</h1>
       <div class="portfolio-detail-info-box">
         <h5>Info</h5>
         <div class="portfolio-detail-info-titles col-1">
           <div class="portfolio-detail-info-title">개발 기간</div>
+          <div class="portfolio-detail-info-title">개발 인원</div>
           <div class="portfolio-detail-info-title">서비스</div>
-          <div class="portfolio-detail-info-title">기술 스택</div>
+          <div class="portfolio-detail-info-title">담당 기술</div>
+          <br />
           <div class="portfolio-detail-info-title">관련 링크</div>
+          <br />
           <div class="portfolio-detail-info-title">담당 업무</div>
         </div>
         <div class="portfolio-detail-info-contents col">
           <div class="portfolio-detail-info-content">
-            2022.04.11 ~ 2022.05.20
+            2022.01.04 ~ 2022.02.18
           </div>
           <div class="portfolio-detail-info-content">
-            전국 체육시설 조회, 예약 및 운동 메이트 중개 플랫폼
+            총 5명 (백엔드 3명, 프론트엔드 2명)
           </div>
           <div class="portfolio-detail-info-content">
-            Javascript , Vue 3, Scss
+            전국 캠핑시설 조회 및 캠핑 메이트 중개 플랫폼
           </div>
           <div class="portfolio-detail-info-content">
-            <a href="https://pairplay.site/" target="_blan`k">
-              https://pairplay.site/</a
-            ><br />
+            Javascript, Vue 2, bootstrap
           </div>
           <div class="portfolio-detail-info-content">
-            <strong> 운동장소 메인페이지</strong> <br />
-            - 운동 카테고리 선택, 회원 주소지 내 인기시설, 최근 조회한 시설 제공
+            <a href="https://github.com/daedaem/Campus" target="_blank">
+              <button type="button" class="btn btn-dark my-3">
+                저장소로 이동 <i class="bi bi-arrow-right-short"></i>
+              </button>
+            </a>
+          </div>
+          <div class="portfolio-detail-info-content">
+            <strong>1. 팀장 (프로젝트 관리)</strong> <br />
+            - Jira를 활용한 업무 계획 및 프로세스 진행 관리
             <br />
+            - Notion을 활용한 데일리 스크럼, 아이디어 회의, 기획안 등 프로젝트
+            관련업무 기록
             <br />
-            <strong> 운동장소 검색 페이지 </strong>
+
             <br />
-            - 지역, 운동 종목, 사용 날짜 필터링 및 검색 기능 <br />- Naver Map
-            api 활용한 위치기반 운동 시설 정보 제공
+            <strong> 2. 프론트엔드 </strong>
             <br />
-            <br />
-            <strong> 운동장소 상세페이지</strong> <br />- 시설 상세정보(평점,
-            이용시간 및 금액, 시설정보, 위치, 이용 규칙, 리뷰 등) 제공 <br />-
-            날짜별 이용 예약가능 시간 조회 및 아임포트 API를 활용한 예약기능<br />
+            - 캠핑 생활을 공유하기 위한 SNS 기능 개발 <br />- 한국 관광공사
+            캠핑장 정보 API를 통해 유저가 원하는 캠핑장 정보를 검색하고 필터를
+            통해 조회
           </div>
         </div>
       </div>
@@ -48,29 +56,42 @@
         are experiencing.
       </p> -->
       <h5 class="my-5">View</h5>
-      <div class="container portfolio-detail-image-box">
-        <div class="row">
-          <div class="col-4">
-            <img
-              class="portfolio-detail-image"
-              src="@/assets/pairplay/pairplayPlaceMain.png"
-              alt=""
-            />
-          </div>
-          <div class="col-4">
-            <img
-              class="portfolio-detail-image"
-              src="@/assets/pairplay/pairplayPlaceDetail.png"
-              alt=""
-            />
-          </div>
-        </div>
-        <div class="col-4">
-          <!-- <img
+    </div>
+
+    <div class="bottom-box">
+      <div class="portfolio-detail-image-boxes">
+        <div class="portfolio-detail-image-box">
+          <p class="picture-title">메인 페이지</p>
+          <img
             class="portfolio-detail-image"
-            src="@/assets/pairplay/장소수정.gif"
+            src="@/assets/campus/main.gif"
             alt=""
-          /> -->
+          />
+        </div>
+        <div class="portfolio-detail-image-box">
+          <p class="picture-title">캠핑 SNS</p>
+          <img
+            class="portfolio-detail-image"
+            src="@/assets/campus/sns.gif"
+            alt=""
+          />
+        </div>
+
+        <div class="portfolio-detail-image-box">
+          <p class="picture-title">캠핑 장소 조회</p>
+          <img
+            class="portfolio-detail-image"
+            src="@/assets/campus/20220217225229.png"
+            alt=""
+          />
+        </div>
+        <div class="portfolio-detail-image-box">
+          <p class="picture-title">캠핑 장소 조회</p>
+          <img
+            class="portfolio-detail-image"
+            src="@/assets/campus/snsCreate.png"
+            alt=""
+          />
         </div>
       </div>
     </div>
@@ -113,6 +134,9 @@ h4 {
 }
 h5 {
   font-size: 1.5rem;
+  font-weight: bold;
+  font-family: "SF Pro Display", -apple-system, system-ui, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 a {
   color: black;
@@ -120,7 +144,7 @@ a {
   text-decoration: none;
 }
 
-.pairplay-total-info-box {
+.campus-total-info-box {
   max-width: 1000px;
   margin: 0rem auto 0rem auto;
   //   display: flex;
@@ -148,7 +172,16 @@ a {
 .subinfo-box {
   margin: 2rem 0rem 0rem 0rem;
 }
-
+.bottom-box {
+  max-width: 100vw;
+  padding: 0rem 0rem 0rem 3rem;
+}
+.picture-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: "SF Pro Display", -apple-system, system-ui, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
 .image-box {
   // background: whitesmoke;
   // align-items: center;
@@ -170,17 +203,42 @@ a {
 .link-image {
   width: 2rem;
 }
-// .portfolio-detail-image-box {
+// .portfolio-detail-image-boxes {
 //   display: grid;
 
 //   //   grid-template-columns: repeat(1, 5fr);
 // }
-.container.portfolio-detail-image-box {
-  gap: 1rem;
+.btn.btn-dark {
+  // border-radius: 24px;
+  width: 8rem;
+  font-weight: bold;
+  font-size: 0.8rem;
+  padding: 0.6rem;
+  background: #363636;
+  box-shadow: -4px -4px 10px rgb(255 255 255 / 80%),
+    4px 4px 10px rgb(0 0 0 / 20%);
+  & a {
+    text-decoration: none;
+    color: white;
+  }
+}
+.portfolio-detail-image-boxes {
+  display: grid;
+  gap: 4rem 2rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+.portfolio-detail-image-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
 }
 .portfolio-detail-image {
-  max-width: 300px;
+  width: 100%;
+  // height: 100%;
+  // max-width: 300px;
   //   min-height: 250px;
-  //   object-fit: cover;
+  // object-fit: cover;
 }
 </style>

@@ -125,7 +125,7 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 h1 {
   font-size: 4rem;
   font-weight: bold;
@@ -171,7 +171,8 @@ a {
 }
 .info-box {
   text-align: start;
-  padding: 0rem 0rem 0rem 3rem;
+  margin: 0rem 0rem 0rem 3rem;
+
   // background: #fafafa;
 }
 .introduction-content {

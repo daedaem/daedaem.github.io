@@ -1,45 +1,51 @@
 <template>
-  <div class="pairplay-total-info-box">
+  <div class="moving-total-info-box">
     <div class="info-box">
-      <h1 class="my-5">Pairplay</h1>
+      <h1 class="my-5">Moving</h1>
       <div class="portfolio-detail-info-box">
         <h5>Info</h5>
         <div class="portfolio-detail-info-titles col-1">
           <div class="portfolio-detail-info-title">개발 기간</div>
+          <div class="portfolio-detail-info-title">개발 인원</div>
           <div class="portfolio-detail-info-title">서비스</div>
-          <div class="portfolio-detail-info-title">기술 스택</div>
+          <div class="portfolio-detail-info-title">담당 기술</div>
+          <br />
           <div class="portfolio-detail-info-title">관련 링크</div>
+          <br />
           <div class="portfolio-detail-info-title">담당 업무</div>
         </div>
         <div class="portfolio-detail-info-contents col">
           <div class="portfolio-detail-info-content">
-            2022.04.11 ~ 2022.05.20
+            2021.11.17 ~ 2021.11.25
+          </div>
+          <div class="portfolio-detail-info-content">총 2명</div>
+          <div class="portfolio-detail-info-content">
+            영화 정보 기반 영화추천 서비스
           </div>
           <div class="portfolio-detail-info-content">
-            전국 체육시설 조회, 예약 및 운동 메이트 중개 플랫폼
+            Javascript, Vue 2, Bootstrap, Django, Sqlite3
           </div>
           <div class="portfolio-detail-info-content">
-            Javascript , Vue 3, Scss
+            <a
+              href="https://github.com/daedaem/Moving_SSAFY-1th-Project"
+              target="_blank"
+            >
+              <button type="button" class="btn btn-dark my-3">
+                저장소로 이동 <i class="bi bi-arrow-right-short"></i>
+              </button>
+            </a>
           </div>
           <div class="portfolio-detail-info-content">
-            <a href="https://pairplay.site/" target="_blan`k">
-              https://pairplay.site/</a
-            ><br />
-          </div>
-          <div class="portfolio-detail-info-content">
-            <strong> 운동장소 메인페이지</strong> <br />
-            - 운동 카테고리 선택, 회원 주소지 내 인기시설, 최근 조회한 시설 제공
+            <strong> 백엔드 개발</strong> <br />
+            - Django를 통한 전체 모델링, Movie앱 개발 담당 <br />
+            - Django rest framework를 통한 API 개발
             <br />
             <br />
-            <strong> 운동장소 검색 페이지 </strong>
+            <strong> 프론트엔드 개발</strong>
             <br />
-            - 지역, 운동 종목, 사용 날짜 필터링 및 검색 기능 <br />- Naver Map
-            api 활용한 위치기반 운동 시설 정보 제공
-            <br />
-            <br />
-            <strong> 운동장소 상세페이지</strong> <br />- 시설 상세정보(평점,
-            이용시간 및 금액, 시설정보, 위치, 이용 규칙, 리뷰 등) 제공 <br />-
-            날짜별 이용 예약가능 시간 조회 및 아임포트 API를 활용한 예약기능<br />
+            - 영화 커뮤니티 TMDB 및 유튜브의 api 를 통한 영화 정보, 장르별 영화
+            추천 서비스 제공 <br />
+            - 영화 검색 기능 구현
           </div>
         </div>
       </div>
@@ -48,32 +54,75 @@
         are experiencing.
       </p> -->
       <h5 class="my-5">View</h5>
-      <div class="container portfolio-detail-image-box">
-        <div class="row">
-          <div class="col-4">
-            <img
-              class="portfolio-detail-image"
-              src="@/assets/pairplay/pairplayPlaceMain.png"
-              alt=""
-            />
-          </div>
-          <div class="col-4">
-            <img
-              class="portfolio-detail-image"
-              src="@/assets/pairplay/pairplayPlaceDetail.png"
-              alt=""
-            />
-          </div>
-        </div>
-        <div class="col-4">
-          <!-- <img
+    </div>
+    <div class="bottom-box">
+      <div class="portfolio-detail-image-boxes">
+        <div class="portfolio-detail-image-box">
+          <p class="picture-title">메인페이지</p>
+          <img
             class="portfolio-detail-image"
-            src="@/assets/pairplay/장소수정.gif"
+            src="@/assets/moving/Main.gif"
             alt=""
-          /> -->
+          />
+        </div>
+
+        <div class="portfolio-detail-image-box">
+          <p class="picture-title">상세 페이지</p>
+          <img
+            class="portfolio-detail-image"
+            src="@/assets/moving/detail.gif"
+            alt=""
+          />
+        </div>
+        <div class="portfolio-detail-image-box">
+          <p class="picture-title">검색창 및 검색결과</p>
+          <img
+            class="portfolio-detail-image"
+            src="@/assets/moving/searchbar.gif"
+            alt=""
+          />
+        </div>
+        <div class="portfolio-detail-image-box">
+          <p class="picture-title">영화 추천 페이지</p>
+          <img
+            class="portfolio-detail-image"
+            src="@/assets/moving/recommend.png"
+            alt=""
+          />
         </div>
       </div>
     </div>
+    <!-- 
+    <div class="bottom-box">
+      <div class="portfolio-detail-image-box">
+        <div class="col">
+          <p class="picture-title">메인 페이지</p>
+          <img
+            class="portfolio-detail-image"
+            src="@/assets/moving/Main.gif"
+            alt=""
+          />
+        </div>
+        <div class="row">
+          <div class="col">
+            <p class="picture-title">검색창 및 검색결과 페이지</p>
+            <img
+              class="portfolio-detail-image"
+              src="@/assets/moving/searchbar.gif"
+              alt=""
+            />
+            <div class="my-5">
+              <p class="picture-title">영화 상세 페이지</p>
+              <img
+                class="portfolio-detail-image"
+                src="@/assets/moving/detail.gif"
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -113,6 +162,9 @@ h4 {
 }
 h5 {
   font-size: 1.5rem;
+  font-weight: bold;
+  font-family: "SF Pro Display", -apple-system, system-ui, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 a {
   color: black;
@@ -120,7 +172,7 @@ a {
   text-decoration: none;
 }
 
-.pairplay-total-info-box {
+.moving-total-info-box {
   max-width: 1000px;
   margin: 0rem auto 0rem auto;
   //   display: flex;
@@ -148,7 +200,16 @@ a {
 .subinfo-box {
   margin: 2rem 0rem 0rem 0rem;
 }
-
+.bottom-box {
+  max-width: 100vw;
+  padding: 0rem 0rem 0rem 3rem;
+}
+.picture-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: "SF Pro Display", -apple-system, system-ui, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
 .image-box {
   // background: whitesmoke;
   // align-items: center;
@@ -166,21 +227,42 @@ a {
 
   // width: 400px;
 }
-
+.portfolio-detail-image-boxes {
+  display: grid;
+  gap: 4rem 2rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+.portfolio-detail-image-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+}
 .link-image {
   width: 2rem;
 }
-// .portfolio-detail-image-box {
-//   display: grid;
 
-//   //   grid-template-columns: repeat(1, 5fr);
-// }
-.container.portfolio-detail-image-box {
-  gap: 1rem;
+.btn.btn-dark {
+  // border-radius: 24px;
+  width: 8rem;
+  font-weight: bold;
+  font-size: 0.8rem;
+  padding: 0.6rem;
+  background: #363636;
+  box-shadow: -4px -4px 10px rgb(255 255 255 / 80%),
+    4px 4px 10px rgb(0 0 0 / 20%);
+  & a {
+    text-decoration: none;
+    color: white;
+  }
 }
+
 .portfolio-detail-image {
-  max-width: 300px;
+  width: 100%;
+  // height: 100%;
+  // max-width: 300px;
   //   min-height: 250px;
-  //   object-fit: cover;
+  // object-fit: cover;
 }
 </style>
