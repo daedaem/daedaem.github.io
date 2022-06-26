@@ -10,15 +10,11 @@ thumbnail: './bitcoin.png'
 
 ## 1-1. 초창기
 
-- 블록체인 기술에 대한 아이디어는 1991년 초,과학자 스튜어트 하버(Stuart Haber)와 스캇 스토네타(W. Scott Stornetta)에 의해 제시
+- 블록체인 기술에 대한 아이디어는 1991년 초,과학자 스튜어트 하버(Stuart Haber)와 스캇 스토네타(W. Scott Stornetta)에 의해 제시됨. 이들은 실용적인 수학적 해결책을 타임 스탬핑에 도입해 디지털 문서의 날짜가 변경되거나 위조될 수 없게 했습니다. 이는 타임 스탬프를 저장하는데 암호학적으로 안전한 블록들의 체인을 사용했으며, 1992년 머클 트리 구조를 도입한 후 여러 문서를 하나의 블록에 모을 수 있게 되며 보다 효율적이게 됐습니다. 그러나 이 기술은 사용되지 않기 시작했으며, 비트코인이 탄생하기 4년 전인 2004년에는 특허권이 만료되었습니다.
 
-  이들은 실용적인 수학적 해결책을 타임 스탬핑에 도입해 디지털 문서의 날짜가 변경되거나 위조될 수 없게 했습니다.
-
-  이는 타임 스탬프를 저장하는데 암호학적으로 안전한 블록들의 체인을 사용했으며, 1992년 머클 트리 구조를 도입한 후 여러 문서를 하나의 블록에 모을 수 있게 되며 보다 효율적이게 됐습니다.
-
-  그러나 이 기술은 사용되지 않기 시작했으며, 비트코인이 탄생하기 4년 전인 2004년에는 특허권이 만료되었습니다.
-
-![https://cazoo.it/wp-content/uploads/2021/05/Stuart-Haber-e-Scott-Stornetta.jpg](https://cazoo.it/wp-content/uploads/2021/05/Stuart-Haber-e-Scott-Stornetta.jpg)
+<figure style="display:flex;">
+<img src="https://cazoo.it/wp-content/uploads/2021/05/Stuart-Haber-e-Scott-Stornetta.jpg"  style="max-width:400px;" alt="https://cazoo.it/wp-content/uploads/2021/05/Stuart-Haber-e-Scott-Stornetta.jpg" />
+</figure>
 
 ## 1-2. **재사용 가능한 작업 증명 방식**
 
@@ -38,17 +34,13 @@ thumbnail: './bitcoin.png'
 
   2009년 1월 3일, 사토시 나카모토에 의해 최초 블록이 마이닝되며 첫 비트코인이 탄생했습니다. 당시 블록 보상은 50 비트코인이었습니다. 첫 비트코인의 수령자는 할 핀니였습니다. 2009년 12월, 그는 세계 최초 비트코인 트랜잭션을 통해 사토시 나카모토로부터 10 비트코인을 전송 받았습니다.
 
----
-
----
+--
 
 # 2. 블록체인 배경
 
 ## 2-1 .**기존 중앙집중형 시스템의 문제**
 
 ![https://cfnimage.commutil.kr/phpwas/restmb_allidxmake.php?idx=3&simg=20160425003812151975fnimage_01.jpg](https://cfnimage.commutil.kr/phpwas/restmb_allidxmake.php?idx=3&simg=20160425003812151975fnimage_01.jpg)
-
-###
 
 ### (1) **비용 문제**
 
@@ -68,13 +60,13 @@ thumbnail: './bitcoin.png'
 
 아무리 보안유지에 힘을 쓴다 하더라도 해커의 목표가 분산되어 있지 않고, 오직 중앙 하나만 공격한다면 중앙에 있는 우리의 모든 데이터 보안이 뚫리게 됌.
 
----
-
----
+--
 
 # 3. 블록체인(Blockchain)이란
 
-[https://www.youtube.com/watch?v=Ca7Meu4z-F4](https://www.youtube.com/watch?v=Ca7Meu4z-F4)
+<figure>
+<iframe width="640" height="360"  src="https://www.youtube.com/watch?v=Ca7Meu4z-F4"  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen ></iframe>
+</figure>
 
 ![https://www.etri.re.kr/webzine/20190329/common/images/sub01_02.jpg](https://www.etri.re.kr/webzine/20190329/common/images/sub01_02.jpg)
 
@@ -88,9 +80,9 @@ thumbnail: './bitcoin.png'
 
 ## 3-1. **블록체인 구성요소**
 
-![https://steemitimages.com/1280x0/https://steemitimages.com/DQmT41naG75LWrizbQ9uyw8uKEo8Ggkzu6A6XdcmRHmWkG5/block_element.png](https://steemitimages.com/1280x0/https://steemitimages.com/DQmT41naG75LWrizbQ9uyw8uKEo8Ggkzu6A6XdcmRHmWkG5/block_element.png)
-
-![https://steemitimages.com/1280x0/https://steemitimages.com/DQmc3RRboMPS9CCjdT8CwACUCaYXYviBG3WbKycn9A2xq6k/block_chain.png](https://steemitimages.com/1280x0/https://steemitimages.com/DQmc3RRboMPS9CCjdT8CwACUCaYXYviBG3WbKycn9A2xq6k/block_chain.png)
+<figure style="display:flex;">
+<img src="https://steemitimages.com/1280x0/https://steemitimages.com/DQmT41naG75LWrizbQ9uyw8uKEo8Ggkzu6A6XdcmRHmWkG5/block_element.png" style="max-width:400px;" alt="https://steemitimages.com/1280x0/https://steemitimages.com/DQmT41naG75LWrizbQ9uyw8uKEo8Ggkzu6A6XdcmRHmWkG5/block_element.png" /> <img src="https://steemitimages.com/1280x0/https://steemitimages.com/DQmc3RRboMPS9CCjdT8CwACUCaYXYviBG3WbKycn9A2xq6k/block_chain.png"  style="max-width:400px;"alt="https://steemitimages.com/1280x0/https://steemitimages.com/DQmc3RRboMPS9CCjdT8CwACUCaYXYviBG3WbKycn9A2xq6k/block_chain.png" />
+</figure>
 
 ### **해시함수**
 
@@ -116,7 +108,9 @@ SHA256 해시함수를 이용한다면 **어떤 길이의 입력값이라도 25
 
 ### **블록해시**
 
-![https://steemitimages.com/DQmWnWhqUYgppG6UGDLgYahbq15wm9eXa4mGKfSvLoDFtPP/block_hash_ver_01.png](https://steemitimages.com/DQmWnWhqUYgppG6UGDLgYahbq15wm9eXa4mGKfSvLoDFtPP/block_hash_ver_01.png)
+<figure>
+<img src="https://steemitimages.com/DQmWnWhqUYgppG6UGDLgYahbq15wm9eXa4mGKfSvLoDFtPP/block_hash_ver_01.png" style="max-width:400px;" alt="https://steemitimages.com/DQmWnWhqUYgppG6UGDLgYahbq15wm9eXa4mGKfSvLoDFtPP/block_hash_ver_01.png" /> 
+</figure>
 
 ---
 
@@ -146,7 +140,9 @@ SHA256 해시함수를 이용한다면 **어떤 길이의 입력값이라도 25
 지분증명이란 알고리즘의 한 형태로서, 이를 통해 암호화폐 블록체인 네트워크가 분산화된 합의를 얻는 것을 목표로 한다.
 지분증명 기반의 암호화폐 시스템에서 다음 블록의 생성자는 블록체인의 관련 암호화폐를 특정량 보유하고 있는 ‘주주’들 중에서 선출된다
 
-![https://blockgeeks.com/wp-content/uploads/2017/03/infographics2017-01.png](https://blockgeeks.com/wp-content/uploads/2017/03/infographics2017-01.png)
+<figure>
+<img src="https://blockgeeks.com/wp-content/uploads/2017/03/infographics2017-01.png" style="max-width:400px;" alt="https://blockgeeks.com/wp-content/uploads/2017/03/infographics2017-01.png" /> 
+</figure>
 
 ---
 
@@ -175,7 +171,7 @@ ex) 1. 1억원의 돈을 보관한다. 2. 1년뒤에 나에게 다시 인출한�
 ### 장점
 
 <aside>
-💡 **분산성**
+💡<p style="font-size:bold;"> 분산성</p>
 
 </aside>
 
@@ -184,7 +180,7 @@ ex) 1. 1억원의 돈을 보관한다. 2. 1년뒤에 나에게 다시 인출한�
 반면, 다수의 전통적인 데이터베이스는 단일 혹은 소수의 서버에 의존하며, 기술적 실패와 사이버 공격에 더욱 취약합니다.
 
 <aside>
-💡 **안정성**
+💡<p style="font-size:bold;"> 안정성</p>
 
 </aside>
 
@@ -193,7 +189,7 @@ ex) 1. 1억원의 돈을 보관한다. 2. 1년뒤에 나에게 다시 인출한�
 예를 들어, 한 회사는 블록체인 기술을 직원의 부정 행위를 방지하는 데 사용할 수 있습니다. 이러한 상황에서 블록체인은 회사 내에서 발생하는 모든 재정 거래에 대한 보안 더불어 안정적인 기록을 제공할 수 있습니다. 이는 직원으로 하여금 의심스러운 거래들을 숨기기 더욱 어렵게 할 것입니다.
 
 <aside>
-💡 **신뢰가 필요 없는 시스템**
+💡<p style="font-size:bold;"> 신뢰가 필요없는 시스템</p>
 
 </aside>
 
@@ -208,7 +204,7 @@ ex) 1. 1억원의 돈을 보관한다. 2. 1년뒤에 나에게 다시 인출한�
 ### **단점**
 
 <aside>
-💡 **51% 공격**
+💡<p style="font-size:bold;"> 51% 공격</p>
 
 </aside>
 
@@ -217,28 +213,28 @@ ex) 1. 1억원의 돈을 보관한다. 2. 1년뒤에 나에게 다시 인출한�
 이론적으로 가능한 일임에도 불구하고, 51%의 공격이 비트코인 블록체인에 성공했던 적은 한 번도 없었습니다. 네트워크가 더 크게 성장함에 따라 보안이 증대되고, 정직하게 행동하는 것이 더 많은 보상을 얻을 수 있기에, 마이너가 비트코인을 공격하기 위해 많은 돈과 자원을 투자하지 않기 때문입니다. 이외에도, 성공적인 51% 공격은 단기간에 가장 최근의 트랜잭만을 수정할 수 있는데, 이는 블록들이 암호화된 증명을 통해 연결되어 있기 때문입니다(블록의 순서를 변경하는 것은 막대한 연산 능력을 필요로 합니다). 또한 비트코인 블록체인은 매우 탄력적이어서 공격에 빠르게 대처할 수 있습니다.
 
 <aside>
-💡 **데이터 수정**
+💡<p style="font-size:bold;"> 데이터 수정</p>
 
 </aside>
 
 블록체인 시스템의 또 다른 단점은 블록체인에 데이터가 기록되면 이를 수정하기가 무척 어렵다는 것입니다. 안정성은 블록체인의 장점이긴 하지만, 이것이 언제나 좋은 것은 아닙니다. 블록체인 데이터나 코드를 변경하는 것은 매우 까다로우며, 한 체인이 버려지고 다른 체인이 이를 대신하는 하드 포크를 종종 필요로 합니다.
 
 <aside>
-💡 **프라이빗 키**
+💡<p style="font-size:bold;">프라이빗 키</p>
 
 </aside>
 
 블록체인은 공개키(혹은 비대칭키) 암호학을 사용해 사용자가 자신의 암호 화폐 자산(혹은 다른 블록체인 데이터)에 소유권을 주장할 수 있게 합니다. 각 블록체인 계정(혹은 주소)은 상응하는 두 개의 키를 갖고 있는데, 퍼블릭 키(공유될 수 있는)와 프라이빗 키(안전하게 보관되어야 하는)입니다. 사용자는 자신들의 자금에 접근하기 위해 프라이빗 키가 필요하며, 이는 스스로가 자신의 은행 역할을 한다는 것을 의미합니다. 사용자가 만약 프라이빗 키를 잃어버리게 된다면, 사실상 자금을 잃게되며, 이를 어찌할 수 있는 방법이 없습니다.
 
 <aside>
-💡 **비효율성**
+💡<p style="font-size:bold;"> 비효율성</p>
 
 </aside>
 
 [작업 증명](https://academy.binance.com/ko/articles/proof-of-work-explained)을 사용하는 블록체인은 상당히 비효율적입니다. 마이닝 경쟁이 치열하고, 매 10분마다 단 한 명의 승자만 존재하기 때문에, 다른 모든 마이너들의 작업은 무용지물이 됩니다. 유효한 블록 해시를 찾을 수 있는 확률을 높이기 위해 마이너들은 지속적으로 자신의 연산 능력을 증가시켜 왔기에, 비트코인 네트워크에서 사용되는 자원은 지난 몇 년간 상당히 증가해 왔으며, 현재 덴마크나, 아일랜드, 나이지리아와 같은 국가들보다 더 많은 에너지를 소비하고 있습니다.
 
 <aside>
-💡 **저장 공간**
+💡<p style="font-size:bold;"> 저장공간</p>
 
 </aside>
 
@@ -250,9 +246,7 @@ ex) 1. 1억원의 돈을 보관한다. 2. 1년뒤에 나에게 다시 인출한�
 - 비공개 블록체인(Private blockchains, 전용 블록체인): 특정 권한이 부여된 비공개 블록체인.
 - 하이브리드 블록체인(Hybrid blockchain): 중앙식, 탈중앙식 기능을 모두 갖춘 블록체인.
 
----
-
----
+--
 
 # 4-1. 블록체인 활용
 
@@ -268,7 +262,7 @@ ex) 커피시장에서 농부의 이력을 포함한 커피 원두의 생산단�
 
 ![https://www.kukinews.com/data/kuk/image/2021/04/19/kuk202104190382.680x.0.jpg](https://www.kukinews.com/data/kuk/image/2021/04/19/kuk202104190382.680x.0.jpg)
 
----
+--
 
 ## 💊의료사업
 
@@ -284,7 +278,7 @@ ex) 커피시장에서 농부의 이력을 포함한 커피 원두의 생산단�
 
 블록체인은 제약 회사의 제조와 유통 과정 전반을 추적할 수 있는 신뢰할 수 있는 방법을 제공할 수 있으며, 이는 만연한 가짜 의약품 문제를 방지하는데 도움이 될 수 있습니다. 온도와 같은 요소를 측정하는 사물 인터넷 기기와 연계하여, 보관 상태와 배송 상황, 약품 품질을 인증하는 데 블록체인 기술을 활용할 수 있습니다.
 
----
+--
 
 ## 📶사물인터넷(IoT)
 
@@ -298,7 +292,7 @@ ex) 커피시장에서 농부의 이력을 포함한 커피 원두의 생산단�
 
 산업용 사례 중 하나로는 온도, 습도, 기압과 품질과 같은 환경 조건을 추적하기 위한 센서 사용이 있습니다. 사물 인터넷 장치는 농부들이 가축을 위한 물이나 식량이 부족할 때나, 제조업자들이 중요한 제품이 고갈될 때를 파악하는데 사용될 수 있습니다. 또한 공급량이 특정 기준치보다 낮을 때 해당 제품을 더 많이 주문하도록 자동화된 시스템을 설정할 수도 있습니다.
 
----
+--
 
 ## 💲금융
 
@@ -320,7 +314,7 @@ DeFi 애플리케이션은 정의상 금융 애플리케이션이며, 통화 은
 
 블록체인상의 보험은 중개자를 없애고 많은 참여자에게 위험을 분산시킬 수 있습니다. 이는 동일한 서비스 품질을 유지하며, 보험료를 낮출 수 있습니다.
 
----
+--
 
 ## NFT(Nonfungible Token)
 
@@ -332,15 +326,13 @@ NFT가 '대체 불가능 토큰'이라 불리는 이유는 내가 가진 1비트
 
 (오른쪽)트위터 공동 창업자 잭 도시가 15년 전 작성한 이 첫 트윗('태초의 트윗')의 소유권을 인증하는 대체불가능토큰(NFT·Non-fungible token)이 경매에서 약 290만달러(약 32억7000만원)에 낙찰됐다.
 
-![http://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg](http://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg)
-
-![https://img.hankyung.com/photo/202103/01.25807736.1.jpg](https://img.hankyung.com/photo/202103/01.25807736.1.jpg)
+<figure style="display:flex;">
+<img src="http://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg"  style="max-width:400px;" alt="http://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg" /> <img src="https://img.hankyung.com/photo/202103/01.25807736.1.jpg"  style="max-width:400px;"alt="https://img.hankyung.com/photo/202103/01.25807736.1.jpg" />
+</figure>
 
 **NFT 시장 규모**
 
 [KOTRA 해외시장뉴스](https://news.kotra.or.kr/user/globalBbs/kotranews/782/globalBbsDataView.do?setIdx=243&dataIdx=188333)
-
----
 
 ---
 
