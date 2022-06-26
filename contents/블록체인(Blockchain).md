@@ -2,8 +2,8 @@
 date: '2022-06-26'
 title: '블록체인(Blockchain) 기본 개념 구현 및 해쉬의 이해'
 categories: ['블록체인', '도메인 지식' 'TIL']
-summary: '기술 블로그를 시작하면서...'
-thumbnail: 'https://pixabay.com/da/illustrations/blockchain-blok-l%C3%A6nke-teknologi-3019120/'
+summary: '블록체인 기술은...'
+thumbnail: './bitcoin.png'
 ---
 
 # 1.블록체인의 역사
