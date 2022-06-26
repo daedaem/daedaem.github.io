@@ -300,14 +300,14 @@ DeFi 애플리케이션은 정의상 금융 애플리케이션이며, 통화 은
 
 NFT란 JPG, GIF, 비디오 등의 디지털 파일에 대한 소유권(일명 '토큰')을 블록체인상에 저장함으로써 위⸱변조가 불가능한 상태로 영구 보존하고, 그 소유권을 탈중앙화된 형태로 확인할 수 있도록 해놓은 것
 
-NFT가 '대체 불가능 토큰'이라 불리는 이유는 내가 가진 1비트코인은 다른 사람이 가진 1비트코인과 1:1로 교환이 가능하다. 반면 NFT는 각기 연결된 디지털 자산이 달라 다른 NFT와의 1:1 교환이 성립하지 않는다. 그래서 비트코인이나 이더리움 같은 암호화폐는 'Fungible Token(대체 가능 토큰, 일명 ERC-20 토큰)'으로, NFT는 '대체 불가능 토큰(일명, ERC-721 토큰)'으로 불린다. _출처 : 코인데스크코리아 (http://www.coindeskkorea.com/news/articleView.html?idxno=73064)_
+NFT가 '대체 불가능 토큰'이라 불리는 이유는 내가 가진 1비트코인은 다른 사람이 가진 1비트코인과 1:1로 교환이 가능하다. 반면 NFT는 각기 연결된 디지털 자산이 달라 다른 NFT와의 1:1 교환이 성립하지 않는다. 그래서 비트코인이나 이더리움 같은 암호화폐는 'Fungible Token(대체 가능 토큰, 일명 ERC-20 토큰)'으로, NFT는 '대체 불가능 토큰(일명, ERC-721 토큰)'으로 불린다. _출처 : 코인데스크코리아 (https://www.coindeskkorea.com/news/articleView.html?idxno=73064)_
 
 (위)JPG파일이 783억원에 낙찰. 미국 디지털 아티스트 비플(Beeple·본명 마이크 윈켈만)의 디지털 아트 콜라주인 '매일: 처음의 5000일'(EVERYDAYS: THE FIRST 5000 DAYS)이 6934만 달러에 낙찰
 
 (아래)트위터 공동 창업자 잭 도시가 15년 전 작성한 이 첫 트윗('태초의 트윗')의 소유권을 인증하는 대체불가능토큰(NFT·Non-fungible token)이 경매에서 약 290만달러(약 32억7000만원)에 낙찰됐다.
 
 <figure>
-<img src="http://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg"  style="max-width:800px;" alt="http://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg" /> <img src="https://img.hankyung.com/photo/202103/01.25807736.1.jpg"  style="max-width:800px;"alt="https://img.hankyung.com/photo/202103/01.25807736.1.jpg" />
+<img src="https://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg"  style="max-width:800px;" alt="https://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg" /> <img src="https://img.hankyung.com/photo/202103/01.25807736.1.jpg"  style="max-width:800px;"alt="https://img.hankyung.com/photo/202103/01.25807736.1.jpg" />
 </figure>
 
 ---
@@ -417,7 +417,7 @@ print('Chain is OK?', onion.isValid())
 
 [분산원장과 블록체인 차이 / 분산원장기술이란?](https://m.blog.naver.com/seonggi159/221312537621)
 
-[하나금융, 은행권 블록체인 물꼬 텄다](http://www.fntimes.com/html/view.php?ud=20160425003812151975_18&mobile=1)
+[하나금융, 은행권 블록체인 물꼬 텄다](https://www.fntimes.com/html/view.php?ud=20160425003812151975_18&mobile=1)
 
 [블록체인의 역사 | Binance Academy](https://academy.binance.com/ko/articles/history-of-blockchain)
 
