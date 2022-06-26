@@ -29,7 +29,6 @@ thumbnail: './bitcoin.png'
   비트코인은 해시캐시 작업 증명 방식 알고리즘에 기반을 두고 있으나, 재사용 가능한 작업 증명 방식과 같이 신뢰할 수 있는 컴퓨팅 기능의 하드웨어를 사용하지 않고, 트랜잭션을 추적하고 검증하는 탈중앙화된 개인간 네트워크 프로토콜을 통해 이중 지불 문제를 해결했습니다. 간단히 말해, **비트코인은 작업 증명 방식 매커니즘을 통해 개인 마이너들의 보상으로 마이닝되며, 이후 탈중앙화화된 네트워크 노드에 의해 검증됩니다.**
 
   2009년 1월 3일, 사토시 나카모토에 의해 최초 블록이 마이닝되며 첫 비트코인이 탄생했습니다. 당시 블록 보상은 50 비트코인이었습니다. 첫 비트코인의 수령자는 할 핀니였습니다. 2009년 12월, 그는 세계 최초 비트코인 트랜잭션을 통해 사토시 나카모토로부터 10 비트코인을 전송 받았습니다.
----
 # 2. 블록체인 배경
 
 ## 2-1 .**기존 중앙집중형 시스템의 문제**
@@ -54,7 +53,6 @@ thumbnail: './bitcoin.png'
 
 아무리 보안유지에 힘을 쓴다 하더라도 해커의 목표가 분산되어 있지 않고, 오직 중앙 하나만 공격한다면 중앙에 있는 우리의 모든 데이터 보안이 뚫리게 됌.
 
----
 # 3. 블록체인(Blockchain)이란
 [노마드코더 - "블록체인. 개발자가 쉽게 설명해드림. 10분컷."](https://youtu.be/Ca7Meu4z-F4)
 
@@ -62,7 +60,7 @@ thumbnail: './bitcoin.png'
 
 블록+체인=블록체인
 
-사전적 정의 : `‘누구나 열람할 수 있는 **디지털 장부**에 **거래 내역을 투명하게 기록**하고, **여러 대의 컴퓨터에 이를 복제해 저장**하는 **분산형 데이터 저장기술**’`
+사전적 정의 : ‘누구나 열람할 수 있는 **디지털 장부**에 **거래 내역을 투명하게 기록**하고, **여러 대의 컴퓨터에 이를 복제해 저장**하는 **분산형 데이터 저장기술**
 
 변조나 왜곡을 막기 위해 **‘블록(Block)’** **단위로 생성되는 기록을 여러 장소에 나눠(분산) 저장**한다. 따라서 블록체인에선 **해킹이 불가능하고, 정보가 온전하게 저장**될 수 있다.
 
@@ -71,7 +69,8 @@ thumbnail: './bitcoin.png'
 ## 3-1. **블록체인 구성요소**
 
 <figure">
-<img src="https://steemitimages.com/1280x0/https://steemitimages.com/DQmT41naG75LWrizbQ9uyw8uKEo8Ggkzu6A6XdcmRHmWkG5/block_element.png" style="max-width:400px; margin: 0 auto;" alt="https://steemitimages.com/1280x0/https://steemitimages.com/DQmT41naG75LWrizbQ9uyw8uKEo8Ggkzu6A6XdcmRHmWkG5/block_element.png" /> <img src="https://steemitimages.com/1280x0/https://steemitimages.com/DQmc3RRboMPS9CCjdT8CwACUCaYXYviBG3WbKycn9A2xq6k/block_chain.png"  style="max-width:400px; margin:0 auto;"alt="https://steemitimages.com/1280x0/https://steemitimages.com/DQmc3RRboMPS9CCjdT8CwACUCaYXYviBG3WbKycn9A2xq6k/block_chain.png" />
+<img src="https://steemitimages.com/1280x0/https://steemitimages.com/DQmT41naG75LWrizbQ9uyw8uKEo8Ggkzu6A6XdcmRHmWkG5/block_element.png" style="max-width:400px; margin:0 auto;" alt="https://steemitimages.com/1280x0/https://steemitimages.com/DQmT41naG75LWrizbQ9uyw8uKEo8Ggkzu6A6XdcmRHmWkG5/block_element.png" /> 
+<img src="https://steemitimages.com/1280x0/https://steemitimages.com/DQmc3RRboMPS9CCjdT8CwACUCaYXYviBG3WbKycn9A2xq6k/block_chain.png"  style="max-width:400px; margin:0 auto;"alt="https://steemitimages.com/1280x0/https://steemitimages.com/DQmc3RRboMPS9CCjdT8CwACUCaYXYviBG3WbKycn9A2xq6k/block_chain.png" />
 </figure>
 
 ### **해시함수**
@@ -101,7 +100,6 @@ SHA256 해시함수를 이용한다면 **어떤 길이의 입력값이라도 25
 <img src="https://steemitimages.com/DQmWnWhqUYgppG6UGDLgYahbq15wm9eXa4mGKfSvLoDFtPP/block_hash_ver_01.png" style="max-width:800px;" alt="https://steemitimages.com/DQmWnWhqUYgppG6UGDLgYahbq15wm9eXa4mGKfSvLoDFtPP/block_hash_ver_01.png" /> 
 </figure>
 
----
 ## 3-2. 🔨채굴
 
 [노마드코더 - "개발자가 설명해주는 비트코인 채굴 방법 (ft 시뮬레이터)"](https://www.youtube.com/watch?v=ElGBP90XZWE)
@@ -132,8 +130,6 @@ SHA256 해시함수를 이용한다면 **어떤 길이의 입력값이라도 25
 <img src="https://blockgeeks.com/wp-content/uploads/2017/03/infographics2017-01.png" style="max-width:800px;" alt="https://blockgeeks.com/wp-content/uploads/2017/03/infographics2017-01.png" /> 
 </figure>
 
----
-
 ### 📜**스마트 컨트랙**
 
 개발자로서 코딩을 해서 주인이 없는 백엔드(공유 네트워크)에 올릴 수 있음.
@@ -145,8 +141,6 @@ ex) 1. 1억원의 돈을 보관한다. 2. 1년뒤에 나에게 다시 인출한�
 에어비앤비(중개인) → 스마트컨트랙에 돈을 보내면 스마트 컨트랙은 TV를 켜고, 문을 열어주는.
 
 스마트 컨트랙에 자율주행이 가능한 테슬라를 빌리는 렌트비를 지출하면 테슬라차는 지불자에게 이동.
-
----
 
 ## 3-3. **블록체인 특징**
 
@@ -186,12 +180,10 @@ ex) 1. 1억원의 돈을 보관한다. 2. 1년뒤에 나에게 다시 인출한�
 
 그러므로 **블록체인 시스템은 단일 조직을 신뢰하는 데서 발생하는 리스크를 제거하고, 중개자와 제3자를 제외함으로써, 전체적인 비용과 거래 수수료를 절감할 수 있습니다..**
 
----
-
 ### **단점**
 
 <aside>
-💡<p style="font-size:bold;"> 51% 공격</p>
+<p style="font-size:bold;">💡 51% 공격</p>
 
 </aside>
 
@@ -233,7 +225,6 @@ ex) 1. 1억원의 돈을 보관한다. 2. 1년뒤에 나에게 다시 인출한�
 - 비공개 블록체인(Private blockchains, 전용 블록체인): 특정 권한이 부여된 비공개 블록체인.
 - 하이브리드 블록체인(Hybrid blockchain): 중앙식, 탈중앙식 기능을 모두 갖춘 블록체인.
 
----
 # 4-1. 블록체인 활용
 ## 🚚공급망
 1. 투명하고 변경할 수 없는 기록
@@ -246,8 +237,6 @@ ex) 커피시장에서 농부의 이력을 포함한 커피 원두의 생산단�
 
 ![https://www.kukinews.com/data/kuk/image/2021/04/19/kuk202104190382.680x.0.jpg](https://www.kukinews.com/data/kuk/image/2021/04/19/kuk202104190382.680x.0.jpg)
 
----
-
 ## 💊의료사업
 
 1. **상호 운용**
@@ -259,8 +248,6 @@ ex) 커피시장에서 농부의 이력을 포함한 커피 원두의 생산단�
 3. **신뢰할 수 있는 공급망 관리**
 블록체인은 제약 회사의 제조와 유통 과정 전반을 추적할 수 있는 신뢰할 수 있는 방법을 제공할 수 있으며, 이는 만연한 가짜 의약품 문제를 방지하는데 도움이 될 수 있습니다. 온도와 같은 요소를 측정하는 사물 인터넷 기기와 연계하여, 보관 상태와 배송 상황, 약품 품질을 인증하는 데 블록체인 기술을 활용할 수 있습니다.
 
----
-
 ## 📶사물인터넷(IoT)    
 1.**개인과 가정을 위한 사물 인터넷 활용**
 
@@ -271,8 +258,6 @@ ex) 커피시장에서 농부의 이력을 포함한 커피 원두의 생산단�
 2.**상업과 산업을 위한 사물 인터넷 활용**
 
 산업용 사례 중 하나로는 온도, 습도, 기압과 품질과 같은 환경 조건을 추적하기 위한 센서 사용이 있습니다. 사물 인터넷 장치는 농부들이 가축을 위한 물이나 식량이 부족할 때나, 제조업자들이 중요한 제품이 고갈될 때를 파악하는데 사용될 수 있습니다. 또한 공급량이 특정 기준치보다 낮을 때 해당 제품을 더 많이 주문하도록 자동화된 시스템을 설정할 수도 있습니다.
-
----
 
 ## 💲금융
 
@@ -294,8 +279,6 @@ DeFi 애플리케이션은 정의상 금융 애플리케이션이며, 통화 은
 
 블록체인상의 보험은 중개자를 없애고 많은 참여자에게 위험을 분산시킬 수 있습니다. 이는 동일한 서비스 품질을 유지하며, 보험료를 낮출 수 있습니다.
 
----
-
 ## NFT(Nonfungible Token)
 
 NFT란 JPG, GIF, 비디오 등의 디지털 파일에 대한 소유권(일명 '토큰')을 블록체인상에 저장함으로써 위⸱변조가 불가능한 상태로 영구 보존하고, 그 소유권을 탈중앙화된 형태로 확인할 수 있도록 해놓은 것
@@ -309,8 +292,6 @@ NFT가 '대체 불가능 토큰'이라 불리는 이유는 내가 가진 1비트
 <figure>
 <img src="https://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg"  style="max-width:800px;" alt="https://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg" /> <img src="https://img.hankyung.com/photo/202103/01.25807736.1.jpg"  style="max-width:800px;"alt="https://img.hankyung.com/photo/202103/01.25807736.1.jpg" />
 </figure>
-
----
 
 # 파이썬으로 블록체인 구현해보기
 
