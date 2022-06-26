@@ -68,7 +68,7 @@ thumbnail: './bitcoin.png'
 
 ## 3-1. **블록체인 구성요소**
 
-<figure">
+<figure>
 <img src="https://steemitimages.com/1280x0/https://steemitimages.com/DQmT41naG75LWrizbQ9uyw8uKEo8Ggkzu6A6XdcmRHmWkG5/block_element.png" style="max-width:400px; margin:0 auto;" alt="https://steemitimages.com/1280x0/https://steemitimages.com/DQmT41naG75LWrizbQ9uyw8uKEo8Ggkzu6A6XdcmRHmWkG5/block_element.png" /> 
 <img src="https://steemitimages.com/1280x0/https://steemitimages.com/DQmc3RRboMPS9CCjdT8CwACUCaYXYviBG3WbKycn9A2xq6k/block_chain.png"  style="max-width:400px; margin:0 auto;"alt="https://steemitimages.com/1280x0/https://steemitimages.com/DQmc3RRboMPS9CCjdT8CwACUCaYXYviBG3WbKycn9A2xq6k/block_chain.png" />
 </figure>
