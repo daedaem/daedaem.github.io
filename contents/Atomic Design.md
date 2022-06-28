@@ -34,9 +34,10 @@ thumbnail: './AtomicDesign.assets/atomic-design.png'
 **프로젝트 3. 캠퍼스**
 
 <figure>
+<div style="display:flex;">
 <img src="./AtomicDesign.assets/campus1.png" alt="campus1.png" style="margin: 0 auto; max-width:500px;" />
 <img src="./AtomicDesign.assets/campus2.png" alt="campus2.png" style="margin:0 auto; max-width:500px;" />
-
+</div>
 </figure>
 
 **프로젝트 1. 페어플레이**
