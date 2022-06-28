@@ -3,7 +3,7 @@ date: '2022-06-28'
 title: '프론트엔드에서 컴포넌트 구성은?(작성 중)_'
 categories: [''Web Frontend', 'TIL', 'Design']
 summary: '프론트엔드 컴포넌트 설계 패턴 중 아토믹 디자인은...'
-thumbnail: './Atomic Design.assets/atomic-design.png'
+thumbnail: './atomic-design.png'
 ---
 
 # 프론트엔드에서 Component란?
@@ -33,11 +33,11 @@ thumbnail: './Atomic Design.assets/atomic-design.png'
 
 **프로젝트 3. 캠퍼스**
 
-<img src="./Atomic Design.assets/image-20220628163235711.png" alt="image-20220628163235711" style="zoom: 67%; margin: 0 auto;" /><img src="./Atomic Design.assets/image-20220628163305027.png" alt="image-20220628163305027" style="zoom:67%; margin:0 auto;" />
+<img src="./campus1.png" alt="campus1" style="zoom: 67%; margin: 0 auto;" /><img src="./campus2.png" alt="campus2.png" style="zoom:67%; margin:0 auto;" />
 
 **프로젝트 1. 페어플레이**
 
-<img src="./Atomic Design.assets/image-20220628163845007.png" alt="image-20220628163845007" style="zoom:67%;" />
+<img src="./pairplay1.png.png" alt="pairplay1.png" style="zoom:67%;" />
 
 **가장 최근에 진행했던 Pairplay**에서는 기능 폴더 > 각 페이지 폴더 > 해당 컴포넌트 순으로 정리하였다.
 
