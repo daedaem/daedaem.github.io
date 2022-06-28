@@ -44,7 +44,7 @@ W3C에 따르면 "시맨틱 웹을 사용하면 애플리케이션, 기업 및 �
 
 ---
 
-### Source
+# Source
 
 - w3schools [https://www.w3schools.com/html/html5_semantic_elements.asp](https://www.w3schools.com/html/html5_semantic_elements.asp)
 - 샐리님의 블로그 [https://m.blog.naver.com/won_1020/221718728799](https://m.blog.naver.com/won_1020/221718728799)
