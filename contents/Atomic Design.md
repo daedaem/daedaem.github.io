@@ -34,13 +34,13 @@ thumbnail: './Atomic Design.assets/atomic-design.png'
 **프로젝트 3. 캠퍼스**
 
 <figure style="display:flex;">
-<img src="./Atomic Design.assets/image-20220628163235711.png" alt="image-20220628163235711" style="margin: 0 auto;" /><img src="./Atomic Design.assets/image-20220628163305027.png" alt="image-20220628163305027" style="margin:0 auto;" />
+<img src="./Atomic Design.assets/campus1.png" alt="campus1" style="margin: 0 auto;" /><img src="./Atomic Design.assets/campus2.png.png" alt="campus2.png" style="margin:0 auto;" />
 </figure>
 
 **프로젝트 1. 페어플레이**
 
 <figure>
-<img src="./Atomic Design.assets/image-20220628163845007.png" alt="image-20220628163845007" style="zoom:67%;" />
+<img src="./Atomic Design.assets/pairplay1.png" alt="pairplay1" style="zoom:67%;" />
 </figure>
 
 **가장 최근에 진행했던 Pairplay**에서는 기능 폴더 > 각 페이지 폴더 > 해당 컴포넌트 순으로 정리하였다.
