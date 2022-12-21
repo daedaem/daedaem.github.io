@@ -1,7 +1,7 @@
 ---
 date: '2022-06-18'
 title: '시멘틱 태그'
-categories: ['잡담', 'Web Frontend', 'HTML']
+categories: ['Web Frontend', 'TIL', 'HTML']
 summary: '시멘틱 태그의 중요성'
 thumbnail: './SemanticHTML.png'
 ---
