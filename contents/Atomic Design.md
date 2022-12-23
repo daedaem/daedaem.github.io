@@ -1,6 +1,6 @@
 ---
 date: '2022-06-28'
-title: '프론트엔드에서 컴포넌트 구성은?(작성중)'
+title: '프론트엔드에서 컴포넌트 구성'
 categories: ['Web Frontend', 'TIL', 'Design']
 summary: '프론트엔드 컴포넌트 설계 패턴 중 아토믹 디자인은...'
 thumbnail: './AtomicDesign.assets/atomic-design.png'
