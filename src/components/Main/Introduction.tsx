@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: flex-start;
   width: 768px;
-  height: 400px;
+  height: 300px;
   margin: 0 auto;
 
   @media (max-width: 768px) {
@@ -39,11 +39,11 @@ const SubTitle = styled.div`
 
 const Title = styled.div`
   margin-top: 5px;
-  font-size: 35px;
+  font-size: 25px;
   font-weight: 700;
 
   @media (max-width: 768px) {
-    font-size: 25px;
+    font-size: 20px;
   }
 `
 const Introduction: FunctionComponent<IntroductionProps> = function ({
@@ -55,8 +55,8 @@ const Introduction: FunctionComponent<IntroductionProps> = function ({
         <ProfileImage profileImage={profileImage} />
 
         <div>
-          <SubTitle>Nice to Meet You,</SubTitle>
-          <Title>I'm Junior Frontend Developer Hae-sung.</Title>
+          <SubTitle>안녕하세요, 프론트엔드 개발을 꿈꾸는 조해성입니다.</SubTitle>
+          <Title>학습하고 성장하는 과정을 기록하는 공간입니다.</Title>
         </div>
       </Wrapper>
     </Background>
