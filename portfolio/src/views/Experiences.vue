@@ -23,33 +23,30 @@
           <div class="text-start col">
             <h5 class="fw-bold">EXPERIENCE</h5>
             <div class="text-start mt-4">
-              <p class="mb-1">2021.07 - 2022.07</p>
-              <p class="fw-bold my-0">삼성청년SW아카데미 6기</p>
+              <p class="mb-1">2022.12 - ing</p>
+              <p class="fw-bold my-0">JKLMnoP (CS 및 FE 개발) 스터디</p>
+              <!-- <p class="my-0"></p> -->
+            </div>
+
+            <div class="text-start mt-4">
+              <p class="mb-1">2022.07 - 2023.01</p>
+              <p class="fw-bold my-0">삼성 SCSA 19기</p>
               <!-- <p class="my-0"></p> -->
             </div>
             <div class="text-start mt-4">
-              <p class="mb-1">2020.09 - 2021.05</p>
-              <p class="fw-bold my-0">중등학교 스포츠 강사</p>
-              <!-- <p class="my-0">부산대학교 사범대학, 대한민국</p> -->
+              <p class="mb-1">2021.12 - ing</p>
+              <p class="fw-bold my-0">JJMG 알고리즘 스터디</p>
+              <!-- <p class="my-0"></p> -->
             </div>
             <div class="text-start mt-4">
-              <p class="mb-1">2018.01 - 2020.02</p>
-              <p class="fw-bold my-0">서울대학교 건강운동과학실 연구원</p>
-              <!-- <p class="my-0">부산대학교 사범대학, 대한민국</p> -->
+              <p class="mb-1">2021.07 - 2022.05</p>
+              <p class="fw-bold my-0">삼성청년SW아카데미 6기</p>
+              <!-- <p class="my-0"></p> -->
             </div>
+
             <div class="text-start mt-4">
               <p class="mb-1">2017.01 - 2017.02</p>
               <p class="fw-bold my-0">영국 Sheffield 대학 교환학생</p>
-              <!-- <p class="my-0">부산대학교 사범대학, 대한민국</p> -->
-            </div>
-            <div class="text-start mt-4">
-              <p class="mb-1">2015.09 - 2016.01</p>
-              <p class="fw-bold my-0">저소득층 및 다문화가정 교육봉사 활동</p>
-              <!-- <p class="my-0">부산대학교 사범대학, 대한민국</p> -->
-            </div>
-            <div class="text-start mt-4">
-              <p class="mb-1">2014.04 - 2017.03</p>
-              <p class="fw-bold my-0">학교 농구 동아리 회장</p>
               <!-- <p class="my-0">부산대학교 사범대학, 대한민국</p> -->
             </div>
           </div>

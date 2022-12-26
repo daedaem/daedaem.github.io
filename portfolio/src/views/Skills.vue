@@ -6,115 +6,52 @@
       <div class="hr-1"></div>
       <div class="skill-boxes">
         <div class="skill-box">
-          <h5 class="mb-0 fw-bold">HTML, CSS, Javascript</h5>
+          <h5 class="mb-0 fw-bold">HTML, CSS</h5>
           <img
             class="skill-logo-image"
-            src="@/assets/htmlJsCss.png"
-            style="width: 220px"
+            src="@/assets/htmlcss.png"
+            style="width: 12rem"
             alt=""
           />
-          <div class="mt-4">
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star"></i>
-          </div>
+          <div class="mt-4"></div>
           <p class="text-start px-4 pt-4">
-            계획된 와이어 프레임과 동일한 웹 구현
+            Flex 및 Grid layout 이해
             <br />
             / 반응형 설계 가능
           </p>
         </div>
         <div class="skill-box">
+          <h5 class="mb-0 fw-bold">JavaScript</h5>
+          <img
+            class="skill-logo-image"
+            src="@/assets/javascript.png"
+            style="width: 6rem"
+            alt=""
+          />
+          <div class="mt-4"></div>
+          <p class="text-start px-4 pt-4">
+            기본적인 문법 이해 및 기능 구현가능 <br />
+            특정 이슈 트러블 슈팅 가능
+          </p>
+        </div>
+        <div class="skill-box">
           <h5 class="mb-0 fw-bold">Vue.js</h5>
-
           <img
             class="skill-logo-image"
             src="@/assets/VueLogo.png"
-            style="width: 5rem"
-            alt=""
-          />
-          <div class="mt-4">
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star"></i>
-            <i class="bi bi-star"></i>
-          </div>
-          <p class="text-start px-4 pt-4">
-            vue 2.x 및 3.x 버젼 사용 가능 /
-            <br />
-            vuex 활용한 상태관리를 이해하고 활용 /
-            <br />
-            작은 규모의 웹서비스 구현 가능
-          </p>
-          <!-- <p>아아</p> -->
-        </div>
-        <div class="skill-box">
-          <h5 class="mb-0 fw-bold">Python</h5>
-          <img
-            class="skill-logo-image"
-            src="https://raw.githubusercontent.com/pkkulhari/pkkulhari/master/icons/python.svg"
-            style="width: 5rem"
-            alt=""
-          />
-          <div class="mt-4">
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star"></i>
-            <i class="bi bi-star"></i>
-          </div>
-          <p class="text-start px-4 pt-4">
-            정렬, 시물레이션, 그래프 탐색 등 기본 알고리즘 구현
-            <br />
-            <!-- / 삼성 SW 역량테스트 IM 취득 -->
-          </p>
-          <!-- <p>아아</p> -->
-        </div>
-        <div class="skill-box">
-          <h5 class="mb-0 fw-bold">Git</h5>
-
-          <img
-            class="skill-logo-image"
-            src="https://camo.githubusercontent.com/fbfcb9e3dc648adc93bef37c718db16c52f617ad055a26de6dc3c21865c3321d/68747470733a2f2f7777772e766563746f726c6f676f2e7a6f6e652f6c6f676f732f6769742d73636d2f6769742d73636d2d69636f6e2e737667"
             style="width: 6rem"
             alt=""
           />
-          <div class="mt-4">
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star"></i>
-            <i class="bi bi-star"></i>
-          </div>
+          <div class="mt-4"></div>
           <p class="text-start px-4 pt-4">
-            Gitflow branch 전략을 활용한 협업 가능 <br />
-            / Git convention 숙지하여 협업 가능
-          </p>
-        </div>
-        <div class="skill-box">
-          <h5 class="mb-0 fw-bold">Django</h5>
-
-          <img
-            class="skill-logo-image"
-            src="@/assets/django.png"
-            style="width: 6rem"
-            alt=""
-          />
-          <div class="mt-4">
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star"></i>
-            <i class="bi bi-star"></i>
-            <i class="bi bi-star"></i>
-          </div>
-          <p class="text-start px-4 pt-4">
-            CRUD 기능 구현 가능 / Django REST Framework를 활용한 API 설계 구현
+            Composition API 활용한 코드 재사용 및 논리적 구분 /
+            <br />
+            vuex 활용한 상태관리 이해 및 활용 /
+            <br />
           </p>
           <!-- <p>아아</p> -->
         </div>
+
         <div class="skill-box">
           <h5 class="mb-0 fw-bold">React</h5>
 
@@ -124,16 +61,45 @@
             style="width: 100px"
             alt=""
           />
-          <div class="mt-4">
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star-fill"></i>
-            <i class="bi bi-star"></i>
-            <i class="bi bi-star"></i>
-            <i class="bi bi-star"></i>
-          </div>
+          <div class="mt-4"></div>
+          <p class="text-start px-4 pt-4">CRUD 기능 구현 가능 <br /></p>
+        </div>
+        <div class="skill-box">
+          <h5 class="mb-0 fw-bold">TypeScript</h5>
+          <img
+            class="skill-logo-image"
+            src="@/assets/typescript.png"
+            style="width: 6rem"
+            alt=""
+          />
+          <div class="mt-4"></div>
           <p class="text-start px-4 pt-4">
-            CRUD 기능 구현 가능 <br />
-            / 현재 학습 진행 중
+            타입스크립트의 기본 문법을 이해하고 코드를 읽을 수 있음<br />
+            <br />
+          </p>
+        </div>
+        <div class="skill-box">
+          <h5 class="mb-0 fw-bold">ETC</h5>
+          Python / C++
+          <div>
+            <img
+              class="skill-logo-image mx-1"
+              src="https://raw.githubusercontent.com/pkkulhari/pkkulhari/master/icons/python.svg"
+              style="width: 4rem"
+              alt=""
+            />
+            <img
+              class="skill-logo-image mx-1"
+              src="https://upload.wikimedia.org/wikipedia/commons/1/18/ISO_C%2B%2B_Logo.svg"
+              style="width: 4rem"
+              alt=""
+            />
+          </div>
+          <div class="mt-4"></div>
+          <p class="text-start px-4 pt-4">
+            기본 자료구조 구현
+            <br />
+            응용 알고리즘 구현 가능
           </p>
         </div>
       </div>

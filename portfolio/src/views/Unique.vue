@@ -254,5 +254,10 @@ a {
     text-decoration: none;
     color: white;
   }
+  &:hover {
+    box-shadow: -4px -4px 10px rgb(255 255 255 / 80%),
+      4px 4px 10px rgb(0 0 0 / 20%);
+    background: #000000;
+  }
 }
 </style>

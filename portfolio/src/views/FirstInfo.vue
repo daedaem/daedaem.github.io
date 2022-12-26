@@ -113,8 +113,7 @@ a {
 
 .firstinfo-total-info-box {
   max-width: 1000px;
-  height: 90vh;
-  margin: 0rem auto 0rem auto;
+  margin: 11% auto 11% auto;
   display: flex;
   align-items: center;
 }
