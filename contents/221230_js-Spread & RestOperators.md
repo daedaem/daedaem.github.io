@@ -8,7 +8,6 @@ thumbnail: './javascript.png'
 
 # Spread & Rest Operators
 - 사용처에 따라 스프레드 또는 레스트
-<br>
 
 ### 1. 스프레드
 - 배열의 원소나 객체의 프로퍼티를 나누는데 사용
