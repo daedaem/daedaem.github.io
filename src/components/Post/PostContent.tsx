@@ -15,7 +15,7 @@ const MarkdownRenderer = styled.div`
   word-break: break-all;
 
   // Markdown Style
-  line-height: 1.6;
+  line-height: 1.8;
   font-size: 16px;
   font-weight: 400;
 
@@ -35,7 +35,7 @@ const MarkdownRenderer = styled.div`
   * + h1,
   * + h2,
   * + h3 {
-    margin-top: 80px;
+    margin-top: 3rem;
   }
 
   hr + h1,
@@ -58,7 +58,7 @@ const MarkdownRenderer = styled.div`
 
   // Adjust Quotation Element Style
   blockquote {
-    margin: 30px 0;
+    margin: 3rem 0;
     padding: 5px 15px;
     border-left: 2px solid #000000;
     font-weight: 800;
@@ -103,7 +103,7 @@ const MarkdownRenderer = styled.div`
   @media (max-width: 768px) {
     width: 100%;
     padding: 80px 20px;
-    line-height: 1.5;
+    line-height: 1.6;
     font-size: 14px;
 
     h1 {
