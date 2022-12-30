@@ -6,8 +6,8 @@ summary: 'let, const, var'
 thumbnail: './javascript.png'
 ---
 
-### 데이터 타입
-### 1. Variable
+# 데이터 타입
+## 1. Variable
 - ex) **let,  var**
 - **Mutable**(변경가능한) 특징 (바이러스가 Mutation(변이)를 일으키는 것을 생각하면 이해)
     ```jsx
@@ -18,7 +18,7 @@ thumbnail: './javascript.png'
     
     name이라는 변수가 가리키는 메모리에 내용 할당
     ```
-#### let
+### let
 - ES6에서 추가
 - 자바스크립트에서 변수선언 가능한 유일한 하나
 - 이전까지는 var를 사용했으나, **hoisting** 문제
@@ -63,7 +63,7 @@ let globalName= "global name";
 	console.log(name) //
 	console.log(name) //global name
 ```
-### 2. Constant
+## 2. Constant
 ex) **const**
 ```jsx
 const myNumber = 7;
@@ -76,9 +76,9 @@ myNumber = 2 // TypeError: Assignment to constant variable.
     - thread safety (다양한 쓰레드들이 동시 변수에 접근하여 값을 변경가능한 것을 방지)
     - reduce human mistake
 
-### 3. Variable types
-#### primitive
-#### single item
+## 3. Variable types
+### primitive
+### single item
 - number
     ```jsx
     const num = 7;
@@ -137,17 +137,17 @@ myNumber = 2 // TypeError: Assignment to constant variable.
     //출력시에는 .description을 통해 문자열로 변환해서 출력해야함
     console.log(`value: ${symbol1.description}`); // id
     ```
-#### object
+### object
 ```jsx
 const haesung = {name:"haesung", age: 20};
 //haesung 변수를 가리키는 포인터는 잠겨있어 다른 오브젝트로 할당 불가
 //but, 객체 안 name과 age변수에 대한 포인터는 잠겨있지 않아 다른 값으로 할당가능
 haesung.age = 33;
 ```
-#### box container
-#### function, first-class function
+### box container
+### function, first-class function
 - 함수도 다른 데이터타입처럼 변수할당 가능, 함수 패러미터 전달, 함수 리턴 타입으로도 사용가능한 기능을 지원함을 의미
-### 4. Dynamic typing
+## 4. Dynamic typing
 ```jsx
 let text = 'hello';
 console.log(`value: ${text}, type: ${typeof text}`); // value:hello, type:string
@@ -159,7 +159,7 @@ text = '8' / '2';
 console.log(`value: ${text}, type: ${typeof text}`); //value: 4, type: number
 ```
 
-### 5. VAR vs LET vs CONST
+## 5. VAR vs LET vs CONST
 <figure>
     <img src="https://scontent-gmp1-1.xx.fbcdn.net/v/t1.6435-9/130188528_221079646060321_4186780158033875317_n.png?_nc_cat=108&ccb=1-7&_nc_sid=973b4a&_nc_ohc=kGQ8s67Kai4AX_0eARC&_nc_ht=scontent-gmp1-1.xx&oh=00_AfCZf0YNYXDnGC_03Szg8rmkpYjgTEwkwgBkx06khsmHtw&oe=63CC87D6" style="max-width:400px; margin: 0 auto;"></img>
 </figure>
