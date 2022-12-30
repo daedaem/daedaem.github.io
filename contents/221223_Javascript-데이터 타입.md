@@ -79,7 +79,7 @@ myNumber = 2 // TypeError: Assignment to constant variable.
 ## 3. Variable types
 ### primitive
 ### single item
-- number
+  - number
     ```jsx
     const num = 7;
     
@@ -93,7 +93,7 @@ myNumber = 2 // TypeError: Assignment to constant variable.
     //-> (-2**54) ~ 2**53
     ```
     
-- string
+  - string
     ```jsx
     const char = 'c';
     const name = 'haesung';
@@ -104,25 +104,25 @@ myNumber = 2 // TypeError: Assignment to constant variable.
     
     ```
     
-- boolean
+  - boolean
     ```jsx
     //false:0,null,undefined, NaN, ''
     //true: 다른 값들
     const test = 1 > 100 // false
     ```
     
-- null
+  - null
     ```jsx
     let nothing = null // null
     ```
     
-- undefined
+  - undefined
     ```jsx
     let x; // undefined
     let y = undefined; //undefined
     ```
     
-- symbol
+  - symbol
     ```jsx
     //고유한 식별자를 만들때, 시동일한 문자열을 사용했어도 다른 값으로 구별됨.
     const symbol1 = Symbol('id');
@@ -146,7 +146,7 @@ haesung.age = 33;
 ```
 ### box container
 ### function, first-class function
-- 함수도 다른 데이터타입처럼 변수할당 가능, 함수 패러미터 전달, 함수 리턴 타입으로도 사용가능한 기능을 지원함을 의미
+  - 함수도 다른 데이터타입처럼 변수할당 가능, 함수 패러미터 전달, 함수 리턴 타입으로도 사용가능한 기능을 지원함을 의미
 ## 4. Dynamic typing
 ```jsx
 let text = 'hello';
