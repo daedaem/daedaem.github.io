@@ -29,13 +29,13 @@ const MarkdownRenderer = styled.div`
   h2,
   h3 {
     font-weight: 800;
-    margin-bottom: 30px;
+    margin-bottom: 1rem;
   }
 
   * + h1,
   * + h2,
   * + h3 {
-    margin-top: 3rem;
+    margin-top: 1.5rem;
   }
 
   hr + h1,
@@ -58,7 +58,7 @@ const MarkdownRenderer = styled.div`
 
   // Adjust Quotation Element Style
   blockquote {
-    margin: 3rem 0;
+    margin: 1.5rem 0;
     padding: 5px 15px;
     border-left: 2px solid #000000;
     font-weight: 800;
@@ -68,7 +68,7 @@ const MarkdownRenderer = styled.div`
   ol,
   ul {
     margin-left: 20px;
-    padding: 30px 0;
+    padding: 1rem 0;
   }
 
   // Adjust Horizontal Rule style
@@ -85,7 +85,7 @@ const MarkdownRenderer = styled.div`
 
   // Adjust Code Style
   pre[class*='language-'] {
-    margin: 30px 0;
+    margin: 1rem 0;
     padding: 15px;
     font-size: 15px;
 
