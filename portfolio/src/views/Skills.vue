@@ -6,21 +6,6 @@
       <div class="hr-1"></div>
       <div class="skill-boxes">
         <div class="skill-box">
-          <h5 class="mb-0 fw-bold">HTML, CSS</h5>
-          <img
-            class="skill-logo-image"
-            src="@/assets/htmlcss.png"
-            style="width: 12rem"
-            alt=""
-          />
-          <div class="mt-4"></div>
-          <p class="text-start px-4 pt-4">
-            Flex 및 Grid layout 이해
-            <br />
-            / 반응형 설계 가능
-          </p>
-        </div>
-        <div class="skill-box">
           <h5 class="mb-0 fw-bold">JavaScript</h5>
           <img
             class="skill-logo-image"
@@ -30,8 +15,26 @@
           />
           <div class="mt-4"></div>
           <p class="text-start px-4 pt-4">
-            기본적인 문법 이해 및 기능 구현가능 <br />
+            ES6 문법 이해 및 사용 / <br />
+            기본 자료구조 및 알고리즘 구현 /
+            <br />
             특정 이슈 트러블 슈팅 가능
+          </p>
+        </div>
+        <div class="skill-box">
+          <h5 class="mb-0 fw-bold">React</h5>
+
+          <img
+            class="skill-logo-image"
+            src="@/assets/react.png"
+            style="width: 100px"
+            alt=""
+          />
+          <div class="mt-4"></div>
+          <p class="text-start px-4 pt-4">
+            함수형 컴포넌트 사용 /<br />
+            상황에 맞는 리액트 훅 설계 및 사용 /<br />
+            Redux 활용한 상태관리<br />
           </p>
         </div>
         <div class="skill-box">
@@ -51,19 +54,6 @@
           </p>
           <!-- <p>아아</p> -->
         </div>
-
-        <div class="skill-box">
-          <h5 class="mb-0 fw-bold">React</h5>
-
-          <img
-            class="skill-logo-image"
-            src="@/assets/react.png"
-            style="width: 100px"
-            alt=""
-          />
-          <div class="mt-4"></div>
-          <p class="text-start px-4 pt-4">CRUD 기능 구현 가능 <br /></p>
-        </div>
         <div class="skill-box">
           <h5 class="mb-0 fw-bold">TypeScript</h5>
           <img
@@ -79,8 +69,19 @@
           </p>
         </div>
         <div class="skill-box">
-          <h5 class="mb-0 fw-bold">ETC</h5>
-          Python / C++
+          <h5 class="mb-0 fw-bold">HTML, CSS</h5>
+          <img
+            class="skill-logo-image"
+            src="@/assets/htmlcss.png"
+            style="width: 12rem"
+            alt=""
+          />
+          <div class="mt-4"></div>
+          <p class="text-start px-4 pt-3">Flex 및 Grid layout / 반응형 설계</p>
+        </div>
+
+        <div class="skill-box">
+          <h5 class="mb-0 fw-bold">C++</h5>
           <div>
             <img
               class="skill-logo-image mx-1"
@@ -97,9 +98,8 @@
           </div>
           <div class="mt-4"></div>
           <p class="text-start px-4 pt-4">
-            기본 자료구조 구현
             <br />
-            응용 알고리즘 구현 가능
+            자료구조 및 응용 알고리즘 구현 가능
           </p>
         </div>
       </div>

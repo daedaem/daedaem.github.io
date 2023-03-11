@@ -7,19 +7,14 @@
         <div class="introduction-content mt-1">
           <!-- <strong> UX 개선</strong>과 <strong> 협업에 적극</strong>적인 -->
           <!-- <strong> 프론트엔드 </strong> 개발자 조해성입니다. -->
-          <strong> 끝까지 해내는 집념을 가진 프론트엔드 </strong> 개발자
-          조해성입니다.
-          <!-- <strong>  인류발전에 프론트엔드 </strong> 개발자 -->
-          <!-- 조해성입니다. -->
-          <!-- <br />
-          <p style="font-size: 0.9rem">
-            개발자는 인류가 직면한 문제를 해결 할 수 있다고 믿습니다.
-          </p> -->
+          <strong> 고객우선주의 프론트엔드 </strong> 개발자 조해성입니다.
+          <p>
+            <br />
+            고객을 위한 최고의 서비스, 제품을 만들기 위해 끊임없이 노력하는 장인
+            정신을 존경합니다.
+          </p>
         </div>
-        <!-- <p>
-        I believe developers are people who can solve the problems that humans
-        are experiencing.
-      </p> -->
+
         <div class="subinfo-box">
           <div>
             <p><strong> E-mail</strong> : tg8685@gmail.com</p>
@@ -113,7 +108,7 @@ a {
 
 .firstinfo-total-info-box {
   max-width: 1000px;
-  margin: 11% auto 11% auto;
+  margin: 8% auto 8% auto;
   display: flex;
   align-items: center;
 }

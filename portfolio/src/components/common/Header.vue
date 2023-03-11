@@ -22,6 +22,14 @@
             <!-- <a class="nav-link" href="/about">About Me</a> -->
           </li>
           <li class="nav-item">
+            <a
+              class="nav-link"
+              target="_blank"
+              href="https://daedaem.netlify.app/"
+              >Blog</a
+            >
+          </li>
+          <li class="nav-item">
             <router-link :to="{ name: 'Skills' }" class="nav-link"
               >Skills</router-link
             >
