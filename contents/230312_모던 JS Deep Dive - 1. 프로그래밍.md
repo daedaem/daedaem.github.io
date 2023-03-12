@@ -1,6 +1,6 @@
 ---
 date: '2023-03-12'
-title: '모던 자바스크립트 Deep Dive - 1. 프로그래밍'
+title: '모던 JS Deep Dive - 1. 프로그래밍'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '0과 1만 아는 컴퓨터와 사람의 커뮤니케이션'
 thumbnail: './javascript.png'
