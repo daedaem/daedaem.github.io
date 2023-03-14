@@ -20,19 +20,9 @@ thumbnail: './javascript.png'
 - 자바스크립트의 파편화 방지를 위해 표준화된 자바스크립트의 필요성이 대두되기 시작했고 넷스케이프 커뮤니케이션즈는 **ECMA 인터네셔널**(컴퓨터 시스템의 표준을 관리하는 비영리 표준화 기구)에 자바스크립트 표준화를 요청
 - 상표권 문제로 자바스크립트는 ECMAScript로 명명 됨.
 - **EMCAScript 버전별 특징**
-
-| 버전 | 출시 연도 | 특징 |
-| --- | --- | --- |
-| ES1 | 1997 | 초판 |
-| ES2 | 1998 | ISO/IEC 16262 국제 표준과 동일한 규격 적용 |
-| ES3 | 1999 | 정규 표현식, try…catch |
-| ES5 | 2009 | HTML5와 함께 출현한 표준안, JSON, strict mode, 접근자 프로퍼티, 프로퍼티 어트리뷰트 제어, 항향상된 배열 조작 기능(forEach, map, filter, reduce, some, every) |
-| ES6(ECMAScript 2015) | 2015 | let/const, 클래스, 호살표 함수, 템플릿 리터럴, 디스트럭처링 할당, 스프레드 문법, rest 파라미터, 심벌, 프로미스, Map/Set, 이터러블, fro…of, 제너레이터, Proxy, 모듈 import/export |
-| ES7(ECMAScript 2016) | 2016 | 지수(**) 연산자, Array.prototype.includes, String.prototype.includes |
-| ES8(ECMAScript 2017) | 2017 | async/await, Object 정적 메서드(Object.values, Object.entries, Object.getOwnPropertyDescriptors) |
-| ES9(ECMAScript 2018) | 2018 | Object rest/spread 프로퍼티, Promise.prototype.finally, async generator, for awit … of |
-| ES10(ECMAScript 2019) | 2019 | Object.fromEntries, Array.protoytpe.flat, Array.prototype.flatMap, optional catch binding |
-| ES10(ECMAScript 2020) | 2020 | String.prptotype.matchAll, BigInt, globalThis, Promise.allSettled, null 병합 연산자, 옵셔널 체이닝 연산자, for…in enumeration order |
+  <figure>
+  <img src="./modern js deep dive/ECMAScript.png" style="max-width:400px margin:0 auto;"/>
+  </figure>
 
 # 2.3 자바스크립트 성장의 역사
 
