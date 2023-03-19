@@ -42,7 +42,7 @@ thumbnail: './javascript.png'
 - 사람이 이해할 수 있는 아라비아 숫자를 사용해 숫자 리터럴 3을 코드에 기술하면 자바스크립트 엔진은 이를 평가해 숫자 값 3을 생성.
 
 <figure>
-  <img src="./modern js deep dive/5literal.jpeg" style="max-width:400px margin:0 auto;"/>
+  <img src="./modern js deep dive/5literal.jpeg" style="max-width:300px margin:0 auto;"/>
   </figure>
 
 - 자바스크립트 엔진은 코드가 실행되는 시점인 런타임에 리터럴을 평가해 값을 생성
