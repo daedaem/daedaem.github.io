@@ -41,9 +41,9 @@ thumbnail: './javascript.png'
 - 10 + 20은 연산을 통해 새로운 값 30을 생성하고 메모리 공간에 저장된다.
 - 메모리 공간에 저장된 값을 식별할 수 있는 고유한 이름(result)을 **변수 이름(**또는 변수명**).** 변수에 저장된 값**(30)을 변수값**
 
-    ```tsx
-    var result = 10 + 20;
-    ```
+  ```tsx
+  var result = 10 + 20;
+  ```
 
 <figure>
   <img src="./modern js deep dive/variable_identifier.jpeg" style="max-width:400px margin:0 auto;"/>
