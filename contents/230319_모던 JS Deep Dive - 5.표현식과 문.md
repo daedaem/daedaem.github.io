@@ -158,8 +158,7 @@ thumbnail: './javascript.png'
     // TypeError: (intermediate value)(...) is not a function
     ```
 
-- 세미클론을 반드시 붙여야하는지에 대한 의견이 나뉘지만,
-**ESLint**같은 정적 분석 도구에서 세미클론 사용을 기본으로 설정하고 있고 **TC39(ECMAScript 기술 위원회**)도 세미클론 사용을 권장한다.
+- 세미클론을 반드시 붙여야하는지에 대한 의견이 나뉘지만, **ESLint**같은 정적 분석 도구에서 세미클론 사용을 기본으로 설정하고 있고 **TC39(ECMAScript 기술 위원회**)도 세미클론 사용을 권장한다.
 
 ## 5.6 표현식인 문과 표현식이 아닌 문
 
