@@ -13,9 +13,9 @@ thumbnail: './javascript.png'
 - 사람이 아래와 같은 식을 계산하기 위해, 10, 20, +기호를 알고 있어야 계산할 수 있듯이,
 자바스크립트 엔진이 코드를 **계산(평가 evaluation)**하려면, 10,20, +라는 기호**(리터럴 literal과 연산자operator)**의 의미를 알고 있어야하며, 10+20이라는 **식(표현식expression)**의 의미도 해석**(파싱parsing)**할 수 있어야 한다.
 
-    ```tsx
-    10 + 20
-    ```
+  ```tsx
+  10 + 20
+  ```
 
 - 위 식의 연산을 수행하기 위해 먼저 연산자의 좌변과 우변의 숫자 값**(피연산자,operand)**를 기억한다. 컴퓨터는 **CPU를 통해 연산**하고, **메모리를 통해 데이터를 기억**한다.
 
@@ -41,9 +41,9 @@ thumbnail: './javascript.png'
 - 10 + 20은 연산을 통해 새로운 값 30을 생성하고 메모리 공간에 저장된다.
 - 메모리 공간에 저장된 값을 식별할 수 있는 고유한 이름(result)을 **변수 이름(**또는 변수명**).** 변수에 저장된 값**(30)을 변수값**
 
-  ```tsx
-  var result = 10 + 20;
-  ```
+    ```tsx
+    var result = 10 + 20;
+    ```
 
 <figure>
   <img src="./modern js deep dive/variable_identifier.jpeg" style="max-width:400px margin:0 auto;"/>
