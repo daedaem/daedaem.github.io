@@ -28,7 +28,7 @@
           <div class="portfolio-detail-info-content">
             <em class="fw-bold">Frontend</em>
             <p>Javascript, Vue 2, Scss, bootstrap, Figma</p>
-            <em class="fw-bold">Blcokchain</em>
+            <em class="fw-bold">Blockchain</em>
             <p class="mb-4">ganache, truffle, solidity, web3.js</p>
           </div>
           <div class="portfolio-detail-info-content">
