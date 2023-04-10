@@ -13,12 +13,12 @@ thumbnail: './TypescriptStudy/Typescript_logo.png'
 - 인터페이스는 interface 키워드를 사용해 다음과 같이 정의하여 사용 할 수 있음.
 
 ```tsx
-**interface Person {
+interface Person {
   name: string;
   age: number;
 
   greet(phrase: string): void;
-}**
+}
 
 let user1: Person;
 
@@ -40,13 +40,13 @@ user1.greet("Hi - I am"); //Hi - I am Haesung
 - 인터페이스를 어떤 상수나 변수의 타입으로 사용하여 인터페이스 타입을 기반으로 하는 다른 타입의 다른 클래스를 저장할 수 있다.
 
 ```tsx
-**interface Greetable {
+interface Greetable {
   name: string;
 
   greet(phrase: string): void;
-}**
+}
 
-**class Person implements Greetable {**
+class Person implements Greetable {
   name: string;
   age = 30;
 
@@ -59,7 +59,7 @@ user1.greet("Hi - I am"); //Hi - I am Haesung
   }
 }
 
-**let user1: Greetable;**
+let user1: Greetable;
 
 user1 = new Person('Max');
 
@@ -105,7 +105,7 @@ class Person implements Greetable {
   }
 }
 
-**let user1: Greetable;**
+let user1: Greetable;
 
 user1 = new Person("Max");
 
@@ -119,7 +119,7 @@ console.log(user1);
 
 ```tsx
 interface Named {
-  **readonly** name: string;
+  readonly name: string;
 }
 
 class Person implements Greetable {
@@ -213,9 +213,9 @@ add = (n1: number, n2: number) => {
 };
 
 interface Named {
-  **readonly name?: string;**
-  **outputName?: string;
-// greet?(): void;**
+  readonly name?: string;
+  outputName?: string;
+// greet?(): void;
 }
 
 interface Greetable extends Named {
@@ -226,7 +226,7 @@ class Person implements Greetable {
   name?: string;
   age = 30;
 
-  **constructor(n?: string) {**
+  constructor(n?: string) {
     if (n) {
       this.name = n;
     }

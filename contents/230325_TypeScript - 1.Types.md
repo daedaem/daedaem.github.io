@@ -58,16 +58,14 @@ function add(n1: number, n2: number, showResult: boolean, phrase: string) {
   }
 }
 
-**let number1: number;**
+let number1: number;
 number1 = 5;
 const number2 = 2.8;
 const printResult = true;
-**let resultPhrase = 'Result is: ';
-resultPhrase = 0; // 에러 발생 Type '0' is not assignable to type 'string.**
+let resultPhrase = 'Result is: ';
+resultPhrase = 0; // 에러 발생 Type '0' is not assignable to type 'string.
 add(number1, number2, printResult, resultPhrase);
 ```
-
----
 
 ## object
 
@@ -160,8 +158,6 @@ const product = {
 }
 ```
 
----
-
 ## array
 
 - JS : [1,2,3]
@@ -230,8 +226,8 @@ const person: {
     const person = {
       name: "Maximilian",
       age: 30,
-    // **role : 2
-     role: Role.ADMIN**
+    // role : 2
+     role: Role.ADMIN
     };
     console.log(person.name);
     ```
@@ -242,15 +238,13 @@ const person: {
 - 모든 종류의 값을 저장 가능
 - 어떤 값이나 종류의 데이터가 어디 저장될지 전혀 알수 없는 경우나 런타임 검사를 수행하는 경우에만 사용하는 것이 좋다. - 다 any를 쓴다면 타입스크립트 쓰는 이유가 없어짐
 
----
-
 ## Union
 
 - 유니온 타입을 사용하면 두 가지 이상의 타입을 사용 할 수 있다.
 - 여러 타입을 사용하므로 예상 외의 결과를 초래할 수 있어 종종 아래와 같이 타입을 체크하는 런타임 검사가 필요한 경우도 있다.
 
 ```tsx
-**function combine(input1: number | string, input2: number | string) {**
+function combine(input1: number | string, input2: number | string) {
   let result;
   if (typeof input1 === 'number' && typeof input2 === 'number') {
     result = input1 + input2;
@@ -282,7 +276,7 @@ const number1 = 3; //상수로 타입이 3
 function combine(
   input1: number | string,
   input2: number | string,
-  **resultConversion: 'as-number' | 'as-text' //리터럴 타입**
+  resultConversion: 'as-number' | 'as-text' //리터럴 타입
 ) {
   let result;
   if (typeof input1 === 'number' && typeof input2 === 'number' || resultConversion === 'as-number') {
@@ -314,13 +308,13 @@ console.log(combinedNames);
 - type + 별칭 =  타입들 ;
 
 ```tsx
-**type Combinable = number | string;**
-**type ConversionDescriptor = 'as-number' | 'as-text';**
+type Combinable = number | string;
+type ConversionDescriptor = 'as-number' | 'as-text';
 
 function combine(
-  input1: **Combinable**,
-  input2: **Combinable**,
-  resultConversion: **ConversionDescriptor**
+  input1: Combinable,
+  input2: Combinable,
+  resultConversion: ConversionDescriptor
 ) {
   let result;
   if (typeof input1 === 'number' && typeof input2 === 'number' || resultConversion === 'as-number') {
@@ -361,11 +355,11 @@ console.log(combinedNames);
 - 단순화 전
 
 ```tsx
-1. function greet(user: **{ name: string; age: number }**) {
+1. function greet(user: { name: string; age: number }) {
 2.   console.log('Hi, I am ' + user.name);
 3. }
 4.  
-5. function isOlder(user: **{ name: string; age: number }**, checkAge: number) {
+5. function isOlder(user: { name: string; age: number }, checkAge: number) {
 6.   return checkAge > user.age;
 7. }
 ```
@@ -373,13 +367,13 @@ console.log(combinedNames);
 - 단순화 후
 
 ```tsx
-**1. type User = { name: string; age: number };**
+1. type User = { name: string; age: number };
 2.  
-3. function greet(user: **User**) {
+3. function greet(user: User) {
 4.   console.log('Hi, I am ' + user.name);
 5. }
 6.  
-7. function isOlder(user: **User**, checkAge: number) {
+7. function isOlder(user: User, checkAge: number) {
 8.   return checkAge > user.age;
 9. }
 ```
@@ -411,14 +405,14 @@ function printResult(n1:number){ // 타입스크립트가 반환 값 추론할 �
  //return; 
 }
 
-function printResult(n1:number):**void**{
+function printResult(n1:number):void{
  console.log('Result: ' + num);
  //return; 상황에 맞게 리턴있어도 되고 없어도 되고
 }
 
-function printResult(n1:number):**undefined**{ // 드믄 경우 사용됨
+function printResult(n1:number):undefined{ // 드믄 경우 사용됨
  console.log('Result: ' + num);
- **return**; // 있어야함
+ return; // 있어야함
 }
 ```
 
@@ -440,7 +434,7 @@ function printResult(n1:number):**undefined**{ // 드믄 경우 사용됨
     combineValues = add;
     combineValues = 5;
     
-    **// 함수 실행을 하려했으나 중간에 5가 할당되어 런타임 에러**
+    // 함수 실행을 하려했으나 중간에 5가 할당되어 런타임 에러
     console.log(combineValues(8, 8)); 
     ```
 
@@ -456,10 +450,10 @@ function printResult(n1:number):**undefined**{ // 드믄 경우 사용됨
      console.log("Result : " + num);
     }
     
-    **let combineValues: Function;**
+    let combineValues: Function;
     
     combineValues = add;
-    **combineValues = 5; // 문제의 원인, 이곳에서 컴파일 에러 발생해서 수정 가능 함**
+    combineValues = 5; // 문제의 원인, 이곳에서 컴파일 에러 발생해서 수정 가능 함
     
     console.log(combineValues(8, 8)); 
     ```
@@ -477,16 +471,16 @@ function printResult(n1:number):**undefined**{ // 드믄 경우 사용됨
     
     printResult(add(5, 12));
     
-    **//이렇게만 지정하면 printResult함수를 할당 받은 comvineValues가 undefined 값 가짐**
+    //이렇게만 지정하면 printResult함수를 할당 받은 comvineValues가 undefined 값 가짐
     //**let combineValues: Function; 
     
     //따라서 아래와 같이 함수 인자, 반환에 타입 지정**
-    **let combineValues: (a:number, b:number) => number;**
+    let combineValues: (a:number, b:number) => number;
     
     combineValues = add;
     
-    **//여기서 문제 발생하므로 함수 인자, 반환 타입지정**
-    //**combineValues = printResult;** 
+    //여기서 문제 발생하므로 함수 인자, 반환 타입지정
+    //combineValues = printResult;
     
     console.log(combineValues(8, 8)); 
     ```
@@ -497,7 +491,7 @@ function printResult(n1:number):**undefined**{ // 드믄 경우 사용됨
 - 콜백 함수는 자신이 전달되는 인수가 반환 값을 기대하지 않는 경우에도 값을 반환할 수 있습니다.
 
 ```tsx
-function sendRequest(**data: string, cb: (response: any) => void**) {
+function sendRequest(data: string, cb: (response: any) => void) {
   // ... sending a request with "data"
   return cb({data: 'Hi there!'});
 }
@@ -511,10 +505,10 @@ sendRequest('Send this!', (response) => {
 - 2번 보다 1번 코드를 써야 한다. 아무 값도 반환하고 싶지 않은 경우, 어떤 값을 반환하도록 강요하지 않기 때문.
 
 ```tsx
-**//1.
+//1.
 function sayHi(): void {
   // ...
-}**
+}
 
 //2.
 function sayHi(): undefined {
@@ -549,7 +543,7 @@ userName = userInput;
 - 아래 코드에서 void로 리턴값 타입을 지정할 수 있지만, never를 통해 아무것도 반환하지 않는다는 것을 확실하게 명시할 수 있다. 즉, 코드를 읽는 개발자에게 해당 값의 의도를 명확히 할 수 있음.
 
 ```tsx
-function generateError(message: string, code: number): **never** {
+function generateError(message: string, code: number): never {
   throw { message: message, errorCode: code };
   // while (true) {}
 }
@@ -561,4 +555,4 @@ generateError('An error occurred!', 500);
 
 - 자바스크립트는 동적 타입(런타임에서 에러 발생 및 해결)
 - 타입스크립트는 정적타입(개발하는 중 에러 발생 및 해결)
-  - ********************************************************************타입 스크립트 기능과 검사 기능이 자바스크립트 엔진에 내장되어 있지 않기 때문에 개발 도중에만 지원 받을 수 있음********************************************************************
+  - **타입 스크립트 기능과 검사 기능이 자바스크립트 엔진에 내장되어 있지 않기 때문에 개발 도중에만 지원 받을 수 있음**

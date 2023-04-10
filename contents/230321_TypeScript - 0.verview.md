@@ -76,7 +76,7 @@ button.addEventListener("click", function () {
 
 - !를 붙여줌으로써 결코 null을 야기하지 않을 것임을 ts에게 알려줌
 - as HTMLInputElement로  어떤 유형의 요소인지 알려줌
-- 변수**: 타입**
+- 변수 **: 타입**
 
 ```tsx
 //ts버젼

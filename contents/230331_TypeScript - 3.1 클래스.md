@@ -13,10 +13,10 @@ class Department {
 //  name: string = "default"과 같이 초기값 설정 가능
   name: string; // 키 : 타입, 클래스의 필드
 
-**// 생성자 메서드, 객체 생성되면서 실행되는 클래스에 기반하여 
+// 생성자 메서드, 객체 생성되면서 실행되는 클래스에 기반하여 
 // 만드는 모든 객체에도 연결되는 함수
-// 구축하는 객체에 대한 초기화 작업 수행가능**
-  **constructor(n: string) {** 
+// 구축하는 객체에 대한 초기화 작업 수행가능
+  constructor(n: string) { 
     this.name = n;
   }
 
@@ -27,7 +27,7 @@ class Department {
 
 //new 키워드가 있는 클래스를 실행하는 시점에 생성자(constructor)가 호출되고
 //생성자 인수를 넘겨준다.
-const accounting = ** new Department('Accounting'); **
+const accounting =  new Department('Accounting'); 
 ```
 
 ## 생성자 함수 및 this 키워드
@@ -43,26 +43,26 @@ class Department {
   constructor(n: string) {
     this.name = n;
   }
-//수정전. **describe() {
+//수정전. describe() {
   describe(this: Department) {
     console.log("Department: " + this.name);
-  }**
+  }
 }
 const accounting = new Department("Accounting");
 
 accounting.describe();
 
-**//수정 전
+//수정 전
 //const accountingCopy = { describe: accounting.describe }; 
 // 수정 후
-const accountingCopy = { name: "DUMMY", describe: accounting.describe };** 
+const accountingCopy = { name: "DUMMY", describe: accounting.describe }; 
 
 accountingCopy.describe();
-**//만약 수정전과 같이 name이 없다면 accountingCopy.describe를 실행 시
+//만약 수정전과 같이 name이 없다면 accountingCopy.describe를 실행 시
 //this에 해당하는 accountingCopy에 name값이 없어 undefined를 
 // 출력하게 되므로 클래스의 describe 함수인자로 this:Department와 같이
 // 타입을 지정하여야하고 컴파일 과정에서 에러를 발생시켜 
-// 위와 같이 accountingCopy에 name값을 지정해주는 디버깅을 할 수 있다.**
+// 위와 같이 accountingCopy에 name값을 지정해주는 디버깅을 할 수 있다.
 ```
 
 ## Private & Public 제어자
@@ -77,7 +77,7 @@ accountingCopy.describe();
 ```tsx
 class Department {
   name: string;
-  **private employee: string[] = [];**
+  private employee: string[] = [];
 
   constructor(n: string) {
     this.name = n;
@@ -111,8 +111,8 @@ accounting.printEmployeeInformation();
 - 축약해서 초기화 할 시에는 default값이었던 public도 명시한다.
 
 ```tsx
-**//축약전**
-**class Department {
+//축약전
+class Department {
  private id: string;
   name: string;
   private employee: string[] = [];
@@ -120,22 +120,22 @@ accounting.printEmployeeInformation();
   constructor(id: string, n: string) {
     this.id = id;
     this.name = n;
-  }**
+  }
  describe(this: Department) {
     console.log("Department: " + `${this.id} ${this.name}`);
   }
 }
 
-**//축약 후**
-**class Department {**
+//축약 후
+class Department {
   //   private id: string;
   //   name: string;
-  **private employee: string[] = [];
+  private employee: string[] = [];
 
-  constructor(private id: string, public name: string) {**
+  constructor(private id: string, public name: string) {
     //   this.id = id;
     // this.name = n;
-  **}**
+  }
  describe(this: Department) {
     console.log("Department: " + `${this.id} ${this.name}`);
   }
@@ -152,7 +152,7 @@ class Department {
   //   name: string;
   private employee: string[] = [];
 
-constructor(private **readonly** id: string, public name: string) {
+constructor(private readonly id: string, public name: string) {
   }
  describe(this: Department) {
     console.log("Department: " + `${this.id} ${this.name}`);
@@ -178,17 +178,17 @@ class ITDepartment extends Department{
 class Department {
   private employee: string[] = [];
 
-**constructor(private readonly id: string, public name: string) {**
+constructor(private readonly id: string, public name: string) {
   }
 // 생략
 }
 
-**class ITDepartment extends Department{
- admins: string[];**
- **constructor(id:string, admins: string[]){
+class ITDepartment extends Department{
+ admins: string[];
+ constructor(id:string, admins: string[]){
   super(id, "IT"); // Department의 생성자함수의 인자
   this.admins = admins; // 
- }**
+ }
 }
 
 const accounting = new ITDepartment('d1', ['MAX']);
@@ -204,7 +204,7 @@ const accounting = new ITDepartment('d1', ['MAX']);
 class Department {
   // private readonly id: string;
   // private name: string;
-  **protected employees: string[] = [];**
+  protected employees: string[] = [];
 
   constructor(private readonly id: string, public name: string) {
     // this.id = id;
@@ -240,11 +240,11 @@ class AccountingDepartment extends Department {
     super(id, 'Accounting');
   }
 
-  addEmployee(name: string) { **// overriding**
+  addEmployee(name: string) { // overriding
     if (name === 'Max') {
       return;
     }
-    **this.employees.push(name);**
+    this.employees.push(name);
   }
 
   addReport(text: string) {
@@ -286,10 +286,10 @@ accounting.printEmployeeInformation();
 
 ```tsx
 class AccountingDepartment extends Department {
-  **private lastReport: string; // getter를 통해 접근 가능**
+  private lastReport: string; // getter를 통해 접근 가능
 
 //getter에는 인수가 없고 setter는 인수 하나를 받는다.
-  **get mostRecentReport() {
+  get mostRecentReport() {
     if (this.lastReport) {
       return this.lastReport;
     }
@@ -301,7 +301,7 @@ class AccountingDepartment extends Department {
       throw new Error('Please pass in a valid value!');
     }
     this.addReport(value);
-  }**
+  }
 
   constructor(id: string, private reports: string[]) {
     super(id, 'Accounting');
@@ -315,10 +315,10 @@ class AccountingDepartment extends Department {
     this.employees.push(name);
   }
 
-  **addReport(text: string) {
+  addReport(text: string) {
     this.reports.push(text);
     this.lastReport = text;
-  }**
+  }
 
   printReports() {
     console.log(this.reports);
@@ -329,8 +329,8 @@ const accounting = new AccountingDepartment('d2', []);
 
 //getter와 setter는 함수처럼 호출 하지 않고, 
 //일반 프로퍼티에서 값에 접근하는 것처럼 사용해야한다.
-**accounting.mostRecentReport = 'Year End Report';**
-**accounting.addReport('Something went wrong...');**
+accounting.mostRecentReport = 'Year End Report';
+accounting.addReport('Something went wrong...');
 
 console.log(accounting.mostRecentReport);
 
@@ -351,23 +351,23 @@ accounting.printEmployeeInformation();
 
 ```tsx
 abstract class Department {
-  **static fiscalYear = 2020;**
+  static fiscalYear = 2020;
   // private readonly id: string;
   // private name: string;
   protected employees: string[] = [];
 
   constructor(protected readonly id: string, public name: string) {
-  **//this는 클래스를 기반으로 생성된 인스턴스를 참조하기 때문에 
+  //this는 클래스를 기반으로 생성된 인스턴스를 참조하기 때문에 
   //정적 속성에 접근할 수 없다. 정적 속성은 인스턴스에서 유효하지 않다.
   // console.log(this.fiscalYear) 에러
 
   // 따라서, 클래스 이름을 사용해서 정적속성과 메서드에 접근할 수 있다.
-    // console.log(Department.fiscalYear);**
+    // console.log(Department.fiscalYear);
   }
 
-  **static createEmployee(name: string) {
+  static createEmployee(name: string) {
     return { name: name };
-  }**
+  }
 
   abstract describe(this: Department): void;
 
@@ -395,12 +395,12 @@ console.log(employee1, Department.fiscalYear);
 
 ```tsx
 //추상 클래스
-**abstract** class Department {
+abstract class Department {
   protected employees: string[] = [];
   constructor(protected readonly id: string, public name: string) {}
 
  //추상 메서드 정의
-  **abstract describe(this: Department): void;**
+  abstract describe(this: Department): void;
  
  //...생략
 }
@@ -414,13 +414,13 @@ class ITDepartment extends Department {
   }
 
 // 추상 클래스에 정의된 추상 메서드 구현
-  **describe() {
+  describe() {
     console.log('ITdepartment');
-  }**
+  }
 }
 
-**//Department는 추상화되었기 때문에 인스턴스화할 수 없다.**
-**const departmentOne = new Department(); //오류**
+//Department는 추상화되었기 때문에 인스턴스화할 수 없다.
+const departmentOne = new Department(); //오류
 ```
 
 ## Singleton pattern & private constructor
@@ -435,7 +435,7 @@ abstract class Department {
 
 class AccountingDepartment extends Department {
   private lastReport: string;
-  **private static instance: AccountingDepartment;**
+  private static instance: AccountingDepartment;
 
   get mostRecentReport() {
     if (this.lastReport) {
@@ -451,21 +451,21 @@ class AccountingDepartment extends Department {
     this.addReport(value);
   }
 
- **// 생성자 함수에 private 접근 제어자를 통해 
+ // 생성자 함수에 private 접근 제어자를 통해 
   // new 키워드로 새 인스턴스 생성 제한
   private constructor(id: string, private reports: string[]) {
     super(id, 'Accounting');
     this.lastReport = reports[0];
-  }**
+  }
 
-  **static getInstance() {
+  static getInstance() {
   //이미 인스턴스가 있는지 확인하고 없다면 새 인스턴스 반환
     if (AccountingDepartment.instance) {
       return this.instance;
     }
     this.instance = new AccountingDepartment('d2', []);
     return this.instance;
-  }**
+  }
 
   describe() {
     console.log('Accounting Department - ID: ' + this.id);
@@ -502,10 +502,10 @@ it.printEmployeeInformation();
 
 console.log(it);
 
-**const accounting = AccountingDepartment.getInstance();
-const accounting2 = AccountingDepartment.getInstance();**
+const accounting = AccountingDepartment.getInstance();
+const accounting2 = AccountingDepartment.getInstance();
 
-**console.log(accounting, accounting2); // 두 인스턴스 같음**
+console.log(accounting, accounting2); // 두 인스턴스 같음
 
 accounting.mostRecentReport = 'Year End Report';
 accounting.addReport('Something went wrong...');

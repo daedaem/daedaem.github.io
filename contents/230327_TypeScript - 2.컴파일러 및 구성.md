@@ -65,16 +65,16 @@ thumbnail: './TypescriptStudy/Typescript_logo.png'
     "strict": true,
     "esModuleInterop": true
  },
- **"exclude" : [**
+ "exclude" : [
   "node_modules" //
- **],
+ ],
  "include" : [
   "app.ts",
   "analytics.ts"
  ],
  //"files": [
  // "app.ts"
- //]**
+ //]
 }
 ```
 

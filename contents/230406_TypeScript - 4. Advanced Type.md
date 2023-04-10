@@ -21,8 +21,8 @@ type Employee = {
   startDate: Date;
 };
 
-**// {name:string, privileges:string[], startData:Date}**
-**type ElevatedEmployee = Admin & Employee;** 
+// {name:string, privileges:string[], startData:Date}
+type ElevatedEmployee = Admin & Employee; 
 
 const e1: ElevatedEmployee = {
   name: "Max",
@@ -32,7 +32,7 @@ const e1: ElevatedEmployee = {
 
 type Combination = string | number;
 type Numeric = number | boolean;
-**type Universal = Combination & Numeric; // number**
+type Universal = Combination & Numeric; // number
 ```
 
 ## Type Guards
@@ -57,7 +57,7 @@ type Numeric = number | boolean;
       type: 'dog';
       bark(): void;
     }
-    **function isCat(animal: Cat | Dog): animal is Cat {
+    function isCat(animal: Cat | Dog): animal is Cat {
       return animal.type === 'cat';
     }
     function makeSound(animal: Cat | Dog): void {
@@ -66,7 +66,7 @@ type Numeric = number | boolean;
       } else {
         animal.bark(); // animal은 이 스코프에서 Dog 타입으로 간주됩니다.
       }
-    }**
+    }
     ```
 
 2. **타입스크립트 내장 타입 가드 기능**
@@ -121,31 +121,31 @@ type Numeric = number | boolean;
 ```tsx
 // 각 도형 타입을 정의합니다.
 interface Circle {
-  **kind: 'circle';**
+  kind: 'circle';
   radius: number;
 }
 
 interface Square {
-  **kind: 'square';**
+  kind: 'square';
   sideLength: number;
 }
 
 interface Triangle {
-  **kind: 'triangle';**
+  kind: 'triangle';
   base: number;
   height: number;
 }
 
 // 도형 유니온 타입을 생성합니다.
-**type Shape = Circle | Square | Triangle;**
+type Shape = Circle | Square | Triangle;
 
 // 각 도형의 넓이를 계산하는 함수입니다.
 function getArea(shape: Shape): number {
-  switch **(shape.kind)** {
+  switch (shape.kind) {
     case 'circle':
-      return Math.PI * shape.radius ** 2;
+      return Math.PI * shape.radius  2;
     case 'square':
-      return shape.sideLength ** 2;
+      return shape.sideLength  2;
     case 'triangle':
       return (shape.base * shape.height) / 2;
   }
@@ -169,7 +169,7 @@ function getArea(shape: Shape): number {
 // index.html
 // ...생략
   <body>
-    **<input type="text" id="user-input" />**
+    <input type="text" id="user-input" />
   </body>
 </html>
 
@@ -250,11 +250,11 @@ if (userInputElement) {
 - 함수 오버로드를 통해 인자가 4가지 조합을 들어올 때 반환 타입 유형 4가지를 지정했음
 
 ```tsx
-**function add(a: number, b: number): number;
+function add(a: number, b: number): number;
 function add(a: string, b: string): string;
 function add(a: string, b: number): string;
 function add(a: number, b: string): string;
-function add(a: Combinable, b: Combinable) {**
+function add(a: Combinable, b: Combinable) {
   if (typeof a === 'string' || typeof b === 'string') {
     return a.toString() + b.toString();
   }
