@@ -3,7 +3,7 @@ date: '2023-03-25'
 title: '타입스크립트 - 1.Types'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: '키:타입'
-thumbnail: './TypescriptStudy/Typescript_logo.png'
+thumbnail: './Typescript_logo.png'
 ---
 
 # Type

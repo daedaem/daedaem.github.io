@@ -3,7 +3,7 @@ date: '2023-04-03'
 title: '타입스크립트 - 3.2 Interface'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: 'Interface, 추상 클래스, 상속'
-thumbnail: './TypescriptStudy/Typescript_logo.png'
+thumbnail: './Typescript_logo.png'
 ---
 
 # Interface
