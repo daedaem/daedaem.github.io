@@ -25,7 +25,7 @@ type Employee = {
 type ElevatedEmployee = Admin & Employee; 
 
 const e1: ElevatedEmployee = {
-  name: "Max",
+  name: "Haesung",
   privileges: ["create-server"],
   startDate: new Date(),
 };
@@ -202,47 +202,50 @@ if (userInputElement) {
     };
     ```
 
-    1. **인덱스 시그니처 (Index Signature)**
-  - 인덱스 시그니처는 객체 타입의 인덱스 (프로퍼티 키)와 그에 해당하는 값을 정의한다. 인덱스 시그니처는 다음과 같이 정의할 수 있다.
+1. **인덱스 시그니처 (Index Signature)**
 
-        ```tsx
-        interface StringDictionary {
-          [key: string]: string;
-        }
-        
-        let dict: StringDictionary = {
-          hello: 'world',
-          foo: 'bar',
-        };
-        ```
+- 인덱스 시그니처는 객체 타입의 인덱스 (프로퍼티 키)와 그에 해당하는 값을 정의한다. 인덱스 시그니처는 다음과 같이 정의할 수 있다.
 
-  - 인덱스 시그니처는 다른 타입의 키와 값으로 구성된 객체를 정의할 수도 있다. 예를 들어, 다음은 숫자 키와 문자열 값으로 구성된 객체를 나타낸다.
+  ```tsx
+    interface StringDictionary {
+      [key: string]: string;
+    }
+    
+    let dict: StringDictionary = {
+      hello: 'world',
+      foo: 'bar',
+    };
+  ```
 
-        ```tsx
-        interface NumberDictionary {
-          [key: number]: string;
-        }
-        ```
+- 인덱스 시그니처는 다른 타입의 키와 값으로 구성된 객체를 정의할 수도 있다. 예를 들어, 다음은 숫자 키와 문자열 값으로 구성된 객체를 나타낸다.
 
-    1. **키 타입 (Key Type):** 타입스크립트에서는 **`keyof`** 연산자를 사용하여 객체의 키 타입을 얻을 수 있다.
-  - **`PersonKeys`** 타입은 **`Person`** 객체의 키 타입을 나타내며, "name"과 "age" 중 하나를 가질 수 있다.
+    ```tsx
+    interface NumberDictionary {
+      [key: number]: string;
+    }
+    ```
 
-        ```tsx
-        interface Person {
-          name: string;
-          age: number;
-        }
-        
-        type PersonKeys = keyof Person; // "name" | "age"
-        ```
+2. **키 타입 (Key Type):** 타입스크립트에서는 **`keyof`** 연산자를 사용하여 객체의 키 타입을 얻을 수 있다.
 
-    1. **인덱스 접근 (Indexed Access):** 타입스크립트에서는 인덱스 접근 연산자 **`[]`**를 사용하여 객체의 프로퍼티 값을 가져올 수 있다. 예를 들어, 다음과 같이 사용할 수 있다.
-  - **`NameType`**은 **`Person`** 객체의 **`name`** 프로퍼티의 타입 (string)을 나타내며, **`AgeType`**은 **`age`** 프로퍼티의 타입 (number)을 나타낸다.
+- **`PersonKeys`** 타입은 **`Person`** 객체의 키 타입을 나타내며, "name"과 "age" 중 하나를 가질 수 있다.
 
-        ```tsx
-        type NameType = Person['name']; // string
-        type AgeType = Person['age']; // number
-        ```
+    ```tsx
+    interface Person {
+      name: string;
+      age: number;
+    }
+    
+    type PersonKeys = keyof Person; // "name" | "age"
+    ```
+
+3. **인덱스 접근 (Indexed Access):** 타입스크립트에서는 인덱스 접근 연산자 **`[]`**를 사용하여 객체의 프로퍼티 값을 가져올 수 있다. 예를 들어, 다음과 같이 사용할 수 있다.
+
+- **`NameType`** 은 **`Person`** 객체의 **`name`** 프로퍼티의 타입 (string)을 나타내며, **`AgeType`** 은 **`age`** 프로퍼티의 타입 (number)을 나타낸다.
+
+    ```tsx
+    type NameType = Person['name']; // string
+    type AgeType = Person['age']; // number
+    ```
 
 ## Function Overloads
 
@@ -261,7 +264,7 @@ function add(a: Combinable, b: Combinable) {
   return a + b;
 }
 
-const result = add('Max', ' Schwarz');
+const result = add('Haesung', ' CHO');
 result.split(' ');
 ```
 
@@ -272,7 +275,7 @@ result.split(' ');
 ```tsx
 const fetchedUserData={
  id: 'u1',
- name: 'Max'
+ name: 'Haesung'
 }
 fetchedUserData.job && fetchedUserData.job.title
 ```

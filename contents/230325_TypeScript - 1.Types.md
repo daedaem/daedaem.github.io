@@ -25,8 +25,6 @@ thumbnail: './TypescriptStudy/Typescript_logo.png'
 - JS : true, false
 - TS: true,false
 
----
-
 ## cf. 타입추론
 
 ### 명시적 타입 할당
@@ -346,8 +344,8 @@ console.log(combinedNames);
 - 유니온 타입을 저장하는 것만 가능한 것이 아니라 복잡할 수 있는 객체 타입에도 별칭을 붙일 수 있음
 
 ```tsx
-1. type User = { name: string; age: number };
-2. const u1: User = { name: 'Max', age: 30 }; // this works!
+type User = { name: string; age: number };
+const u1: User = { name: 'Max', age: 30 }; // this works!
 ```
 
 - 타입 별칭을 사용하면 불필요한 반복을 피하고 타입을 중심에서 관리할 수 있음.
@@ -355,27 +353,27 @@ console.log(combinedNames);
 - 단순화 전
 
 ```tsx
-1. function greet(user: { name: string; age: number }) {
-2.   console.log('Hi, I am ' + user.name);
-3. }
-4.  
-5. function isOlder(user: { name: string; age: number }, checkAge: number) {
-6.   return checkAge > user.age;
-7. }
+function greet(user: { name: string; age: number }) {
+  console.log('Hi, I am ' + user.name);
+}
+  
+function isOlder(user: { name: string; age: number }, checkAge: number) {
+  return checkAge > user.age;
+}
 ```
 
 - 단순화 후
 
 ```tsx
-1. type User = { name: string; age: number };
-2.  
-3. function greet(user: User) {
-4.   console.log('Hi, I am ' + user.name);
-5. }
-6.  
-7. function isOlder(user: User, checkAge: number) {
-8.   return checkAge > user.age;
-9. }
+ type User = { name: string; age: number };
+  
+ function greet(user: User) {
+   console.log('Hi, I am ' + user.name);
+ }
+  
+ function isOlder(user: User, checkAge: number) {
+   return checkAge > user.age;
+ }
 ```
 
 ## 함수
@@ -472,9 +470,9 @@ function printResult(n1:number):undefined{ // 드믄 경우 사용됨
     printResult(add(5, 12));
     
     //이렇게만 지정하면 printResult함수를 할당 받은 comvineValues가 undefined 값 가짐
-    //**let combineValues: Function; 
+    //let combineValues: Function; 
     
-    //따라서 아래와 같이 함수 인자, 반환에 타입 지정**
+    //따라서 아래와 같이 함수 인자, 반환에 타입 지정
     let combineValues: (a:number, b:number) => number;
     
     combineValues = add;
