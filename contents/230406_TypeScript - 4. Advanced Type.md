@@ -3,7 +3,7 @@ date: '2023-04-06'
 title: '타입스크립트 - 4. Advanced Typing Concepts'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: '타입 가드, 식별된 공용체 ,함수 오버로드'
-thumbnail: './Typescript_logo.png'
+thumbnail: './TypescriptStudy/Typescript_logo.png'
 ---
 
 ## Intersection Types

@@ -3,7 +3,7 @@ date: '2023-03-27'
 title: '타입스크립트 - 2.컴파일러 및 구성'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: 'tsconfig'
-thumbnail: './Typescript_logo.png'
+thumbnail: './TypescriptStudy/Typescript_logo.png'
 ---
 
 ## watch 모드 사용하기

@@ -3,7 +3,7 @@ date: '2023-03-31'
 title: '타입스크립트 - 3.1 클래스'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: '클래스, 상속'
-thumbnail: './Typescript_logo.png'
+thumbnail: './TypescriptStudy/Typescript_logo.png'
 ---
 
 # 클래스 만들기

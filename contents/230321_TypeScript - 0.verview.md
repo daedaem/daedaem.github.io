@@ -3,7 +3,7 @@ date: '2023-03-21'
 title: '타입스크립트 - 0.Overview'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: 'Javascript superset'
-thumbnail: './typescript.png'
+thumbnail: './TypescriptStudy/Typescript_logo.png'
 ---
 
 # TypeScript란
