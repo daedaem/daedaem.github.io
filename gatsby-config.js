@@ -14,9 +14,9 @@ module.exports = {
       },
     },
     `gatsby-plugin-emotion`,
-    `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-react-helmet`, //seo최적화를 위한 플러그인
     {
-      resolve: `gatsby-source-filesystem`,
+      resolve: `gatsby-source-filesystem`, //로컬 파일 시스템에서 Gatsby 애플리케이션으로 데이터를 소싱하기 위한 Gatsby 플러그인.
       options: {
         name: `contents`,
         path: `${__dirname}/contents`,
@@ -43,7 +43,7 @@ module.exports = {
     `gatsby-transformer-sharp`,
     `gatsby-plugin-image`,
     {
-      resolve: `gatsby-transformer-remark`,
+      resolve: `gatsby-transformer-remark`, //gatsby에서 마크다운을 html로 변환하는 작업하는 플러그인
       options: {
         plugins: [
           {
@@ -53,13 +53,13 @@ module.exports = {
             },
           },
           {
-            resolve: 'gatsby-remark-prismjs',
+            resolve: 'gatsby-remark-prismjs', // 코드 하이라이팅을 위한 플러그인, npm  i prismjs
             options: {
               classPrefix: 'language-',
             },
           },
           {
-            resolve: 'gatsby-remark-images',
+            resolve: 'gatsby-remark-images', //마크다운 처리시, 이미지 코드를 만나면 이미지 노드 생성
             options: {
               maxWidth: 768,
               quality: 100,

@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React from 'react'
 import styled from '@emotion/styled'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
@@ -73,11 +73,7 @@ const PostData = styled.div`
     font-weight: 400;
   }
 `
-const PostHeadInfo: FunctionComponent<PostHeadInfoProps> = function ({
-  title,
-  date,
-  categories,
-}) {
+const PostHeadInfo = ({ title, date, categories }: PostHeadInfoProps) => {
   const goBackPage = () => window.history.back()
 
   return (

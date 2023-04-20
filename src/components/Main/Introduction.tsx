@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React from 'react'
 import styled from '@emotion/styled'
 import { IGatsbyImageData } from 'gatsby-plugin-image'
 import ProfileImage from 'components/Main/ProfileImage'
@@ -46,9 +46,7 @@ const Title = styled.div`
     font-size: 20px;
   }
 `
-const Introduction: FunctionComponent<IntroductionProps> = function ({
-  profileImage,
-}) {
+const Introduction = ({ profileImage }: IntroductionProps) => {
   return (
     <Background>
       <Wrapper>

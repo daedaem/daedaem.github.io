@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 import styled from '@emotion/styled'
 import GlobalStyle from 'components/Common/GlobalStyle'
 import Footer from 'components/Common/Footer'
@@ -18,13 +18,13 @@ const Container = styled.main`
   height: 100%;
 `
 
-const Template: FunctionComponent<TemplateProps> = function ({
+const Template = ({
   title,
   description,
   url,
   image,
   children,
-}) {
+}: TemplateProps) => {
   return (
     <Container>
       <Helmet>

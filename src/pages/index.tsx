@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { graphql } from 'gatsby'
 import queryString, { ParsedQuery } from 'query-string'
 import { PostListItemType } from 'types/PostItem.types'
@@ -32,7 +32,7 @@ type IndexPageProps = {
   }
 }
 
-const IndexPage: FunctionComponent<IndexPageProps> = function ({
+const IndexPage = ({
   location: { search },
   data: {
     site: {
@@ -44,7 +44,7 @@ const IndexPage: FunctionComponent<IndexPageProps> = function ({
       publicURL,
     },
   },
-}) {
+}: IndexPageProps) => {
   const parsed: ParsedQuery<string> = queryString.parse(search)
   const selectedCategory: string =
     typeof parsed.category !== 'string' || !parsed.category

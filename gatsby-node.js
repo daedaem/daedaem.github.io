@@ -26,6 +26,7 @@ exports.onCreateWebpackConfig = ({ getConfig, actions }) => {
 }
 
 // Generate a Slug Each Post Data
+// slug는 gatsby에서는 특정 Markdown 파일에 대한 URL 경로를 생성하는 데 사용
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions
 

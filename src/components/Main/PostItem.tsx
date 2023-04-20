@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React from 'react'
 import styled from '@emotion/styled'
 import { Link } from 'gatsby'
 import { GatsbyImage } from 'gatsby-plugin-image'
@@ -81,7 +81,7 @@ const Summary = styled.div`
   opacity: 0.8;
 `
 
-const PostItem: FunctionComponent<PostItemProps> = function ({
+const PostItem = ({
   title,
   date,
   categories,
@@ -90,7 +90,7 @@ const PostItem: FunctionComponent<PostItemProps> = function ({
     childImageSharp: { gatsbyImageData },
   },
   link,
-}) {
+}: PostItemProps) => {
   return (
     <PostItemWrapper to={link}>
       <ThumbnailImage image={gatsbyImageData} alt="Post Item Image" />

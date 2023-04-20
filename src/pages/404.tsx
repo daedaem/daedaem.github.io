@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React from 'react'
 import styled from '@emotion/styled'
 import { Link } from 'gatsby'
 import GlobalStyle from 'components/Common/GlobalStyle'
@@ -40,7 +40,7 @@ const GoToMainButton = styled(Link)`
   }
 `
 
-const NotFoundPage: FunctionComponent = function () {
+const NotFoundPage = () => {
   return (
     <NotFoundPageWrapper>
       <GlobalStyle />

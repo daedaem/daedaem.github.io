@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React from 'react'
 import { graphql } from 'gatsby'
 import { PostPageItemType } from 'types/PostItem.types'
 import Template from 'components/Common/Template'
@@ -17,12 +17,12 @@ type PostTemplateProps = {
   }
 }
 
-const PostTemplate: FunctionComponent<PostTemplateProps> = function ({
+const PostTemplate = ({
   data: {
     allMarkdownRemark: { edges },
   },
   location: { href },
-}) {
+}: PostTemplateProps) => {
   const {
     node: {
       html,

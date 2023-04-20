@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React from 'react'
 import { graphql } from 'gatsby'
 import { Global, css } from '@emotion/react'
 import styled from '@emotion/styled'
@@ -46,13 +46,13 @@ const Text2 = styled('div')<{ disable: boolean }>(({ disable }) => ({
   textDecoration: disable ? 'line-through ' : 'none',
 }))
 
-const InfoPage: FunctionComponent<InfoPageProps> = function ({
+const InfoPage = ({
   data: {
     site: {
       siteMetadata: { title, description, author },
     },
   },
-}) {
+}: InfoPageProps) => {
   return (
     <div>
       <Global styles={globalStyle} />
