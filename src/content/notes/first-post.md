@@ -19,7 +19,7 @@ legacyPath: "/첫 글/"
 <br/>
 
 **삼성청년SW 아카데미 6기 웰컴키트**
-<img src="./ssafy.jpg" alt="싸피6기 웰컴 키트" style="zoom:25%;" />
+![싸피6기 웰컴 키트](./ssafy.jpg)
 
 <br/>
 
@@ -29,7 +29,7 @@ legacyPath: "/첫 글/"
 <br/>
 
 **1년 1600시간의 싸피 6기 수료**
-<img src="./ssafyGraduate.png" alt="1년 1600시간의 싸피 6기 수료" style="zoom:25%;" />
+![1년 1600시간의 싸피 6기 수료](./ssafyGraduate.png)
 
 ---
 

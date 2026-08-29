@@ -44,16 +44,12 @@ legacyPath: "/230319_모던 JS Deep Dive - 5.표현식과 문/"
 
 - 사람이 이해할 수 있는 아라비아 숫자를 사용해 숫자 리터럴 3을 코드에 기술하면 자바스크립트 엔진은 이를 평가해 숫자 값 3을 생성.
 
-<figure>
-  <img src="./modern js deep dive/5literal.jpeg" style="max-width:300px margin:0 auto;"/>
-  </figure>
+  ![](<./modern js deep dive/5literal.jpeg>)
 
 - 자바스크립트 엔진은 코드가 실행되는 시점인 런타임에 리터럴을 평가해 값을 생성
 - 리터럴은 값을 생성하기 위해 미리 약속한 표기법.
 
-<figure>
-  <img src="./modern js deep dive/5literal_table.jpeg" style="max-width:400px margin:0 auto;"/>
-</figure>
+  ![](<./modern js deep dive/5literal_table.jpeg>)
 
 ## 5.3 표현식
 
@@ -111,9 +107,7 @@ legacyPath: "/230319_모던 JS Deep Dive - 5.표현식과 문/"
 - 문은 여러 토큰으로 구성된다.
 - **토큰(token)** 이란 문법적인 의미를 가지며, **문법적으로 더 이상 나눌 수 없는 코드의 기본 요소**를 의미
 
-<figure>
-  <img src="./modern js deep dive/5token.jpeg" style="max-width:400px margin:0 auto;"/>
-</figure>
+  ![](<./modern js deep dive/5token.jpeg>)
 
 - 예를 들어, 키워드, 식별자, 연산자, 리터럴, 세미콜론(;)이나 마침표(.)등의 특수 기호는 문법적 의미를 가지며, 더이상 나눌 수 없는 코드의 기본 요소이므로 모두 토큰이다.
 - 문을 명령문이라고도 부른다. 문은 컴퓨터에 내리는 명령이다.
@@ -207,15 +201,11 @@ legacyPath: "/230319_모던 JS Deep Dive - 5.표현식과 문/"
 - 크롬 개발자 도구에서 표현식이 아닌 문을 실행하면 언제나 undefined를 출력하는데, 이를 완료 값이라고 한다.
 - 완료값은 표현식의 평가 결과가 아니다. 따라서 다른 값과 같이 변수에 할당할 수 없고 참조도 할수 없다.
 
-    <figure>
-  <img src="./modern js deep dive/5completionvalue_1.png" style="max-width:400px margin:0 auto;"/>
-  </figure>
+  ![](<./modern js deep dive/5completionvalue_1.png>)
 
 - 크롬 개발자 도구에서 표현식인 문을 실행하면 언제나 평가된 값을 반환한다.
 
-    <figure>
-  <img src="./modern js deep dive/5completionvalue_2.png" style="max-width:400px margin:0 auto;"/>
-  </figure>
+  ![](<./modern js deep dive/5completionvalue_2.png>)
 
 # **출처**
 

@@ -162,9 +162,7 @@ console.log(`value: ${text}, type: ${typeof text}`); //value: 4, type: number
 ```
 
 ## 5. VAR vs LET vs CONST
-<figure>
-    <img src="https://scontent-gmp1-1.xx.fbcdn.net/v/t1.6435-9/130188528_221079646060321_4186780158033875317_n.png?_nc_cat=108&ccb=1-7&_nc_sid=973b4a&_nc_ohc=kGQ8s67Kai4AX_0eARC&_nc_ht=scontent-gmp1-1.xx&oh=00_AfCZf0YNYXDnGC_03Szg8rmkpYjgTEwkwgBkx06khsmHtw&oe=63CC87D6" style="max-width:400px; margin: 0 auto;"></img>
-</figure>
+    </img>
 
 
 # 출처

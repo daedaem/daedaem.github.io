@@ -15,9 +15,7 @@ legacyPath: "/230228_코어자바스크립트 ch 6. 프로토 타입/"
 
 ## 1. prototype / [[Prototype]] / constructor
 
-<figure>
-<img src='./coreJavaScript/prototype_schematic.png' style="max-width:400px; margin:0 auto;">
-</figure>
+![](./coreJavaScript/prototype_schematic.png)
 
 ### **프로토타입의 모든 것**
 
@@ -107,9 +105,7 @@ var jay = new Person('제이',25);
 
 ## 3. Prototype Chaining
 
-<figure>
-<img src='./coreJavaScript/prototype_chain.png' style="max-width:400px; margin:0 auto;">
-</figure>
+![](./coreJavaScript/prototype_chain.png)
 
 - 인스턴스에는 특정 메서드가 없음에도 불구하고 [[Prototype]] 이라는 매개체 덕분에 생성자 함수의 prototype에 있는 메서드를 자신의 것처럼 쓸 수 있다.
 - 프로토타입 체인 - [[Prototype]]으로 이어진 각 prototype들에 모두 접근할 수 있음
@@ -120,9 +116,7 @@ var jay = new Person('제이',25);
 
 ### constructor, prototype, instance
 
-<figure>
-<img src='./coreJavaScript/prototype_schematic.png' style="max-width:400px; margin:0 auto;">
-</figure>
+![](./coreJavaScript/prototype_schematic.png)
 
 ```jsx
 var instance = new Constructor();

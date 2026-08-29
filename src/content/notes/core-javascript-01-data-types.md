@@ -70,7 +70,7 @@ legacyPath: "/230108_코어자바스크립트 ch 1. 데이터 타입/"
   let a;
   ```
 
-  <img src='./coreJavaScript/데이터타입1-1.png' style="max-width:400px; margin:0 auto;">
+  ![](./coreJavaScript/데이터타입1-1.png)
 
 ### 데이터 할당
 
@@ -98,7 +98,7 @@ legacyPath: "/230108_코어자바스크립트 ch 1. 데이터 타입/"
     let a = 'abc';
     ```
 
-    <img src='./coreJavaScript/데이터타입1-2.png' style="max-width:400px; margin:0 auto;">
+    ![](./coreJavaScript/데이터타입1-2.png)
 
 ## 04 기본형 데이터와 참조형 데이터
 

@@ -23,9 +23,7 @@ legacyPath: "/230312_모던 JS Deep Dive - 1. 프로그래밍/"
   - 해결과제를 작은 단위로 분해하고 패턴화해서 추출하며, 프로그래밍 내에서 사용될 모든 개념은 평가가능하도록 정의해야 한다.
   - 복잡함을 단순하게 분해하고 자료를 정리하고 구분해야 하며 순서에 맞게 행위를 배열해야한다.
 
-    <figure>
-    <img src="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/57afc8f5-389a-43d9-a9af-4346de9c831c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20230312%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20230312T065226Z&X-Amz-Expires=86400&X-Amz-Signature=12b35d519a31b0bf70b056ec57320fbb71f59f851f3a9643c9b6018516e0c5aa&X-Amz-SignedHeaders=host&response-content-disposition=filename%3D%22Untitled.png%22&x-id=GetObject" style="max-width:400px margin:0 auto;"/>
-    </figure>
+    
 
 # 1.2 프로그래밍 언어
 

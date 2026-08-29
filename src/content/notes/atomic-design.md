@@ -22,9 +22,7 @@ legacyPath: "/Atomic Design/"
 4. [Templates](https://bradfrost.com/blog/post/atomic-web-design/#templates)
 5. [Pages](https://bradfrost.com/blog/post/atomic-web-design/#pages)
 
-<figure>
     <img src="https://atomicdesign.bradfrost.com/images/content/instagram-atomic.png" style="max-width:100%; margin: 0 auto;"></img>
-</figure>
 <address><em>출처</em>: <a href="https://atomicdesign.bradfrost.com/chapter-2/#the-part-and-the-whole"> https://atomicdesign.bradfrost.com/chapter-2/#the-part-and-the-whole </a> </address>
 
 ## 컴포넌트 설계에 대한 나의 과거들
@@ -35,18 +33,12 @@ legacyPath: "/Atomic Design/"
 
 **프로젝트 3. 캠퍼스**
 
-<figure>
-<div style="display:flex;">
-<img src="./AtomicDesign.assets/campus1.png" alt="campus1.png" style="margin: 0 auto; max-width:500px;" />
-<img src="./AtomicDesign.assets/campus2.png" alt="campus2.png" style="margin:0 auto; max-width:500px;" />
-</div>
-</figure>
+![campus1.png](./AtomicDesign.assets/campus1.png)
+![campus2.png](./AtomicDesign.assets/campus2.png)
 
 **프로젝트 1. 페어플레이**
 
-<figure>
-<img src="./AtomicDesign.assets/pairplay1.png" alt="pairplay1" style="margin: 0 auto; max-width:800px;" />
-</figure>
+![pairplay1](./AtomicDesign.assets/pairplay1.png)
 
 **가장 최근에 진행했던 Pairplay**에서는 기능 폴더 > 각 페이지 폴더 > 해당 컴포넌트 순으로 정리하였다.
 

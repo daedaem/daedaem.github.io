@@ -12,9 +12,7 @@ legacyPath: "/블록체인(Blockchain)/"
 ## 1-1. 초창기
 - 블록체인 기술에 대한 아이디어는 1991년 초,과학자 스튜어트 하버(Stuart Haber)와 스캇 스토네타(W. Scott Stornetta)에 의해 제시됨. 이들은 실용적인 수학적 해결책을 타임 스탬핑에 도입해 디지털 문서의 날짜가 변경되거나 위조될 수 없게 했습니다. 이는 타임 스탬프를 저장하는데 암호학적으로 안전한 블록들의 체인을 사용했으며, 1992년 머클 트리 구조를 도입한 후 여러 문서를 하나의 블록에 모을 수 있게 되며 보다 효율적이게 됐습니다. 그러나 이 기술은 사용되지 않기 시작했으며, 비트코인이 탄생하기 4년 전인 2004년에는 특허권이 만료되었습니다.
 
-<figure>
-<img src="https://cazoo.it/wp-content/uploads/2021/05/Stuart-Haber-e-Scott-Stornetta.jpg"  style="max-width:400px; margin: auto auto;" alt="https://cazoo.it/wp-content/uploads/2021/05/Stuart-Haber-e-Scott-Stornetta.jpg" />
-</figure>
+
 
 ## 1-2. **재사용 가능한 작업 증명 방식**
 - 2004년 컴퓨터 공학자이자 암호학 활동가 할 핀니(Hal Finney)는 재사용 가능한 작업 증명 방식(RPoW:Reusable Proof of Work) 시스템을 제시했습니다.
@@ -70,10 +68,8 @@ legacyPath: "/블록체인(Blockchain)/"
 
 ## 3-1. **블록체인 구성요소**
 
-<figure>
 <img src="https://steemitimages.com/1280x0/https://steemitimages.com/DQmT41naG75LWrizbQ9uyw8uKEo8Ggkzu6A6XdcmRHmWkG5/block_element.png" style="max-width:400px; margin:0 auto;" alt="https://steemitimages.com/1280x0/https://steemitimages.com/DQmT41naG75LWrizbQ9uyw8uKEo8Ggkzu6A6XdcmRHmWkG5/block_element.png" /> 
 <img src="https://steemitimages.com/1280x0/https://steemitimages.com/DQmc3RRboMPS9CCjdT8CwACUCaYXYviBG3WbKycn9A2xq6k/block_chain.png"  style="max-width:400px; margin:0 auto;"alt="https://steemitimages.com/1280x0/https://steemitimages.com/DQmc3RRboMPS9CCjdT8CwACUCaYXYviBG3WbKycn9A2xq6k/block_chain.png" />
-</figure>
 
 ### **해시함수**
 
@@ -93,17 +89,13 @@ SHA256 해시함수를 이용한다면 **어떤 길이의 입력값이라도 25
 
 **입력값의 아주 일부만 변경되어도 전혀 다른 값이 출력**되는 특징 때문에 **데이터가 변경되었는지 쉽게 확인할 수 있습니다**
 
-<figure style="display:flex;">
-<img src="./hash.png" style="max-width:800px;" alt="https://s3.us-west-2.amazonaws.com/secure.notion-static.com/f394a697-78a4-4975-bcfa-d52d84f1b94c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220627%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220627T170144Z&X-Amz-Expires=86400&X-Amz-Signature=ace92e15887f8d75b6559ce9ada1a9b4493913b1ec90b48ebbf550c9c32def30&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject" /> 
-</figure>
+![https://s3.us-west-2.amazonaws.com/secure.notion-static.com/f394a697-78a4-4975-bcfa-d52d84f1b94c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220627%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220627T170144Z&X-Amz-Expires=86400&X-Amz-Signature=ace92e15887f8d75b6559ce9ada1a9b4493913b1ec90b48ebbf550c9c32def30&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject](./hash.png) 
 
 [노마드코더 - "비밀번호 털렸다고? 암호화. 해시함수. 5분 설명."](https://youtu.be/67UwxR3ts2E)
 
 ### **블록해시**
 
-<figure>
 <img src="https://steemitimages.com/DQmWnWhqUYgppG6UGDLgYahbq15wm9eXa4mGKfSvLoDFtPP/block_hash_ver_01.png" style="max-width:800px;" alt="https://steemitimages.com/DQmWnWhqUYgppG6UGDLgYahbq15wm9eXa4mGKfSvLoDFtPP/block_hash_ver_01.png" /> 
-</figure>
 
 ## 3-2. 🔨채굴
 
@@ -131,9 +123,7 @@ SHA256 해시함수를 이용한다면 **어떤 길이의 입력값이라도 25
 지분증명이란 알고리즘의 한 형태로서, 이를 통해 암호화폐 블록체인 네트워크가 분산화된 합의를 얻는 것을 목표로 한다.
 지분증명 기반의 암호화폐 시스템에서 다음 블록의 생성자는 블록체인의 관련 암호화폐를 특정량 보유하고 있는 ‘주주’들 중에서 선출된다
 
-<figure>
-<img src="https://blockgeeks.com/wp-content/uploads/2017/03/infographics2017-01.png" style="max-width:800px;" alt="https://blockgeeks.com/wp-content/uploads/2017/03/infographics2017-01.png" /> 
-</figure>
+ 
 
 ### 📜**스마트 컨트랙**
 
@@ -268,9 +258,7 @@ NFT가 '대체 불가능 토큰'이라 불리는 이유는 내가 가진 1비트
 
 (아래)트위터 공동 창업자 잭 도시가 15년 전 작성한 이 첫 트윗('태초의 트윗')의 소유권을 인증하는 대체불가능토큰(NFT·Non-fungible token)이 경매에서 약 290만달러(약 32억7000만원)에 낙찰됐다.
 
-<figure>
-<img src="https://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg"  style="max-width:800px;" alt="https://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg" /> <img src="https://img.hankyung.com/photo/202103/01.25807736.1.jpg"  style="max-width:800px;"alt="https://img.hankyung.com/photo/202103/01.25807736.1.jpg" />
-</figure>
+<img src="https://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg"  style="max-width:800px;" alt="https://res.heraldm.com/content/image/2021/03/11/20210311000896_0.jpg" /> 
 
 # 파이썬으로 블록체인 구현해보기
 
