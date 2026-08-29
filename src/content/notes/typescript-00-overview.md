@@ -1,6 +1,7 @@
 ---
 slug: 'typescript-00-overview'
-date: '2023-03-21'
+date: '2023-03-16T15:00:17Z'
+updated: '2023-03-17T05:22:03Z'
 title: '타입스크립트 - 0.Overview'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: 'Javascript superset'

@@ -1,6 +1,7 @@
 ---
 slug: 'modern-js-deep-dive-01-programming'
-date: '2023-03-12'
+date: '2023-03-12T04:14:01Z'
+updated: '2023-03-12T05:54:31Z'
 title: '모던 JS Deep Dive - 1. 프로그래밍'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '0과 1만 아는 컴퓨터와 사람의 커뮤니케이션'

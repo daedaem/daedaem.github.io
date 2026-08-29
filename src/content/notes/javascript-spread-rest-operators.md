@@ -1,6 +1,7 @@
 ---
 slug: 'javascript-spread-rest-operators'
-date: '2022-12-30'
+date: '2022-12-27T13:43:44Z'
+updated: '2023-11-16T08:19:39Z'
 title: 'JavaScript - Spread & Rest Operators'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: 'Spread & Rest Operators'

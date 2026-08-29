@@ -33,12 +33,16 @@ const cat = category ? getCategory(category) : undefined
     <header>
       <div class="meta">
         {cat && <a class="cat" href={`/categories/${cat.id}/`}>{cat.name}</a>}
-        <time datetime={date.toISOString()}>{formatDate(date)}</time>
+        <time datetime={date.toISOString()}>{formatDate(date)} 작성</time>
         {readingMinutes && <span>· {readingMinutes}분</span>}
       </div>
       <h1>{title}</h1>
       {description && <p class="lead">{description}</p>}
-      {updated && <p class="updated muted">{formatDate(updated)}에 수정</p>}
+      {
+        updated && updated.getTime() !== date.getTime() && (
+          <p class="updated muted">최종 수정 {formatDate(updated)}</p>
+        )
+      }
     </header>
 
     {

@@ -1,6 +1,7 @@
 ---
 slug: 'typescript-04-interfaces'
-date: '2023-04-03'
+date: '2023-03-23T16:27:04Z'
+updated: '2023-03-24T14:32:09Z'
 title: '타입스크립트 - 3.2 Interface'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: 'Interface, 추상 클래스, 상속'

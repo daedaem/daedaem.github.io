@@ -1,6 +1,7 @@
 ---
 slug: 'core-javascript-02-execution-context'
-date: '2023-02-02'
+date: '2022-12-30T07:23:21Z'
+updated: '2023-11-16T08:20:35Z'
 title: '코어자바스크립트 ch2. 실행 컨텍스트'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: 'VariableEnvironment, LexicalEnvironment, ThisBinding'

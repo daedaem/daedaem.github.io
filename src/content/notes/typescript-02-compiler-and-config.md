@@ -1,6 +1,7 @@
 ---
 slug: 'typescript-02-compiler-and-config'
-date: '2023-03-27'
+date: '2023-03-20T07:45:54Z'
+updated: '2023-03-22T16:21:09Z'
 title: '타입스크립트 - 2.컴파일러 및 구성'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: 'tsconfig'

@@ -1,6 +1,7 @@
 ---
 slug: 'typescript-01-types'
-date: '2023-03-25'
+date: '2023-03-16T15:58:57Z'
+updated: '2023-04-12T11:13:42Z'
 title: '타입스크립트 - 1.Types'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: '키:타입'

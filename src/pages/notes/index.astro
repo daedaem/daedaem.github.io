@@ -69,7 +69,12 @@ const others = notes.filter(n => !used.has(n.id))
                 {g.items.map(n => (
                   <li>
                     <a href={`/notes/${n.id}/`}>{n.data.title.trim()}</a>
-                    <time datetime={n.data.date.toISOString()}>{formatDate(n.data.date)}</time>
+                    <span class="dates">
+                      <time datetime={n.data.date.toISOString()}>{formatDate(n.data.date)}</time>
+                      {n.data.updated && n.data.updated.getTime() !== n.data.date.getTime() && (
+                        <em>· {formatDate(n.data.updated)} 수정</em>
+                      )}
+                    </span>
                   </li>
                 ))}
               </ol>
@@ -91,7 +96,12 @@ const others = notes.filter(n => !used.has(n.id))
             {others.map(n => (
               <li>
                 <a href={`/notes/${n.id}/`}>{n.data.title.trim()}</a>
-                <time datetime={n.data.date.toISOString()}>{formatDate(n.data.date)}</time>
+                <span class="dates">
+                  <time datetime={n.data.date.toISOString()}>{formatDate(n.data.date)}</time>
+                  {n.data.updated && n.data.updated.getTime() !== n.data.date.getTime() && (
+                    <em>· {formatDate(n.data.updated)} 수정</em>
+                  )}
+                </span>
               </li>
             ))}
           </ol>
@@ -175,9 +185,15 @@ const others = notes.filter(n => !used.has(n.id))
     text-decoration-color: var(--accent);
   }
 
-  time {
+  .dates {
+    display: flex;
+    gap: 0.3rem;
     font-size: 0.8125rem;
-    color: var(--text-muted);
+    color: var(--text-dim);
     white-space: nowrap;
+  }
+
+  .dates em {
+    font-style: normal;
   }
 </style>

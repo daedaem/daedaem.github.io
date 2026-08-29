@@ -1,6 +1,7 @@
 ---
 slug: 'core-javascript-04-callback'
-date: '2023-02-11'
+date: '2023-02-05T07:06:27Z'
+updated: '2023-11-16T08:22:06Z'
 title: '코어자바스크립트 ch4. 콜백함수'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '다른 코드에게 인자로 넘겨줌으로써 그 제어권도 함께 위임한 함수'

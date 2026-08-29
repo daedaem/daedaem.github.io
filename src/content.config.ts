@@ -39,7 +39,10 @@ const notes = defineCollection({
     z.object({
       slug: z.string(),
       title: z.string(),
+      /** 노션 TIL DB의 작성일시. 블로그 발행일이 아니라 노트를 처음 쓴 날이다. */
       date: z.coerce.date(),
+      /** 노션 TIL DB의 최종 수정일 */
+      updated: z.coerce.date().optional(),
       summary: z.string().default(''),
       categories: z.array(z.string()).default([]),
       thumbnail: image().optional(),

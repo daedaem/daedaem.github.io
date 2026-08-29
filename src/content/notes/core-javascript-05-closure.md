@@ -1,6 +1,7 @@
 ---
 slug: 'core-javascript-05-closure'
-date: '2023-02-16'
+date: '2023-02-15T14:54:16Z'
+updated: '2023-11-16T08:22:13Z'
 title: '코어자바스크립트 ch5. 클로저'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '내부 함수와 LexicalEnvironment의 조합에서 나타나는 특별한 현상'

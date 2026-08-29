@@ -1,6 +1,7 @@
 ---
 slug: 'core-javascript-06-prototype'
-date: '2023-02-28'
+date: '2023-02-18T09:07:29Z'
+updated: '2023-11-16T08:22:18Z'
 title: '코어자바스크립트 ch6. 프로토타입'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: 'prototype / [[Prototype]] / constructor'

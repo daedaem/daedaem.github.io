@@ -1,6 +1,7 @@
 ---
 slug: 'typescript-03-classes'
-date: '2023-03-31'
+date: '2023-03-23T04:39:45Z'
+updated: '2023-04-12T11:48:26Z'
 title: '타입스크립트 - 3.1 클래스'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: '클래스, 상속'

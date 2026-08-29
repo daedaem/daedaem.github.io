@@ -1,6 +1,7 @@
 ---
 slug: 'modern-js-deep-dive-04-variables'
-date: '2023-03-16'
+date: '2023-03-19T07:30:56Z'
+updated: '2023-03-19T12:59:46Z'
 title: '모던 JS Deep Dive - 4. 변수'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '변수 선언, 초기화, 할당'

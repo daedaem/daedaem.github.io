@@ -1,6 +1,7 @@
 ---
 slug: 'typescript-05-advanced-types'
-date: '2023-04-06'
+date: '2023-03-24T14:34:43Z'
+updated: '2023-04-12T10:38:03Z'
 title: '타입스크립트 - 4. Advanced Typing Concepts'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: '타입 가드, 식별된 공용체 ,함수 오버로드'

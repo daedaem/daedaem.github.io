@@ -1,6 +1,7 @@
 ---
 slug: 'modern-js-deep-dive-02-what-is-javascript'
-date: '2023-03-14'
+date: '2023-03-12T05:37:37Z'
+updated: '2023-03-14T14:52:27Z'
 title: '모던 JS Deep Dive - 2. 자바스크립트란'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: 'imperative, functional, prototype-based'
