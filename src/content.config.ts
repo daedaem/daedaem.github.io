@@ -74,4 +74,25 @@ const wiki = defineCollection({
   }),
 })
 
-export const collections = { posts, notes, wiki }
+/**
+ * solutions — 알고리즘 풀이. 본문은 본인이 작성한 코드만 담는다.
+ * 문제 지문과 예제 입출력은 원 사이트의 저작물이라 싣지 않고 링크로 보낸다.
+ */
+const solutions = defineCollection({
+  loader: glob({ base: './src/content/solutions', pattern: '**/*.md' }),
+  schema: z.object({
+    title: z.string(),
+    site: z.enum(['백준', '프로그래머스']),
+    tier: z.string(),
+    /** 티어 정렬용 숫자. 높을수록 상위 */
+    rank: z.number(),
+    num: z.string(),
+    categories: z.array(z.string()).default([]),
+    memory: z.string().default(''),
+    runtime: z.string().default(''),
+    problemUrl: z.string().default(''),
+    langs: z.array(z.string()).default([]),
+  }),
+})
+
+export const collections = { posts, notes, wiki, solutions }

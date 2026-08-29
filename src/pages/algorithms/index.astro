@@ -1,21 +1,35 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
-import items from '@/data/algorithms.json'
+import { getCollection } from 'astro:content'
 
+const LANG: Record<string, string> = {
+  cpp: 'C++',
+  python: 'Python',
+  javascript: 'JavaScript',
+  java: 'Java',
+  c: 'C',
+  sql: 'SQL',
+}
+
+const solutions = await getCollection('solutions')
 type Item = {
   site: string
   tier: string
   rank: number
   title: string
-  num: string
   cls: string[]
   lang: string[]
-  time: string
-  mem: string
-  url: string
-  problem: string
+  href: string
 }
-const all = items as Item[]
+const all: Item[] = solutions.map(s => ({
+  site: s.data.site,
+  tier: s.data.tier,
+  rank: s.data.rank,
+  title: s.data.title,
+  cls: s.data.categories,
+  lang: s.data.langs.map(l => LANG[l] ?? l),
+  href: `/algorithms/${s.id}/`,
+})).sort((a, b) => b.rank - a.rank || a.title.localeCompare(b.title, 'ko'))
 
 const boj = all.filter(i => i.site === '백준')
 const pgs = all.filter(i => i.site === '프로그래머스')
@@ -83,8 +97,9 @@ const goldPlus = boj.filter(i => i.rank >= 10 && i.rank < 100).length
     </section>
 
     <p class="repo">
-      풀이 전체는 <a href="https://github.com/daedaem/algorithm-study-archive">algorithm-study-archive</a>에
-      있습니다.
+      문제 지문은 각 사이트의 저작물이라 싣지 않았습니다. 풀이 코드만 올렸고, 원문은 각 페이지의
+      링크에서 볼 수 있습니다. 저장소는
+      <a href="https://github.com/daedaem/algorithm-study-archive">algorithm-study-archive</a>입니다.
     </p>
 
     <h2 class="site-title">백준</h2>
@@ -98,7 +113,7 @@ const goldPlus = boj.filter(i => i.rank >= 10 && i.rank < 100).length
             {g.items.map(i => (
               <li>
                 <span class="tier">{i.tier}</span>
-                <a class="name" href={i.url}>
+                <a class="name" href={i.href}>
                   {i.title}
                 </a>
                 <span class="cls">{i.cls.slice(0, 3).join(' · ')}</span>
@@ -121,7 +136,7 @@ const goldPlus = boj.filter(i => i.rank >= 10 && i.rank < 100).length
             {g.items.map(i => (
               <li>
                 <span class="tier">{g.name.replace('Level ', 'Lv')}</span>
-                <a class="name" href={i.url}>
+                <a class="name" href={i.href}>
                   {i.title}
                 </a>
                 <span class="cls">{i.cls.slice(0, 3).join(' · ')}</span>

@@ -1,0 +1,239 @@
+---
+import type { GetStaticPaths } from 'astro'
+import { getCollection, render } from 'astro:content'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const all = await getCollection('solutions')
+  return all.map(s => {
+    /** 같은 유형의 다른 문제를 붙여 이어 볼 수 있게 한다 */
+    const related = all
+      .filter(o => o.id !== s.id && o.data.categories.some(c => s.data.categories.includes(c)))
+      .sort((a, b) => Math.abs(a.data.rank - s.data.rank) - Math.abs(b.data.rank - s.data.rank))
+      .slice(0, 6)
+    return { params: { slug: s.id }, props: { entry: s, related } }
+  })
+}
+
+const { entry, related } = Astro.props
+const { Content } = await render(entry)
+const d = entry.data
+const LANG: Record<string, string> = {
+  cpp: 'C++',
+  python: 'Python',
+  javascript: 'JavaScript',
+  java: 'Java',
+  c: 'C',
+  sql: 'SQL',
+}
+const langLabel = d.langs.map(l => LANG[l] ?? l).join(', ')
+---
+
+<BaseLayout
+  title={`${d.title} — ${d.site} ${d.tier}`}
+  description={`${d.site} ${d.tier} ${d.title}${d.num ? ` ${d.num}번` : ''} 풀이 코드. ${d.categories.join(', ')}. ${langLabel}.`}
+>
+  <article class="wrap solution">
+    <nav class="crumb"><a href="/algorithms/">← 알고리즘</a></nav>
+
+    <header>
+      <div class="meta">
+        <span class="tier">{d.site} {d.tier}</span>
+        {d.num && <span class="num">#{d.num}</span>}
+      </div>
+      <h1>{d.title}</h1>
+      {
+        d.categories.length > 0 && (
+          <ul class="cats">
+            {d.categories.map(c => (
+              <li>{c}</li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+
+    <dl class="facts">
+      {
+        d.problemUrl && (
+          <div>
+            <dt>문제</dt>
+            <dd>
+              <a href={d.problemUrl}>원문 →</a>
+            </dd>
+          </div>
+        )
+      }
+      {d.runtime && <div><dt>실행 시간</dt><dd>{d.runtime}</dd></div>}
+      {d.memory && <div><dt>메모리</dt><dd>{d.memory}</dd></div>}
+      <div><dt>언어</dt><dd>{langLabel}</dd></div>
+    </dl>
+
+    <h2 class="code-title">풀이</h2>
+    <div class="body">
+      <Content />
+    </div>
+
+    <p class="notice">
+      문제 지문과 예제 입출력은 {d.site}의 저작물이라 싣지 않았습니다.
+      {d.problemUrl && <a href={d.problemUrl}>원문</a>}에서 확인하세요. 이 페이지의 코드는 직접
+      작성한 것입니다.
+    </p>
+
+    {
+      related.length > 0 && (
+        <section class="related">
+          <h2>같은 유형의 다른 문제</h2>
+          <ul>
+            {related.map(r => (
+              <li>
+                <span class="rtier">{r.data.tier}</span>
+                <a href={`/algorithms/${r.id}/`}>{r.data.title}</a>
+                <span class="rcat">{r.data.categories.slice(0, 2).join(' · ')}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .solution {
+    padding-block: 2rem 4rem;
+  }
+  .crumb {
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+  .crumb a {
+    color: var(--text-muted);
+  }
+  .meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 13px;
+  }
+  .tier {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .num {
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+  }
+  h1 {
+    margin: 10px 0 0;
+    font-size: clamp(24px, 4vw, 30px);
+    line-height: 1.4;
+    letter-spacing: -0.035em;
+  }
+  .cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+  }
+  .cats li {
+    font-size: 12.5px;
+    background: var(--bg-subtle);
+    border-radius: 999px;
+    padding: 4px 11px;
+    color: var(--text-muted);
+  }
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    margin: 26px 0 0;
+    padding: 16px 18px;
+    background: var(--bg-subtle);
+    border-radius: var(--radius);
+  }
+  .facts div {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+  }
+  .facts dt {
+    font-size: 12.5px;
+    color: var(--text-dim);
+  }
+  .facts dd {
+    margin: 0;
+    font-size: 13.5px;
+    font-variant-numeric: tabular-nums;
+  }
+  .facts a {
+    color: var(--accent);
+  }
+  .code-title {
+    margin: 36px 0 0;
+    font-size: 18px;
+    letter-spacing: -0.03em;
+  }
+  .body {
+    margin-top: 12px;
+  }
+  .notice {
+    margin-top: 24px;
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--text-dim);
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .notice a {
+    color: var(--text-muted);
+    text-decoration: underline;
+  }
+  .related {
+    margin-top: 44px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .related h2 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    letter-spacing: -0.02em;
+  }
+  .related ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .related li {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr auto;
+    gap: 12px;
+    align-items: baseline;
+    padding: 8px 0;
+    border-top: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .rtier,
+  .rcat {
+    font-size: 12.5px;
+    color: var(--text-dim);
+  }
+  .related a {
+    text-decoration: none;
+  }
+  .related a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+  }
+  @media (max-width: 640px) {
+    .related li {
+      grid-template-columns: 4.5rem 1fr;
+    }
+    .rcat {
+      grid-column: 2;
+    }
+  }
+</style>
