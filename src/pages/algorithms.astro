@@ -1,0 +1,311 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import items from '@/data/algorithms.json'
+
+type Item = {
+  site: string
+  tier: string
+  rank: number
+  title: string
+  num: string
+  cls: string[]
+  lang: string[]
+  time: string
+  mem: string
+  url: string
+  problem: string
+}
+const all = items as Item[]
+
+const boj = all.filter(i => i.site === '백준')
+const pgs = all.filter(i => i.site === '프로그래머스')
+
+/** 백준은 대분류(Bronze/Silver/Gold/Platinum)로 묶고, 프로그래머스는 레벨로 묶는다 */
+const majorOf = (tier: string) => tier.split(' ')[0]
+
+const BOJ_ORDER = ['Platinum', 'Gold', 'Silver', 'Bronze', 'Unrated']
+const bojGroups = BOJ_ORDER.map(g => ({
+  name: g,
+  items: boj.filter(i => majorOf(i.tier) === g).sort((a, b) => b.rank - a.rank),
+})).filter(g => g.items.length > 0)
+
+const PGS_ORDER = ['lv4', 'lv3', 'lv2', 'lv1', 'lv0']
+const pgsGroups = PGS_ORDER.map(g => ({
+  name: g.replace('lv', 'Level '),
+  items: pgs.filter(i => i.tier === g),
+})).filter(g => g.items.length > 0)
+
+const countBy = (key: (i: Item) => string[]) => {
+  const m = new Map<string, number>()
+  for (const i of all) for (const k of key(i)) m.set(k, (m.get(k) ?? 0) + 1)
+  return [...m.entries()].sort((a, b) => b[1] - a[1])
+}
+const byCls = countBy(i => i.cls).slice(0, 18)
+const byLang = countBy(i => i.lang)
+
+/** 백준 Gold 이상. 프로그래머스(rank 100+)와 Unrated는 제외한다 */
+const goldPlus = boj.filter(i => i.rank >= 10 && i.rank < 100).length
+---
+
+<BaseLayout
+  title="알고리즘"
+  description="백준 425문제, 프로그래머스 69문제. 티어·유형·언어별로 정리한 풀이 기록입니다."
+>
+  <div class="wrap-wide page">
+    <header class="head">
+      <h1>알고리즘</h1>
+      <p class="lead">
+        2021년 12월부터 2023년 10월까지 푼 문제를 모았습니다. Python으로 시작해 C++, JavaScript,
+        Java로 언어를 바꿔가며 풀었습니다. 풀이 코드는 저장소에 있고, 각 문제에서 바로 열립니다.
+      </p>
+    </header>
+
+    <section class="stats">
+      <div class="stat"><b>{all.length}</b><span>전체</span></div>
+      <div class="stat"><b>{boj.length}</b><span>백준</span></div>
+      <div class="stat"><b>{pgs.length}</b><span>프로그래머스</span></div>
+      <div class="stat"><b>{goldPlus}</b><span>Gold 이상</span></div>
+    </section>
+
+    <section class="facets">
+      <div>
+        <h2>많이 푼 유형</h2>
+        <ul class="chips">
+          {byCls.map(([k, v]) => <li>{k} <em>{v}</em></li>)}
+        </ul>
+      </div>
+      <div>
+        <h2>언어</h2>
+        <ul class="chips">
+          {byLang.map(([k, v]) => <li>{k} <em>{v}</em></li>)}
+        </ul>
+      </div>
+    </section>
+
+    <p class="repo">
+      풀이 전체는 <a href="https://github.com/daedaem/algorithm-study-archive">algorithm-study-archive</a>에
+      있습니다.
+    </p>
+
+    <h2 class="site-title">백준</h2>
+    {
+      bojGroups.map(g => (
+        <details class="group" open={g.name === 'Platinum' || g.name === 'Gold'}>
+          <summary>
+            {g.name} <em>{g.items.length}</em>
+          </summary>
+          <ul class="list">
+            {g.items.map(i => (
+              <li>
+                <span class="tier">{i.tier}</span>
+                <a class="name" href={i.url}>
+                  {i.title}
+                </a>
+                <span class="cls">{i.cls.slice(0, 3).join(' · ')}</span>
+                <span class="lang">{i.lang.join(', ')}</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      ))
+    }
+
+    <h2 class="site-title">프로그래머스</h2>
+    {
+      pgsGroups.map(g => (
+        <details class="group" open={g.name === 'Level 4' || g.name === 'Level 3'}>
+          <summary>
+            {g.name} <em>{g.items.length}</em>
+          </summary>
+          <ul class="list">
+            {g.items.map(i => (
+              <li>
+                <span class="tier">{g.name.replace('Level ', 'Lv')}</span>
+                <a class="name" href={i.url}>
+                  {i.title}
+                </a>
+                <span class="cls">{i.cls.slice(0, 3).join(' · ')}</span>
+                <span class="lang">{i.lang.join(', ')}</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: 3.5rem 5rem;
+  }
+  .head h1 {
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: -0.035em;
+  }
+  .lead {
+    margin: 14px 0 0;
+    max-width: 40rem;
+    color: var(--text-muted);
+    font-size: 15.5px;
+    line-height: 1.8;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin: 32px 0 0;
+  }
+  .stat {
+    background: var(--bg-subtle);
+    border-radius: var(--radius);
+    padding: 18px;
+    text-align: center;
+  }
+  .stat b {
+    display: block;
+    font-size: 26px;
+    letter-spacing: -0.03em;
+  }
+  .stat span {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .facets {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 28px;
+    margin-top: 36px;
+  }
+  .facets h2 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 10px;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .chips li {
+    font-size: 13px;
+    background: var(--bg-subtle);
+    border-radius: 999px;
+    padding: 5px 12px;
+    color: var(--text-muted);
+  }
+  .chips em {
+    font-style: normal;
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .repo {
+    margin-top: 28px;
+    font-size: 14.5px;
+    color: var(--text-muted);
+  }
+  .repo a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .site-title {
+    margin: 44px 0 12px;
+    font-size: 20px;
+    letter-spacing: -0.03em;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .group {
+    border-bottom: 1px solid var(--border);
+  }
+  .group summary {
+    cursor: pointer;
+    padding: 12px 0;
+    font-size: 15px;
+    font-weight: 600;
+    list-style: none;
+  }
+  .group summary::-webkit-details-marker {
+    display: none;
+  }
+  .group summary::before {
+    content: '▸';
+    display: inline-block;
+    width: 1.2em;
+    color: var(--text-dim);
+    transition: transform 0.15s ease;
+  }
+  .group[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .group summary em {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-left: 4px;
+  }
+
+  .list {
+    list-style: none;
+    margin: 0 0 12px;
+    padding: 0;
+  }
+  .list li {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr auto auto;
+    gap: 12px;
+    align-items: baseline;
+    padding: 7px 0 7px 1.2em;
+    font-size: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .tier {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+  }
+  .name {
+    text-decoration: none;
+  }
+  .name:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+  }
+  .cls,
+  .lang {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 760px) {
+    .stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .facets {
+      grid-template-columns: 1fr;
+    }
+    .list li {
+      grid-template-columns: 4.5rem 1fr;
+    }
+    .cls,
+    .lang {
+      grid-column: 2;
+      white-space: normal;
+    }
+  }
+</style>

@@ -1,0 +1,235 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { PROJECTS, TEAM_PROJECTS } from '@/data/projects'
+
+/** 본문의 `코드` 표기를 인라인 코드로 렌더한다 */
+const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
+---
+
+<BaseLayout
+  title="프로젝트"
+  description="직접 만든 백엔드 프로젝트. 무엇을 만들었고 어떤 문제를 어떤 근거로 풀었는지 정리했습니다."
+>
+  <div class="wrap-wide page">
+    <header class="head">
+      <h1>프로젝트</h1>
+      <p class="lead">
+        직접 만든 것들입니다. 기능 목록보다 <strong>어떤 문제를 어떤 근거로 풀었는지</strong>를
+        적었습니다. 코드는 각 저장소에 있습니다.
+      </p>
+    </header>
+
+    {
+      PROJECTS.map(p => (
+        <article class:list={['project', { featured: p.featured }]}>
+          <div class="top">
+            <h2>{p.name}</h2>
+            <span class="period">{p.period}</span>
+          </div>
+          <p class="tagline">{p.tagline}</p>
+          <p class="what">{p.what}</p>
+
+          <ul class="points">
+            {p.points.map(pt => (
+              <li>
+                <strong>{pt.title}</strong>
+                <span set:html={md(pt.body)} />
+              </li>
+            ))}
+          </ul>
+
+          <div class="bottom">
+            <ul class="stack">
+              {p.stack.map(s => (
+                <li>{s}</li>
+              ))}
+            </ul>
+            <a class="repo" href={p.repo}>
+              저장소 →
+            </a>
+          </div>
+        </article>
+      ))
+    }
+
+    <section class="team">
+      <h2>팀 프로젝트</h2>
+      <p class="team-lead">
+        SSAFY 재학 중 진행한 팀 프로젝트입니다. 프론트엔드로 참여했습니다.
+      </p>
+      <ul>
+        {
+          TEAM_PROJECTS.map(t => (
+            <li>
+              <a href={t.repo}>{t.name}</a>
+              <span>{t.desc}</span>
+              <time>{t.year}</time>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: 3.5rem 5rem;
+  }
+  .head h1 {
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: -0.035em;
+  }
+  .lead {
+    margin: 14px 0 0;
+    max-width: 38rem;
+    color: var(--text-muted);
+    font-size: 15.5px;
+    line-height: 1.8;
+  }
+  .lead strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .project {
+    margin-top: 28px;
+    padding: 26px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .project.featured {
+    background: var(--bg-card);
+  }
+
+  .top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .top h2 {
+    margin: 0;
+    font-size: 21px;
+    letter-spacing: -0.03em;
+  }
+  .period {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tagline {
+    margin: 8px 0 0;
+    font-size: 15px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .what {
+    margin: 12px 0 0;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text-muted);
+    max-width: 44rem;
+  }
+
+  .points {
+    list-style: none;
+    margin: 20px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .points li {
+    padding-left: 14px;
+    border-left: 2px solid var(--border);
+  }
+  .points strong {
+    display: block;
+    font-size: 15px;
+    margin-bottom: 4px;
+  }
+  .points span {
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--text-muted);
+  }
+  .points :global(code) {
+    font-size: 0.875em;
+  }
+
+  .bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .stack li {
+    font-size: 12.5px;
+    background: var(--bg-subtle);
+    border-radius: 999px;
+    padding: 4px 11px;
+    color: var(--text-muted);
+  }
+  .repo {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .team {
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+  }
+  .team h2 {
+    margin: 0;
+    font-size: 18px;
+    letter-spacing: -0.03em;
+  }
+  .team-lead {
+    margin: 8px 0 0;
+    font-size: 14.5px;
+    color: var(--text-muted);
+  }
+  .team ul {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+  }
+  .team li {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 9px 0;
+    border-top: 1px solid var(--border);
+    font-size: 14.5px;
+  }
+  .team li a {
+    font-weight: 500;
+    min-width: 7rem;
+  }
+  .team li span {
+    flex-grow: 1;
+    color: var(--text-muted);
+  }
+  .team li time {
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+</style>
