@@ -1,10 +1,9 @@
 ---
-import type { GetStaticPaths } from 'astro'
 import { getCollection, render } from 'astro:content'
 import PostLayout from '@/layouts/PostLayout.astro'
 import { readingMinutes } from '@/utils/format'
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths = async () => {
   const notes = await getCollection('notes')
   return notes.map(note => ({ params: { slug: note.id }, props: { note } }))
 }

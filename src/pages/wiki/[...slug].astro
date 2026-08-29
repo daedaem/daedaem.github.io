@@ -1,11 +1,10 @@
 ---
-import type { GetStaticPaths } from 'astro'
 import { getCollection, render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import { getWikiTopic } from '@/consts'
 import { formatDate, readingMinutes } from '@/utils/format'
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths = async () => {
   const entries = await getCollection('wiki', ({ data }) => !data.draft)
   return entries.map(entry => ({ params: { slug: entry.id }, props: { entry } }))
 }

@@ -1,9 +1,8 @@
 ---
-import type { GetStaticPaths } from 'astro'
 import { getCollection, render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 
-export const getStaticPaths: GetStaticPaths = async () => {
+export const getStaticPaths = async () => {
   const all = await getCollection('solutions')
   return all.map(s => {
     /** 같은 유형의 다른 문제를 붙여 이어 볼 수 있게 한다 */

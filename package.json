@@ -19,9 +19,11 @@
     "astro": "^5.14.1"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "pagefind": "^1.4.0",
     "prettier": "^3.6.2",
     "prettier-plugin-astro": "^0.14.1",
-    "pagefind": "^1.4.0"
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">=22.0.0 <24"
