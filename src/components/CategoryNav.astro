@@ -1,0 +1,51 @@
+---
+import { CATEGORIES } from '@/consts'
+
+interface Props {
+  /** 카테고리 id별 글 수 */
+  counts: Map<string, number>
+  total: number
+  /** 현재 선택된 카테고리 id. 없으면 "전체"가 선택된 상태 */
+  active?: string
+}
+
+const { counts, total, active } = Astro.props
+---
+
+<nav class="chips" aria-label="카테고리">
+  <a href="/posts/" class:list={['chip', { on: !active }]}>전체 {total}</a>
+  {
+    CATEGORIES.map(c => (
+      <a href={`/categories/${c.id}/`} class:list={['chip', { on: active === c.id }]}>
+        {c.name} {counts.get(c.id) ?? 0}
+      </a>
+    ))
+  }
+</nav>
+
+<style>
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border-radius: 999px;
+    padding: 7px 15px;
+    white-space: nowrap;
+  }
+
+  .chip:hover {
+    color: var(--text);
+  }
+
+  .chip.on {
+    color: var(--bg);
+    background: var(--text);
+    font-weight: 500;
+  }
+</style>

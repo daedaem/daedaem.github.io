@@ -1,0 +1,168 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { WIKI_TOPICS } from '@/consts'
+import { formatDate } from '@/utils/format'
+
+const entries = (await getCollection('wiki', ({ data }) => !data.draft)).sort((a, b) => {
+  const av = (a.data.updated ?? a.data.created).valueOf()
+  const bv = (b.data.updated ?? b.data.created).valueOf()
+  return bv - av
+})
+
+const grouped = WIKI_TOPICS.map(t => ({
+  ...t,
+  items: entries.filter(e => e.data.topic === t.id),
+})).filter(g => g.items.length > 0)
+
+const STATUS_LABEL: Record<string, string> = {
+  seed: '메모',
+  growing: '보완 중',
+  stable: '정리됨',
+}
+---
+
+<BaseLayout
+  title="위키"
+  description="일하면서 막히거나 궁금했던 것을 그때그때 정리해 쌓는 개인 지식 저장소입니다."
+>
+  <div class="wrap-wide page">
+    <header class="head">
+      <h1>위키</h1>
+      <p class="lead">
+        일하다 막히거나 궁금했던 것을 그때그때 정리해 두는 곳입니다. 시간순으로 흘려보내는 글이
+        아니라 주제별로 계속 고쳐 쓰는 문서라, 완성되지 않은 항목도 그대로 올립니다. 어느 정도 익은
+        글인지는 상태로 표시했습니다.
+      </p>
+      <p class="count muted">{entries.length}개 문서</p>
+    </header>
+
+    {
+      grouped.length === 0 ? (
+        <p class="empty muted">아직 정리한 문서가 없습니다.</p>
+      ) : (
+        grouped.map(g => (
+          <section class="topic">
+            <div class="topic-head">
+              <h2>
+                {g.name} <em>{g.items.length}</em>
+              </h2>
+              <p class="muted">{g.description}</p>
+            </div>
+            <ul>
+              {g.items.map(e => (
+                <li>
+                  <div class="line">
+                    <a href={`/wiki/${e.id}/`}>{e.data.title}</a>
+                    <span class={`status ${e.data.status}`}>{STATUS_LABEL[e.data.status]}</span>
+                  </div>
+                  <p class="desc muted">{e.data.description}</p>
+                  <time datetime={(e.data.updated ?? e.data.created).toISOString()}>
+                    {e.data.updated
+                      ? `${formatDate(e.data.updated)} 갱신`
+                      : formatDate(e.data.created)}
+                  </time>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: 3.5rem 0;
+  }
+  .head {
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  h1 {
+    margin: 0;
+    font-size: 1.875rem;
+    letter-spacing: -0.025em;
+  }
+  .lead {
+    margin: 1rem 0 0;
+    max-width: 44rem;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+  }
+  .count {
+    margin: 0.8rem 0 0;
+    font-size: 0.8125rem;
+  }
+  .topic {
+    margin-top: 2.75rem;
+  }
+  .topic-head h2 {
+    margin: 0;
+    font-size: 1.0625rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .topic-head h2 em {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+  .topic-head p {
+    margin: 0.3rem 0 0;
+    font-size: 0.875rem;
+  }
+  ul {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+  li {
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .line {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .line a {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .line a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+  }
+  .status {
+    font-size: 0.6875rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .status.stable {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .desc {
+    margin: 0.3rem 0 0;
+    font-size: 0.875rem;
+  }
+  time {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .empty {
+    padding-block: 2rem;
+  }
+</style>

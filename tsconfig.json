@@ -1,25 +1,11 @@
 {
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"],
   "compilerOptions": {
-    "types": ["@emotion/react/types/css-prop"],
-    "target": "es5",
-    "module": "commonjs",
-    "allowJs": true,
-    "jsx": "preserve",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "components/*": ["./components/*"],
-      "utils/*": ["./utils/*"],
-      "hooks/*": ["./hooks/*"]
-    },
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
-  },
-  "include": ["src/**/*.tsx"],
-  "exclude": ["node_modules"]
+      "@/*": ["src/*"]
+    }
+  }
 }

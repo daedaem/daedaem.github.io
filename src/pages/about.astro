@@ -1,0 +1,211 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { SITE } from '@/consts'
+---
+
+<BaseLayout
+  title="소개"
+  description="레거시 환경에서 성능·정합성·인증 구조를 개선해 온 3년차 백엔드 개발자 조해성입니다."
+>
+  <div class="wrap page">
+    <header class="head">
+      <h1>소개</h1>
+      <p class="lead">
+        레거시 환경에서 구조를 개선해 온 백엔드 개발자입니다. 새로 만드는 일보다, 이미 돌아가고 있어
+        멈출 수 없는 시스템을 고치는 일을 주로 해 왔습니다.
+      </p>
+    </header>
+
+    <section>
+      <h2>지금 하는 일</h2>
+      <p>
+        그룹 IT 계열사에서 대형 제조 고객사의 사내 시스템을 개발하고 운영합니다. 공사계약, 업무지원,
+        법무, 고객품질관리 등 여섯 개 도메인을 맡고 있습니다. 2023년 5월부터 3년째입니다.
+      </p>
+      <p>
+        운영 환경은 JDK 1.6, Spring 3.0, Oracle 10g 같은 구버전입니다. 버전을 올리는 선택지가 없는
+        상태에서 무엇을 어디까지 바꿀 수 있는지 판단하는 일이 업무의 큰 부분을 차지합니다.
+      </p>
+    </section>
+
+    <section>
+      <h2>다루는 기술</h2>
+      <dl class="stack">
+        <div>
+          <dt>주력</dt>
+          <dd>Java, Spring, MyBatis, Oracle, PL/SQL, JSP, jQuery</dd>
+        </div>
+        <div>
+          <dt>병행</dt>
+          <dd>C#/.NET (ASP.NET Web Forms), MSSQL, IIS</dd>
+        </div>
+        <div>
+          <dt>신규 구축</dt>
+          <dd>Spring Boot 3, JPA, React</dd>
+        </div>
+        <div>
+          <dt>운영 환경</dt>
+          <dd>JEUS, WebtoB, WebLogic, AIX, HP-UX, Windows Server</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section>
+      <h2>해 온 일</h2>
+      <p>
+        아래는 실제로 맡아 처리한 문제들입니다. 고객사와 시스템을 특정할 수 있는 정보는 모두 제외하고
+        문제의 구조만 적었습니다.
+      </p>
+      <ul class="work">
+        <li>
+          <strong>600만 건 규모 주소 조회의 응답 시간을 9초에서 100밀리초대로</strong>
+          선행 와일드카드 때문에 인덱스를 타지 못하는 것을 확인해 전방 일치로 바꿔 1초대로 줄였고,
+          수기 적재 운영이 남는 문제까지 없애기 위해 조회 방식 자체를 행정안전부 API로 대체했습니다.
+          외부 의존이 생긴 만큼 기존 조회는 폴백으로 남겼습니다.
+        </li>
+        <li>
+          <strong>수년간 남아 있던 시스템 간 데이터 동기화 오류의 원인 규명</strong>
+          전 계층을 순서대로 조사해, 서로 무관한 원인 두 건을 분리해 확인했습니다. 하나는 NULL과 빈
+          문자열을 같게 취급한 비교 로직이었고, 다른 하나는 인터페이스 플래그가 반영되지 않는
+          문제였습니다.
+        </li>
+        <li>
+          <strong>지원이 끝난 Flash 모듈을 재개발 없이 대체</strong>
+          같은 데이터를 이미 다루고 있던 다른 시스템과 연동하는 방식으로 전환했습니다. 검증 중 금액이
+          음수로 표기되는 현상을 발견해 DTO의 데이터 타입에서 발생한 정수 오버플로가 원인임을
+          확인했습니다.
+        </li>
+        <li>
+          <strong>대외 포털 인증 구조 재설계</strong>
+          1차 인증만 전제하던 구조를 ID/비밀번호 검증, 2차 인증, 비밀번호 변경 판정의 단계로 나누고,
+          권한 적재를 최종 단계로 옮겼습니다. 비밀번호 저장은 계정별 salt를 적용한 SHA-256으로
+          바꾸되, 사용자를 끊지 않기 위해 비밀번호를 변경하는 시점에 순차적으로 이행했습니다.
+        </li>
+        <li>
+          <strong>WAS 전환 이후 멈추지 않던 배치의 출처 추적</strong>
+          컨테이너를 내렸는데도 배치가 계속 도는 현상을 두고, UPDATE 트리거와 로그 테이블로 접속
+          IP를 남겨 전환 이전 서버에 남아 있던 프로세스를 특정했습니다.
+        </li>
+        <li>
+          <strong>구버전 JDK의 TLS 제약 우회</strong>
+          외부 시스템 DB에 직접 연결할 수 없는 환경에서, 기존 인터페이스를 경유하는 방식으로
+          해결했습니다.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>어떻게 여기까지 왔는지</h2>
+      <p>
+        체육교육을 전공하고 운동생화학으로 석사를 마쳤습니다. 이후 SSAFY와 SCSA 과정을 거쳐 개발자로
+        전환했습니다. 전공을 바꾼 이력이라 기초는 늦게 시작했고, 그래서 남들이 넘어가는 부분을
+        확인하고 넘어가는 습관이 생겼습니다. 원인을 끝까지 좁히는 방식으로 일하는 것도 여기서
+        비롯됐다고 생각합니다.
+      </p>
+      <p>
+        전환기에 남긴 학습 노트는 <a href="/notes/">아카이브</a>에 그대로 두었습니다.
+      </p>
+    </section>
+
+    <section>
+      <h2>글을 쓸 때 지키는 것</h2>
+      <ul class="rules">
+        <li>회사, 고객사, 시스템, 서버, 사업장을 특정할 수 있는 정보는 쓰지 않습니다. 문제의 구조와 원리만 남깁니다.</li>
+        <li>증상이 아니라 원인을 씁니다. 느렸다는 사실보다 왜 느렸는지가 글의 본론입니다.</li>
+        <li>고른 방법과 함께 고르지 않은 선택지도 적습니다. 판단의 근거가 결과보다 오래 갑니다.</li>
+        <li>직접 확인하지 않은 것은 추측이라고 표시합니다.</li>
+        <li>과장하지 않습니다. 규명한 것과 확인한 것을 구분해서 씁니다.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>연락</h2>
+      <p>
+        <a href={SITE.githubUrl} rel="me noopener">GitHub</a>
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: 3.5rem 0;
+  }
+  .head {
+    padding-bottom: 0.5rem;
+  }
+  h1 {
+    margin: 0;
+    font-size: 1.875rem;
+    letter-spacing: -0.025em;
+  }
+  .lead {
+    margin: 1rem 0 0;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--text-muted);
+  }
+  section {
+    margin-top: 3rem;
+  }
+  h2 {
+    font-size: 1.125rem;
+    margin: 0 0 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  p {
+    margin-block: 1.1rem;
+  }
+  .stack {
+    margin: 0;
+    display: grid;
+    gap: 0.85rem;
+  }
+  .stack div {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+  }
+  .stack dt {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+  .stack dd {
+    margin: 0;
+    font-size: 0.9375rem;
+  }
+  .work {
+    list-style: none;
+    margin: 1.25rem 0 0;
+    padding: 0;
+  }
+  .work li {
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+  }
+  .work strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--text);
+    font-size: 1rem;
+  }
+  .rules {
+    padding-left: 1.1rem;
+    font-size: 0.9375rem;
+    color: var(--text-muted);
+  }
+  .rules li {
+    margin-block: 0.5rem;
+  }
+  @media (max-width: 30rem) {
+    .stack div {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+    }
+  }
+</style>

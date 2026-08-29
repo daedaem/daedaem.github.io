@@ -1,0 +1,103 @@
+---
+// Pagefind는 빌드 후 dist/pagefind 에 생성된다. 개발 서버에서는 동작하지 않는다.
+---
+
+<button id="search-open" type="button" aria-label="검색 열기">
+  <span>검색</span>
+  <kbd>⌘K</kbd>
+</button>
+
+<dialog id="search-dialog" aria-label="검색">
+  <div id="search-mount"></div>
+</dialog>
+
+<script>
+  const openBtn = document.getElementById('search-open') as HTMLButtonElement | null
+  const dialog = document.getElementById('search-dialog') as HTMLDialogElement | null
+  const mount = document.getElementById('search-mount')
+  let loaded = false
+
+  async function ensureLoaded() {
+    if (loaded || !mount) return
+    loaded = true
+    // Pagefind 번들은 astro build 이후에 생성되므로 번들러가 미리 해석하면 안 된다.
+    // 경로를 변수에 담아 정적 분석을 피한다.
+    const src = '/pagefind/pagefind-ui.js'
+    const { PagefindUI } = await import(/* @vite-ignore */ src)
+    new PagefindUI({ element: '#search-mount', showSubResults: true, pageSize: 8 })
+  }
+
+  async function open() {
+    if (!dialog) return
+    await ensureLoaded()
+    dialog.showModal()
+    dialog.querySelector<HTMLInputElement>('input')?.focus()
+  }
+
+  openBtn?.addEventListener('click', open)
+
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault()
+      dialog?.open ? dialog.close() : open()
+    }
+  })
+
+  // 바깥을 누르면 닫는다
+  dialog?.addEventListener('click', e => {
+    if (e.target === dialog) dialog.close()
+  })
+</script>
+
+<style is:global>
+  #search-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.6rem;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 0.8125rem;
+    cursor: pointer;
+  }
+  #search-open:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+  #search-open kbd {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    opacity: 0.7;
+  }
+
+  #search-dialog {
+    width: min(38rem, 92vw);
+    margin-top: 12vh;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--text);
+  }
+  #search-dialog::backdrop {
+    background: rgb(0 0 0 / 0.45);
+  }
+
+  :root {
+    --pagefind-ui-primary: var(--text);
+    --pagefind-ui-text: var(--text);
+    --pagefind-ui-background: var(--bg);
+    --pagefind-ui-border: var(--border);
+    --pagefind-ui-tag: var(--bg-subtle);
+    --pagefind-ui-font: var(--font-sans);
+  }
+
+  @media (max-width: 40rem) {
+    #search-open span {
+      display: none;
+    }
+  }
+</style>

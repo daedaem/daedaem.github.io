@@ -1,0 +1,148 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import PostCard from '@/components/PostCard.astro'
+import CategoryNav from '@/components/CategoryNav.astro'
+import { SITE } from '@/consts'
+import { readingMinutes } from '@/utils/format'
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+)
+const notes = await getCollection('notes')
+const wiki = await getCollection('wiki', ({ data }) => !data.draft)
+
+const counts = new Map<string, number>()
+for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) ?? 0) + 1)
+
+const [featured, ...rest] = posts
+---
+
+<BaseLayout title={SITE.title} description={SITE.description}>
+  <div class="wrap-wide">
+    <section class="hero">
+      <h1>{SITE.tagline}</h1>
+      <p>
+        JDK 1.6, Spring 3, Oracle 10g가 도는 시스템을 운영하면서 성능·정합성·인증 구조를 실제로 바꿔
+        온 기록입니다. 증상이 아니라 원인을 씁니다.
+      </p>
+    </section>
+
+    <CategoryNav counts={counts} total={posts.length} />
+
+    {
+      posts.length === 0 ? (
+        <p class="empty muted">아직 발행한 글이 없습니다.</p>
+      ) : (
+        <div class="grid">
+          <PostCard
+            href={`/posts/${featured.id}/`}
+            title={featured.data.title}
+            description={featured.data.description}
+            date={featured.data.date}
+            category={featured.data.category}
+            readingMinutes={readingMinutes(featured.body ?? '')}
+            featured
+          />
+          {rest.slice(0, 6).map(p => (
+            <PostCard
+              href={`/posts/${p.id}/`}
+              title={p.data.title}
+              description={p.data.description}
+              date={p.data.date}
+              category={p.data.category}
+              readingMinutes={readingMinutes(p.body ?? '')}
+            />
+          ))}
+        </div>
+      )
+    }
+
+    <div class="strips">
+      <a class="strip" href="/wiki/">
+        <div class="strip-title">위키</div>
+        <p>일하다 막힌 것을 그때그때 정리해 쌓는 곳. 완성되지 않은 항목도 그대로 둡니다.</p>
+        <div class="strip-more">{wiki.length}개 문서 →</div>
+      </a>
+      <a class="strip" href="/notes/">
+        <div class="strip-title">학습 노트 아카이브</div>
+        <p>개발자로 전환하던 2022~2023년에 자바스크립트·타입스크립트 기초를 정리한 노트.</p>
+        <div class="strip-more">{notes.length}편 →</div>
+      </a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: 64px 0 44px;
+  }
+
+  .hero h1 {
+    margin: 0;
+    font-size: clamp(26px, 4.2vw, 34px);
+    line-height: 1.45;
+    letter-spacing: -0.035em;
+    max-width: 38rem;
+  }
+
+  .hero p {
+    margin: 18px 0 0;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text-muted);
+    max-width: 37rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: 32px;
+  }
+
+  .empty {
+    padding: 40px 0;
+  }
+
+  .strips {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin: 32px 0 72px;
+  }
+
+  .strip {
+    display: block;
+    background: var(--bg-subtle);
+    border-radius: var(--radius);
+    padding: 26px;
+  }
+
+  .strip-title {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  .strip p {
+    margin: 8px 0 0;
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--text-muted);
+  }
+
+  .strip-more {
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  @media (max-width: 720px) {
+    .grid,
+    .strips {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

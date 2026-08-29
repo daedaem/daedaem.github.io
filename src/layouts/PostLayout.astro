@@ -1,0 +1,190 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import { getCategory } from '@/consts'
+import { formatDate } from '@/utils/format'
+
+interface Props {
+  title: string
+  description: string
+  date: Date
+  updated?: Date
+  category?: string
+  tags?: string[]
+  readingMinutes?: number
+  /** 아카이브 글 상단에 안내 배너를 띄운다 */
+  archived?: boolean
+}
+
+const {
+  title,
+  description,
+  date,
+  updated,
+  category,
+  tags = [],
+  readingMinutes,
+  archived = false,
+} = Astro.props
+const cat = category ? getCategory(category) : undefined
+---
+
+<BaseLayout title={title} description={description} type="article" publishedAt={date}>
+  <article class="wrap post">
+    <header>
+      <div class="meta">
+        {cat && <a class="cat" href={`/categories/${cat.id}/`}>{cat.name}</a>}
+        <time datetime={date.toISOString()}>{formatDate(date)}</time>
+        {readingMinutes && <span>· {readingMinutes}분</span>}
+      </div>
+      <h1>{title}</h1>
+      {description && <p class="lead">{description}</p>}
+      {updated && <p class="updated muted">{formatDate(updated)}에 수정</p>}
+    </header>
+
+    {
+      archived && (
+        <aside class="archived">
+          <strong>학습 노트 아카이브 (2022~2023)</strong>
+          <p>
+            개발자로 전환하며 자바스크립트·타입스크립트의 기초를 정리하던 시기의 글입니다. 이후
+            내용을 갱신하지 않았으므로 최신 정보와 다를 수 있습니다. 당시의 이해 수준을 그대로 두는
+            편이 기록으로서 정확하다고 판단해 고치지 않았습니다.
+          </p>
+          <p><a href="/notes/">노트 전체 보기</a></p>
+        </aside>
+      )
+    }
+
+    <div class="body">
+      <slot />
+    </div>
+
+    {
+      tags.length > 0 && (
+        <ul class="tags">
+          {tags.map(t => (
+            <li>#{t}</li>
+          ))}
+        </ul>
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    padding-top: 3rem;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+
+  .cat {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  h1 {
+    margin: 0.7rem 0 0;
+    font-size: clamp(26px, 4vw, 32px);
+    line-height: 1.45;
+    letter-spacing: -0.035em;
+  }
+
+  .lead {
+    margin: 0.9rem 0 0;
+    color: var(--text-muted);
+    font-size: 16.5px;
+    line-height: 1.85;
+  }
+
+  .updated {
+    margin: 0.5rem 0 0;
+    font-size: 0.8125rem;
+  }
+
+  .archived {
+    margin-top: 2rem;
+    padding: 1rem 1.2rem;
+    background: var(--bg-subtle);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+  }
+
+  .archived strong {
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .archived p {
+    margin: 0 0 0.4rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .archived p:last-child {
+    margin-bottom: 0;
+  }
+
+  .body {
+    margin-top: 2.5rem;
+  }
+
+  .body :global(h2) {
+    margin-top: 3.25rem;
+    font-size: 21px;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .body :global(h3) {
+    margin-top: 2.5rem;
+    font-size: 17.5px;
+  }
+
+  .body :global(p),
+  .body :global(ul),
+  .body :global(ol) {
+    margin-block: 1.15rem;
+  }
+
+  .body :global(li) {
+    margin-block: 0.35rem;
+  }
+
+  .body :global(img) {
+    display: block;
+    margin: 1.75rem auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+
+  .body :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+
+  .body :global(a:hover) {
+    color: var(--accent-hover);
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 3rem 0 0;
+    padding: 1.25rem 0 0;
+    border-top: 1px solid var(--border);
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+</style>

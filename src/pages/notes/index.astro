@@ -1,0 +1,183 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { formatDate } from '@/utils/format'
+
+const notes = (await getCollection('notes')).sort(
+  (a, b) => a.data.date.valueOf() - b.data.date.valueOf(),
+)
+
+/** 슬러그 접두사로 시리즈를 묶는다. 순서가 곧 학습한 순서다. */
+const SERIES = [
+  {
+    prefix: 'javascript-',
+    title: '자바스크립트 기초',
+    note: '문법과 데이터 타입을 처음 정리하던 시기의 노트.',
+  },
+  {
+    prefix: 'core-javascript-',
+    title: '코어 자바스크립트',
+    note: '실행 컨텍스트·this·클로저·프로토타입을 장별로 정리한 완독 기록.',
+  },
+  {
+    prefix: 'modern-js-deep-dive-',
+    title: '모던 자바스크립트 Deep Dive',
+    note: '언어의 동작 원리를 다시 근본부터 짚은 노트.',
+  },
+  {
+    prefix: 'typescript-',
+    title: '타입스크립트',
+    note: '타입 시스템과 컴파일러 구성, 고급 타입까지의 학습 기록.',
+  },
+]
+
+const grouped = SERIES.map(s => ({
+  ...s,
+  items: notes.filter(n => n.id.startsWith(s.prefix)),
+}))
+
+const used = new Set(grouped.flatMap(g => g.items.map(i => i.id)))
+const others = notes.filter(n => !used.has(n.id))
+---
+
+<BaseLayout
+  title="학습 노트 아카이브"
+  description="개발자로 전환하던 2022~2023년에 자바스크립트·타입스크립트·웹 기초를 정리한 학습 노트 모음입니다."
+>
+  <div class="wrap-wide page">
+    <header class="head">
+      <h1>학습 노트 아카이브</h1>
+      <p class="lead">
+        비전공자로 개발을 시작해 자바스크립트와 타입스크립트의 기초를 다지던 2022~2023년의 노트
+        {notes.length}편입니다. 지금 쓰는 글과는 성격이 다르지만, 무엇을 어떤 순서로 익혔는지도
+        기록이라고 생각해 그대로 남겨 둡니다. 이후 내용을 갱신하지 않아 최신 정보와 다를 수 있습니다.
+      </p>
+    </header>
+
+    {
+      grouped.map(
+        g =>
+          g.items.length > 0 && (
+            <section class="series">
+              <div class="series-head">
+                <h2>
+                  {g.title} <em>{g.items.length}편</em>
+                </h2>
+                <p class="muted">{g.note}</p>
+              </div>
+              <ol>
+                {g.items.map(n => (
+                  <li>
+                    <a href={`/notes/${n.id}/`}>{n.data.title.trim()}</a>
+                    <time datetime={n.data.date.toISOString()}>{formatDate(n.data.date)}</time>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ),
+      )
+    }
+
+    {
+      others.length > 0 && (
+        <section class="series">
+          <div class="series-head">
+            <h2>
+              그 밖의 글 <em>{others.length}편</em>
+            </h2>
+            <p class="muted">웹 표준, 설계 방법론, 도메인 지식, 그리고 개인적인 기록.</p>
+          </div>
+          <ol>
+            {others.map(n => (
+              <li>
+                <a href={`/notes/${n.id}/`}>{n.data.title.trim()}</a>
+                <time datetime={n.data.date.toISOString()}>{formatDate(n.data.date)}</time>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: 3.5rem 0;
+  }
+
+  .head {
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.875rem;
+    letter-spacing: -0.025em;
+  }
+
+  .lead {
+    margin: 1rem 0 0;
+    max-width: 44rem;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+  }
+
+  .series {
+    margin-top: 2.75rem;
+  }
+
+  .series-head h2 {
+    margin: 0;
+    font-size: 1.0625rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .series-head h2 em {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+
+  .series-head p {
+    margin: 0.3rem 0 0;
+    font-size: 0.875rem;
+  }
+
+  ol {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.25rem 1rem;
+    padding-block: 0.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  li a {
+    text-decoration: none;
+    font-size: 0.9375rem;
+  }
+
+  li a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+  }
+
+  time {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+</style>

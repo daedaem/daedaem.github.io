@@ -1,0 +1,99 @@
+---
+import { SITE } from '@/consts'
+import Search from './Search.astro'
+
+const path = Astro.url.pathname
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href))
+
+const NAV = [
+  { href: '/posts/', label: '글' },
+  { href: '/wiki/', label: '위키' },
+  { href: '/notes/', label: '학습 노트' },
+  { href: '/about/', label: '소개' },
+]
+---
+
+<header>
+  <div class="wrap-wide bar">
+    <a href="/" class="brand">{SITE.title}</a>
+    <div class="right">
+      <nav aria-label="주요 메뉴">
+        <ul>
+          {
+            NAV.map(item => (
+              <li>
+                <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <Search />
+    </div>
+  </div>
+</header>
+
+<style>
+  header {
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    min-height: 64px;
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    white-space: nowrap;
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 22px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+  }
+
+  nav a {
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  nav a:hover {
+    color: var(--text);
+  }
+
+  nav a[aria-current='page'] {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  @media (max-width: 640px) {
+    .bar {
+      padding-block: 12px;
+    }
+  }
+</style>

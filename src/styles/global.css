@@ -1,0 +1,184 @@
+/* Pretendard — 한국어 웹폰트의 사실상 표준. 자모 간격과 숫자 폭이 본문에 가장 안정적이다. */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css');
+
+:root {
+  color-scheme: light;
+
+  --bg: #ffffff;
+  --bg-subtle: #f2f4f6;
+  --bg-card: #fafbfc;
+  --border: #eef0f3;
+  --border-strong: #dfe3e8;
+
+  --text: #191f28;
+  --text-muted: #6b7684;
+  --text-dim: #8b95a1;
+
+  --accent: #1f5fd0;
+  --accent-hover: #1749a3;
+
+  --code-bg: #f7f8fa;
+
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+    'Apple SD Gothic Neo', system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* 본문 폭. 코드 블록과 표가 많아 순수 텍스트 블로그보다 조금 넓게 잡는다. */
+  --measure: 44rem;
+  --measure-wide: 64rem;
+  --radius: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --bg: #16181c;
+    --bg-subtle: #1d2025;
+    --bg-card: #1a1d21;
+    --border: #2a2e35;
+    --border-strong: #363b44;
+
+    --text: #e9ecef;
+    --text-muted: #9aa3ad;
+    --text-dim: #767e88;
+
+    --accent: #6ea3f5;
+    --accent-hover: #8fbaff;
+
+    --code-bg: #1d2025;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.8;
+  letter-spacing: -0.01em;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.5;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 3rem 0;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  letter-spacing: 0;
+}
+
+:not(pre) > code {
+  background: var(--bg-subtle);
+  border-radius: 4px;
+  padding: 0.12em 0.36em;
+}
+
+pre {
+  padding: 1.15rem 1.25rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+/* Shiki 이중 테마 — 다크에서 토큰 색을 교체한다 */
+@media (prefers-color-scheme: dark) {
+  .astro-code,
+  .astro-code span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+  }
+}
+
+blockquote {
+  margin: 1.75rem 0;
+  padding: 0.15rem 0 0.15rem 1.15rem;
+  border-left: 3px solid var(--border-strong);
+  color: var(--text-muted);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  margin: 1.75rem 0;
+}
+
+th,
+td {
+  border: 1px solid var(--border);
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+}
+
+th {
+  background: var(--bg-subtle);
+  font-weight: 600;
+}
+
+.wrap {
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.wrap-wide {
+  max-width: var(--measure-wide);
+  margin-inline: auto;
+  padding-inline: 32px;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
