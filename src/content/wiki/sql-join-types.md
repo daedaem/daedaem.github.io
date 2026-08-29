@@ -1,6 +1,6 @@
 ---
 title: 'JOIN 다섯 가지 — INNER, CROSS, LEFT/RIGHT/FULL OUTER'
-description: '오라클 조인과 ANSI 조인의 차이, 그리고 다섯 가지 JOIN이 각각 무엇을 남기고 무엇을 버리는지 샘플 테이블로 확인하기.'
+description: '오라클 고유 문법과 ANSI 조인의 차이, 그리고 다섯 가지 JOIN이 각각 무엇을 남기고 무엇을 버리는지 샘플 테이블로 확인하기.'
 topic: 'database'
 tags: ['SQL', 'JOIN', 'Oracle', 'ANSI']
 created: 2023-12-03
@@ -12,7 +12,7 @@ status: 'stable'
 
 `SELECT`로 데이터를 가져올 때 **두 개 이상의 테이블에서 조인 조건을 만족하는 행을 반환하는** 구문이다. 요약하면 여러 테이블을 하나로 만드는 것이다.
 
-오라클은 9i까지 오라클 조인만 쓸 수 있었고, **10g부터 ANSI 조인**을 함께 쓸 수 있다.
+오라클은 **9i부터 ANSI 조인**을 함께 쓸 수 있다. 그 이전에는 오라클 고유 문법(`(+)` 표기)만 썼다.
 
 > **ANSI 조인**은 DBMS마다 다르던 SQL을 미국 표준 협회(ANSI)가 표준화한 문법이다.
 
@@ -123,7 +123,7 @@ SELECT a.name, b.company_name
   FULL OUTER JOIN company b ON a.company_id = b.company_id;
 ```
 
-`홍길동`도 `네이버`·`카카오`도 각각 새로운 행으로 나온다. **ANSI 조인에서만 제공하는 기능**이고 오라클 10g 이상에서 쓸 수 있다.
+`홍길동`도 `네이버`·`카카오`도 각각 새로운 행으로 나온다. **ANSI 조인에서만 제공하는 기능**이다. 오라클 고유 문법으로는 표현할 수 없어서 `UNION`으로 우회해야 했고, 실제로 오라클은 내부적으로 `UNION` 연산으로 처리한다.
 
 ## 한눈에
 
