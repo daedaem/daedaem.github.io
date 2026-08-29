@@ -19,7 +19,7 @@ export const SITE = {
    * 빈 문자열이면 해당 태그를 넣지 않는다.
    */
   verification: {
-    google: '',
+    google: 'aM2FnNkFJeBJ5b43dRGSfIMcP790b3C6WmiC6FGpAhM',
     naver: '',
   },
 } as const
