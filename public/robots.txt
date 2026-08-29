@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# 검색엔진이 전체 목록을 먼저 찾도록 사이트맵을 명시한다
+Sitemap: https://daedaem.github.io/sitemap-index.xml

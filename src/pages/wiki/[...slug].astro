@@ -21,7 +21,14 @@ const STATUS_LABEL: Record<string, string> = {
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
 ---
 
-<BaseLayout title={entry.data.title} description={entry.data.description} type="article">
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  type="article"
+  publishedAt={entry.data.created}
+  updatedAt={entry.data.updated}
+  ogSlug={`wiki/${entry.id}`}
+>
   <article class="wrap post">
     <header>
       <div class="meta">

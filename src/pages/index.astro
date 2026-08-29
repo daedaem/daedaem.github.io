@@ -32,25 +32,27 @@ const algoCount = (algorithms as unknown[]).length
       </p>
     </section>
 
-    <section class="projects">
-      <div class="sec-head">
-        <h2>프로젝트</h2>
-        <a href="/projects/">전체 보기 →</a>
-      </div>
-      <ul>
-        {
-          featuredProjects.map(p => (
-            <li>
-              <a href="/projects/">
-                <span class="pname">{p.name}</span>
-                <span class="ptag">{p.tagline}</span>
-                <span class="pstack">{p.stack.slice(0, 4).join(' · ')}</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
+    {
+      featuredProjects.length > 0 && (
+        <section class="projects">
+          <div class="sec-head">
+            <h2>프로젝트</h2>
+            <a href="/projects/">전체 보기 →</a>
+          </div>
+          <ul>
+            {featuredProjects.map(p => (
+              <li>
+                <a href="/projects/">
+                  <span class="pname">{p.name}</span>
+                  <span class="ptag">{p.tagline}</span>
+                  <span class="pstack">{p.stack.slice(0, 4).join(' · ')}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
     <CategoryNav counts={counts} total={posts.length} />
 

@@ -5,14 +5,57 @@ import '@/styles/global.css'
 interface Props {
   title: string
   description?: string
-  /** 글 상세에서 article로 바꿔 OG 타입을 맞춘다 */
   type?: 'website' | 'article'
   publishedAt?: Date
+  updatedAt?: Date
+  /** OG 카드 경로. 없으면 사이트 기본 카드를 쓴다 */
+  ogSlug?: string
 }
 
-const { title, description = SITE.description, type = 'website', publishedAt } = Astro.props
+const {
+  title,
+  description = SITE.description,
+  type = 'website',
+  publishedAt,
+  updatedAt,
+  ogSlug = 'site',
+} = Astro.props
+
 const canonical = new URL(Astro.url.pathname, Astro.site)
 const fullTitle = title === SITE.title ? title : `${title} · ${SITE.title}`
+const ogImage = new URL(`/og/${ogSlug}.svg`, Astro.site)
+
+/** 검색엔진이 저자와 글을 이해하도록 구조화 데이터를 넣는다 */
+const person = {
+  '@type': 'Person',
+  name: SITE.author,
+  url: SITE.url,
+  jobTitle: '백엔드 개발자',
+  sameAs: [SITE.githubUrl],
+}
+const jsonLd =
+  type === 'article'
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: title,
+        description,
+        url: canonical.href,
+        inLanguage: 'ko-KR',
+        author: person,
+        publisher: person,
+        ...(publishedAt && { datePublished: publishedAt.toISOString() }),
+        ...(updatedAt && { dateModified: updatedAt.toISOString() }),
+      }
+    : {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: SITE.title,
+        description,
+        url: SITE.url,
+        inLanguage: 'ko-KR',
+        author: person,
+      }
 ---
 
 <meta charset="utf-8" />
@@ -29,6 +72,7 @@ const fullTitle = title === SITE.title ? title : `${title} · ${SITE.title}`
   href={new URL('rss.xml', Astro.site)}
 />
 <meta name="generator" content={Astro.generator} />
+<meta name="robots" content="index, follow, max-image-preview:large" />
 
 <meta property="og:type" content={type} />
 <meta property="og:title" content={fullTitle} />
@@ -36,5 +80,15 @@ const fullTitle = title === SITE.title ? title : `${title} · ${SITE.title}`
 <meta property="og:url" content={canonical} />
 <meta property="og:site_name" content={SITE.title} />
 <meta property="og:locale" content="ko_KR" />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 {publishedAt && <meta property="article:published_time" content={publishedAt.toISOString()} />}
-<meta name="twitter:card" content="summary" />
+{updatedAt && <meta property="article:modified_time" content={updatedAt.toISOString()} />}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

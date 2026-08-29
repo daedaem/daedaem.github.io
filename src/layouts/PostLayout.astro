@@ -13,6 +13,8 @@ interface Props {
   readingMinutes?: number
   /** 아카이브 글 상단에 안내 배너를 띄운다 */
   archived?: boolean
+  /** OG 카드 경로 */
+  ogSlug?: string
 }
 
 const {
@@ -24,11 +26,19 @@ const {
   tags = [],
   readingMinutes,
   archived = false,
+  ogSlug,
 } = Astro.props
 const cat = category ? getCategory(category) : undefined
 ---
 
-<BaseLayout title={title} description={description} type="article" publishedAt={date}>
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  publishedAt={date}
+  updatedAt={updated}
+  ogSlug={ogSlug}
+>
   <article class="wrap post">
     <header>
       <div class="meta">
