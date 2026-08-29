@@ -4,7 +4,7 @@ description: 'Model·View·Controller를 나누는 이유와, 셋 사이의 의�
 topic: 'cs'
 tags: ['MVC', '디자인패턴', 'Java', '아키텍처']
 created: 2023-06-11
-updated: 2023-06-11
+updated: 2026-08-29
 status: 'stable'
 ---
 

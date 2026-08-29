@@ -4,7 +4,7 @@ description: 'EJB의 겨울에서 스프링이 나온 배경부터 다형성·SO
 topic: 'spring'
 tags: ['Spring', '객체지향', 'SOLID', '다형성', 'DI']
 created: 2023-05-21
-updated: 2023-10-24
+updated: 2026-08-29
 status: 'stable'
 ---
 

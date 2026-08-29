@@ -3,7 +3,8 @@ title: 'Java 정수 오버플로는 예외를 던지지 않는다'
 description: 'int 범위를 넘으면 조용히 부호가 뒤집힌다. 금액을 int로 두면 약 21억에서 음수가 된다.'
 topic: 'java'
 tags: ['Java', '오버플로', 'BigDecimal']
-created: 2026-08-29
+created: 2026-08-12
+updated: 2026-08-29
 status: 'growing'
 ---
 

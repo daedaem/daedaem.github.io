@@ -3,7 +3,8 @@ title: 'Oracle은 빈 문자열을 NULL로 저장한다'
 description: "Oracle에서 ''와 NULL은 구분되지 않는다. SQL 표준과 다른 동작이라 다른 DBMS에서 옮겨 오면 반드시 걸린다."
 topic: 'database'
 tags: ['Oracle', 'NULL', 'SQL']
-created: 2026-08-29
+created: 2026-08-12
+updated: 2026-08-29
 status: 'growing'
 ---
 

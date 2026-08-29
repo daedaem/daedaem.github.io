@@ -1,7 +1,8 @@
 ---
 title: "NULL과 빈 문자열을 같게 취급한 대가 — 수년 묵은 동기화 오류의 원인 두 가지"
 description: '시스템 간 데이터가 어긋난 채 수년간 남아 있었다. 전 계층을 훑어 서로 무관한 원인 두 건을 분리했다. 하나는 NULL과 빈 문자열의 비교였고, 다른 하나는 반영되지 않는 인터페이스 플래그였다.'
-date: 2026-08-29
+date: 2026-08-12
+updated: 2026-08-29
 category: 'data-integrity'
 tags: ['Oracle', 'NULL', 'Java', '인터페이스', '디버깅']
 draft: false

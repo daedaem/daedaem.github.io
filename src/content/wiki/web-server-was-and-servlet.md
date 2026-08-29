@@ -4,7 +4,7 @@ description: '정적 리소스와 애플리케이션 로직을 왜 나누는지,
 topic: 'infra'
 tags: ['WAS', '서블릿', '톰캣', '스레드풀', 'HTTP']
 created: 2023-07-11
-updated: 2023-08-20
+updated: 2026-08-29
 status: 'stable'
 ---
 

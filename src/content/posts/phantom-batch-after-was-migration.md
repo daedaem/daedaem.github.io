@@ -1,7 +1,8 @@
 ---
 title: '내린 서버에서 배치가 돌고 있었다 — 트리거로 접속 IP를 남겨 범인을 특정하기'
 description: 'WAS를 전환하고 기존 컨테이너를 내렸는데 배치가 계속 돌았다. 로그를 볼 수 없는 상황에서 UPDATE 트리거와 로그 테이블로 접속 IP를 남겨 잔존 프로세스를 특정한 과정.'
-date: 2026-08-29
+date: 2026-08-12
+updated: 2026-08-29
 category: 'operations'
 tags: ['WAS', '배치', 'Oracle', '트리거', '장애대응']
 draft: false
