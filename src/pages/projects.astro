@@ -14,8 +14,9 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
     <header class="head">
       <h1>프로젝트</h1>
       <p class="lead">
-        직접 만든 것들입니다. 기능 목록보다 <strong>어떤 문제를 어떤 근거로 풀었는지</strong>를
-        적습니다. 지금 진행 중인 백엔드 프로젝트가 몇 건 있고, 마무리되는 대로 여기에 올립니다.
+        개인적으로 만든 것들입니다. 기능 목록보다 <strong>어떤 문제를 어떤 근거로 풀었는지</strong>를
+        적습니다. 완성 전이라도 상태를 적어 두고 올립니다. 회사 업무로 만든 것은 여기에 두지 않고
+        <a href="/posts/">글</a>에서 구조와 원리만 다룹니다.
       </p>
     </header>
 
@@ -27,6 +28,7 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
             <span class="period">{p.period}</span>
           </div>
           <p class="tagline">{p.tagline}</p>
+          {p.status && <p class="status">{p.status}</p>}
           <p class="what">{p.what}</p>
 
           <ul class="points">
@@ -44,9 +46,13 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
                 <li>{s}</li>
               ))}
             </ul>
-            <a class="repo" href={p.repo}>
-              저장소 →
-            </a>
+            {p.repo ? (
+              <a class="repo" href={p.repo}>
+                저장소 →
+              </a>
+            ) : (
+              <span class="repo private">비공개 저장소</span>
+            )}
           </div>
         </article>
       ))
@@ -55,20 +61,47 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
     <section class="team">
       <h2>팀 프로젝트</h2>
       <p class="team-lead">
-        삼성 청년 SW 아카데미(SSAFY) 교육 과정에서 진행한 팀 프로젝트입니다. 프론트엔드로
-        참여했습니다.
+        삼성 청년 SW 아카데미(SSAFY) 교육 과정에서 진행한 팀 프로젝트입니다. 백엔드로 전향하기 전이라
+        주로 프론트엔드를 맡았고, 두 건은 팀장으로 참여했습니다.
       </p>
-      <ul>
-        {
-          TEAM_PROJECTS.map(t => (
-            <li>
-              <a href={t.repo}>{t.name}</a>
-              <span>{t.desc}</span>
-              <time>{t.year}</time>
-            </li>
-          ))
-        }
-      </ul>
+
+      {
+        TEAM_PROJECTS.map(t => (
+          <article class="team-project">
+            <div class="top">
+              <h3>
+                {t.name}
+                {t.lead && <span class="badge">팀장</span>}
+              </h3>
+              <span class="period">{t.period}</span>
+            </div>
+            <p class="team-desc">{t.desc}</p>
+            <dl class="meta">
+              <div>
+                <dt>인원</dt>
+                <dd>{t.team}</dd>
+              </div>
+              <div>
+                <dt>담당</dt>
+                <dd>
+                  <ul>
+                    {t.role.map(r => (
+                      <li>{r}</li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+              <div>
+                <dt>기술</dt>
+                <dd>{t.stack}</dd>
+              </div>
+            </dl>
+            <a class="repo" href={t.repo}>
+              저장소 →
+            </a>
+          </article>
+        ))
+      }
     </section>
   </div>
 </BaseLayout>
@@ -208,29 +241,80 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
     font-size: 14.5px;
     color: var(--text-muted);
   }
-  .team ul {
-    list-style: none;
-    margin: 16px 0 0;
-    padding: 0;
-  }
-  .team li {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    padding: 9px 0;
-    border-top: 1px solid var(--border);
-    font-size: 14.5px;
-  }
-  .team li a {
-    font-weight: 500;
-    min-width: 7rem;
-  }
-  .team li span {
-    flex-grow: 1;
-    color: var(--text-muted);
-  }
-  .team li time {
+  .status {
+    margin: 8px 0 0;
     font-size: 13px;
     color: var(--text-dim);
+  }
+  .repo.private {
+    color: var(--text-dim);
+    font-weight: 400;
+  }
+
+  .team-project {
+    margin-top: 22px;
+    padding: 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .team-project h3 {
+    margin: 0;
+    font-size: 17px;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .badge {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 1px 8px;
+  }
+  .team-desc {
+    margin: 8px 0 0;
+    font-size: 14.5px;
+    color: var(--text-muted);
+  }
+  .meta {
+    margin: 16px 0 0;
+    display: grid;
+    gap: 10px;
+  }
+  .meta div {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: 12px;
+    align-items: baseline;
+  }
+  .meta dt {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-dim);
+  }
+  .meta dd {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text-muted);
+  }
+  .meta dd ul {
+    margin: 0;
+    padding-left: 1.05rem;
+  }
+  .meta dd li {
+    margin-block: 2px;
+  }
+  .team-project .repo {
+    display: inline-block;
+    margin-top: 16px;
+  }
+  @media (max-width: 30rem) {
+    .meta div {
+      grid-template-columns: 1fr;
+      gap: 2px;
+    }
   }
 </style>

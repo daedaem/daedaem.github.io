@@ -11,8 +11,9 @@ import { SITE } from '@/consts'
     <header class="head">
       <h1>소개</h1>
       <p class="lead">
-        레거시 환경에서 구조를 개선해 온 백엔드 개발자입니다. 새로 만드는 일보다, 이미 돌아가고 있어
-        멈출 수 없는 시스템을 고치는 일을 주로 해 왔습니다.
+        조해성입니다. 이미 돌아가고 있어 멈출 수 없는 시스템에서, <strong
+          >임시 조치만 반복되던 문제의 원인을 끝까지 좁혀 해결하는 일</strong
+        >을 해 왔습니다. 화면에서 시작해 DB 내부까지 내려가야 답이 나오는 문제들이었습니다.
       </p>
     </header>
 
@@ -25,6 +26,12 @@ import { SITE } from '@/consts'
       <p>
         운영 환경은 JDK 1.6, Spring 3.0, Oracle 10g 같은 구버전입니다. 버전을 올리는 선택지가 없는
         상태에서 무엇을 어디까지 바꿀 수 있는지 판단하는 일이 업무의 큰 부분을 차지합니다.
+      </p>
+      <p>
+        레거시만 다루는 것은 아닙니다. 지원이 끝난 런타임 위에서 각각 돌아가던 노후 시스템 두 종을
+        하나로 합치는 신규 구축을 <strong>스택 선정부터 설계·개발까지 단독으로</strong> 진행하고
+        있습니다. Spring Boot 3, JPA, React를 씁니다. 업무 규칙과 스키마를 통합해 재정의하는 일이
+        코드를 쓰는 일보다 오래 걸렸습니다.
       </p>
     </section>
 
@@ -71,9 +78,10 @@ import { SITE } from '@/consts'
         </li>
         <li>
           <strong>지원이 끝난 Flash 모듈을 재개발 없이 대체</strong>
-          같은 데이터를 이미 다루고 있던 다른 시스템과 연동하는 방식으로 전환했습니다. 검증 중 금액이
-          음수로 표기되는 현상을 발견해 DTO의 데이터 타입에서 발생한 정수 오버플로가 원인임을
-          확인했습니다.
+          수년간 약 1억 원 규모의 외주 견적만 반복되던 과제였습니다. 같은 데이터를 이미 다루고 있던
+          다른 시스템과 연동하는 방식으로 전환해 외주 없이 종료했고, 전용 WAS 인스턴스를 정리해 연
+          약 1천만 원의 유지보수 비용을 줄였습니다. 검증 중 금액이 음수로 표기되는 현상을 발견해
+          DTO의 데이터 타입에서 발생한 정수 오버플로가 원인임을 확인했습니다.
         </li>
         <li>
           <strong>WAS 전환 이후 멈추지 않던 배치의 출처 추적</strong>
@@ -81,43 +89,79 @@ import { SITE } from '@/consts'
           IP를 남겨 전환 이전 서버에 남아 있던 프로세스를 특정했습니다.
         </li>
         <li>
-          <strong>구버전 JDK의 TLS 제약 우회</strong>
-          외부 시스템 DB에 직접 연결할 수 없는 환경에서, 기존 인터페이스를 경유하는 방식으로
-          해결했습니다.
+          <strong>단일 인증 구조를 단계로 나누고 비밀번호 저장 방식을 무중단 이행</strong>
+          ID/비밀번호 검증만으로 끝나던 로그인을 단계로 분리하고, 권한 적재 시점을 최종 인증 이후로
+          옮겨 화면 흐름 우회를 막았습니다. 해시는 되돌릴 수 없어 일괄 전환이 불가능하므로, 검증이 두
+          형식을 모두 처리하게 두고 원문을 아는 시점에 순차적으로 옮기도록 구성했습니다.
         </li>
       </ul>
+      <p class="note">
+        각 항목의 판단 과정은 <a href="/posts/">글</a>에 따로 정리했습니다.
+      </p>
     </section>
 
     <section>
       <h2>어떻게 여기까지 왔는지</h2>
       <p>
-        체육교육을 전공하고 운동생화학으로 석사를 마쳤습니다. 이후 SSAFY와 SCSA 과정을 거쳐 개발자로
-        전환했습니다. 전공을 바꾼 이력이라 기초는 늦게 시작했고, 그래서 남들이 넘어가는 부분을
-        확인하고 넘어가는 습관이 생겼습니다. 원인을 끝까지 좁히는 방식으로 일하는 것도 여기서
-        비롯됐다고 생각합니다.
+        체육교육을 전공하고 서울대학교에서 운동생화학으로 석사를 마쳤습니다. KCI 등재지에 1저자로,
+        SCI 저널에 공저자로 논문을 냈습니다. 실험을 설계하고 결과가 왜 그렇게 나왔는지를 끝까지
+        따지는 훈련을 그때 했습니다. <strong
+          >지금 일하는 방식은 그때와 크게 다르지 않습니다.</strong
+        > 증상을 보고 조치하는 대신 원인이 확정될 때까지 범위를 좁혀 들어갑니다.
       </p>
       <p>
-        전환기에 남긴 학습 노트는 <a href="/notes/">아카이브</a>에 그대로 두었습니다.
+        전공을 바꾼 뒤 SSAFY(1,600시간)와 SCSA 과정을 거쳐 개발자가 됐습니다. 기초를 늦게 시작한
+        만큼 남들이 그냥 넘어가는 것을 한 번 확인하고 넘어가는 습관이 남았습니다. 이 사이트의
+        <a href="/wiki/">위키</a>가 그 습관의 결과물입니다. 전환기에 남긴 학습 노트는
+        <a href="/notes/">아카이브</a>에 손대지 않고 그대로 두었습니다.
       </p>
+      <dl class="stack">
+        <div>
+          <dt>학력</dt>
+          <dd>서울대학교 대학원 운동생화학 석사 · 부산대학교 체육교육 학사</dd>
+        </div>
+        <div>
+          <dt>자격</dt>
+          <dd>정보처리기사 · SQLD · ADsP · OPIc IH</dd>
+        </div>
+        <div>
+          <dt>교육</dt>
+          <dd>삼성 SCSA 19기 이수 · SSAFY 6기 수료(웹 풀스택 1,600시간)</dd>
+        </div>
+      </dl>
     </section>
 
     <section>
       <h2>글을 쓸 때 지키는 것</h2>
       <ul class="rules">
-        <li>회사, 고객사, 시스템, 서버, 사업장을 특정할 수 있는 정보는 쓰지 않습니다. 문제의 구조와 원리만 남깁니다.</li>
-        <li>증상이 아니라 원인을 씁니다. 느렸다는 사실보다 왜 느렸는지가 글의 본론입니다.</li>
+        <li>
+          회사·고객사·시스템·서버를 특정할 수 있는 정보는 쓰지 않습니다. 문제의 구조와 원리만
+          남기고, 예시 코드와 수치는 일반화한 것임을 글에 밝힙니다.
+        </li>
+        <li>증상이 아니라 원인을 씁니다. 느렸다는 사실보다 왜 느렸는지가 본론입니다.</li>
         <li>고른 방법과 함께 고르지 않은 선택지도 적습니다. 판단의 근거가 결과보다 오래 갑니다.</li>
-        <li>직접 확인하지 않은 것은 추측이라고 표시합니다.</li>
-        <li>예시 코드와 수치는 실제 값이 아니라 일반화한 형태임을 글에 밝힙니다.</li>
-        <li>과장하지 않습니다. 규명한 것과 확인한 것을 구분해서 씁니다.</li>
+        <li>
+          직접 확인하지 않은 것은 추측이라고 표시하고, 규명한 것과 확인한 것을 구분해서 씁니다.
+        </li>
       </ul>
     </section>
 
     <section>
       <h2>연락</h2>
-      <p>
-        <a href={SITE.githubUrl} rel="me noopener">GitHub</a>
-      </p>
+      <ul class="contact">
+        <li>
+          <span>Email</span>
+          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+        </li>
+        <li>
+          <span>GitHub</span>
+          <a href={SITE.githubUrl} rel="me noopener">github.com/daedaem</a>
+        </li>
+        <li>
+          <span>LinkedIn</span>
+          <a href={SITE.linkedinUrl} rel="me noopener">프로필 보기</a>
+        </li>
+      </ul>
     </section>
   </div>
 </BaseLayout>
@@ -196,6 +240,34 @@ import { SITE } from '@/consts'
   }
   .rules li {
     margin-block: 0.5rem;
+  }
+  .note {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+  }
+  .lead strong,
+  p strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .contact {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .contact li {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding: 0.6rem 0;
+    border-top: 1px solid var(--border);
+    font-size: 0.9375rem;
+  }
+  .contact span {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--text-muted);
   }
   @media (max-width: 30rem) {
     .stack div {

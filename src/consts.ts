@@ -9,6 +9,8 @@ export const SITE = {
   url: 'https://daedaem.github.io',
   locale: 'ko-KR',
   githubUrl: 'https://github.com/daedaem',
+  email: 'tg8685@gmail.com',
+  linkedinUrl: 'https://www.linkedin.com/in/%ED%95%B4%EC%84%B1-%EC%A1%B0-518a021a9/',
 
   /**
    * 검색엔진 소유 확인 코드. 등록 후 발급받은 값만 채우면 <head>에 자동으로 들어간다.
