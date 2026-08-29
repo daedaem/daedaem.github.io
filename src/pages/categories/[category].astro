@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
-import PostCard from '@/components/PostCard.astro'
+import PostRow from '@/components/PostRow.astro'
 import CategoryNav from '@/components/CategoryNav.astro'
 import { CATEGORIES } from '@/consts'
 import { readingMinutes } from '@/utils/format'
@@ -28,7 +28,7 @@ const { category, posts, counts, total } = Astro.props
 ---
 
 <BaseLayout title={category.name} description={category.description}>
-  <div class="wrap-wide">
+  <div class="wrap-list">
     <header class="head">
       <h1>{category.name}</h1>
       <p>{category.description}</p>
@@ -40,9 +40,9 @@ const { category, posts, counts, total } = Astro.props
       posts.length === 0 ? (
         <p class="empty muted">아직 이 주제로 발행한 글이 없습니다.</p>
       ) : (
-        <div class="grid">
+        <ul class="rows">
           {posts.map(p => (
-            <PostCard
+            <PostRow
               href={`/posts/${p.id}/`}
               title={p.data.title}
               description={p.data.description}
@@ -50,7 +50,7 @@ const { category, posts, counts, total } = Astro.props
               readingMinutes={readingMinutes(p.body ?? '')}
             />
           ))}
-        </div>
+        </ul>
       )
     }
   </div>
@@ -58,32 +58,27 @@ const { category, posts, counts, total } = Astro.props
 
 <style>
   .head {
-    padding: 56px 0 32px;
+    padding: 48px 0 28px;
   }
   .head h1 {
     margin: 0;
-    font-size: 30px;
+    font-size: 28px;
     letter-spacing: -0.035em;
   }
   .head p {
-    margin: 14px 0 0;
+    margin: 12px 0 0;
     max-width: 37rem;
     color: var(--text-muted);
     font-size: 15.5px;
     line-height: 1.8;
   }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
-    margin: 32px 0 72px;
+  .rows {
+    list-style: none;
+    margin: 28px 0 72px;
+    padding: 0;
+    border-bottom: 1px solid var(--border);
   }
   .empty {
     padding: 40px 0 72px;
-  }
-  @media (max-width: 720px) {
-    .grid {
-      grid-template-columns: 1fr;
-    }
   }
 </style>

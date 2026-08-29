@@ -12,7 +12,8 @@
 
   --text: #191f28;
   --text-muted: #6b7684;
-  --text-dim: #8b95a1;
+  /* 13px 메타 텍스트에 쓰이므로 흰 배경에서 4.5:1을 넘겨야 한다 */
+  --text-dim: #6b7583;
 
   --accent: #1f5fd0;
   --accent-hover: #1749a3;
@@ -21,16 +22,24 @@
 
   --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
     'Apple SD Gothic Neo', system-ui, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+    monospace;
 
   /* 본문 폭. 코드 블록과 표가 많아 순수 텍스트 블로그보다 조금 넓게 잡는다. */
   --measure: 44rem;
+  /* 홈·글 목록처럼 단일 열 목록을 두는 페이지의 폭 */
+  --measure-list: 52rem;
   --measure-wide: 64rem;
   --radius: 12px;
 }
 
+/*
+ * 다크 토큰. 두 곳에 같은 값을 둔다.
+ * 1) 시스템이 다크이고 사용자가 라이트를 고르지 않았을 때
+ * 2) 사용자가 다크를 골랐을 때 (html[data-theme="dark"])
+ */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     color-scheme: dark;
 
     --bg: #16181c;
@@ -41,13 +50,32 @@
 
     --text: #e9ecef;
     --text-muted: #9aa3ad;
-    --text-dim: #767e88;
+    --text-dim: #8a929c;
 
     --accent: #6ea3f5;
     --accent-hover: #8fbaff;
 
     --code-bg: #1d2025;
   }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #16181c;
+  --bg-subtle: #1d2025;
+  --bg-card: #1a1d21;
+  --border: #2a2e35;
+  --border-strong: #363b44;
+
+  --text: #e9ecef;
+  --text-muted: #9aa3ad;
+  --text-dim: #767e88;
+
+  --accent: #6ea3f5;
+  --accent-hover: #8fbaff;
+
+  --code-bg: #1d2025;
 }
 
 *,
@@ -121,11 +149,17 @@ pre {
 
 /* Shiki 이중 테마 — 다크에서 토큰 색을 교체한다 */
 @media (prefers-color-scheme: dark) {
-  .astro-code,
-  .astro-code span {
+  :root:not([data-theme='light']) .astro-code,
+  :root:not([data-theme='light']) .astro-code span {
     color: var(--shiki-dark) !important;
     background-color: var(--shiki-dark-bg) !important;
   }
+}
+
+:root[data-theme='dark'] .astro-code,
+:root[data-theme='dark'] .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
 }
 
 blockquote {
@@ -156,6 +190,12 @@ th {
 
 .wrap {
   max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.wrap-list {
+  max-width: var(--measure-list);
   margin-inline: auto;
   padding-inline: 24px;
 }

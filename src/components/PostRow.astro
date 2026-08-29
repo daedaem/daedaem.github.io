@@ -1,0 +1,103 @@
+---
+import { getCategory } from '@/consts'
+import { formatDate } from '@/utils/format'
+
+interface Props {
+  href: string
+  title: string
+  date: Date
+  category?: string
+  readingMinutes?: number
+  /** 목록 페이지에서는 한 줄 요약을 같이 보여 준다. 홈처럼 제목만 둘 때는 생략한다. */
+  description?: string
+}
+
+const { href, title, date, category, readingMinutes, description } = Astro.props
+const cat = category ? getCategory(category) : undefined
+---
+
+<li class:list={['row', { 'no-cat': !cat }]}>
+  <a href={href}>
+    {cat && <span class="cat">{cat.name}</span>}
+    <span class="body">
+      <span class="title">{title}</span>
+      {description && <span class="desc">{description}</span>}
+    </span>
+    <span class="meta">
+      <time datetime={date.toISOString()}>{formatDate(date)}</time>
+      {readingMinutes && <span>· {readingMinutes}분</span>}
+    </span>
+  </a>
+</li>
+
+<style>
+  .row {
+    border-top: 1px solid var(--border);
+  }
+
+  .row a {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0 16px;
+    padding: 15px 0;
+  }
+
+  /* 카테고리 페이지처럼 라벨이 없는 곳에서는 첫 열을 비워 두지 않는다 */
+  .row.no-cat a {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .row a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .cat {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .body {
+    display: block;
+    min-width: 0;
+  }
+
+  .title {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.55;
+    letter-spacing: -0.02em;
+  }
+
+  .row a:hover .title {
+    color: var(--accent);
+  }
+
+  .desc {
+    display: block;
+    margin-top: 4px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-muted);
+  }
+
+  .meta {
+    font-size: 13px;
+    color: var(--text-dim);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 640px) {
+    .row a,
+    .row.no-cat a {
+      grid-template-columns: 1fr;
+      gap: 3px 0;
+    }
+  }
+</style>

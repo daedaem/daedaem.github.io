@@ -1,11 +1,10 @@
 ---
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
-import PostCard from '@/components/PostCard.astro'
-import CategoryNav from '@/components/CategoryNav.astro'
-import { SITE } from '@/consts'
+import PostRow from '@/components/PostRow.astro'
+import { SITE, getCategory } from '@/consts'
 import { PROJECTS } from '@/data/projects'
-import { readingMinutes } from '@/utils/format'
+import { readingMinutes, formatDate } from '@/utils/format'
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
@@ -13,17 +12,15 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
 const notes = await getCollection('notes')
 const wiki = await getCollection('wiki', ({ data }) => !data.draft)
 
-const counts = new Map<string, number>()
-for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) ?? 0) + 1)
-
 const [featured, ...rest] = posts
+const featuredCat = featured ? getCategory(featured.data.category) : undefined
 const featuredProjects = PROJECTS.filter(p => p.featured)
 const algoCount = (await getCollection('solutions')).length
 ---
 
 <BaseLayout title={SITE.title} description={SITE.description}>
-  <div class="wrap-wide">
-    <section class="hero">
+  <div class="wrap-list">
+    <section class="intro">
       <h1>{SITE.tagline}</h1>
       <p>
         JDK 1.6, Spring 3, Oracle 10g가 도는 시스템을 운영하면서 성능·정합성·인증 구조를 실제로 바꿔
@@ -53,33 +50,41 @@ const algoCount = (await getCollection('solutions')).length
       )
     }
 
-    <CategoryNav counts={counts} total={posts.length} />
-
     {
       posts.length === 0 ? (
         <p class="empty muted">아직 발행한 글이 없습니다.</p>
       ) : (
-        <div class="grid">
-          <PostCard
-            href={`/posts/${featured.id}/`}
-            title={featured.data.title}
-            description={featured.data.description}
-            date={featured.data.date}
-            category={featured.data.category}
-            readingMinutes={readingMinutes(featured.body ?? '')}
-            featured
-          />
-          {rest.slice(0, 6).map(p => (
-            <PostCard
-              href={`/posts/${p.id}/`}
-              title={p.data.title}
-              description={p.data.description}
-              date={p.data.date}
-              category={p.data.category}
-              readingMinutes={readingMinutes(p.body ?? '')}
-            />
-          ))}
-        </div>
+        <section class="latest">
+          <a class="hero" href={`/posts/${featured.id}/`}>
+            {featuredCat && <span class="hero-cat">{featuredCat.name}</span>}
+            <h2>{featured.data.title}</h2>
+            {featured.data.description && <p>{featured.data.description}</p>}
+            <span class="hero-meta">
+              <time datetime={featured.data.date.toISOString()}>{formatDate(featured.data.date)}</time>
+              <span>· {readingMinutes(featured.body ?? '')}분</span>
+            </span>
+          </a>
+
+          {rest.length > 0 && (
+            <>
+              <div class="sec-head">
+                <h2>글</h2>
+                <a href="/posts/">전체 보기 →</a>
+              </div>
+              <ul class="rows">
+                {rest.slice(0, 8).map(p => (
+                  <PostRow
+                    href={`/posts/${p.id}/`}
+                    title={p.data.title}
+                    date={p.data.date}
+                    category={p.data.category}
+                    readingMinutes={readingMinutes(p.body ?? '')}
+                  />
+                ))}
+              </ul>
+            </>
+          )}
+        </section>
       )
     }
 
@@ -104,46 +109,87 @@ const algoCount = (await getCollection('solutions')).length
 </BaseLayout>
 
 <style>
-  .hero {
-    padding: 64px 0 44px;
+  .intro {
+    padding: 48px 0 36px;
+    border-bottom: 1px solid var(--border);
   }
 
-  .hero h1 {
+  .intro h1 {
     margin: 0;
-    font-size: clamp(26px, 4.2vw, 34px);
+    font-size: clamp(22px, 3.2vw, 26px);
     line-height: 1.45;
     letter-spacing: -0.035em;
     max-width: 38rem;
   }
 
-  .hero p {
-    margin: 18px 0 0;
-    font-size: 16px;
+  .intro p {
+    margin: 12px 0 0;
+    font-size: 15.5px;
     line-height: 1.8;
     color: var(--text-muted);
     max-width: 37rem;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
-    margin-top: 32px;
   }
 
   .empty {
     padding: 40px 0;
   }
 
+  /* 최신 글 히어로 */
+  .hero {
+    display: block;
+    padding: 40px 0 36px;
+  }
+
+  .hero-cat {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .hero h2 {
+    margin: 10px 0 0;
+    font-size: clamp(28px, 4.2vw, 36px);
+    line-height: 1.4;
+    letter-spacing: -0.035em;
+  }
+
+  .hero:hover h2 {
+    color: var(--accent);
+  }
+
+  .hero p {
+    margin: 14px 0 0;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text-muted);
+    max-width: 42rem;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 5px;
+    margin-top: 16px;
+    font-size: 13.5px;
+    color: var(--text-dim);
+  }
+
+  .rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
   .projects {
-    margin-top: 8px;
+    margin-top: 36px;
   }
 
   .sec-head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .sec-head h2 {
@@ -165,7 +211,7 @@ const algoCount = (await getCollection('solutions')).length
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
     list-style: none;
-    margin: 0 0 32px;
+    margin: 0;
     padding: 0;
   }
 
@@ -207,46 +253,40 @@ const algoCount = (await getCollection('solutions')).length
   .strips {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
-    margin: 32px 0 72px;
+    gap: 16px;
+    margin: 48px 0 56px;
   }
 
   .strip {
     display: block;
     background: var(--bg-subtle);
     border-radius: var(--radius);
-    padding: 26px;
+    padding: 22px;
   }
 
   .strip-title {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
     letter-spacing: -0.025em;
   }
 
   .strip p {
     margin: 8px 0 0;
-    font-size: 14.5px;
-    line-height: 1.75;
+    font-size: 14px;
+    line-height: 1.7;
     color: var(--text-muted);
   }
 
   .strip-more {
-    margin-top: 14px;
-    font-size: 14px;
+    margin-top: 12px;
+    font-size: 13.5px;
     font-weight: 500;
     color: var(--accent);
   }
 
-  @media (max-width: 860px) {
+  @media (max-width: 720px) {
     .projects ul,
     .strips {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  @media (max-width: 720px) {
-    .grid {
       grid-template-columns: 1fr;
     }
   }
