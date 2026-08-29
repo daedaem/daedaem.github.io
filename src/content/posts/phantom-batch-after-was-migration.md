@@ -4,7 +4,7 @@ description: 'WAS를 전환하고 기존 컨테이너를 내렸는데 배치가 
 date: 2026-08-29
 category: 'operations'
 tags: ['WAS', '배치', 'Oracle', '트리거', '장애대응']
-draft: true
+draft: false
 ---
 
 WAS를 전환했다. 새 컨테이너로 애플리케이션을 올리고, 확인을 마친 뒤 기존 컨테이너를 내렸다.

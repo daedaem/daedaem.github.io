@@ -4,7 +4,7 @@ description: '지원이 끝난 Flash 모듈을 다른 시스템 연동으로 대
 date: 2026-08-29
 category: 'legacy'
 tags: ['Java', 'DTO', '오버플로', 'BigDecimal', '마이그레이션']
-draft: true
+draft: false
 ---
 
 Flash 기반 모듈이 하나 남아 있었다. Flash는 지원이 끝났고 브라우저에서 실행되지 않으니 손을 대야 했다.
