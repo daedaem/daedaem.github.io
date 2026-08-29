@@ -13,7 +13,7 @@ legacyPath: "/230303_코어자바스크립트 ch 7. 클래스/"
 
 ## Class
 
-![](./coreJavaScript/class_def.png)
+![class def](./coreJavaScript/class_def.png)
 
 **인스턴스,** 어떤 공통적인 특성들을 가진 구체적인 대상
 
@@ -25,7 +25,7 @@ legacyPath: "/230303_코어자바스크립트 ch 7. 클래스/"
 
 ### 자바스크립트의 클래스
 
-![](./coreJavaScript/class.png)
+![class](./coreJavaScript/class.png)
 
 **클래스**는 어떤 공통된 속성이나 기능을 정의한 추상적인 개념, **인스턴스**는 이 클래스 속한 객체
 
@@ -35,7 +35,7 @@ legacyPath: "/230303_코어자바스크립트 ch 7. 클래스/"
 
 **prototype에 있는 메서드는** **(프로토타입) 메서드**
 
-![](./coreJavaScript/class_method.png)
+![class method](./coreJavaScript/class_method.png)
 
 ```jsx
 var Rectangle = function (width, height) {
@@ -76,13 +76,13 @@ Person과 Employee 생성자 함수에서 getName, getAge가 **중복**
 
 따라서, Person을 상위에, Employee를 하위로 내려 **상속 구조**를 만들 수 있음
 
-![](./coreJavaScript/class_inheritance.png)
+![class inheritance](./coreJavaScript/class_inheritance.png)
 
 상속 구조를 다음과 같이 만들면, Person은 getName과 getAge에 접근이 가능하지만, getPosition에는 접근하지 못하며, Employee는 3개 메서드에 접근 가능
 
-![](./coreJavaScript/class_inheritance2.png)
+![class inheritance2](./coreJavaScript/class_inheritance2.png)
 
-![](./coreJavaScript/class_inheritance3.png)
+![class inheritance3](./coreJavaScript/class_inheritance3.png)
 
 ### 클래스 상속을 흉내 내기 위한 3가지 방법
 
@@ -124,7 +124,7 @@ Person과 Employee 생성자 함수에서 getName, getAge가 **중복**
 
 2. 빈 함수(Bridge)를 활용하는 방법 (더글라스 크락포드가 고안한, 가장 대중적 방법)
 
-![](./coreJavaScript/proto_class.png)
+![proto class](./coreJavaScript/proto_class.png)
 
 - Bridge라는 빈 함수 생성
 - Bridge.prototype이 Person.prototype을 참조하도록 만듦

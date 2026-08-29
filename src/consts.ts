@@ -9,6 +9,17 @@ export const SITE = {
   url: 'https://daedaem.github.io',
   locale: 'ko-KR',
   githubUrl: 'https://github.com/daedaem',
+
+  /**
+   * 검색엔진 소유 확인 코드. 등록 후 발급받은 값만 채우면 <head>에 자동으로 들어간다.
+   * - 구글: search.google.com/search-console → HTML 태그 방식의 content 값
+   * - 네이버: searchadvisor.naver.com → 사이트 소유확인 → HTML 태그의 content 값
+   * 빈 문자열이면 해당 태그를 넣지 않는다.
+   */
+  verification: {
+    google: '',
+    naver: '',
+  },
 } as const
 
 export type CategoryId =

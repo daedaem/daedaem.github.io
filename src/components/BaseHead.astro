@@ -73,6 +73,12 @@ const jsonLd =
 />
 <meta name="generator" content={Astro.generator} />
 <meta name="robots" content="index, follow, max-image-preview:large" />
+{
+  SITE.verification.google && (
+    <meta name="google-site-verification" content={SITE.verification.google} />
+  )
+}
+{SITE.verification.naver && <meta name="naver-site-verification" content={SITE.verification.naver} />}
 
 <meta property="og:type" content={type} />
 <meta property="og:title" content={fullTitle} />

@@ -23,7 +23,7 @@ legacyPath: "/230314_모던 JS Deep Dive - 2.자바스크립트란/"
 - 자바스크립트의 파편화 방지를 위해 표준화된 자바스크립트의 필요성이 대두되기 시작했고 넷스케이프 커뮤니케이션즈는 **ECMA 인터네셔널**(컴퓨터 시스템의 표준을 관리하는 비영리 표준화 기구)에 자바스크립트 표준화를 요청
 - 상표권 문제로 자바스크립트는 ECMAScript로 명명 됨.
 - **EMCAScript 버전별 특징**
-  ![](<./modern js deep dive/ECMAScript.png>)
+  ![ECMAScript](<./modern js deep dive/ECMAScript.png>)
 
 # 2.3 자바스크립트 성장의 역사
 

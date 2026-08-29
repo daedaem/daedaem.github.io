@@ -25,7 +25,7 @@ legacyPath: "/230316_모던 JS Deep Dive - 4.변수/"
 - **메모리(memory)** 는 데이터 저장할 수 있는 **메모리 셀(memory cell) 집합체**
 - **메모리 셀 하나 크기**는 **1바이트(8비트)** 이며, 메모리 셀 크기 단위로 데이터를 2진수로 저장하고 읽는다.
 - 각 **셀은 고유의 메모리 주소(memory address)를 갖고** 메모리 주소는 **메모리 공간의 위치**를 나타내며 메모리 크기만큼 정수로 표현된다. ex) 4GB 메모리는 0부터 4,294,967,294(0x00000000 ~ 0XFFFFFFFF)까지 메모리 주소를 갖는다.
-  ![](<./modern js deep dive/variable_memory.jpeg>)
+  ![variable memory](<./modern js deep dive/variable_memory.jpeg>)
 
 - **컴퓨터는** 데이터 종류(숫자, 텍스트, 이미지, 동영상 등)와 상관없이 **모든 데이터를 2진수로 처리하며 저장**한다.
 
@@ -46,7 +46,7 @@ legacyPath: "/230316_모던 JS Deep Dive - 4.변수/"
     var result = 10 + 20;
     ```
 
-  ![](<./modern js deep dive/variable_identifier.jpeg>)
+  ![variable identifier](<./modern js deep dive/variable_identifier.jpeg>)
 
 - 개발자의 의도를 나타내는 명확한 네이밍은 코드를 이해하기 쉽게 만들며 협업과 품질 향상에 도움을 주기 때문에 변수명은 잘 지어야 한다.
 
@@ -104,7 +104,7 @@ gender = 'male'
 var score // 변수 선언(변수 선언문)
 ```
 
-  ![](<./modern js deep dive/variable_declare.jpeg>)
+  ![variable declare](<./modern js deep dive/variable_declare.jpeg>)
 
 - 변수 선언 후, 값 할당하지 않으면 확보된 메모리 공간에는 자바스크립트 엔진에 의해 undefined라는 값이 암묵적으로 할당되어 초기화 된다.(자바스크립트의 독특한 특징)
 - 자바스크립트 엔진의 **변수 선언 2단계**
@@ -200,7 +200,7 @@ score = 90;
 
 - score 변수는 처음 undefined로 초기화 후, 80이 할당되고 90으로 재할당되면서 undefined와 80은 어떤 변수도 값으로 갖고 있지 않아 연결된 식별자가 없다. 이런 불필요한 값들은 **가비지 콜렉터(garbage collector)** 에 의해 메모리에서 자동 해제 된다.
 
-  ![](<./modern js deep dive/variable_reallocate.jpeg>)
+  ![variable reallocate](<./modern js deep dive/variable_reallocate.jpeg>)
 
 ### cf. 가비지 콜렉터
 

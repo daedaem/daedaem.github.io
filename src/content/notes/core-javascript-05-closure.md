@@ -110,7 +110,7 @@ console.log(roy.status); // logout
     console.log(outer2());  //3
     ```
 
-    ![](./coreJavaScript/closer.png)
+    ![closer](./coreJavaScript/closer.png)
 
 - “어떤 함수에서 선언한 변수를 참조하는 내부함수에서만 발생하는 현상”
 <br>
