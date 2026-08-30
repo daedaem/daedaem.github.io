@@ -59,6 +59,9 @@ const byLang = countBy(i => i.lang)
 
 /** 백준 Gold 이상. 프로그래머스(rank 100+)와 Unrated는 제외한다 */
 const goldPlus = boj.filter(i => i.rank >= 10 && i.rank < 100).length
+
+/** 그룹당 처음에 보여 주는 개수. 넘는 건 "나머지 보기"로 편다. 필터 중에는 제한하지 않는다. */
+const LIMIT = 30
 ---
 
 <BaseLayout
@@ -81,18 +84,32 @@ const goldPlus = boj.filter(i => i.rank >= 10 && i.rank < 100).length
       <div class="stat"><b>{goldPlus}</b><span>Gold 이상</span></div>
     </section>
 
+    <div class="filter" role="search">
+      <input id="q" type="search" placeholder="문제 이름으로 찾기" aria-label="문제 이름으로 찾기" autocomplete="off" />
+      <span id="count" class="count" aria-live="polite"></span>
+      <button type="button" id="clear" class="clear" hidden>필터 지우기</button>
+    </div>
+
     <section class="facets">
       <div>
-        <h2>많이 푼 유형</h2>
-        <ul class="chips">
-          {byCls.map(([k, v]) => <li>{k} <em>{v}</em></li>)}
-        </ul>
+        <h2>많이 푼 유형 <span class="hint">— 누르면 거릅니다</span></h2>
+        <div class="chips">
+          {byCls.map(([k, v]) => (
+            <button type="button" class="chip" data-cls={k} aria-pressed="false">
+              {k} <em>{v}</em>
+            </button>
+          ))}
+        </div>
       </div>
       <div>
         <h2>언어</h2>
-        <ul class="chips">
-          {byLang.map(([k, v]) => <li>{k} <em>{v}</em></li>)}
-        </ul>
+        <div class="chips">
+          {byLang.map(([k, v]) => (
+            <button type="button" class="chip" data-lang={k} aria-pressed="false">
+              {k} <em>{v}</em>
+            </button>
+          ))}
+        </div>
       </div>
     </section>
 
@@ -105,13 +122,19 @@ const goldPlus = boj.filter(i => i.rank >= 10 && i.rank < 100).length
     <h2 class="site-title">백준</h2>
     {
       bojGroups.map(g => (
-        <details class="group" open={g.name === 'Platinum' || g.name === 'Gold'}>
+        <details class="group" open={g.name === 'Platinum' || g.name === 'Gold'} data-total={g.items.length}>
           <summary>
             {g.name} <em>{g.items.length}</em>
           </summary>
           <ul class="list">
-            {g.items.map(i => (
-              <li>
+            {g.items.map((i, idx) => (
+              <li
+                data-title={i.title.toLowerCase()}
+                data-cls={i.cls.join('|')}
+                data-lang={i.lang.join('|')}
+                hidden={idx >= LIMIT}
+                class:list={{ over: idx >= LIMIT }}
+              >
                 <span class="tier">{i.tier}</span>
                 <a class="name" href={i.href}>
                   {i.title}
@@ -121,6 +144,11 @@ const goldPlus = boj.filter(i => i.rank >= 10 && i.rank < 100).length
               </li>
             ))}
           </ul>
+          {g.items.length > LIMIT && (
+            <button type="button" class="more">
+              나머지 {g.items.length - LIMIT}개 보기
+            </button>
+          )}
         </details>
       ))
     }
@@ -128,13 +156,19 @@ const goldPlus = boj.filter(i => i.rank >= 10 && i.rank < 100).length
     <h2 class="site-title">프로그래머스</h2>
     {
       pgsGroups.map(g => (
-        <details class="group" open={g.name === 'Level 4' || g.name === 'Level 3'}>
+        <details class="group" open={g.name === 'Level 4' || g.name === 'Level 3'} data-total={g.items.length}>
           <summary>
             {g.name} <em>{g.items.length}</em>
           </summary>
           <ul class="list">
-            {g.items.map(i => (
-              <li>
+            {g.items.map((i, idx) => (
+              <li
+                data-title={i.title.toLowerCase()}
+                data-cls={i.cls.join('|')}
+                data-lang={i.lang.join('|')}
+                hidden={idx >= LIMIT}
+                class:list={{ over: idx >= LIMIT }}
+              >
                 <span class="tier">{g.name.replace('Level ', 'Lv')}</span>
                 <a class="name" href={i.href}>
                   {i.title}
@@ -144,11 +178,101 @@ const goldPlus = boj.filter(i => i.rank >= 10 && i.rank < 100).length
               </li>
             ))}
           </ul>
+          {g.items.length > LIMIT && (
+            <button type="button" class="more">
+              나머지 {g.items.length - LIMIT}개 보기
+            </button>
+          )}
         </details>
       ))
     }
+
+    <p class="empty" id="empty" hidden>조건에 맞는 문제가 없습니다.</p>
   </div>
 </BaseLayout>
+
+<script>
+  // 정적 목록을 클라이언트에서 거른다. 검색어·유형·언어 세 조건은 AND이고,
+  // 조건이 하나라도 있으면 그룹의 "처음 30개" 제한을 풀고 맞는 것만 보여 준다.
+  const q = document.getElementById('q') as HTMLInputElement
+  const clearBtn = document.getElementById('clear') as HTMLButtonElement
+  const count = document.getElementById('count')!
+  const empty = document.getElementById('empty')!
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.chip')]
+  const groups = [...document.querySelectorAll<HTMLDetailsElement>('.group')]
+  const expanded = new Set<HTMLDetailsElement>()
+
+  let cls = ''
+  let lang = ''
+
+  function apply() {
+    const term = q.value.trim().toLowerCase()
+    const active = !!(term || cls || lang)
+    let shown = 0
+
+    for (const g of groups) {
+      const rows = [...g.querySelectorAll<HTMLLIElement>('.list li')]
+      let m = 0
+      for (const li of rows) {
+        const ok =
+          (!term || (li.dataset.title ?? '').includes(term)) &&
+          (!cls || (li.dataset.cls ?? '').split('|').includes(cls)) &&
+          (!lang || (li.dataset.lang ?? '').split('|').includes(lang))
+        if (active) {
+          li.hidden = !ok
+        } else {
+          li.hidden = li.classList.contains('over') && !expanded.has(g)
+        }
+        if (ok) m++
+      }
+      const total = Number(g.dataset.total)
+      const em = g.querySelector('summary em')!
+      const more = g.querySelector<HTMLButtonElement>('.more')
+      if (active) {
+        em.textContent = `${m} / ${total}`
+        g.hidden = m === 0
+        if (m > 0) g.open = true
+        if (more) more.hidden = true
+      } else {
+        em.textContent = String(total)
+        g.hidden = false
+        if (more) more.hidden = expanded.has(g)
+      }
+      shown += m
+    }
+
+    count.textContent = active ? `${shown}문제` : ''
+    clearBtn.hidden = !active
+    empty.hidden = !(active && shown === 0)
+    for (const c of chips) {
+      const on = (c.dataset.cls && c.dataset.cls === cls) || (c.dataset.lang && c.dataset.lang === lang)
+      c.classList.toggle('on', !!on)
+      c.setAttribute('aria-pressed', String(!!on))
+    }
+  }
+
+  q.addEventListener('input', apply)
+  for (const c of chips) {
+    c.addEventListener('click', () => {
+      if (c.dataset.cls !== undefined) cls = cls === c.dataset.cls ? '' : c.dataset.cls
+      if (c.dataset.lang !== undefined) lang = lang === c.dataset.lang ? '' : c.dataset.lang
+      apply()
+    })
+  }
+  clearBtn.addEventListener('click', () => {
+    q.value = ''
+    cls = ''
+    lang = ''
+    apply()
+    q.focus()
+  })
+  for (const g of groups) {
+    g.querySelector('.more')?.addEventListener('click', () => {
+      expanded.add(g)
+      apply()
+    })
+  }
+</script>
 
 <style>
   .page {
@@ -203,25 +327,111 @@ const goldPlus = boj.filter(i => i.rank >= 10 && i.rank < 100).length
     color: var(--text-muted);
     margin: 0 0 10px;
   }
+  .facets .hint {
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text-dim);
+  }
   .chips {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    list-style: none;
     margin: 0;
     padding: 0;
   }
-  .chips li {
+  .chip {
+    font: inherit;
     font-size: 13px;
     background: var(--bg-subtle);
+    border: 1px solid transparent;
     border-radius: 999px;
     padding: 5px 12px;
     color: var(--text-muted);
+    cursor: pointer;
+  }
+  .chip:hover {
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+  .chip:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .chip.on {
+    background: var(--text);
+    color: var(--bg);
+  }
+  .chip.on em {
+    color: var(--bg);
   }
   .chips em {
     font-style: normal;
     color: var(--text);
     font-weight: 600;
+  }
+
+  .filter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  .filter input {
+    flex: 1 1 16rem;
+    font: inherit;
+    font-size: 15px;
+    padding: 10px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .filter input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .count {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .clear {
+    font: inherit;
+    font-size: 13px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-subtle);
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .clear:hover {
+    color: var(--text);
+    border-color: var(--accent);
+  }
+
+  .more {
+    display: block;
+    width: 100%;
+    margin: 0 0 12px;
+    padding: 9px 0 9px 1.2em;
+    font: inherit;
+    font-size: 13.5px;
+    text-align: left;
+    color: var(--accent);
+    background: none;
+    border: 0;
+    border-top: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .more:hover {
+    text-decoration: underline;
+  }
+  .empty {
+    margin-top: 32px;
+    color: var(--text-muted);
   }
 
   .repo {
