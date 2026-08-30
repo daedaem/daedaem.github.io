@@ -5,20 +5,29 @@ import { SITE } from '@/consts'
 /** 한 줄에 들어갈 대략적인 글자 수. 한글 기준으로 잡는다. */
 const PER_LINE = 17
 
+/** 어절 단위로 줄을 나눈다. 한 어절이 한 줄을 넘으면 그때만 글자 단위로 자른다. */
 function wrap(text: string, max = PER_LINE, lines = 3): string[] {
   const out: string[] = []
   let cur = ''
-  for (const ch of text) {
-    if (cur.length >= max) {
-      out.push(cur)
-      cur = ''
-      if (out.length === lines) break
-    }
-    cur += ch
+  const push = () => {
+    if (cur) out.push(cur)
+    cur = ''
   }
-  if (cur && out.length < lines) out.push(cur)
-  if (out.length === lines && text.length > lines * max) {
-    out[lines - 1] = out[lines - 1].slice(0, max - 1) + '…'
+  for (const word of text.split(/\s+/)) {
+    if (word.length > max) {
+      push()
+      for (let i = 0; i < word.length; i += max) out.push(word.slice(i, i + max))
+      continue
+    }
+    const next = cur ? `${cur} ${word}` : word
+    if (next.length > max) push()
+    cur = cur ? `${cur} ${word}` : word
+  }
+  push()
+  if (out.length > lines) {
+    const kept = out.slice(0, lines)
+    kept[lines - 1] = kept[lines - 1].slice(0, max - 1).trimEnd() + '…'
+    return kept
   }
   return out
 }
@@ -36,8 +45,14 @@ function card(title: string, kicker: string) {
   <rect x="0" y="0" width="1200" height="8" fill="#1f5fd0"/>
   <text x="80" y="120" font-family="'Apple SD Gothic Neo','Noto Sans KR',sans-serif" font-size="26" font-weight="600" fill="#1f5fd0">${esc(kicker)}</text>
   <text y="250" font-family="'Apple SD Gothic Neo','Noto Sans KR',sans-serif" font-size="60" font-weight="700" fill="#191f28" letter-spacing="-2">${rows}</text>
-  <text x="80" y="558" font-family="'Apple SD Gothic Neo','Noto Sans KR',sans-serif" font-size="28" font-weight="600" fill="#191f28">${esc(SITE.title)}</text>
-  <text x="80" y="592" font-family="'Apple SD Gothic Neo','Noto Sans KR',sans-serif" font-size="22" fill="#8b95a1">${esc(SITE.tagline)}</text>
+  <!-- 사이트 마크: 쌓인 층을 지나 바닥의 점에 닿는다 (src/components/Mark.astro와 같은 형태) -->
+  <g transform="translate(80 520) scale(2.4)" fill="none" stroke="#191f28" stroke-width="2.4" stroke-linecap="round">
+    <path d="M4 6h9M4 12h7M4 18h5"/>
+    <path d="M18 3v14"/>
+    <circle cx="18" cy="20.2" r="1.9" fill="#1f5fd0" stroke="none"/>
+  </g>
+  <text x="150" y="558" font-family="'Apple SD Gothic Neo','Noto Sans KR',sans-serif" font-size="28" font-weight="600" fill="#191f28">${esc(SITE.title)}</text>
+  <text x="150" y="592" font-family="'Apple SD Gothic Neo','Noto Sans KR',sans-serif" font-size="22" fill="#6b7583">${esc(SITE.tagline)}</text>
 </svg>`
 }
 

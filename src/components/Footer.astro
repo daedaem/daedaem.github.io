@@ -1,11 +1,15 @@
 ---
 import { SITE } from '@/consts'
+import Mark from './Mark.astro'
 const year = new Date().getFullYear()
 ---
 
 <footer>
   <div class="wrap-wide inner">
-    <p class="muted">© {year} {SITE.author}</p>
+    <p class="muted brand">
+      <Mark size={16} />
+      © {year} {SITE.author}
+    </p>
     <ul>
       <li><a href="/notes/">학습 노트 아카이브</a></li>
       <li><a href="/rss.xml">RSS</a></li>
@@ -31,6 +35,11 @@ const year = new Date().getFullYear()
 
   p {
     margin: 0;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
   }
 
   ul {

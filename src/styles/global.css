@@ -252,6 +252,27 @@ pre:hover .copy-code,
   }
 }
 
+/*
+ * 좁은 화면: 줄바꿈을 끄고 옆으로 넘긴다. 줄바꿈이 켜져 있으면 SQL의 컬럼 목록이
+ * 한 단어씩 떨어지고 실행 계획 같은 고정폭 표가 깨진다. 라벨과 복사 버튼은 코드 위의
+ * 띠로 올려 첫 줄과 겹치지 않게 한다.
+ */
+@media (max-width: 640px) {
+  pre.astro-code {
+    white-space: pre !important;
+    padding: 2.5rem 1rem 1rem;
+  }
+  pre[data-language]:not([data-language='plaintext'])::before {
+    top: 10px;
+    right: auto;
+    left: 1rem;
+  }
+  .copy-code {
+    top: 6px;
+    right: 6px;
+  }
+}
+
 /* Shiki 이중 테마 — 다크에서 토큰 색을 교체한다 */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) .astro-code,
