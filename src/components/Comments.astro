@@ -1,0 +1,79 @@
+---
+// giscus 댓글. 저장소의 GitHub Discussions를 댓글 저장소로 쓴다. 서버·DB 없음.
+// 글 경로(pathname)마다 Discussion 하나가 자동으로 만들어진다.
+import { SITE } from '@/consts'
+const g = SITE.giscus
+---
+
+{
+  g.repoId && (
+    <section
+      class="comments"
+      aria-label="댓글"
+      data-repo={g.repo}
+      data-repo-id={g.repoId}
+      data-category={g.category}
+      data-category-id={g.categoryId}
+    >
+      <h2>댓글</h2>
+      <p class="muted">GitHub 계정으로 남길 수 있습니다. 저장소의 Discussions에 기록됩니다.</p>
+      <div class="giscus" />
+    </section>
+  )
+}
+
+<script>
+  // 테마는 사이트 토글을 따른다. 처음에는 실효 테마로 띄우고, 토글되면 iframe에 알린다.
+  const host = document.querySelector<HTMLElement>('.comments')
+  if (host) {
+    const effective = () => {
+      const set = document.documentElement.getAttribute('data-theme')
+      if (set === 'light' || set === 'dark') return set
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+
+    const s = document.createElement('script')
+    s.src = 'https://giscus.app/client.js'
+    s.async = true
+    s.crossOrigin = 'anonymous'
+    const attrs: Record<string, string> = {
+      repo: host.dataset.repo!,
+      'repo-id': host.dataset.repoId!,
+      category: host.dataset.category!,
+      'category-id': host.dataset.categoryId!,
+      mapping: 'pathname',
+      strict: '1',
+      'reactions-enabled': '1',
+      'emit-metadata': '0',
+      'input-position': 'top',
+      theme: effective(),
+      lang: 'ko',
+      loading: 'lazy',
+    }
+    for (const [k, v] of Object.entries(attrs)) s.setAttribute(`data-${k}`, v)
+    host.querySelector('.giscus')?.appendChild(s)
+
+    const notify = () => {
+      const frame = host.querySelector<HTMLIFrameElement>('iframe.giscus-frame')
+      frame?.contentWindow?.postMessage({ giscus: { setConfig: { theme: effective() } } }, 'https://giscus.app')
+    }
+    document.addEventListener('themechange', notify)
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', notify)
+  }
+</script>
+
+<style>
+  .comments {
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .comments h2 {
+    margin: 0;
+    font-size: 1.125rem;
+  }
+  .comments p {
+    margin: 0.4rem 0 1.25rem;
+    font-size: 0.875rem;
+  }
+</style>

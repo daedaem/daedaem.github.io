@@ -22,6 +22,17 @@ export const SITE = {
     google: 'aM2FnNkFJeBJ5b43dRGSfIMcP790b3C6WmiC6FGpAhM',
     naver: '',
   },
+
+  /**
+   * giscus 댓글. 저장소 Discussions를 댓글 저장소로 쓴다.
+   * ID는 GitHub GraphQL로 조회한 값이며 비밀이 아니다. repoId를 비우면 댓글 영역을 렌더하지 않는다.
+   */
+  giscus: {
+    repo: 'daedaem/daedaem.github.io',
+    repoId: 'R_kgDOHeCvOA',
+    category: 'Announcements',
+    categoryId: 'DIC_kwDOHeCvOM4DEfLG',
+  },
 } as const
 
 export type CategoryId =

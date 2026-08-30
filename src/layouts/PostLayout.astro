@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro'
+import Comments from '@/components/Comments.astro'
 import { getCategory } from '@/consts'
 import { formatDate } from '@/utils/format'
 
@@ -127,6 +128,8 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
         </nav>
       )
     }
+
+    {!archived && <Comments />}
   </article>
 </BaseLayout>
 
