@@ -6,10 +6,21 @@ import { formatDate, readingMinutes } from '@/utils/format'
 
 export const getStaticPaths = async () => {
   const entries = await getCollection('wiki', ({ data }) => !data.draft)
-  return entries.map(entry => ({ params: { slug: entry.id }, props: { entry } }))
+  return entries.map(entry => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      // 같은 주제의 다른 문서. 문서 안에서 옆 문서로 건너갈 수 있게 한다.
+      siblings: entries
+        .filter(e => e.data.topic === entry.data.topic && e.id !== entry.id)
+        .sort((a, b) => a.data.title.localeCompare(b.data.title, 'ko'))
+        .map(e => ({ href: `/wiki/${e.id}/`, title: e.data.title, status: e.data.status })),
+    },
+  }))
 }
 
-const { entry } = Astro.props
+const { entry, siblings } = Astro.props
+const STATUS_SHORT: Record<string, string> = { seed: '메모', growing: '보완 중', stable: '정리됨' }
 const { Content, headings } = await render(entry)
 const topic = getWikiTopic(entry.data.topic)
 const STATUS_LABEL: Record<string, string> = {
@@ -31,6 +42,8 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
   <article class="wrap post">
     <header>
       <div class="meta">
+        <a class="crumb" href="/wiki/">위키</a>
+        {topic && <span class="sep">›</span>}
         {topic && <a class="topic" href="/wiki/">{topic.name}</a>}
         <time datetime={(entry.data.updated ?? entry.data.created).toISOString()}>
           {
@@ -75,6 +88,25 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
         </ul>
       )
     }
+
+    {
+      siblings.length > 0 && topic && (
+        <section class="siblings" aria-label="같은 주제의 문서">
+          <div class="siblings-head">
+            <h2>{topic.name}의 다른 문서</h2>
+            <a href="/wiki/">위키 전체 →</a>
+          </div>
+          <ul>
+            {siblings.map(s => (
+              <li>
+                <a href={s.href}>{s.title}</a>
+                <span class="status">{STATUS_SHORT[s.status]}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
   </article>
 </BaseLayout>
 
@@ -90,9 +122,65 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
     font-size: 0.8125rem;
     color: var(--text-muted);
   }
-  .topic {
-    color: var(--accent);
+  .topic,
+  .crumb {
+    color: var(--text-muted);
     font-weight: 600;
+  }
+  .topic:hover,
+  .crumb:hover {
+    color: var(--text);
+  }
+  .sep {
+    color: var(--text-dim);
+  }
+
+  .siblings {
+    margin-top: 3rem;
+  }
+  .siblings-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .siblings-head h2 {
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .siblings-head a {
+    font-size: 0.8125rem;
+    color: var(--accent);
+  }
+  .siblings ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+  .siblings li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9375rem;
+  }
+  .siblings li a {
+    font-weight: 600;
+  }
+  .siblings li a:hover {
+    color: var(--accent);
+  }
+  .siblings .status {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    white-space: nowrap;
   }
   h1 {
     margin: 0.7rem 0 0;
