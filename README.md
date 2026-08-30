@@ -11,7 +11,8 @@ src/
 ├─ content/
 │  ├─ posts/   실제로 맡아 해결한 문제의 사례 기록
 │  ├─ wiki/    공부하면서 쌓는 지식. 주제별로 계속 갱신
-│  └─ notes/   2022~2023년 학습 노트 아카이브 (수정하지 않음)
+│  ├─ solutions/ 백준·프로그래머스 풀이 (본인 코드만, 지문은 링크)
+│  └─ notes/   2022~2023년 학습 노트 아카이브 (오탈자만 교정, 틀린 내용은 취소선+바로잡음)
 ├─ pages/      라우팅
 ├─ layouts/    페이지 골격
 ├─ components/ 재사용 컴포넌트
@@ -38,6 +39,8 @@ npm run dev
 | `npm run preview` | 빌드 결과 미리보기 |
 | `npm run check` | 타입 검사 |
 | `npm run format` | Prettier |
+| `npm run new post <slug> "제목" [category]` | 글 파일 생성 (`draft: true`) |
+| `npm run new wiki <slug> "제목" [topic]` | 위키 파일 생성 (`status: seed`) |
 
 ### iCloud 동기화 폴더에서 작업하지 않습니다
 
