@@ -1,26 +1,23 @@
 ---
 import { getCollection, render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import WikiTree from '@/components/WikiTree.astro'
 import { getWikiTopic } from '@/consts'
 import { formatDate, readingMinutes } from '@/utils/format'
 
 export const getStaticPaths = async () => {
   const entries = await getCollection('wiki', ({ data }) => !data.draft)
-  return entries.map(entry => ({
-    params: { slug: entry.id },
-    props: {
-      entry,
-      // 같은 주제의 다른 문서. 문서 안에서 옆 문서로 건너갈 수 있게 한다.
-      siblings: entries
-        .filter(e => e.data.topic === entry.data.topic && e.id !== entry.id)
-        .sort((a, b) => a.data.title.localeCompare(b.data.title, 'ko'))
-        .map(e => ({ href: `/wiki/${e.id}/`, title: e.data.title, status: e.data.status })),
-    },
+  // 트리에 쓸 전체 문서 목록. 모든 페이지가 같은 목록을 받는다.
+  const docs = entries.map(e => ({
+    id: e.id,
+    title: e.data.title,
+    topic: e.data.topic,
+    status: e.data.status,
   }))
+  return entries.map(entry => ({ params: { slug: entry.id }, props: { entry, docs } }))
 }
 
-const { entry, siblings } = Astro.props
-const STATUS_SHORT: Record<string, string> = { seed: '메모', growing: '보완 중', stable: '정리됨' }
+const { entry, docs } = Astro.props
 const { Content, headings } = await render(entry)
 const topic = getWikiTopic(entry.data.topic)
 const STATUS_LABEL: Record<string, string> = {
@@ -39,81 +36,96 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
   updatedAt={entry.data.updated}
   ogSlug={`wiki/${entry.id}`}
 >
-  <article class="wrap post">
-    <header>
-      <div class="meta">
-        <a class="crumb" href="/wiki/">위키</a>
-        {topic && <span class="sep">›</span>}
-        {topic && <a class="topic" href="/wiki/">{topic.name}</a>}
-        <time datetime={(entry.data.updated ?? entry.data.created).toISOString()}>
-          {
-            entry.data.updated
-              ? `${formatDate(entry.data.updated)} 갱신`
-              : formatDate(entry.data.created)
-          }
-        </time>
-        <span>· {readingMinutes(entry.body ?? '')}분</span>
+  <div class="wrap-wide layout">
+    <aside class="side">
+      <WikiTree docs={docs} current={entry.id} />
+    </aside>
+
+    <details class="side-mobile">
+      <summary>위키 문서 목록</summary>
+      <WikiTree docs={docs} current={entry.id} />
+    </details>
+
+    <article class="post">
+      <header>
+        <div class="meta">
+          <a class="crumb" href="/wiki/">위키</a>
+          {topic && <span class="sep">›</span>}
+          {topic && (
+            <a class="topic" href={`/wiki/#${topic.id}`} style={`--wt: ${topic.hue}`}>
+              <span class="swatch" aria-hidden="true" />
+              {topic.name}
+            </a>
+          )}
+          <time datetime={(entry.data.updated ?? entry.data.created).toISOString()}>
+            {
+              entry.data.updated
+                ? `${formatDate(entry.data.updated)} 갱신`
+                : formatDate(entry.data.created)
+            }
+          </time>
+          <span>· {readingMinutes(entry.body ?? '')}분</span>
+        </div>
+        <h1>{entry.data.title}</h1>
+        <p class="lead">{entry.data.description}</p>
+        <p class="status muted">{STATUS_LABEL[entry.data.status]}</p>
+      </header>
+
+      {
+        toc.length > 2 && (
+          <nav class="toc" aria-label="목차">
+            <p>목차</p>
+            <ul>
+              {toc.map(h => (
+                <li class={`d${h.depth}`}>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      }
+
+      <div class="body">
+        <Content />
       </div>
-      <h1>{entry.data.title}</h1>
-      <p class="lead">{entry.data.description}</p>
-      <p class="status muted">{STATUS_LABEL[entry.data.status]}</p>
-    </header>
 
-    {
-      toc.length > 2 && (
-        <nav class="toc" aria-label="목차">
-          <p>목차</p>
-          <ul>
-            {toc.map(h => (
-              <li class={`d${h.depth}`}>
-                <a href={`#${h.slug}`}>{h.text}</a>
-              </li>
+      {
+        entry.data.tags.length > 0 && (
+          <ul class="tags">
+            {entry.data.tags.map(t => (
+              <li>#{t}</li>
             ))}
           </ul>
-        </nav>
-      )
-    }
-
-    <div class="body">
-      <slot name="before" />
-      <Content />
-    </div>
-
-    {
-      entry.data.tags.length > 0 && (
-        <ul class="tags">
-          {entry.data.tags.map(t => (
-            <li>#{t}</li>
-          ))}
-        </ul>
-      )
-    }
-
-    {
-      siblings.length > 0 && topic && (
-        <section class="siblings" aria-label="같은 주제의 문서">
-          <div class="siblings-head">
-            <h2>{topic.name}의 다른 문서</h2>
-            <a href="/wiki/">위키 전체 →</a>
-          </div>
-          <ul>
-            {siblings.map(s => (
-              <li>
-                <a href={s.href}>{s.title}</a>
-                <span class="status">{STATUS_SHORT[s.status]}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )
-    }
-  </article>
+        )
+      }
+    </article>
+  </div>
 </BaseLayout>
 
 <style>
-  .post {
+  /* 데스크톱: 왼쪽 트리 + 본문. 본문 폭은 --measure를 넘지 않는다. */
+  .layout {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, var(--measure));
+    gap: 3rem;
     padding-top: 3rem;
+    align-items: start;
   }
+  .side {
+    position: sticky;
+    top: 5rem;
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+  .side-mobile {
+    display: none;
+  }
+  .post {
+    min-width: 0;
+  }
+
   .meta {
     display: flex;
     flex-wrap: wrap;
@@ -127,60 +139,23 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
     color: var(--text-muted);
     font-weight: 600;
   }
+  .topic {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
   .topic:hover,
   .crumb:hover {
     color: var(--text);
   }
+  .swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: hsl(var(--wt) 65% 48%);
+  }
   .sep {
     color: var(--text-dim);
-  }
-
-  .siblings {
-    margin-top: 3rem;
-  }
-  .siblings-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 6px;
-  }
-  .siblings-head h2 {
-    margin: 0;
-    font-size: 0.8125rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-  .siblings-head a {
-    font-size: 0.8125rem;
-    color: var(--accent);
-  }
-  .siblings ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-top: 1px solid var(--border);
-  }
-  .siblings li {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.7rem 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.9375rem;
-  }
-  .siblings li a {
-    font-weight: 600;
-  }
-  .siblings li a:hover {
-    color: var(--accent);
-  }
-  .siblings .status {
-    font-size: 0.75rem;
-    color: var(--text-dim);
-    white-space: nowrap;
   }
   h1 {
     margin: 0.7rem 0 0;
@@ -249,6 +224,12 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
   .body :global(ol) {
     margin-block: 1.15rem;
   }
+  .body :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
   .tags {
     display: flex;
     flex-wrap: wrap;
@@ -259,5 +240,38 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
     border-top: 1px solid var(--border);
     font-size: 0.8125rem;
     color: var(--text-muted);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .swatch {
+      background: hsl(var(--wt) 70% 65%);
+    }
+  }
+  :global(:root[data-theme='dark']) .swatch {
+    background: hsl(var(--wt) 70% 65%);
+  }
+
+  /* 좁은 화면: 트리를 본문 위의 접힌 목록으로 */
+  @media (max-width: 60rem) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.5rem;
+      padding-top: 1.5rem;
+    }
+    .side {
+      display: none;
+    }
+    .side-mobile {
+      display: block;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0 1rem;
+    }
+    .side-mobile > summary {
+      padding: 0.75rem 0;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
   }
 </style>

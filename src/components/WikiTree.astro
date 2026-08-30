@@ -1,0 +1,129 @@
+---
+// 위키 문서 트리. 주제별로 접히고, 현재 문서가 속한 주제만 펼쳐진 채로 시작한다.
+// 데스크톱에서는 왼쪽 사이드바로, 좁은 화면에서는 본문 위의 접힌 목록으로 쓴다.
+import { WIKI_TOPICS } from '@/consts'
+
+interface Props {
+  /** 주제 id → 문서 목록 */
+  docs: { id: string; title: string; topic: string; status: string }[]
+  /** 현재 보고 있는 문서 id */
+  current?: string
+}
+
+const { docs, current } = Astro.props
+const currentTopic = docs.find(d => d.id === current)?.topic
+const groups = WIKI_TOPICS.map(t => ({
+  ...t,
+  items: docs
+    .filter(d => d.topic === t.id)
+    .sort((a, b) => a.title.localeCompare(b.title, 'ko')),
+})).filter(g => g.items.length > 0)
+---
+
+<nav class="tree" aria-label="위키 문서">
+  <a class="root" href="/wiki/">위키 전체</a>
+  {
+    groups.map(g => (
+      <details open={g.id === currentTopic} style={`--wt: ${g.hue}`}>
+        <summary>
+          <span class="swatch" aria-hidden="true" />
+          {g.name}
+          <em>{g.items.length}</em>
+        </summary>
+        <ul>
+          {g.items.map(d => (
+            <li>
+              <a href={`/wiki/${d.id}/`} aria-current={d.id === current ? 'page' : undefined}>
+                {d.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </details>
+    ))
+  }
+</nav>
+
+<style>
+  .tree {
+    font-size: 0.875rem;
+  }
+  .root {
+    display: block;
+    padding: 0.35rem 0;
+    font-weight: 700;
+    color: var(--text);
+  }
+  details {
+    border-top: 1px solid var(--border);
+  }
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 600;
+    color: var(--text);
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary::after {
+    content: '';
+    margin-left: auto;
+    width: 6px;
+    height: 6px;
+    border-right: 1.5px solid var(--text-dim);
+    border-bottom: 1.5px solid var(--text-dim);
+    transform: rotate(-45deg);
+    transition: transform 0.15s ease;
+  }
+  details[open] summary::after {
+    transform: rotate(45deg);
+  }
+  .swatch {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background: hsl(var(--wt) 65% 48%);
+    flex: none;
+  }
+  summary em {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+  ul {
+    list-style: none;
+    margin: 0 0 0.5rem;
+    padding: 0 0 0 1rem;
+  }
+  li a {
+    display: block;
+    padding: 0.3rem 0.5rem;
+    margin-left: -0.5rem;
+    border-radius: 6px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  li a:hover {
+    color: var(--text);
+    background: var(--bg-subtle);
+  }
+  li a[aria-current='page'] {
+    color: var(--text);
+    font-weight: 600;
+    background: var(--bg-subtle);
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .swatch {
+      background: hsl(var(--wt) 70% 65%);
+    }
+  }
+  :global(:root[data-theme='dark']) .swatch {
+    background: hsl(var(--wt) 70% 65%);
+  }
+</style>

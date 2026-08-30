@@ -90,28 +90,42 @@ const algoCount = (await getCollection('solutions')).length
 
     <div class="strips">
       <a class="strip" href="/wiki/">
+        <div class="strip-num"><b>{wiki.length}</b>개 문서</div>
         <div class="strip-title">위키</div>
         <p>일하다 막힌 것을 그때그때 정리해 쌓는 곳. 완성되지 않은 항목도 그대로 둡니다.</p>
-        <div class="strip-more">{wiki.length}개 문서 →</div>
       </a>
       <a class="strip" href="/algorithms/">
+        <div class="strip-num"><b>{algoCount}</b>문제</div>
         <div class="strip-title">알고리즘</div>
         <p>백준·프로그래머스 풀이 기록. 티어와 유형, 사용한 언어별로 정리했습니다.</p>
-        <div class="strip-more">{algoCount}문제 →</div>
       </a>
       <a class="strip" href="/notes/">
+        <div class="strip-num"><b>{notes.length}</b>편</div>
         <div class="strip-title">학습 노트 아카이브</div>
         <p>개발자로 전환하던 2022~2023년의 기록. 자바스크립트·타입스크립트 학습 노트와 그 시기의 이야기.</p>
-        <div class="strip-more">{notes.length}편 →</div>
       </a>
     </div>
   </div>
 </BaseLayout>
 
 <style>
+  /* 정체성 블록. 오른쪽 위에서 번지는 옅은 색조와 점 격자로 첫 화면에 질감을 준다. */
   .intro {
-    padding: 48px 0 36px;
+    position: relative;
+    padding: 56px 0 40px;
     border-bottom: 1px solid var(--border);
+  }
+  .intro::before {
+    content: '';
+    position: absolute;
+    inset: 0 -24px;
+    z-index: -1;
+    background:
+      radial-gradient(60rem 22rem at 100% 0%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%),
+      radial-gradient(circle, var(--border-strong) 1px, transparent 1.2px) 0 0 / 22px 22px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent);
+    mask-image: linear-gradient(to bottom, #000 40%, transparent);
+    pointer-events: none;
   }
 
   .intro h1 {
@@ -264,24 +278,39 @@ const algoCount = (await getCollection('solutions')).length
     padding: 22px;
   }
 
+  .strip {
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .strip:hover {
+    transform: translateY(-1px);
+    background: var(--bg-card);
+    box-shadow: inset 0 0 0 1px var(--border-strong);
+  }
+  .strip-num {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .strip-num b {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    margin-right: 2px;
+    line-height: 1.1;
+  }
   .strip-title {
+    margin-top: 10px;
     font-size: 16px;
     font-weight: 700;
     letter-spacing: -0.025em;
   }
 
   .strip p {
-    margin: 8px 0 0;
+    margin: 6px 0 0;
     font-size: 14px;
     line-height: 1.7;
     color: var(--text-muted);
-  }
-
-  .strip-more {
-    margin-top: 12px;
-    font-size: 13.5px;
-    font-weight: 500;
-    color: var(--accent);
   }
 
   @media (max-width: 720px) {

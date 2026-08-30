@@ -13,6 +13,7 @@ const entries = (await getCollection('wiki', ({ data }) => !data.draft)).sort((a
 const grouped = WIKI_TOPICS.map(t => ({
   ...t,
   items: entries.filter(e => e.data.topic === t.id),
+  stable: entries.filter(e => e.data.topic === t.id && e.data.status === 'stable').length,
 })).filter(g => g.items.length > 0)
 
 const STATUS_LABEL: Record<string, string> = {
@@ -34,40 +35,51 @@ const STATUS_LABEL: Record<string, string> = {
         아니라 주제별로 계속 고쳐 쓰는 문서라, 완성되지 않은 항목도 그대로 올립니다. 어느 정도 익은
         글인지는 상태로 표시했습니다.
       </p>
-      <p class="count muted">{entries.length}개 문서</p>
+      <p class="count muted">{grouped.length}개 주제 · {entries.length}개 문서</p>
     </header>
 
-    {
-      grouped.length === 0 ? (
-        <p class="empty muted">아직 정리한 문서가 없습니다.</p>
-      ) : (
+    <div class="cards">
+      {
         grouped.map(g => (
-          <section class="topic">
-            <div class="topic-head">
-              <h2>
-                {g.name} <em>{g.items.length}</em>
-              </h2>
-              <p class="muted">{g.description}</p>
-            </div>
-            <ul>
-              {g.items.map(e => (
-                <li>
-                  <div class="line">
-                    <a href={`/wiki/${e.id}/`}>{e.data.title}</a>
-                    <span class={`status ${e.data.status}`}>{STATUS_LABEL[e.data.status]}</span>
-                  </div>
-                  <p class="desc muted">{e.data.description}</p>
-                  <time datetime={(e.data.updated ?? e.data.created).toISOString()}>
-                    {e.data.updated
-                      ? `${formatDate(e.data.updated)} 갱신`
-                      : formatDate(e.data.created)}
-                  </time>
-                </li>
-              ))}
-            </ul>
-          </section>
+          <a class="card" href={`#${g.id}`} style={`--wt: ${g.hue}`}>
+            <span class="card-name">{g.name}</span>
+            <span class="card-desc">{g.description}</span>
+            <span class="card-meta">
+              <b>{g.items.length}</b>개 문서
+              {g.stable > 0 && <span class="dot-sep">·</span>}
+              {g.stable > 0 && `정리됨 ${g.stable}`}
+            </span>
+          </a>
         ))
-      )
+      }
+    </div>
+
+    {
+      grouped.map(g => (
+        <section class="topic" id={g.id} style={`--wt: ${g.hue}`}>
+          <div class="topic-head">
+            <h2>
+              <span class="swatch" aria-hidden="true" />
+              {g.name} <em>{g.items.length}</em>
+            </h2>
+            <p class="muted">{g.description}</p>
+          </div>
+          <ul>
+            {g.items.map(e => (
+              <li>
+                <div class="line">
+                  <a href={`/wiki/${e.id}/`}>{e.data.title}</a>
+                  <span class={`status ${e.data.status}`}>{STATUS_LABEL[e.data.status]}</span>
+                </div>
+                <p class="desc muted">{e.data.description}</p>
+                <time datetime={(e.data.updated ?? e.data.created).toISOString()}>
+                  {e.data.updated ? `${formatDate(e.data.updated)} 갱신` : formatDate(e.data.created)}
+                </time>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
     }
   </div>
 </BaseLayout>
@@ -78,7 +90,6 @@ const STATUS_LABEL: Record<string, string> = {
   }
   .head {
     padding-bottom: 2rem;
-    border-bottom: 1px solid var(--border);
   }
   h1 {
     margin: 0;
@@ -95,15 +106,69 @@ const STATUS_LABEL: Record<string, string> = {
     margin: 0.8rem 0 0;
     font-size: 0.8125rem;
   }
+
+  /* 주제 카드. 왼쪽 색 띠와 카드 배경의 옅은 색조로 주제를 구분한다. */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px 18px 16px 20px;
+    border: 1px solid var(--border);
+    border-left: 4px solid hsl(var(--wt) 65% 48%);
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, hsl(var(--wt) 70% 50% / 0.07), transparent 60%) var(--bg);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .card:hover {
+    border-color: hsl(var(--wt) 65% 48%);
+    transform: translateY(-1px);
+  }
+  .card-name {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .card-desc {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+  .card-meta {
+    margin-top: 4px;
+    font-size: 0.8125rem;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+  }
+  .card-meta b {
+    font-size: 1.125rem;
+    color: var(--text);
+    margin-right: 2px;
+  }
+  .dot-sep {
+    margin: 0 0.35rem;
+  }
+
   .topic {
-    margin-top: 2.75rem;
+    margin-top: 3rem;
+    scroll-margin-top: 5rem;
   }
   .topic-head h2 {
     margin: 0;
     font-size: 1.0625rem;
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 0.5rem;
+  }
+  .swatch {
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    background: hsl(var(--wt) 65% 48%);
   }
   .topic-head h2 em {
     font-style: normal;
@@ -137,8 +202,7 @@ const STATUS_LABEL: Record<string, string> = {
     text-decoration: none;
   }
   .line a:hover {
-    text-decoration: underline;
-    text-decoration-color: var(--accent);
+    color: var(--accent);
   }
   .status {
     font-size: 0.6875rem;
@@ -149,8 +213,8 @@ const STATUS_LABEL: Record<string, string> = {
     white-space: nowrap;
   }
   .status.stable {
-    color: var(--accent);
-    border-color: var(--accent);
+    color: hsl(var(--wt) 60% 38%);
+    border-color: hsl(var(--wt) 60% 60%);
   }
   .desc {
     margin: 0.3rem 0 0;
@@ -162,7 +226,25 @@ const STATUS_LABEL: Record<string, string> = {
     font-size: 0.75rem;
     color: var(--text-muted);
   }
-  .empty {
-    padding-block: 2rem;
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .card,
+    :global(:root:not([data-theme='light'])) .swatch {
+      --wt-l: 65%;
+    }
+    :global(:root:not([data-theme='light'])) .status.stable {
+      color: hsl(var(--wt) 70% 70%);
+      border-color: hsl(var(--wt) 60% 45%);
+    }
+  }
+  :global(:root[data-theme='dark']) .status.stable {
+    color: hsl(var(--wt) 70% 70%);
+    border-color: hsl(var(--wt) 60% 45%);
+  }
+
+  @media (max-width: 40rem) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
