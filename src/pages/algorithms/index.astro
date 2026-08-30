@@ -241,6 +241,17 @@ const LIMIT = 30
       shown += m
     }
 
+    // 사이트 소제목(백준/프로그래머스)은 아래 그룹이 전부 숨었을 때 같이 숨긴다
+    for (const h of document.querySelectorAll<HTMLElement>('.site-title')) {
+      let el = h.nextElementSibling
+      let any = false
+      while (el && !el.classList.contains('site-title')) {
+        if (el.classList.contains('group') && !(el as HTMLElement).hidden) any = true
+        el = el.nextElementSibling
+      }
+      h.hidden = !any
+    }
+
     count.textContent = active ? `${shown}문제` : ''
     clearBtn.hidden = !active
     empty.hidden = !(active && shown === 0)
