@@ -202,129 +202,124 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
 
     <p class="empty" id="empty" hidden>조건에 맞는 문제가 없습니다.</p>
   </div>
+  <script>
+    // 정적 목록을 클라이언트에서 거른 뒤 그룹마다 30개씩 쪽으로 나눈다.
+    // 검색어·유형·언어 세 조건은 AND이고, 조건이 바뀌면 모든 그룹을 1쪽으로 되돌린다.
+    const PAGE = 30
+    const q = document.getElementById('q') as HTMLInputElement
+    const clearBtn = document.getElementById('clear') as HTMLButtonElement
+    const count = document.getElementById('count')!
+    const empty = document.getElementById('empty')!
+    const chips = [...document.querySelectorAll<HTMLButtonElement>('.chip')]
+    const groups = [...document.querySelectorAll<HTMLDetailsElement>('.group')]
+    const page = new Map<HTMLDetailsElement, number>()
+  
+    let cls = ''
+    let lang = ''
+  
+    function matches(li: HTMLLIElement, term: string) {
+      return (
+        (!term || (li.dataset.title ?? '').includes(term)) &&
+        (!cls || (li.dataset.cls ?? '').split('|').includes(cls)) &&
+        (!lang || (li.dataset.lang ?? '').split('|').includes(lang))
+      )
+    }
+  
+    function renderGroup(g: HTMLDetailsElement, active: boolean) {
+      const term = q.value.trim().toLowerCase()
+      const rows = [...g.querySelectorAll<HTMLLIElement>('.list li')]
+      const hit = rows.filter(li => matches(li, term))
+      const pages = Math.max(1, Math.ceil(hit.length / PAGE))
+      const cur = Math.min(page.get(g) ?? 1, pages)
+      page.set(g, cur)
+      const from = (cur - 1) * PAGE
+      const to = Math.min(from + PAGE, hit.length)
+  
+      for (const li of rows) li.hidden = true
+      for (const li of hit.slice(from, to)) li.hidden = false
+  
+      const total = Number(g.dataset.total)
+      const em = g.querySelector('summary em')!
+      em.textContent = active ? `${hit.length} / ${total}` : String(total)
+      g.hidden = active && hit.length === 0
+      if (active && hit.length > 0) g.open = true
+  
+      const nav = g.querySelector<HTMLElement>('.pager')!
+      nav.hidden = hit.length <= PAGE
+      ;(nav.querySelector('.prev') as HTMLButtonElement).disabled = cur <= 1
+      ;(nav.querySelector('.next') as HTMLButtonElement).disabled = cur >= pages
+      nav.querySelector('.range')!.textContent = `${from + 1}–${to} / ${hit.length}`
+      // 쪽 번호 버튼은 서버에서 그려 둔 것을 그대로 쓴다. JS로 새로 만들면 Astro 스코프 스타일이 안 붙는다.
+      for (const b of nav.querySelectorAll<HTMLButtonElement>('.num')) {
+        const n = Number(b.dataset.page)
+        b.hidden = n > pages
+        if (n === cur) b.setAttribute('aria-current', 'page')
+        else b.removeAttribute('aria-current')
+      }
+      return hit.length
+    }
+  
+    function apply() {
+      const active = !!(q.value.trim() || cls || lang)
+      let shown = 0
+      for (const g of groups) shown += renderGroup(g, active)
+  
+      // 사이트 소제목(백준/프로그래머스)은 아래 그룹이 전부 숨었을 때 같이 숨긴다
+      for (const h of document.querySelectorAll<HTMLElement>('.site-title')) {
+        let el = h.nextElementSibling
+        let any = false
+        while (el && !el.classList.contains('site-title')) {
+          if (el.classList.contains('group') && !(el as HTMLElement).hidden) any = true
+          el = el.nextElementSibling
+        }
+        h.hidden = !any
+      }
+  
+      count.textContent = active ? `${shown}문제` : ''
+      clearBtn.hidden = !active
+      empty.hidden = !(active && shown === 0)
+      for (const c of chips) {
+        const on = (c.dataset.cls && c.dataset.cls === cls) || (c.dataset.lang && c.dataset.lang === lang)
+        c.classList.toggle('on', !!on)
+        c.setAttribute('aria-pressed', String(!!on))
+      }
+    }
+  
+    function resetPages() {
+      page.clear()
+      apply()
+    }
+  
+    q.addEventListener('input', resetPages)
+    for (const c of chips) {
+      c.addEventListener('click', () => {
+        if (c.dataset.cls !== undefined) cls = cls === c.dataset.cls ? '' : c.dataset.cls
+        if (c.dataset.lang !== undefined) lang = lang === c.dataset.lang ? '' : c.dataset.lang
+        resetPages()
+      })
+    }
+    clearBtn.addEventListener('click', () => {
+      q.value = ''
+      cls = ''
+      lang = ''
+      resetPages()
+      q.focus()
+    })
+    for (const g of groups) {
+      g.querySelector('.pager')?.addEventListener('click', e => {
+        const b = (e.target as HTMLElement).closest<HTMLButtonElement>('.pg')
+        if (!b || b.disabled) return
+        const cur = page.get(g) ?? 1
+        if (b.classList.contains('prev')) page.set(g, cur - 1)
+        else if (b.classList.contains('next')) page.set(g, cur + 1)
+        else page.set(g, Number(b.dataset.page))
+        renderGroup(g, !!(q.value.trim() || cls || lang))
+        g.querySelector('summary')!.scrollIntoView({ block: 'start', behavior: 'smooth' })
+      })
+    }
+  </script>
 </BaseLayout>
 
-<script>
-  // 정적 목록을 클라이언트에서 거른 뒤 그룹마다 30개씩 쪽으로 나눈다.
-  // 검색어·유형·언어 세 조건은 AND이고, 조건이 바뀌면 모든 그룹을 1쪽으로 되돌린다.
-  const PAGE = 30
-  const q = document.getElementById('q') as HTMLInputElement
-  const clearBtn = document.getElementById('clear') as HTMLButtonElement
-  const count = document.getElementById('count')!
-  const empty = document.getElementById('empty')!
-  const chips = [...document.querySelectorAll<HTMLButtonElement>('.chip')]
-  const groups = [...document.querySelectorAll<HTMLDetailsElement>('.group')]
-  const page = new Map<HTMLDetailsElement, number>()
-
-  let cls = ''
-  let lang = ''
-
-  function matches(li: HTMLLIElement, term: string) {
-    return (
-      (!term || (li.dataset.title ?? '').includes(term)) &&
-      (!cls || (li.dataset.cls ?? '').split('|').includes(cls)) &&
-      (!lang || (li.dataset.lang ?? '').split('|').includes(lang))
-    )
-  }
-
-  function renderGroup(g: HTMLDetailsElement, active: boolean) {
-    const term = q.value.trim().toLowerCase()
-    const rows = [...g.querySelectorAll<HTMLLIElement>('.list li')]
-    const hit = rows.filter(li => matches(li, term))
-    const pages = Math.max(1, Math.ceil(hit.length / PAGE))
-    const cur = Math.min(page.get(g) ?? 1, pages)
-    page.set(g, cur)
-    const from = (cur - 1) * PAGE
-    const to = Math.min(from + PAGE, hit.length)
-
-    for (const li of rows) li.hidden = true
-    for (const li of hit.slice(from, to)) li.hidden = false
-
-    const total = Number(g.dataset.total)
-    const em = g.querySelector('summary em')!
-    em.textContent = active ? `${hit.length} / ${total}` : String(total)
-    g.hidden = active && hit.length === 0
-    if (active && hit.length > 0) g.open = true
-
-    const nav = g.querySelector<HTMLElement>('.pager')!
-    nav.hidden = hit.length <= PAGE
-    ;(nav.querySelector('.prev') as HTMLButtonElement).disabled = cur <= 1
-    ;(nav.querySelector('.next') as HTMLButtonElement).disabled = cur >= pages
-    nav.querySelector('.range')!.textContent = `${from + 1}–${to} / ${hit.length}`
-    const box = nav.querySelector('.pages')!
-    box.replaceChildren(
-      ...Array.from({ length: pages }, (_, n) => {
-        const b = document.createElement('button')
-        b.type = 'button'
-        b.className = 'pg num'
-        b.dataset.page = String(n + 1)
-        b.textContent = String(n + 1)
-        if (n + 1 === cur) b.setAttribute('aria-current', 'page')
-        return b
-      }),
-    )
-    return hit.length
-  }
-
-  function apply() {
-    const active = !!(q.value.trim() || cls || lang)
-    let shown = 0
-    for (const g of groups) shown += renderGroup(g, active)
-
-    // 사이트 소제목(백준/프로그래머스)은 아래 그룹이 전부 숨었을 때 같이 숨긴다
-    for (const h of document.querySelectorAll<HTMLElement>('.site-title')) {
-      let el = h.nextElementSibling
-      let any = false
-      while (el && !el.classList.contains('site-title')) {
-        if (el.classList.contains('group') && !(el as HTMLElement).hidden) any = true
-        el = el.nextElementSibling
-      }
-      h.hidden = !any
-    }
-
-    count.textContent = active ? `${shown}문제` : ''
-    clearBtn.hidden = !active
-    empty.hidden = !(active && shown === 0)
-    for (const c of chips) {
-      const on = (c.dataset.cls && c.dataset.cls === cls) || (c.dataset.lang && c.dataset.lang === lang)
-      c.classList.toggle('on', !!on)
-      c.setAttribute('aria-pressed', String(!!on))
-    }
-  }
-
-  function resetPages() {
-    page.clear()
-    apply()
-  }
-
-  q.addEventListener('input', resetPages)
-  for (const c of chips) {
-    c.addEventListener('click', () => {
-      if (c.dataset.cls !== undefined) cls = cls === c.dataset.cls ? '' : c.dataset.cls
-      if (c.dataset.lang !== undefined) lang = lang === c.dataset.lang ? '' : c.dataset.lang
-      resetPages()
-    })
-  }
-  clearBtn.addEventListener('click', () => {
-    q.value = ''
-    cls = ''
-    lang = ''
-    resetPages()
-    q.focus()
-  })
-  for (const g of groups) {
-    g.querySelector('.pager')?.addEventListener('click', e => {
-      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('.pg')
-      if (!b || b.disabled) return
-      const cur = page.get(g) ?? 1
-      if (b.classList.contains('prev')) page.set(g, cur - 1)
-      else if (b.classList.contains('next')) page.set(g, cur + 1)
-      else page.set(g, Number(b.dataset.page))
-      renderGroup(g, !!(q.value.trim() || cls || lang))
-      g.querySelector('summary')!.scrollIntoView({ block: 'start', behavior: 'smooth' })
-    })
-  }
-</script>
 
 <style>
   .page {
