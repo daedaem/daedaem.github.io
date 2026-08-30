@@ -11,34 +11,40 @@ const notes = (await getCollection('notes')).sort(
  * 시리즈. 슬러그 접두사(prefix) 또는 슬러그 목록(ids)으로 묶는다.
  * 순서가 곧 학습한 순서이고, 시리즈 밖의 글은 성격별로 따로 둔다.
  */
-type Series = { title: string; note: string; prefix?: string; ids?: string[] }
+type Series = { id: string; title: string; note: string; prefix?: string; ids?: string[] }
 const SERIES: Series[] = [
   {
+    id: 'js',
     prefix: 'javascript-',
     title: '자바스크립트 기초',
     note: '문법과 데이터 타입을 처음 정리하던 시기의 노트.',
   },
   {
+    id: 'core-js',
     prefix: 'core-javascript-',
     title: '코어 자바스크립트',
     note: '실행 컨텍스트·this·클로저·프로토타입을 장별로 정리한 완독 기록.',
   },
   {
+    id: 'deep-dive',
     prefix: 'modern-js-deep-dive-',
     title: '모던 자바스크립트 Deep Dive',
     note: '언어의 동작 원리를 다시 근본부터 짚은 노트.',
   },
   {
+    id: 'ts',
     prefix: 'typescript-',
     title: '타입스크립트',
     note: '타입 시스템과 컴파일러 구성, 고급 타입까지의 학습 기록.',
   },
   {
+    id: 'web',
     ids: ['semantic-html', 'atomic-design', 'blockchain'],
     title: '웹과 도메인 지식',
     note: '웹 표준, 컴포넌트 설계 방법론, 블록체인처럼 언어 밖의 것을 정리한 노트.',
   },
   {
+    id: 'transition',
     ids: ['first-post', 'scsa'],
     title: '전환기의 기록',
     note: '개발자로 방향을 바꾸던 시기의 개인적인 글. 기술 노트는 아니지만 그때의 기록이다.',
@@ -52,6 +58,12 @@ const grouped = SERIES.map(s => ({
 
 const used = new Set(grouped.flatMap(g => g.items.map(i => i.id)))
 const others = notes.filter(n => !used.has(n.id))
+
+/** 탭에 쓸 목록. 비어 있는 시리즈는 빼고, 시리즈 밖의 글이 있으면 마지막에 붙인다 */
+const tabs = [
+  ...grouped.filter(g => g.items.length > 0).map(g => ({ id: g.id, title: g.title, count: g.items.length })),
+  ...(others.length > 0 ? [{ id: 'others', title: '그 밖의 글', count: others.length }] : []),
+]
 ---
 
 <BaseLayout
@@ -69,11 +81,20 @@ const others = notes.filter(n => !used.has(n.id))
       </p>
     </header>
 
+    <nav class="tabs" aria-label="시리즈 선택">
+      <a href="#" class="tab" data-series="" aria-current="true">전체 <em>{notes.length}</em></a>
+      {tabs.map(t => (
+        <a href={`#${t.id}`} class="tab" data-series={t.id}>
+          {t.title} <em>{t.count}</em>
+        </a>
+      ))}
+    </nav>
+
     {
       grouped.map(
         g =>
           g.items.length > 0 && (
-            <section class="series">
+            <section class="series" id={g.id} data-series={g.id}>
               <div class="series-head">
                 <h2>
                   {g.title} <em>{g.items.length}편</em>
@@ -100,7 +121,7 @@ const others = notes.filter(n => !used.has(n.id))
 
     {
       others.length > 0 && (
-        <section class="series">
+        <section class="series" id="others" data-series="others">
           <div class="series-head">
             <h2>
               그 밖의 글 <em>{others.length}편</em>
@@ -124,6 +145,37 @@ const others = notes.filter(n => !used.has(n.id))
       )
     }
   </div>
+
+  <script>
+    // 탭은 앵커 링크라 JS 없이도 해당 시리즈로 건너뛴다. JS가 있으면 고른 시리즈만 남기고 주소 해시에 기억한다.
+    const tabs = [...document.querySelectorAll<HTMLAnchorElement>('.tab')]
+    const sections = [...document.querySelectorAll<HTMLElement>('.series')]
+    const ids = new Set(sections.map(s => s.dataset.series))
+
+    function select(id: string) {
+      for (const s of sections) s.hidden = !!id && s.dataset.series !== id
+      for (const t of tabs) {
+        const on = (t.dataset.series ?? '') === id
+        if (on) t.setAttribute('aria-current', 'true')
+        else t.removeAttribute('aria-current')
+      }
+    }
+    function fromHash() {
+      const id = location.hash.slice(1)
+      select(ids.has(id) ? id : '')
+    }
+    for (const t of tabs) {
+      t.addEventListener('click', e => {
+        e.preventDefault()
+        const id = t.dataset.series ?? ''
+        history.replaceState(null, '', id ? `#${id}` : location.pathname)
+        select(id)
+        window.scrollTo({ top: 0 })
+      })
+    }
+    window.addEventListener('hashchange', fromHash)
+    fromHash()
+  </script>
 </BaseLayout>
 
 <style>
@@ -140,6 +192,43 @@ const others = notes.filter(n => !used.has(n.id))
     margin: 0;
     font-size: 1.875rem;
     letter-spacing: -0.025em;
+  }
+
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 1.25rem 0 0.25rem;
+  }
+  .tab {
+    font-size: 13px;
+    background: var(--bg-subtle);
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 5px 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .tab:hover {
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+  .tab:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .tab em {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .tab[aria-current] {
+    background: var(--text);
+    color: var(--bg);
+  }
+  .tab[aria-current] em {
+    color: var(--bg);
   }
 
   .lead {
