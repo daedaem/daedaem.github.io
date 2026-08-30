@@ -3,6 +3,7 @@ title: '금액이 음수로 찍혔다 — DTO 타입 하나가 만든 정수 오
 description: '지원이 끝난 Flash 모듈을 다른 시스템 연동으로 대체하던 중, 검증 단계에서 금액이 음수로 표기되는 현상을 만났다. 원인은 DTO의 데이터 타입이었다. 왜 금액에 int를 쓰면 안 되는지.'
 date: 2026-08-12
 updated: 2026-08-30
+cause: 'DTO의 int가 21억을 넘는 금액에서 예외 없이 조용히 부호를 뒤집었다. DB는 멀쩡했고 Java로 꺼내는 순간 잘렸다.'
 category: 'legacy'
 tags: ['Java', 'DTO', '오버플로', 'BigDecimal', '마이그레이션']
 draft: false

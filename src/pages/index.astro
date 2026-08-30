@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
+import Mark from '@/components/Mark.astro'
 import { SITE, getCategory } from '@/consts'
 import { PROJECTS } from '@/data/projects'
 import { readingMinutes, formatDate } from '@/utils/format'
@@ -58,7 +59,19 @@ const algoCount = (await getCollection('solutions')).length
           <a class="hero" href={`/posts/${featured.id}/`}>
             {featuredCat && <span class="hero-cat" data-cat={featuredCat.id}>{featuredCat.name}</span>}
             <h2>{featured.data.title}</h2>
-            {featured.data.description && <p>{featured.data.description}</p>}
+            {
+              featured.data.cause ? (
+                <p class="hero-cause">
+                  <span class="cause-label">
+                    <Mark size={14} />
+                    원인 한 줄
+                  </span>
+                  {featured.data.cause}
+                </p>
+              ) : (
+                featured.data.description && <p>{featured.data.description}</p>
+              )
+            }
             <span class="hero-meta">
               <time datetime={featured.data.date.toISOString()}>{formatDate(featured.data.date)}</time>
               <span>· {readingMinutes(featured.body ?? '')}분</span>
@@ -178,6 +191,31 @@ const algoCount = (await getCollection('solutions')).length
     line-height: 1.8;
     color: var(--text-muted);
     max-width: 42rem;
+  }
+
+  .hero-cause {
+    margin: 14px 0 0;
+    padding: 0.8rem 1rem 0.85rem;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    background: color-mix(in srgb, var(--accent) 7%, var(--bg-subtle));
+    font-size: 15.5px;
+    line-height: 1.75;
+    font-weight: 500;
+    color: var(--text);
+    max-width: 44rem;
+  }
+  .cause-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-right: 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    vertical-align: 0.1em;
+    white-space: nowrap;
   }
 
   .hero-meta {
@@ -317,6 +355,12 @@ const algoCount = (await getCollection('solutions')).length
     .projects ul,
     .strips {
       grid-template-columns: 1fr;
+    }
+    .intro {
+      padding: 28px 0 24px;
+    }
+    .hero {
+      padding: 28px 0 26px;
     }
   }
 </style>

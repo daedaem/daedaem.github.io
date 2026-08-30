@@ -2,6 +2,7 @@
 import { SITE } from '@/consts'
 import Search from './Search.astro'
 import ThemeToggle from './ThemeToggle.astro'
+import Mark from './Mark.astro'
 
 const path = Astro.url.pathname
 const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href))
@@ -18,7 +19,10 @@ const NAV = [
 
 <header>
   <div class="wrap-wide bar">
-    <a href="/" class="brand">{SITE.title}</a>
+    <a href="/" class="brand">
+      <Mark size={18} class="brand-mark" />
+      {SITE.title}
+    </a>
     <div class="right">
       <nav aria-label="주요 메뉴">
         <ul>
@@ -60,10 +64,16 @@ const NAV = [
   }
 
   .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     font-size: 17px;
     font-weight: 700;
     letter-spacing: -0.03em;
     white-space: nowrap;
+  }
+  .brand :global(.brand-mark) {
+    color: var(--accent);
   }
 
   .right {
@@ -103,9 +113,37 @@ const NAV = [
     font-weight: 500;
   }
 
+  /* 좁은 화면: 첫 줄에 로고와 검색·테마 버튼, 둘째 줄에 가로로 넘기는 메뉴. 두 줄로 끝낸다. */
   @media (max-width: 640px) {
     .bar {
-      padding-block: 12px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      row-gap: 4px;
+      min-height: 0;
+      padding-block: 10px 8px;
+    }
+    .right {
+      display: contents;
+    }
+    .tools {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    nav {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-inline: -24px;
+      padding-inline: 24px;
+    }
+    nav::-webkit-scrollbar {
+      display: none;
+    }
+    nav ul {
+      flex-wrap: nowrap;
+      gap: 20px;
+      padding-block: 4px;
     }
   }
 </style>

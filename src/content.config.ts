@@ -10,6 +10,11 @@ const posts = defineCollection({
     title: z.string(),
     /** 목록·검색결과·SNS 카드에 함께 쓰이므로 한 문장으로 씁니다. */
     description: z.string(),
+    /**
+     * 원인 한 줄. 이 사이트의 시그니처 블록으로 제목 아래와 홈 히어로에 나옵니다.
+     * 증상이 아니라 원인을 한두 문장으로. 없으면 description이 그 자리에 나옵니다.
+     */
+    cause: z.string().optional(),
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
     category: z.enum([
