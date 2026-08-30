@@ -6,12 +6,12 @@ import ThemeToggle from './ThemeToggle.astro'
 const path = Astro.url.pathname
 const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href))
 
-// 학습 노트는 푸터와 홈 스트립에서 닿을 수 있어 헤더에서는 뺐다.
 const NAV = [
   { href: '/posts/', label: '글' },
   { href: '/projects/', label: '프로젝트' },
   { href: '/wiki/', label: '위키' },
   { href: '/algorithms/', label: '알고리즘' },
+  { href: '/notes/', label: '노트' },
   { href: '/about/', label: '소개' },
 ]
 ---

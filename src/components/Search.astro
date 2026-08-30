@@ -3,6 +3,10 @@
 ---
 
 <button id="search-open" type="button" aria-label="검색 열기">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="11" cy="11" r="7"></circle>
+    <path d="m20 20-3.5-3.5"></path>
+  </svg>
   <span>검색</span>
   <kbd>⌘K</kbd>
 </button>
@@ -22,9 +26,36 @@
     loaded = true
     // Pagefind 번들은 astro build 이후에 생성되므로 번들러가 미리 해석하면 안 된다.
     // 경로를 변수에 담아 정적 분석을 피한다.
-    const src = '/pagefind/pagefind-ui.js'
-    const { PagefindUI } = await import(/* @vite-ignore */ src)
-    new PagefindUI({ element: '#search-mount', showSubResults: true, pageSize: 8 })
+    const base = '/pagefind/'
+
+    const css = document.createElement('link')
+    css.rel = 'stylesheet'
+    css.href = base + 'pagefind-ui.css'
+    document.head.appendChild(css)
+
+    // pagefind-ui.js는 ES 모듈이 아니라 window.PagefindUI에 붙는 일반 스크립트다.
+    // import()로 실행은 되지만 export는 없으므로 전역에서 가져와야 한다.
+    await import(/* @vite-ignore */ base + 'pagefind-ui.js')
+    const PagefindUI = (window as any).PagefindUI
+    if (!PagefindUI) {
+      mount.textContent = '검색 색인을 불러오지 못했습니다.'
+      return
+    }
+    new PagefindUI({
+      element: '#search-mount',
+      showSubResults: true,
+      pageSize: 8,
+      translations: {
+        placeholder: '검색어를 입력하세요',
+        clear_search: '지우기',
+        load_more: '더 보기',
+        search_label: '검색',
+        zero_results: '"[SEARCH_TERM]"에 대한 결과가 없습니다',
+        many_results: '"[SEARCH_TERM]" 결과 [COUNT]건',
+        one_result: '"[SEARCH_TERM]" 결과 1건',
+        searching: '검색 중…',
+      },
+    })
   }
 
   async function open() {
@@ -54,7 +85,8 @@
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    padding: 0.25rem 0.6rem;
+    height: 34px;
+    padding: 0 0.6rem;
     background: var(--bg-subtle);
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -66,6 +98,10 @@
   #search-open:hover {
     border-color: var(--accent);
     color: var(--text);
+  }
+  #search-open:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
   #search-open kbd {
     font-family: var(--font-mono);
@@ -93,11 +129,19 @@
     --pagefind-ui-border: var(--border);
     --pagefind-ui-tag: var(--bg-subtle);
     --pagefind-ui-font: var(--font-sans);
+    --pagefind-ui-scale: 0.9;
   }
 
-  @media (max-width: 40rem) {
-    #search-open span {
+  /* 좁은 화면과 터치 기기에서는 단축키 안내가 의미 없으므로 돋보기만 남긴다 */
+  @media (max-width: 40rem), (hover: none) {
+    #search-open span,
+    #search-open kbd {
       display: none;
+    }
+    #search-open {
+      width: 34px;
+      padding: 0;
+      justify-content: center;
     }
   }
 </style>
