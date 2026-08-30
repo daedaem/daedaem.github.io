@@ -22,7 +22,7 @@ legacyPath: "/230216_코어자바스크립트 ch 5. 클로저/"
 ## 클로저가 가지는 이점
 
 ```jsx
-//user함수 실행컨텍스트가 종료되면서 _name변수가 사라져야하는데
+//user함수 실행컨텍스트가 종료되면서 _name변수가 사라져야 하는데
 //return에서 해당 변수를 사용하는 함수가 있으니까(참조 카운트가 0이 아님)
 // 나중에 쓸 변수라고 판단하고 살려둠
 function user(_name) {
@@ -192,8 +192,8 @@ console.log(roy.status); // logout
     })();
     console.log(outer());
     console.log(outer());
-    outer = null;
-    **console.log(outer);   // outer 식별자의 inner 함수 참조를 끊음.**
+    outer = null;   // outer 식별자의 inner 함수 참조를 끊음.
+    console.log(outer);
     ```
 
     ```jsx
@@ -204,7 +204,7 @@ console.log(roy.status); // logout
       var inner = function(){
         if(++a>=10){
           clearInterval(intervalid);
-          **inner=null;    // inner 식별자의 함수 참조를 끊음**
+          inner=null;    // inner 식별자의 함수 참조를 끊음
         }
         console.log(a);
       };
@@ -223,7 +223,7 @@ console.log(roy.status); // logout
         console.log(++count, 'times clicked');
         if(count >= 10){
           button.removeEventListener('click', clickHandler);
-          **clickHandler=null;   // clickHandler 식별자의 함수 참조를 끊음**
+          clickHandler=null;   // clickHandler 식별자의 함수 참조를 끊음
         }
       };
       button.addEventListener('click', clickHandler);
@@ -279,7 +279,7 @@ console.log(roy.status); // logout
     cf. **고차함수** : 함수를 인자로 받거나 함수를 리턴하는 함수
 
 - `alertFruitBuilder` 안에서 기존의 `alertFruit` 함수를 익명함수로 반환. `alertFruitBuilder`
- 함수가 실행하면 이 함수의 실행 결과가 다시 함수가 되며 반환된 함수를 리스너에 콜백 함수로써 전달한다. 이후 언젠가 클릭 이벤트가 발생하면 이 함수의 실행 컨텍스트가 열리면  `alertFruitBuilder`의 인자로 넘어온 `fruit`를 `outerEnvironmnetReference`에 의해 참조할 수 있게 된다.
+ 함수가 실행하면 이 함수의 실행 결과가 다시 함수가 되며 반환된 함수를 리스너에 콜백 함수로써 전달한다. 이후 언젠가 클릭 이벤트가 발생하면 이 함수의 실행 컨텍스트가 열리면  `alertFruitBuilder`의 인자로 넘어온 `fruit`를 `outerEnvironmentReference`에 의해 참조할 수 있게 된다.
 
     ```jsx
     var fruits =['apple','banana', 'peach'];
@@ -304,9 +304,11 @@ console.log(roy.status); // logout
 ### 3-2 접근 권한 제어(정보 은닉)
 
 - **정보 은닉(information hiding)**
-어떤 모듈의 내부 로직에 대해 외부로의 노출을 최소화해서 모듈간의 결합도를 낮추고 유연성을 높이고자 하는 현대 프로그래밍 언어의 중요한 개념 중 하나.
-- 보통 접근 권한에는 public, private, protected의 세 종류. But, **자바스크립트에는 변수에 접근권한 직접부여하도록 설계 x = > 클로저를 이용**.
-- 클로저를 이용하면 함수 차원에서 `public`한 값과 `private`한 값을 구분하는 것이 가능하다. `**return**`을 활용하여 외부 스코프에서 함수 내부 변수들 중 선택적으로 일부 변수에 대한 접근 권한 부여.
+어떤 모듈의 내부 로직에 대해 외부로의 노출을 최소화해서 모듈 간의 결합도를 낮추고 유연성을 높이고자 하는 현대 프로그래밍 언어의 중요한 개념 중 하나.
+- 보통 접근 권한에는 public, private, protected의 세 종류. But, **자바스크립트에는 변수에 접근 권한을 직접 부여하도록 설계되지 않음 ⇒ 클로저를 이용**.
+
+> **보충(2026-08-30):** ES2022부터 클래스에 `#count`처럼 쓰는 **private 필드**가 생겨, 클래스를 쓴다면 클로저 없이도 비공개 멤버를 둘 수 있다. 함수 단위의 은닉에는 여전히 클로저를 쓴다.
+- 클로저를 이용하면 함수 차원에서 `public`한 값과 `private`한 값을 구분하는 것이 가능하다. `return`을 활용하여 외부 스코프에서 함수 내부 변수들 중 선택적으로 일부 변수에 대한 접근 권한 부여.
 
     ```jsx
     var createCar = function () {
@@ -359,7 +361,7 @@ console.log(roy.status); // logout
 
 ### 3-3 부분 적용 함수
 
-- **부분 적용 함수(partially applied function)** : n개의 인자를 받는 함수에 미리 m개의 인자만 넘겨 기억 시켰다가, 나중에 (n-m)개의 인자를 넘기면 비로소 원래 함수의 실행 결과를 얻을 수 있게끔 하는 함수이다.
+- **부분 적용 함수(partially applied function)** : n개의 인자를 받는 함수에 미리 m개의 인자만 넘겨 기억시켰다가, 나중에 (n-m)개의 인자를 넘기면 비로소 원래 함수의 실행 결과를 얻을 수 있게끔 하는 함수이다.
 
     ```jsx
     var partial = function(){
@@ -393,7 +395,7 @@ console.log(roy.status); // logout
         }, '왈왈, ')
     }
     
-    dog.greet('입니다!'); //왈왈, 강아지 입니다!
+    dog.greet('입니다!'); //왈왈, 멍멍이입니다!
     ```
 
 - **디바운스**
@@ -401,8 +403,8 @@ console.log(roy.status); // logout
   - 프론트엔드 성능 최적화에 큰 도움을 주는 기능입니다. ex) scroll, wheel, mousemove, resize 등에 적용하기 좋음.
 
     ```jsx
-    var debounce = function (**eventName**, **func, wait**) {
-      **var timeoutId = null;**
+    var debounce = function (eventName, func, wait) {
+      var timeoutId = null;
       return function (event) {
         var self = this;
         console.log(eventName, "event 발생");
@@ -426,7 +428,7 @@ console.log(roy.status); // logout
 
 ### 3-4 커링 함수(currying function)
 
-- 여러개의 인자를 받는 함수를 하나의 인자만 받는 함수로 나눠서 순차적으로 호출될 수 있게 체인 형태로 구성한 것. 한번에 하나의 인자만 전달하는 것을 원칙.
+- 여러 개의 인자를 받는 함수를 하나의 인자만 받는 함수로 나눠서 순차적으로 호출될 수 있게 체인 형태로 구성한 것. 한 번에 하나의 인자만 전달하는 것을 원칙.
 
     ```jsx
     var curry3 = function (func) {
@@ -446,7 +448,7 @@ console.log(roy.status); // logout
     console.log(getMaxWith10(25)); // 10
     ```
 
-- 필요한 인자의 개수만큼 함수를 만들어 계속 리턴해주다가 마지막에 조합해서 리턴한다. 다만 이자가 많아질수록 가독성이 떨어진다는 단점이 있다.
+- 필요한 인자의 개수만큼 함수를 만들어 계속 리턴해주다가 마지막에 조합해서 리턴한다. 다만 인자가 많아질수록 가독성이 떨어진다는 단점이 있다.
 
     ```jsx
     var curry5 = function (func) {
@@ -517,7 +519,7 @@ ex) Flux 아키텍처 구현체 Redux의 미들웨어 예시
   //Redux Middleware 'thunk'
   const thunk = store => next => action => {
     return typeof action === 'function'
-      ? action(dispatch, store.getState)
+      ? action(store.dispatch, store.getState)
       : next(action);
   }
   ```

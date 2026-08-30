@@ -54,7 +54,7 @@ VariableEnvironment는 변화 반영x, **LexicalEnvironment는 변화 반영 됨
 - environmentRecord, outerEnvironmentReference
 - environmentRecord
   - 현재 문맥의 식별자 정보를 수집하는 일 담당.
-  - 실행컨텍스트가 처음 생성되는 순간에 제일 먼저하는 일, **호이스팅**
+  - 실행컨텍스트가 처음 생성되는 순간에 제일 먼저 하는 일, **호이스팅**
   - 호이스팅 - 식별자 정보를 실행컨텍스트 맨 위로 끌어올리는 것
 - outerEnvironmentReference
   - 현재 문맥에 관련 있는 외부 식별자 정보
@@ -68,7 +68,7 @@ VariableEnvironment는 변화 반영x, **LexicalEnvironment는 변화 반영 됨
 - 동일 환경에 있는 코드 실행 시, 환경 정보들을 모아 컨텍스트를 구성.
 이를 콜 스택에 쌓았다가, 가장 Top에 있는 컨텍스트와 관련 있는 코드를 실행하는 식으로 전체 코드 환경과 순서를 보장함.
 - 동일 환경, 즉 하나의 실행컨텍스트를 구성할 수 있는 방법으로 전역공간, eval() 함수, 함수 등이 있음.
-- 자동으로 생성되는 전역공간과, eval을 제외하면, 흔히 실행컨텍스를 구성하는 방법은 함수 실행
+- 자동으로 생성되는 전역공간과, eval을 제외하면, 흔히 실행컨텍스트를 구성하는 방법은 함수 실행
 
 ```jsx
 // ----------------------------(1)
@@ -89,7 +89,7 @@ console.log(a); // 1
   - (1) 전역컨텍스트가 콜스택에 담김. 전역 컨텍스트관련 코드가 순차로 진행
   - (3) 에서 outer 함수를 호출하면 자바스크립트 엔진은 outer에 대한 환경 정보를 수집해서 outer 실행 컨텍스트를 생성 후 콜스택에 담는다.
   - 전역 컨텍스트 관련 코드 실행 일시 중단하고 outer 함수 내부 코드를 순차 실행
-  - (2) 에서 inner 함수의 실행 컨텍스트가 콜스택의 가장 위에 담기면 outer 컨텍스트 관련 코드 실행 중단하고 inner 함수 내보 코드 순서대로 진행
+  - (2) 에서 inner 함수의 실행 컨텍스트가 콜스택의 가장 위에 담기면 outer 컨텍스트 관련 코드 실행 중단하고 inner 함수 내부 코드 순서대로 진행
   - inner 함수 실행 후 inner 실행 컨텍스트 콜스택에서 제거
   - 중단했던 (2)의 다음 줄부터 실행 - > (3)
   - 콜스택에 아무것도 남지 않으면 종료
@@ -109,7 +109,7 @@ console.log(a); // 1
   - 현재 컨텍스트 관련 코드 식별자 정보 저장.
   - 매개변수의 이름, 함수 선언, 변수명 등
   - 컨텍스트 내부 전체를 처음부터 끝까지 확인하며 순서대로 수집
-    → 코드가 실행되기 전임에도 자바스크립트 엔진은 이미 해당 환경 속 코드 변수명을 알 고 있음 - > 호이스팅
+    → 코드가 실행되기 전임에도 자바스크립트 엔진은 이미 해당 환경 속 코드 변수명을 알고 있음 → 호이스팅
 
     cf) 함수 선언문(function declaration)과 함수 표현식(function expression)
 
@@ -131,9 +131,9 @@ console.log(a); // 1
     전역공간에 동명의 함수가 여러 존재하는 상황에서 함수 표현식으로 정의돼 있다면, 함수를 중복 선언하는 경우에 발생하는 문제 방지
 
 - 스코프, 스코프 체인, outerEnvironmentReference
-  - **스코프(scopre),** 식별자에 대한 유효 범위
-  - **스코프 체인(scopre chain),** 식별자 유효범위를 안에서부터 바깥으로 차례로 검색해나가는 것
-  - 스코프 체인을 가능하게 하는 것 LexicalEnvrionment의 두번째 수집 자료인 **outerEnvironmentReference.**
+  - **스코프(scope),** 식별자에 대한 유효 범위
+  - **스코프 체인(scope chain),** 식별자 유효범위를 안에서부터 바깥으로 차례로 검색해 나가는 것
+  - 스코프 체인을 가능하게 하는 것은 LexicalEnvironment의 두 번째 수집 자료인 **outerEnvironmentReference.**
 
 - 스코프체인
   - 여러 스코프에서 동일 식별자 선언시, **스코프 체인 상에서 가장 먼저 발견된 식별자에만 접근 가능**
@@ -144,7 +144,7 @@ console.log(a); // 1
 ## 04 this
 
 - 실행 컨텍스트의 thisBinding에는 this로 지정된 객체가 저장됨.
-- 실행 컨첵스트 활성화 당시에 this가 지정되지 않은 경우 this에는 전역객체가 저장
+- 실행 컨텍스트 활성화 당시에 this가 지정되지 않은 경우 this에는 전역객체가 저장 (비엄격 모드 기준. 엄격 모드와 ES 모듈에서는 undefined)
 
 ## 05. 정리
 
@@ -155,7 +155,7 @@ console.log(a); // 1
   - 함수 실행에 의한 컨텍스트
 - 객체 활성화되는 시점에 VariableEnvironment, LexicalEnvironment, ThisBinding 세가지 정보 수집
 
-- 실행 컨텍스트 생성할 때는 VairableEnvironment와 LexicalEnvironment가 동일 내용으로 구성되지만 LexicalEnvironment는 함수 실행 도중에 변경되는 사항이 즉시 반영되는 반면, VariableEnvironment는 초기 상태를 유지
+- 실행 컨텍스트 생성할 때는 VariableEnvironment와 LexicalEnvironment가 동일 내용으로 구성되지만 LexicalEnvironment는 함수 실행 도중에 변경되는 사항이 즉시 반영되는 반면, VariableEnvironment는 초기 상태를 유지
 
 VariableEnvironment와 LexicalEnvironment는 매개변수명, 변수의 식별자, 선언한 함수의 함수명 등을 수집하는 **environmentRecord**와 바로 직전 컨텍스트의 LexicalEnvironment 정보를 참조하는 **outerEnvironmentReference**로 구성
 
@@ -170,8 +170,10 @@ VariableEnvironment와 LexicalEnvironment는 매개변수명, 변수의 식별�
 - 변수의 유효범위
 - outerEnvironmentReference 는 해당 함수가 선언된 위치의 LexicalEnvironment를 참조
 - 어떤 변수 접근하려고 하면 현재 컨텍스트의 LexicalEnvironment를 탐색해서 발견되면 그 값 반환
-- 발견 못할 경우 다시 outerEnvironmentReference에 담긴 LexicalEnvironment를 탐색화는 과정을 거침
-- 전역 컨텍스트의 LexicalEnvironment까지 탐색해도 해당 변수 못찾을 시, undefined를 반환
+- 발견 못할 경우 다시 outerEnvironmentReference에 담긴 LexicalEnvironment를 탐색하는 과정을 거침
+- ~~전역 컨텍스트의 LexicalEnvironment까지 탐색해도 해당 변수 못찾을 시, undefined를 반환~~
+
+> **바로잡음(2026-08-30):** 끝까지 찾지 못하면 `undefined`가 아니라 **`ReferenceError`** 가 난다. `undefined`는 선언은 됐지만 값이 없을 때다. 둘을 구분하는 것이 이 장의 핵심이라 이 문장은 틀린 채로 두면 안 된다.
 
 전역변수 - 전역 컨텍스트의 LexicalEnvironment에 담긴 변수
 

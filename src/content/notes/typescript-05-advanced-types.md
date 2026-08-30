@@ -24,7 +24,7 @@ type Employee = {
   startDate: Date;
 };
 
-// {name:string, privileges:string[], startData:Date}
+// {name:string, privileges:string[], startDate:Date}
 type ElevatedEmployee = Admin & Employee; 
 
 const e1: ElevatedEmployee = {
@@ -40,8 +40,8 @@ type Universal = Combination & Numeric; // number
 
 ## Type Guards
 
-- 타입 가드(Type Guard)는 특정 코드 블록 내에서 변수의 타입을 좁히거나 확인하는데 사용되는 코드 패턴
-- 타입 가드를 사용하면 런타임에 변수의 타입을 체크하여 컴파일 타임에 타입 안정성을 보장가능
+- 타입 가드(Type Guard)는 특정 코드 블록 내에서 변수의 타입을 좁히거나 확인하는 데 사용되는 코드 패턴
+- 타입 가드를 사용하면 런타임에 변수의 타입을 체크하여 컴파일 타임에 타입 안정성을 보장 가능
 - 유니온 타입(Union Type)이 제공하는 유연성을 활용하면서 런타임에 정확한 타입을 알아내고 코드가 올바르게 실행되도록 보장하는 기능
 
 ### **2가지 타입 가드 방법**
@@ -111,10 +111,10 @@ type Universal = Combination & Numeric; // number
 
 ## Discriminated Unions(식별된 공용체)
 
-- 객체와 유니언 타입을 사용한 작업시 사용할 수 있는 유용한 패턴
+- 객체와 유니언 타입을 사용한 작업 시 사용할 수 있는 유용한 패턴
 - 인터페이스 또는 클래스와 같은 객체에 공통 속성을 추가하여 해당 객체를 더 쉽게 구분할 수 있게 함
 - 타입 가드를 구현하기 더 쉽게 만들어 줍니다.
-- interface는 JS로 컴파일 되지 않았기 때문에 instance of를  사용하면 작동하지 않는다.
+- interface는 JS로 컴파일되지 않기 때문에 instanceof를 사용하면 작동하지 않는다.
 - ‘데이터’ in ‘객체’로 속성의 존재 여부를 확인하거나 instanceof를 사용하는 대신, 존재하는 속성을 사용하여 작업 중인 객체의 유형을 확인
 - **사용단계**
     1. 공통의 프로퍼티(일반적으로 **`kind`**, **`type`**, **`tag`** 등의 이름으로 사용됨)를 가진 여러 객체 타입을 정의한다. 이 프로퍼티의 값은 리터럴 타입을 사용하여 고유하게 설정한다.
@@ -146,9 +146,9 @@ type Shape = Circle | Square | Triangle;
 function getArea(shape: Shape): number {
   switch (shape.kind) {
     case 'circle':
-      return Math.PI * shape.radius  2;
+      return Math.PI * shape.radius ** 2;
     case 'square':
-      return shape.sideLength  2;
+      return shape.sideLength ** 2;
     case 'triangle':
       return (shape.base * shape.height) / 2;
   }
@@ -283,17 +283,19 @@ const fetchedUserData={
 fetchedUserData.job && fetchedUserData.job.title
 ```
 
-- 하지만, 타입스크립트에서 선택적 체이닝을 통해 정의되어 있는지 여부가 확실치 않은 요소 다음에 ?를 추가하면 된다(TS 3.7버전이상부터 지원). 이를 통해, 객체 데이터 중첩된 속성과 객체에 안접한게 접근 가능하다.
-- ?는 if문으로 컴파일 된다.
+- 하지만, 타입스크립트에서 선택적 체이닝을 통해 정의되어 있는지 여부가 확실치 않은 요소 다음에 ?를 추가하면 된다(TS 3.7버전이상부터 지원). 이를 통해, 객체 데이터 중첩된 속성과 객체에 안전하게 접근 가능하다.
+- ?는 if문으로 컴파일된다.
 
 ```tsx
-fetchedUserData?.job.title
+fetchedUserData.job?.title
 ```
+
+> **바로잡음(2026-08-30):** 원래는 `fetchedUserData?.job.title`이라고 적혀 있었다. `?.`는 **없을 수도 있는 것 바로 뒤**에 붙인다. 여기서 없을 수 있는 건 `fetchedUserData`가 아니라 `job`이므로 `job?.title`이 맞다. 원래 코드는 `job`이 없으면 그대로 TypeError가 난다.
 
 ### Nullish Coalescing(Null 병합 연산자)
 
 - 데이터나 입력값이 있는데 그게 null인지 undefined인지, 유효한 값인지 알 수 없는 경우,
-- 보통 논리적 연산자 OR로 구현할 수 있지만, 앞의 userInput값이 null, undefined가 아닌 빈 문자열이라도 거짓 값으로 처리되어 기본 fallback 값이 적용되는 문제가 있다(빈문자열 그대로 사용하고 싶을 때 문제가 됨).
+- 보통 논리적 연산자 OR로 구현할 수 있지만, 앞의 userInput값이 null, undefined가 아닌 빈 문자열이라도 거짓 값으로 처리되어 기본 fallback 값이 적용되는 문제가 있다(빈 문자열 그대로 사용하고 싶을 때 문제가 됨).
 
 ```tsx
 const userInput = '';

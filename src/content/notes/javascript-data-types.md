@@ -22,8 +22,10 @@ legacyPath: "/221223_Javascript-데이터 타입/"
     ```
 ### let
 - ES6에서 추가
-- 자바스크립트에서 변수선언 가능한 유일한 하나
+- ~~자바스크립트에서 변수선언 가능한 유일한 하나~~
 - 이전까지는 var를 사용했으나, **hoisting** 문제
+
+> **바로잡음(2026-08-30):** 변수를 선언하는 키워드는 `var`, `let`, `const` 셋이다. 강의의 취지는 "재할당이 필요한 변수에는 let만 써라"였고, 그걸 "유일한 선언 방법"으로 적은 것이다.
   
     <aside>
     💡 Hoisting (끌어올리다는 뜻): 선언을 아래에서 위로 끌어올려주는 것
@@ -53,18 +55,20 @@ legacyPath: "/221223_Javascript-데이터 타입/"
     ```
 #### cf. **스코프의 차이**
 ```jsx
-let globalName= "global name";
+let globalName = "global name";
 {
 	//블록 스코프
 	let name = "해성" // 선언 및 초기화
 	console.log(name)  //해성
 	name = "조해성" //할당
 	console.log(name) //조해성
-	console.log(name) //global name
+	console.log(globalName) //global name — 바깥 변수는 블록 안에서도 보인다
 }
-	console.log(name) //
-	console.log(name) //global name
+console.log(globalName) //global name
+console.log(name) //블록 안의 name은 여기서 보이지 않는다 (브라우저에서는 window.name인 ''가 나온다)
 ```
+
+> **바로잡음(2026-08-30):** 원래 주석이 `name`과 `globalName`을 섞어 써서 출력값이 맞지 않았다. 블록 안에서 `let`으로 선언한 `name`은 블록 밖에서 접근할 수 없다는 것이 이 예제의 요점이다.
 ## 2. Constant
 ex) **const**
 ```jsx
@@ -73,7 +77,7 @@ myNumber = 2 // TypeError: Assignment to constant variable.
 ```
 - 변수를 이용하면 포인터를 이용해서 메모리 값을 변경가능했으나, const를 사용하면 잠겨있다고 생각하면 됨
 
-- **Immutable(변경가능한)**
+- **Immutable(변경 불가능한)**
     - security (해커들이 값 변경하는 것 등을 방지)
     - thread safety (다양한 쓰레드들이 동시 변수에 접근하여 값을 변경가능한 것을 방지)
     - reduce human mistake
@@ -94,6 +98,8 @@ myNumber = 2 // TypeError: Assignment to constant variable.
     const bigInt = 1234567890123456789012345678901234567890n; // over 
     //-> (-2**54) ~ 2**53
     ```
+
+> **바로잡음(2026-08-30):** number가 정수를 정확히 표현하는 범위는 `-(2**53 - 1)` ~ `2**53 - 1`이다(`Number.MIN_SAFE_INTEGER`, `Number.MAX_SAFE_INTEGER`). 주석의 `-2**54`는 오기다. 그 밖의 정수는 BigInt를 쓴다.
     
   - string
     ```jsx
@@ -126,7 +132,7 @@ myNumber = 2 // TypeError: Assignment to constant variable.
     
   - symbol
     ```jsx
-    //고유한 식별자를 만들때, 시동일한 문자열을 사용했어도 다른 값으로 구별됨.
+    //고유한 식별자를 만들 때, 동일한 문자열을 사용했어도 다른 값으로 구별됨.
     const symbol1 = Symbol('id');
     const symbol2 = Symbol('id');
     console.log(symbol1 === symbol2); // false
@@ -162,7 +168,15 @@ console.log(`value: ${text}, type: ${typeof text}`); //value: 4, type: number
 ```
 
 ## 5. VAR vs LET vs CONST
-    </img>
+
+| | var | let | const |
+|---|---|---|---|
+| 스코프 | 함수 | 블록 | 블록 |
+| 재선언 | 가능 | 불가 | 불가 |
+| 재할당 | 가능 | 가능 | 불가 |
+| 선언 전 접근 | undefined | ReferenceError | ReferenceError |
+
+(원래 있던 비교 이미지가 유실되어 표로 대신함)
 
 
 # 출처

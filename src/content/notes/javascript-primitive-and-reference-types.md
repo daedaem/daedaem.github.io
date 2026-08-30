@@ -63,3 +63,5 @@ legacyPath: "/230106_js-참조형 & 원시형 데이터타입/"
     
     console.log(secondPerson); 
     ```
+
+> **보충(2026-08-30):** 스프레드로 만든 복사는 **얕은 복사**다. 한 단계 아래의 프로퍼티만 새로 담고, 그 값이 객체나 배열이면 여전히 같은 것을 가리킨다. `person.address.city`처럼 중첩된 값을 바꾸면 복사본에도 반영된다. 완전히 떼어 내려면 `structuredClone(person)`을 쓴다.

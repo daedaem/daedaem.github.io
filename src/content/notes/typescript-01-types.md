@@ -71,7 +71,7 @@ add(number1, number2, printResult, resultPhrase);
 ## object
 
 - JS : {age : 30}
-- TS : 자바스크립트 객체와 구체적 객체타입(객체의 타입을 명확히하는 타입)이 가능
+- TS : 자바스크립트 객체와 구체적 객체타입(객체의 타입을 명확히 하는 타입)이 가능
 
 ```tsx
 // object라는 객체정보가 없으므로 에러, 아래 B코드와 같이 작성
@@ -86,7 +86,7 @@ console.log(person.name);
 
 ```tsx
 // B. 물론 같은 타입스크립트를 명시적으로 지정하는 것은 좋은 작업 방식x
-// 하지만 타입스크립트가 객체 타입을 이해하게하려면 아래와 같이 입력
+// 하지만 타입스크립트가 객체 타입을 이해하게 하려면 아래와 같이 입력
 const person: {
    name: string;
    age: number;
@@ -184,10 +184,12 @@ for (const hobby of person.hobbies) {
 
 ## tuple
 
-- 자바스크립트에는 없는 타입, 항상 두개의 요소
+- 자바스크립트에는 없는 타입, ~~항상 두개의 요소~~
   - 배열에 정확히 x개의 값이 필요하고 각 값 타입을 미리 알고 있는 상황에서는 배열보다 튜플을 사용하면 작업 중인 데이터 타입과 예상되는 데이터 타입을 명확하게 파악 가능
 - ex) [1,2]
 - 길이와 타입이 고정된 배열
+
+> **바로잡음(2026-08-30):** 튜플은 **길이가 고정된** 배열이지 두 개짜리가 아니다. `[string, number, boolean]`처럼 몇 개든 된다. 강의 예제가 `[number, string]` 하나뿐이라 그렇게 적었다.
 
 ```tsx
 const person: {
@@ -216,7 +218,7 @@ const person: {
 - enum { NEW, OLD } , 식별자들을 중괄호 쌍 안에 넣는 방식
 - 코드 내에서 작업 가능한 인간이 읽을 수 있는 라벨을 표현하는 개념
 - 0부터 시작하는 숫자로 변환
-- 아래 role에 2가 무엇을 의미하는지 알 수 없다. ⇒ 인간이 읽을 수 있는 식별자로 표시 하는게 낫다.
+- 아래 role에 2가 무엇을 의미하는지 알 수 없다. ⇒ 인간이 읽을 수 있는 식별자로 표시하는 게 낫다.
 
     ```tsx
     enum Role {ADMIN, READ_ONLY, AUTHOR}; // 0,1,2
@@ -237,11 +239,11 @@ const person: {
 
 - 가장 유연한 타입, 타입스크립트에 어떤 것도 이해시키지 않는다.
 - 모든 종류의 값을 저장 가능
-- 어떤 값이나 종류의 데이터가 어디 저장될지 전혀 알수 없는 경우나 런타임 검사를 수행하는 경우에만 사용하는 것이 좋다. - 다 any를 쓴다면 타입스크립트 쓰는 이유가 없어짐
+- 어떤 값이나 종류의 데이터가 어디 저장될지 전혀 알 수 없는 경우나 런타임 검사를 수행하는 경우에만 사용하는 것이 좋다. - 다 any를 쓴다면 타입스크립트 쓰는 이유가 없어짐
 
 ## Union
 
-- 유니온 타입을 사용하면 두 가지 이상의 타입을 사용 할 수 있다.
+- 유니온 타입을 사용하면 두 가지 이상의 타입을 사용할 수 있다.
 - 여러 타입을 사용하므로 예상 외의 결과를 초래할 수 있어 종종 아래와 같이 타입을 체크하는 런타임 검사가 필요한 경우도 있다.
 
 ```tsx
@@ -305,7 +307,7 @@ console.log(combinedNames);
 
 ## 타입 별칭(**Type Aliases**)
 
-- 유니온 타입으로 작업 시, 반복해서 유니온 타입을 지정하는 대신 해당 유니언 타입을 저장하는 유니온 타입을 만들 수 있음
+- 유니온 타입으로 작업 시, 반복해서 유니온 타입을 지정하는 대신 해당 유니온 타입에 이름을 붙인 타입 별칭을 만들 수 있음
 - type + 별칭 =  타입들 ;
 
 ```tsx
@@ -398,22 +400,24 @@ function isOlder(user: { name: string; age: number }, checkAge: number) {
 
 - 함수:void 와 함수:undefined 차이
   - **값을 반환하지 않는 함수를 사용하는 경우 void를 표준으로 사용**하며 void를 명시적으로 지정할 수 있지만 타입스크립트는 그 코 드를 추론할 수 있다.
-- 자바스크립트에서는 반환하지 않는 함수를 변수에 할당하면 undefined로 확인되지만 타입스크립트에서 undefined라고 지정하면 값을 반환하지 않는 반환문이 있을 것이라 여김. 따라서, return;과 같이 반환해야함.
+- 자바스크립트에서는 반환하지 않는 함수를 변수에 할당하면 undefined로 확인되지만 타입스크립트에서 undefined라고 지정하면 값을 반환하지 않는 반환문이 있을 것이라 여김. 따라서, return;과 같이 반환해야 함.
+
+> **보충(2026-08-30):** TypeScript 5.1부터는 반환 타입이 `undefined`여도 `return;`을 적지 않아도 된다. 아래 세 번째 예제의 "있어야 함"은 5.1 이전 얘기다.
 
 ```tsx
-function printResult(n1:number){ // 타입스크립트가 반환 값 추론할 수 있어 안적음
+function printResult(num:number){ // 타입스크립트가 반환 값 추론할 수 있어 안 적음
  console.log('Result: ' + num);
  //return; 
 }
 
-function printResult(n1:number):void{
+function printResult(num:number):void{
  console.log('Result: ' + num);
- //return; 상황에 맞게 리턴있어도 되고 없어도 되고
+ //return; 상황에 맞게 리턴 있어도 되고 없어도 되고
 }
 
-function printResult(n1:number):undefined{ // 드믄 경우 사용됨
+function printResult(num:number):undefined{ // 드문 경우 사용됨
  console.log('Result: ' + num);
- return; // 있어야함
+ return; // 5.1 이전에는 있어야 함
 }
 ```
 
@@ -472,7 +476,7 @@ function printResult(n1:number):undefined{ // 드믄 경우 사용됨
     
     printResult(add(5, 12));
     
-    //이렇게만 지정하면 printResult함수를 할당 받은 comvineValues가 undefined 값 가짐
+    //이렇게만 지정하면 printResult함수를 할당 받은 combineValues가 undefined 값 가짐
     //let combineValues: Function; 
     
     //따라서 아래와 같이 함수 인자, 반환에 타입 지정
@@ -525,7 +529,7 @@ function sayHi(): undefined {
 
 ```tsx
 let userInput: unknown;
-let unserName: string;
+let userName: string;
 
 userInput = 5;
 userInput = 'Max';

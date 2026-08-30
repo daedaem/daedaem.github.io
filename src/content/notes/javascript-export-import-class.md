@@ -29,13 +29,13 @@ export const baseData = 10;
 ```jsx
 //app.js
 
-//default로 person 상수를 지정했기 때문에(하나만 불러오므로) 중괄호 사용안해도됨
+//default로 person 상수를 지정했기 때문에(하나만 불러오므로) 중괄호 사용 안 해도 됨
 import person from './person.js'
 //이름도 임의로 지정해서 사용해도 됨
 import prs from './person.js'
 
-// 정확하게 구분기 위해 중괄호{}를 붙여줘야함
-// named export (이름으로 불러오기 때문)라고함
+// 정확하게 구분하기 위해 중괄호{}를 붙여줘야 함
+// named export (이름으로 불러오기 때문)라고 함
 import {clean} from './utility.js'
 import {baseData} from './utility.js'
 
@@ -93,7 +93,9 @@ person.printMyGender();
 
 ```
 <aside>
-💡 ES7부터는 생성자 함수 없이 프로퍼티와 메서드 사용가능
+💡 ~~ES7부터는 생성자 함수 없이 프로퍼티와 메서드 사용가능~~
+
+> **바로잡음(2026-08-30):** 생성자 없이 `gender = 'male'`처럼 쓰는 **클래스 필드**는 ES7(ES2016)이 아니라 **ES2022**에 표준이 됐다. 강의 당시에는 Babel 플러그인으로 미리 쓰던 문법이라 "ES7"이라고 잘못 불렸다.
 
 ```jsx
 class Human{

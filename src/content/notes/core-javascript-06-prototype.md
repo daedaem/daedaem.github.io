@@ -31,24 +31,24 @@ function Person(n, a){
 }
 var roy = new Person('로이', 30);
 
-var royClone1 = new **roy.__proto__**.constructor('로이_클론1', 10);
+var royClone1 = new roy.__proto__.constructor('로이_클론1', 10);
 
-var royClone2 = new **roy**.constructor('로이_클론2', 25);
+var royClone2 = new roy.constructor('로이_클론2', 25);
 
-var royClone3 = new **Object.getPrototypeOf(roy)**.constructor('로이_클론3', 20);
+var royClone3 = new Object.getPrototypeOf(roy).constructor('로이_클론3', 20);
 
-var royClone4 = new **Person.prototype**.constructor('로이_클론4', 15);
+var royClone4 = new Person.prototype.constructor('로이_클론4', 15);
 ```
 
 - 생성자함수의 동일한 객체(prototype)에 접근 가능
-  - instance.**proto**
+  - instance.`__proto__`
   - instance
   - Object.getPrototypeOf(instance)
   - Constructor.prototype
 
 - 생성자 함수 접근 가능
   - Constructor
-  - instance.**proto**.constructor
+  - instance.`__proto__`.constructor
   - instance.constructor
   - (Object.getPrototypeOf(instance)).constructor
   - Constructor.prototype.constructor
@@ -70,7 +70,7 @@ function Person(n, a){
 var roy = new Person('로이',30);
 var jay = new Person('제이',25);
 
-**roy.setOlder = function(){
+roy.setOlder = function(){
  this.age +=1;
 }
 roy.getAge = function(){
@@ -82,7 +82,7 @@ jay.setOlder = function(){
 }
 jay.getAge = function(){
  return this.age;
-}**
+}
 ```
 
 ```jsx
@@ -92,12 +92,12 @@ function Person(n, a){
  this.age = a;
 }
 
-**Person.prototype.setOlder = function(){
+Person.prototype.setOlder = function(){
  this.age +=1;
 }
 Person.prototype.getAge = function(){
  return this.age;
-}**
+}
 
 var roy = new Person('로이',30);
 var jay = new Person('제이',25);
@@ -124,21 +124,21 @@ var instance = new Constructor();
 
 - 어떤 생성자 함수(Constructor)를 new 연산자와 함께 호출하면
 - Constructor에서 정의된 내용을 바탕으로 새로운 인스턴스가 생성된다.
-- 이때 instance에는 `__proto__` 라는 프로퍼티가 자동을 부여되는데
+- 이때 instance에는 `__proto__` 라는 프로퍼티가 자동으로 부여되는데
 - 이 프로퍼티는 Constructor의 prototype라는 프로퍼티를 참조한다.
 
-- prototype은 객체. 이를 참조하는 **proto** 또한 객체. prototype 객체 내부에는 인스턴스가 사용할 메서드를 저장하면 인스턴스에서도 숨겨진 프로퍼티인 __proto__를 통해 이 메서드들에 접근할 수 있음
+- prototype은 객체. 이를 참조하는 `__proto__` 또한 객체. prototype 객체 내부에는 인스턴스가 사용할 메서드를 저장하면 인스턴스에서도 숨겨진 프로퍼티인 __proto__를 통해 이 메서드들에 접근할 수 있음
 
     ```jsx
     let Person = function(name) {
       this.name = name;
     };
     Person.prototype.getName = function() {
-      return this._name;
+      return this.name;
     };
     ```
 
-- 아래와 같이 Person의 인스턴스는 proto 프로퍼티로 getName을 호출할 수 있다. `undefined`가 출력되는 이유는 함수를 메서드로서 호출하면 바로 앞의 객체가 곧 `this`가 되기 때문이다. `__proto__` 객체에는 name 프로터티가 없기 때문에 `undefined`가 반환된다.
+- 아래와 같이 Person의 인스턴스는 `__proto__` 프로퍼티로 getName을 호출할 수 있다. `undefined`가 출력되는 이유는 함수를 메서드로서 호출하면 바로 앞의 객체가 곧 `this`가 되기 때문이다. `__proto__` 객체에는 name 프로퍼티가 없기 때문에 `undefined`가 반환된다.
 
     ```jsx
     let suzi = new Person('Suzi');
@@ -147,7 +147,7 @@ var instance = new Constructor();
     Person.prototype === suzi.__proto__ // true
     ```
 
-- this를 인스턴스로 사용하고 싶다면 `__proto__`를 생략하면 된다. 원래부터 생략 가능하도록 정의되어있다. 이런 점 때문에 **생성자 함수의 prototype에 어떤 메서드나 프로퍼티가 있다면 인스턴스에서도 마치 자신의 것처럼 해당 메서드나 프로퍼티에 접근할 수 있게 된다.**
+- this를 인스턴스로 사용하고 싶다면 `__proto__`를 생략하면 된다. 원래부터 생략 가능하도록 정의되어 있다. 이런 점 때문에 **생성자 함수의 prototype에 어떤 메서드나 프로퍼티가 있다면 인스턴스에서도 마치 자신의 것처럼 해당 메서드나 프로퍼티에 접근할 수 있게 된다.**
 
     ```jsx
     suzi.__proto__.getName
@@ -166,7 +166,7 @@ var instance = new Constructor();
 
 ### constructor 프로퍼티
 
-- 생성자 함수의 프로퍼티인 Prototype 내부에는 consturctor라는 프로퍼티가 있다. 인스턴스의 `__proto__` 객체에도 마찬가지이다. 원래의 **생성자 함수(자기 자신)을 참조**하는데, 인스턴스로부터 그 원형을 알 수 있는 수단이기 때문이다.
+- 생성자 함수의 프로퍼티인 prototype 내부에는 constructor라는 프로퍼티가 있다. 인스턴스의 `__proto__` 객체에도 마찬가지이다. 원래의 **생성자 함수(자기 자신)을 참조**하는데, 인스턴스로부터 그 원형을 알 수 있는 수단이기 때문이다.
 
     ```jsx
     let arr = [1, 2];
@@ -211,7 +211,7 @@ var instance = new Constructor();
 
 - 모든 데이터가 `d instanceof NewConstructor` 명령어에 대해 false를 반환하는데, constructor를 변경하더라도 참조하는 대상이 변경될 뿐 **이미 만들어진 인스턴스의 원형이 바뀐다거나 데이터 타입이 변하는 것은 아님**을 알 수 있다. 어떤 인스턴스의 생성자 정보를 알아내기 위해 constructor 프로퍼티에 의존하는 것이 항상 안전하지는 않다는 것을 알 수 있다.
 
-- 다음 각 줄은 모두 동일한 대상을 가르킨다.
+- 다음 각 줄은 모두 동일한 대상을 가리킨다.
 
     ```jsx
     [Constructor]
@@ -252,7 +252,7 @@ var instance = new Constructor();
     console.log(iu.getName()); // 바로 지금
     ```
 
-- 일반적으로 메서드가 오버라이드된 경우에, 자신으로 부터 가장 가까운 메서드에 접근하지만, 그 다음으로 가까운 `__proto__` 의 메서드도 `call`이나 `apply`로(this 바인딩 시켜줘서) 우회적 접근이 가능함.
+- 일반적으로 메서드가 오버라이드된 경우에, 자신으로부터 가장 가까운 메서드에 접근하지만, 그 다음으로 가까운 `__proto__` 의 메서드도 `call`이나 `apply`로(this 바인딩 시켜줘서) 우회적 접근이 가능함.
 
     ```jsx
     console.log(iu.__proto__.getName.call(iu));
@@ -267,12 +267,12 @@ var instance = new Constructor();
     let arr = [1, 2];
     arr(.__proto__).push(3);
     arr(.__proto__)(.__proto__).hasOwnProperty(2); // true 
-    // arr.__proto__(Array.prototype 참조)의 __proto__(Object.prototye 참조) 
+    // arr.__proto__(Array.prototype 참조)의 __proto__(Object.prototype 참조) 
     ```
 
 ### 객체 한정 메서드
 
-- 객체 한정 메서드들은 Object.prototype이 여타 참조형 데이터뿐 아니라 기본형 데이터조차 __proto__에 반복 접근함으로써 도달할 수 있는 최상위 존재이기 때문에 Object.prototype이 아닌 Object에 직접 부여할 수 밖에 없었다.
+- 객체 한정 메서드들은 Object.prototype이 여타 참조형 데이터뿐 아니라 기본형 데이터조차 `__proto__`에 반복 접근함으로써 도달할 수 있는 최상위 존재이기 때문에 Object.prototype이 아닌 Object에 직접 부여할 수밖에 없었다.
 - 반대로 Object.prototype에는 어떤 데이터에서도 활용할 수 있는 범용적 메서드들이 있다(toString, hasOwnProperty, valueOf, isPrototypeOf 등).
 
 ### 다중 프로토타입 체인
@@ -310,20 +310,20 @@ var instance = new Constructor();
 
 ### 정리
 
-- 어떤 생성자 함수를 new 연산자와 함께 호출하면 Constructor에서 정의된 내용을 바탕으로 새로운 인스턴스가 생성되다.
-- 이 인스턴스에는 **proto** 라는, Constructor의 prototype 프로퍼티를 참조하는 프로퍼티가 자동으로 부여된다.
+- 어떤 생성자 함수를 new 연산자와 함께 호출하면 Constructor에서 정의된 내용을 바탕으로 새로운 인스턴스가 생성된다.
+- 이 인스턴스에는 `__proto__` 라는, Constructor의 prototype 프로퍼티를 참조하는 프로퍼티가 자동으로 부여된다.
 - __proto__는 생략 가능한 속성이라서, 인스턴스는 Constructor.prototype의 메서드를 자신의 메서드인 것처럼 호출 가능하다.
 
 - Constructor.prototype에는 constructor라는 프로퍼티가 있는데, 이는 다시 생성자 함수 자신을 가리킨다. 이 프로퍼티는 인스턴스가 자신의 생성자 함수가 무엇인지 알고자 할 때 필요한 수단
 
-- 직각삼각형 대각선 방향 즉, **proto** 방향을 계속 찾아가면 최종적으로 Object.prototype에 당도한다. 이렇게 __proto__안에 다시 __proto__를 찾아가는 과정을 **프로토타입 체이닝이라한다.**
+- 직각삼각형 대각선 방향 즉, `__proto__` 방향을 계속 찾아가면 최종적으로 Object.prototype에 당도한다. 이렇게 `__proto__` 안에 다시 `__proto__`를 찾아가는 과정을 **프로토타입 체이닝이라 한다.**
 - 이 프로토 타입 체이닝을 통해 각 프로토타입 메서드를 자신의 것처럼 호출 가능하다.
 - 이때, 접근 방식은 가장 가까운 대상부터 점차 먼 대상으로 나아가며, 원하는 값 찾을 시 검색을 중단한다.
 
-- Object.prototye에는 모든 데이터 타입에서 사용 가능한 범용적인 메서드만이 존재
+- Object.prototype에는 모든 데이터 타입에서 사용 가능한 범용적인 메서드만이 존재
 - 객체 전용 메서드는 여느 데이터 타입과 달리 Object 생성자 함수에 스태틱하게 담겨있다.
 
-- 프로토타입 체인은 반드시 2단계로만 이루어진 것이아니라 무한대 단계를 생성 가능하다.
+- 프로토타입 체인은 반드시 2단계로만 이루어진 것이 아니라 무한대 단계를 생성 가능하다.
 
 # 출처
 

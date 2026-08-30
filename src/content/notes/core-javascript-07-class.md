@@ -29,7 +29,7 @@ legacyPath: "/230303_코어자바스크립트 ch 7. 클래스/"
 
 **클래스**는 어떤 공통된 속성이나 기능을 정의한 추상적인 개념, **인스턴스**는 이 클래스 속한 객체
 
-클래스에는 인스턴스에서는 직접 접근 할 수 없는, 클래스 자체에서만 접근 가능한 스태틱 멤버와 인스턴스에서 직접 활용할 수 있는 프로토타입 메서드가 있음
+클래스에는 인스턴스에서는 직접 접근할 수 없는, 클래스 자체에서만 접근 가능한 스태틱 멤버와 인스턴스에서 직접 활용할 수 있는 프로토타입 메서드가 있음
 
 위 그림에서 Array에는 **static methods, static properties라고 하며,** 클래스를 추상적인 클래스로서가 아니라 클래스를 **하나의 객체로서 다룰 때 쓰는 메서드**
 
@@ -55,13 +55,13 @@ Rectangle.isRectangle = function (instance) {
   );
 };
 
-var rect1 = new Ractangle(3, 4);
+var rect1 = new Rectangle(3, 4);
 console.log(rect1.getArea()); // 12
 console.log(rect1.isRectangle(rect1)); // Error
 console.log(Rectangle.isRectangle(rect1)); // true
 ```
 
-this 사용시, 인스턴스에서 methods는 **proto**로 접근가능.
+this 사용시, 인스턴스에서 methods는 `__proto__`로 접근 가능.
 
 하지만, **instance에서 static methods & static properties로 접근 불가**
 
@@ -69,7 +69,7 @@ instance를 this로서 접근을 못 하지만, 접근을 하려면 call이나 a
 
 ## Class Inheritance
 
-- ES6부터 class 문법이 도입되었지만, ES5까지는 아래와 같은 방식들로, 객체 지향 언어에 익숙한 개발자들에게 클래스 상속을 최대한 친숙한 형태로 흉내내는 것이 주 관심사 였다.
+- ES6부터 class 문법이 도입되었지만, ES5까지는 아래와 같은 방식들로, 객체 지향 언어에 익숙한 개발자들에게 클래스 상속을 최대한 친숙한 형태로 흉내 내는 것이 주 관심사였다.
 - 클래스 상속 구현 == 프로토타입 체이닝을 잘 연결하는 것
 
 Person과 Employee 생성자 함수에서 getName, getAge가 **중복**
@@ -121,6 +121,19 @@ Person과 Employee 생성자 함수에서 getName, getAge가 **중복**
    console.log(emp.getAge()); // TypeError: emp.getAge is not a function
    console.log(emp.getPosition()); // "Software Developer"
    ```
+
+> **바로잡음(2026-08-30):** 위 코드는 잘못됐다. `getName`·`getAge`는 `Person.prototype`에 있는 상속 메서드라 `delete Employee.prototype.getName`은 아무것도 지우지 않고, 주석과 달리 `emp.getName()`은 정상적으로 `"John Doe"`를 돌려준다. 책의 1번 방법이 지우는 것은 메서드가 아니라 **`new Person()`으로 만든 인스턴스에 딸려 온 `name`·`age` 프로퍼티**다(값이 `undefined`인 채로 프로토타입에 남아 있으면 안 되니까).
+>
+> ```jsx
+> Employee.prototype = new Person();
+> delete Employee.prototype.name;   // 인스턴스 프로퍼티만 지운다
+> delete Employee.prototype.age;
+> Employee.prototype.constructor = Employee;
+>
+> emp.getName();  // "John Doe" — 메서드는 그대로 상속된다
+> ```
+>
+> 이 방법의 단점은 `new Person()`이 생성자를 한 번 불필요하게 실행한다는 것이고, 그래서 2·3번 방법이 나왔다.
 
 2. 빈 함수(Bridge)를 활용하는 방법 (더글라스 크락포드가 고안한, 가장 대중적 방법)
 
@@ -238,7 +251,7 @@ myDog.fetch(); // "Fetching!"
 ```
 
 - 위의 예제는 **Animal** 클래스를 상속하는 **Dog** 클래스를 보여줍니다. **Dog** 클래스는 **name** 속성과 **breed** 속성을 가지며, **makeSound** 메서드를 덮어쓰고, **fetch** 메서드를 추가합니다.
-- **Dog** 클래스는 **extends** 키워드를 사용하여 ****Animal** 클래스를 상속합니다. **Dog** 클래스의 생성자는 **super** 키워드를 사용하여 **Animal** 클래스의 생성자를 호출합니다.
+- **Dog** 클래스는 **extends** 키워드를 사용하여 **Animal** 클래스를 상속합니다. **Dog** 클래스의 생성자는 **super** 키워드를 사용하여 **Animal** 클래스의 생성자를 호출합니다.
 - **Dog** 클래스의 인스턴스를 만들고 **name**과 **breed** 속성을 확인한 후, **makeSound** 메서드와 **fetch** 메서드를 호출합니다.
 - **Dog** 클래스는 **Animal** 클래스에서 상속한 **makeSound** 메서드를 덮어쓰고 **fetch** 메서드를 추가합니다. **Dog** 클래스의 인스턴스를 만들었을 때, **Dog** 클래스의 **makeSound** 메서드와 **fetch** 메서드를 호출할 수 있습니다.
 
@@ -261,11 +274,11 @@ myDog.fetch(); // "Fetching!"
   - 인스턴스가 마치 자신의 것처럼 호출할 수 있음
 - **스태틱 메서드**
   - 클래스(생성자 함수)에 직접 정의한 메서드
-  - 인스턴스가 직접 호출할 수없고 클래스(생성자 함수)에 의해서만 호출할 수 있음
+  - 인스턴스가 직접 호출할 수 없고 클래스(생성자 함수)에 의해서만 호출할 수 있음
 
-**클래스 상속을 흉내 내기 위한 세가지 방법**
+**클래스 상속을 흉내 내기 위한 세 가지 방법**
 
-- 아래 세 방법 모두 cunstructor 프로퍼티가 원래 생성자 함수를 바라보도록 조정해야함
+- 아래 세 방법 모두 constructor 프로퍼티가 원래 생성자 함수를 바라보도록 조정해야 함
 
 1. SubClass.prototype에 SuperClass의 인스턴스를 할당한 다음 프로퍼티를 모두 삭제하는 방법
 2. 빈 함수(Bridge)를 활용하는 방법

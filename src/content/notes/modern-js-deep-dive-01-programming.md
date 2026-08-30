@@ -45,7 +45,7 @@ legacyPath: "/230312_모던 JS Deep Dive - 1. 프로그래밍/"
 
     ```jsx
     const number = "string";
-    console.log(number*number); //Nan
+    console.log(number*number); // NaN
     ```
 
 - 따라서, 프로그래밍 언어의 문법에 부합하는 것뿐 아니라, 수행하고자 하는 바를 정확히 수행하는 것, 즉 **요구사항이 실현(문제가 해결)**되어야 의미가 있다.
