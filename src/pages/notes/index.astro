@@ -7,8 +7,12 @@ const notes = (await getCollection('notes')).sort(
   (a, b) => a.data.date.valueOf() - b.data.date.valueOf(),
 )
 
-/** 슬러그 접두사로 시리즈를 묶는다. 순서가 곧 학습한 순서다. */
-const SERIES = [
+/**
+ * 시리즈. 슬러그 접두사(prefix) 또는 슬러그 목록(ids)으로 묶는다.
+ * 순서가 곧 학습한 순서이고, 시리즈 밖의 글은 성격별로 따로 둔다.
+ */
+type Series = { title: string; note: string; prefix?: string; ids?: string[] }
+const SERIES: Series[] = [
   {
     prefix: 'javascript-',
     title: '자바스크립트 기초',
@@ -29,11 +33,21 @@ const SERIES = [
     title: '타입스크립트',
     note: '타입 시스템과 컴파일러 구성, 고급 타입까지의 학습 기록.',
   },
+  {
+    ids: ['semantic-html', 'atomic-design', 'blockchain'],
+    title: '웹과 도메인 지식',
+    note: '웹 표준, 컴포넌트 설계 방법론, 블록체인처럼 언어 밖의 것을 정리한 노트.',
+  },
+  {
+    ids: ['first-post', 'scsa'],
+    title: '전환기의 기록',
+    note: '개발자로 방향을 바꾸던 시기의 개인적인 글. 기술 노트는 아니지만 그때의 기록이다.',
+  },
 ]
 
 const grouped = SERIES.map(s => ({
   ...s,
-  items: notes.filter(n => n.id.startsWith(s.prefix)),
+  items: notes.filter(n => (s.prefix ? n.id.startsWith(s.prefix) : s.ids!.includes(n.id))),
 }))
 
 const used = new Set(grouped.flatMap(g => g.items.map(i => i.id)))
@@ -42,15 +56,16 @@ const others = notes.filter(n => !used.has(n.id))
 
 <BaseLayout
   title="학습 노트 아카이브"
-  description="개발자로 전환하던 2022~2023년에 자바스크립트·타입스크립트·웹 기초를 정리한 학습 노트 모음입니다."
+  description="개발자로 전환하던 2022~2023년에 자바스크립트·타입스크립트·웹 기초를 정리한 학습 노트와 그 시기의 기록입니다."
 >
-  <div class="wrap-wide page">
+  <div class="wrap-list page">
     <header class="head">
       <h1>학습 노트 아카이브</h1>
       <p class="lead">
         비전공자로 개발을 시작해 자바스크립트와 타입스크립트의 기초를 다지던 2022~2023년의 노트
         {notes.length}편입니다. 지금 쓰는 글과는 성격이 다르지만, 무엇을 어떤 순서로 익혔는지도
-        기록이라고 생각해 그대로 남겨 둡니다. 이후 내용을 갱신하지 않아 최신 정보와 다를 수 있습니다.
+        기록이라고 생각해 남겨 둡니다. 오탈자만 고쳤고, 지금 보기에 틀린 내용은 지우지 않고
+        취소선을 그은 뒤 바로 아래에 바로잡았습니다.
       </p>
     </header>
 
@@ -90,7 +105,7 @@ const others = notes.filter(n => !used.has(n.id))
             <h2>
               그 밖의 글 <em>{others.length}편</em>
             </h2>
-            <p class="muted">웹 표준, 설계 방법론, 도메인 지식, 그리고 개인적인 기록.</p>
+            <p class="muted">어느 시리즈에도 속하지 않는 글.</p>
           </div>
           <ol>
             {others.map(n => (
