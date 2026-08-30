@@ -4,12 +4,19 @@ import PostLayout from '@/layouts/PostLayout.astro'
 import { readingMinutes } from '@/utils/format'
 
 export const getStaticPaths = async () => {
-  const posts = await getCollection('posts', ({ data }) => !data.draft)
-  return posts.map(post => ({ params: { slug: post.id }, props: { post } }))
+  const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+  )
+  // 최신순 배열이므로 i+1이 더 오래된 글(이전), i-1이 더 새 글(다음)이다
+  return posts.map((post, i) => {
+    const link = (p?: (typeof posts)[number]) =>
+      p ? { href: `/posts/${p.id}/`, title: p.data.title } : undefined
+    return { params: { slug: post.id }, props: { post, prev: link(posts[i + 1]), next: link(posts[i - 1]) } }
+  })
 }
 
-const { post } = Astro.props
-const { Content } = await render(post)
+const { post, prev, next } = Astro.props
+const { Content, headings } = await render(post)
 ---
 
 <PostLayout
@@ -21,6 +28,9 @@ const { Content } = await render(post)
   tags={post.data.tags}
   readingMinutes={readingMinutes(post.body ?? '')}
   ogSlug={`posts/${post.id}`}
+  headings={headings}
+  prev={prev}
+  next={next}
 >
   <Content />
 </PostLayout>

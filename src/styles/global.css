@@ -139,12 +139,68 @@ code {
 }
 
 pre {
-  padding: 1.15rem 1.25rem;
+  position: relative;
+  /* 줄바꿈이 켜져 있어 오른쪽 위 라벨·버튼 자리를 비워 둔다 */
+  padding: 1.15rem 3.25rem 1.15rem 1.25rem;
   border-radius: 8px;
   border: 1px solid var(--border);
   overflow-x: auto;
   font-size: 0.875rem;
   line-height: 1.65;
+}
+
+/* 코드 블록 우상단: 언어 라벨과 복사 버튼. 버튼은 BaseLayout의 스크립트가 붙인다. */
+pre[data-language]:not([data-language='plaintext'])::before {
+  content: attr(data-language);
+  position: absolute;
+  top: 8px;
+  right: 44px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  text-transform: lowercase;
+}
+
+.copy-code {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-dim);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+pre:hover .copy-code,
+.copy-code:focus-visible,
+.copy-code[data-copied] {
+  opacity: 1;
+}
+
+.copy-code:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.copy-code[data-copied] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+@media (hover: none) {
+  .copy-code {
+    opacity: 1;
+  }
 }
 
 /* Shiki 이중 테마 — 다크에서 토큰 색을 교체한다 */

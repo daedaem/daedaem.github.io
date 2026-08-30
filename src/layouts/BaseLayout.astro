@@ -25,5 +25,36 @@ interface Props {
       <slot />
     </main>
     <Footer />
+    <script>
+      // 코드 블록마다 복사 버튼을 붙인다. 클립보드 API가 없는 환경에서는 붙이지 않는다.
+      if (navigator.clipboard) {
+        const check =
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>'
+        const copy =
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
+        for (const pre of document.querySelectorAll('pre.astro-code')) {
+          const btn = document.createElement('button')
+          btn.type = 'button'
+          btn.className = 'copy-code'
+          btn.setAttribute('aria-label', '코드 복사')
+          btn.innerHTML = copy
+          btn.addEventListener('click', async () => {
+            const code = pre.querySelector('code')?.textContent ?? pre.textContent ?? ''
+            try {
+              await navigator.clipboard.writeText(code)
+              btn.innerHTML = check
+              btn.setAttribute('data-copied', '')
+              btn.setAttribute('aria-label', '복사됨')
+              setTimeout(() => {
+                btn.innerHTML = copy
+                btn.removeAttribute('data-copied')
+                btn.setAttribute('aria-label', '코드 복사')
+              }, 1500)
+            } catch {}
+          })
+          pre.appendChild(btn)
+        }
+      }
+    </script>
   </body>
 </html>

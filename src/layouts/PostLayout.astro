@@ -15,6 +15,11 @@ interface Props {
   archived?: boolean
   /** OG 카드 경로 */
   ogSlug?: string
+  /** 본문 헤딩. h2·h3만 목차에 쓴다 */
+  headings?: { depth: number; slug: string; text: string }[]
+  /** 이전 글(더 오래된 글)과 다음 글(더 새 글) */
+  prev?: { href: string; title: string }
+  next?: { href: string; title: string }
 }
 
 const {
@@ -27,8 +32,12 @@ const {
   readingMinutes,
   archived = false,
   ogSlug,
+  headings = [],
+  prev,
+  next,
 } = Astro.props
 const cat = category ? getCategory(category) : undefined
+const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
 ---
 
 <BaseLayout
@@ -69,6 +78,21 @@ const cat = category ? getCategory(category) : undefined
       )
     }
 
+    {
+      toc.length > 2 && (
+        <nav class="toc" aria-label="목차">
+          <p>목차</p>
+          <ul>
+            {toc.map(h => (
+              <li class={`d${h.depth}`}>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
+
     <div class="body">
       <slot />
     </div>
@@ -80,6 +104,27 @@ const cat = category ? getCategory(category) : undefined
             <li>#{t}</li>
           ))}
         </ul>
+      )
+    }
+
+    {
+      (prev || next) && (
+        <nav class="adjacent" aria-label="이전·다음 글">
+          {prev ? (
+            <a class="prev" href={prev.href}>
+              <span>이전 글</span>
+              <strong>{prev.title}</strong>
+            </a>
+          ) : (
+            <span />
+          )}
+          {next && (
+            <a class="next" href={next.href}>
+              <span>다음 글</span>
+              <strong>{next.title}</strong>
+            </a>
+          )}
+        </nav>
       )
     }
   </article>
@@ -200,5 +245,79 @@ const cat = category ? getCategory(category) : undefined
     border-top: 1px solid var(--border);
     font-size: 0.8125rem;
     color: var(--text-muted);
+  }
+
+  .toc {
+    margin-top: 2.25rem;
+    padding: 1.1rem 1.3rem;
+    background: var(--bg-subtle);
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+  }
+  .toc p {
+    margin: 0 0 0.5rem;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .toc ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .toc li {
+    margin-block: 0.2rem;
+  }
+  .toc .d3 {
+    padding-left: 1rem;
+  }
+  .toc a {
+    color: var(--text-muted);
+  }
+  .toc a:hover {
+    color: var(--text);
+  }
+
+  .adjacent {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 2.5rem;
+  }
+  .adjacent a {
+    display: block;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: border-color 0.15s ease;
+  }
+  .adjacent a:hover {
+    border-color: var(--accent);
+  }
+  .adjacent .next {
+    text-align: right;
+  }
+  .adjacent span {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+  }
+  .adjacent strong {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: -0.02em;
+  }
+  @media (max-width: 560px) {
+    .adjacent {
+      grid-template-columns: 1fr;
+    }
+    .adjacent .next {
+      text-align: left;
+    }
   }
 </style>
