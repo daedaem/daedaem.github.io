@@ -51,7 +51,7 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
   <article class="wrap post">
     <header>
       <div class="meta">
-        {cat && <a class="cat" href={`/categories/${cat.id}/`}>{cat.name}</a>}
+        {cat && <a class="cat" href={`/categories/${cat.id}/`} data-cat={cat.id}>{cat.name}</a>}
         <time datetime={date.toISOString()}>{formatDate(date)} 작성</time>
         {readingMinutes && <span>· {readingMinutes}분</span>}
       </div>
@@ -145,8 +145,11 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
   }
 
   .cat {
-    color: var(--accent);
+    color: var(--text-muted);
     font-weight: 600;
+  }
+  .cat:hover {
+    color: var(--text);
   }
 
   h1 {

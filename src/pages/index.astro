@@ -56,7 +56,7 @@ const algoCount = (await getCollection('solutions')).length
       ) : (
         <section class="latest">
           <a class="hero" href={`/posts/${featured.id}/`}>
-            {featuredCat && <span class="hero-cat">{featuredCat.name}</span>}
+            {featuredCat && <span class="hero-cat" data-cat={featuredCat.id}>{featuredCat.name}</span>}
             <h2>{featured.data.title}</h2>
             {featured.data.description && <p>{featured.data.description}</p>}
             <span class="hero-meta">
@@ -144,7 +144,7 @@ const algoCount = (await getCollection('solutions')).length
     display: block;
     font-size: 13px;
     font-weight: 600;
-    color: var(--accent);
+    color: var(--text-muted);
   }
 
   .hero h2 {

@@ -20,6 +20,13 @@
 
   --code-bg: #f7f8fa;
 
+  /* 카테고리 색. 글자에는 쓰지 않고 점(dot)에만 쓴다. 라벨 글자는 --text-muted다. */
+  --cat-data-integrity: #d9480f;
+  --cat-performance: #2f9e44;
+  --cat-operations: #7048e8;
+  --cat-legacy: #b8860b;
+  --cat-auth-security: #0c8599;
+
   --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
     'Apple SD Gothic Neo', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
@@ -56,6 +63,12 @@
     --accent-hover: #8fbaff;
 
     --code-bg: #1d2025;
+
+    --cat-data-integrity: #ff8a65;
+    --cat-performance: #69db7c;
+    --cat-operations: #b197fc;
+    --cat-legacy: #ffd43b;
+    --cat-auth-security: #66d9e8;
   }
 }
 
@@ -76,6 +89,42 @@
   --accent-hover: #8fbaff;
 
   --code-bg: #1d2025;
+
+  --cat-data-integrity: #ff8a65;
+  --cat-performance: #69db7c;
+  --cat-operations: #b197fc;
+  --cat-legacy: #ffd43b;
+  --cat-auth-security: #66d9e8;
+}
+
+/*
+ * 카테고리 점. data-cat 속성을 단 요소 앞에 작은 색점을 붙인다.
+ * 행, 히어로, 글 상단, 칩, 카테고리 제목에서 같은 규칙으로 반복된다.
+ */
+[data-cat]::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  background: var(--cat, var(--text-dim));
+  vertical-align: 0.05em;
+}
+[data-cat='data-integrity'] {
+  --cat: var(--cat-data-integrity);
+}
+[data-cat='performance'] {
+  --cat: var(--cat-performance);
+}
+[data-cat='operations'] {
+  --cat: var(--cat-operations);
+}
+[data-cat='legacy'] {
+  --cat: var(--cat-legacy);
+}
+[data-cat='auth-security'] {
+  --cat: var(--cat-auth-security);
 }
 
 *,

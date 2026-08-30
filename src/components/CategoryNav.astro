@@ -16,7 +16,7 @@ const { counts, total, active } = Astro.props
   <a href="/posts/" class:list={['chip', { on: !active }]}>전체 {total}</a>
   {
     CATEGORIES.map(c => (
-      <a href={`/categories/${c.id}/`} class:list={['chip', { on: active === c.id }]}>
+      <a href={`/categories/${c.id}/`} class:list={['chip', { on: active === c.id }]} data-cat={c.id}>
         {c.name} {counts.get(c.id) ?? 0}
       </a>
     ))

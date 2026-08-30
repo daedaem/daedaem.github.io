@@ -30,7 +30,7 @@ const { category, posts, counts, total } = Astro.props
 <BaseLayout title={category.name} description={category.description}>
   <div class="wrap-list">
     <header class="head">
-      <h1>{category.name}</h1>
+      <h1 data-cat={category.id}>{category.name}</h1>
       <p>{category.description}</p>
     </header>
 
@@ -64,6 +64,12 @@ const { category, posts, counts, total } = Astro.props
     margin: 0;
     font-size: 28px;
     letter-spacing: -0.035em;
+  }
+  .head h1[data-cat]::before {
+    width: 12px;
+    height: 12px;
+    margin-right: 0.4em;
+    vertical-align: 0.1em;
   }
   .head p {
     margin: 12px 0 0;
