@@ -34,15 +34,22 @@
     document.head.appendChild(css)
 
     // pagefind-ui.js는 ES 모듈이 아니라 window.PagefindUI에 붙는 일반 스크립트다.
-    // import()로 실행은 되지만 export는 없으므로 전역에서 가져와야 한다.
-    await import(/* @vite-ignore */ base + 'pagefind-ui.js')
+    // 문서대로 <script> 태그로 싣는다. import()로 실으면 Pagefind가 자기 경로를 찾지 못한다.
+    await new Promise<void>((resolve, reject) => {
+      const s = document.createElement('script')
+      s.src = base + 'pagefind-ui.js'
+      s.onload = () => resolve()
+      s.onerror = () => reject(new Error('pagefind-ui.js load failed'))
+      document.head.appendChild(s)
+    }).catch(() => {})
     const PagefindUI = (window as any).PagefindUI
     if (!PagefindUI) {
-      mount.textContent = '검색 색인을 불러오지 못했습니다.'
+      mount.textContent = '검색 색인을 불러오지 못했습니다. 빌드 후에만 동작합니다.'
       return
     }
     new PagefindUI({
       element: '#search-mount',
+      bundlePath: base,
       showSubResults: true,
       pageSize: 8,
       translations: {
