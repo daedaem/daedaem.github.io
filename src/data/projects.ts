@@ -21,6 +21,7 @@ export type Project = {
 export const PROJECTS: Project[] = [
   {
     name: 'GymSpot',
+    featured: true,
     tagline: '동시 예약 경합을 애플리케이션이 아니라 DB에서 막아 보는 중',
     period: '2026.08 – 진행 중',
     status: '진행 중 — 예약 도메인 구현, 화면 개발 중',
