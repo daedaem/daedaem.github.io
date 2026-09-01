@@ -4,7 +4,7 @@ import Comments from '@/components/Comments.astro'
 import PostRow from '@/components/PostRow.astro'
 import Mark from '@/components/Mark.astro'
 import { getCategory } from '@/consts'
-import { formatDate } from '@/utils/format'
+import { tagSlug, formatDate } from '@/utils/format'
 
 interface Props {
   title: string
@@ -129,7 +129,7 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
         <ul class="tags">
           {tags.map(t => (
             <li>
-              <a href={`/tags/${encodeURIComponent(t)}/`}>#{t}</a>
+              <a href={`/tags/${tagSlug(t)}/`}>#{t}</a>
             </li>
           ))}
         </ul>

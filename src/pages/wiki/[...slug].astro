@@ -3,7 +3,7 @@ import { getCollection, render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import WikiTree from '@/components/WikiTree.astro'
 import { getWikiTopic } from '@/consts'
-import { formatDate, readingMinutes } from '@/utils/format'
+import { formatDate, readingMinutes, tagSlug } from '@/utils/format'
 
 export const getStaticPaths = async () => {
   const entries = await getCollection('wiki', ({ data }) => !data.draft)
@@ -95,7 +95,7 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
           <ul class="tags">
             {entry.data.tags.map(t => (
               <li>
-                <a href={`/tags/${encodeURIComponent(t)}/`}>#{t}</a>
+                <a href={`/tags/${tagSlug(t)}/`}>#{t}</a>
               </li>
             ))}
           </ul>

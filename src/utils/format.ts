@@ -15,3 +15,18 @@ export function readingMinutes(body: string): number {
   const chars = body.replace(/\s/g, '').length
   return Math.max(1, Math.round(chars / 500))
 }
+
+/**
+ * 태그를 URL 조각으로. '/'는 경로를 쪼개 라우팅을 깨고(PL/SQL), '#'은 프래그먼트로 읽힌다(C#).
+ * 표시용 원문은 그대로 두고 주소만 이 값으로 만든다.
+ */
+export const tagSlug = (t: string) =>
+  t
+    .toLowerCase()
+    .replaceAll('/', '-')
+    .replaceAll('#', 'sharp')
+    .replaceAll('+', 'plus')
+    .replace(/\s+/g, '-')
+    .replace(/\.+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')

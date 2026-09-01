@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
-import { formatDate } from '@/utils/format'
+import { formatDate, tagSlug } from '@/utils/format'
 
 type Item = { kind: 'post' | 'wiki'; title: string; href: string; date: Date }
 
@@ -24,14 +24,16 @@ export const getStaticPaths = async () => {
       tags: w.data.tags ?? [],
     })),
   ]
-  const byTag = new Map<string, Item[]>()
+  const byTag = new Map<string, { tag: string; list: Item[] }>()
   for (const it of items)
     for (const t of it.tags) {
-      if (!byTag.has(t)) byTag.set(t, [])
-      byTag.get(t)!.push(it)
+      const key = tagSlug(t)
+      if (!key) continue
+      if (!byTag.has(key)) byTag.set(key, { tag: t, list: [] })
+      byTag.get(key)!.list.push(it)
     }
-  return [...byTag.entries()].map(([tag, list]) => ({
-    params: { tag },
+  return [...byTag.entries()].map(([key, { tag, list }]) => ({
+    params: { tag: key },
     props: { tag, list: [...list].sort((a, b) => b.date.valueOf() - a.date.valueOf()) },
   }))
 }
