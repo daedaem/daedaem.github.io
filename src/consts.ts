@@ -3,7 +3,7 @@ export const SITE = {
   // 홈 화면과 <meta description>에 함께 쓰이는 한 줄 정체성
   tagline: '레거시 환경에서 구조를 개선해 온 백엔드 개발자',
   description:
-    'JDK 1.6, Spring 3, Oracle 10g처럼 손대기 어려운 환경에서 성능·정합성·인증 구조를 실제로 바꿔 온 기록입니다. 증상이 아니라 원인을 씁니다.',
+    '지원이 끝난 지 오래된 스택, 손대기 어려운 환경에서 성능·정합성·인증 구조를 실제로 바꿔 온 기록입니다. 증상이 아니라 원인을 씁니다.',
   author: '조해성',
   // 이 값 하나가 canonical, sitemap, RSS에 모두 반영됩니다.
   url: 'https://daedaem.github.io',
