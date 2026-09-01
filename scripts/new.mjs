@@ -6,7 +6,7 @@
 // slug는 ASCII 소문자·숫자·하이픈만. 파일명이 곧 URL이다.
 // 글(post)은 draft: true로 만들어진다. 검토 후 false로 바꿔 공개한다.
 
-import { existsSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 const [kind, slug, title, extra] = process.argv.slice(2)
@@ -34,7 +34,7 @@ let dir, body
 if (kind === 'post') {
   const category = extra ?? 'operations'
   if (!CATEGORIES.includes(category)) fail(`category는 ${CATEGORIES.join(' | ')} 중 하나입니다.`)
-  dir = 'src/content/posts'
+  dir = 'src/content/_drafts/posts'
   body = `---
 title: ${quote(title)}
 description: '한 문장 요약. 목록과 검색 결과에 그대로 노출된다.'
@@ -59,7 +59,7 @@ draft: true
 } else {
   const topic = extra ?? 'etc'
   if (!TOPICS.includes(topic)) fail(`topic은 ${TOPICS.join(' | ')} 중 하나입니다.`)
-  dir = 'src/content/wiki'
+  dir = 'src/content/_drafts/wiki'
   body = `---
 title: ${quote(title)}
 description: '한 문장으로. 목록과 검색 결과에 그대로 노출된다.'
@@ -76,8 +76,9 @@ status: 'seed'
 `
 }
 
+mkdirSync(resolve(dir), { recursive: true })
 const path = resolve(dir, `${slug}.md`)
 if (existsSync(path)) fail(`이미 있습니다: ${path}`)
 writeFileSync(path, body)
 console.log(`만들었습니다: ${dir}/${slug}.md`)
-if (kind === 'post') console.log('draft: true 상태입니다. 검토 후 false로 바꾸면 공개됩니다.')
+console.log('_drafts/ 아래는 git에 올라가지 않습니다. 공개할 때 posts/ 또는 wiki/ 로 옮기세요.')

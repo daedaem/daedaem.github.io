@@ -21,3 +21,8 @@ pnpm-debug.log*
 # editor
 .idea/
 .vscode/
+
+# 작업 지침·초안은 공개 저장소에 올리지 않는다
+CLAUDE.md
+NOTION.md
+src/content/_drafts/

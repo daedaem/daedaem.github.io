@@ -48,7 +48,29 @@ npm run dev
 
 ## 글 쓰기
 
-`CLAUDE.md`에 컬렉션별 프론트매터 형식과 글쓰기 원칙이 정리되어 있습니다.
+초안은 `src/content/_drafts/` 에서 쓰고, 공개할 때 `src/content/posts/` 또는 `wiki/` 로 옮깁니다. `_drafts/` 는 git에 올라가지 않습니다.
+
+글(posts) 프론트매터:
+
+```yaml
+title: '...'
+description: '한 문장 요약'
+date: 2026-01-01
+category: 'performance' # data-integrity | performance | operations | legacy | auth-security
+tags: []
+draft: true
+```
+
+위키(wiki) 프론트매터:
+
+```yaml
+title: '...'
+description: '한 문장으로'
+topic: 'database' # java | spring | database | dotnet | web | infra | cs | etc
+tags: []
+created: 2026-01-01
+status: 'seed' # seed | growing | stable
+```
 
 ## 배포
 
