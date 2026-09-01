@@ -348,3 +348,9 @@ th {
 .table-scroll {
   overflow-x: auto;
 }
+
+/* 탭 문자를 4칸으로. C++ 풀이처럼 탭 들여쓰기 코드가 8칸으로 벌어지지 않게 한다 */
+pre,
+code {
+  tab-size: 4;
+}
