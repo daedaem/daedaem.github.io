@@ -5,6 +5,7 @@ import PostRow from '@/components/PostRow.astro'
 import Mark from '@/components/Mark.astro'
 import { getCategory } from '@/consts'
 import { tagSlug, formatDate } from '@/utils/format'
+import { linkableTagSlugs } from '@/utils/tags'
 
 interface Props {
   title: string
@@ -45,6 +46,8 @@ const {
   others = [],
   cause,
 } = Astro.props
+
+const linkable = await linkableTagSlugs()
 const cat = category ? getCategory(category) : undefined
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
 ---
@@ -127,11 +130,15 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
     {
       tags.length > 0 && (
         <ul class="tags">
-          {tags.map(t => (
-            <li>
-              <a href={`/tags/${tagSlug(t)}/`}>#{t}</a>
-            </li>
-          ))}
+          {tags.map(t =>
+            linkable.has(tagSlug(t)) ? (
+              <li>
+                <a href={`/tags/${tagSlug(t)}/`}>#{t}</a>
+              </li>
+            ) : (
+              <li>#{t}</li>
+            ),
+          )}
         </ul>
       )
     }

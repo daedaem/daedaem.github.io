@@ -32,10 +32,21 @@ export const getStaticPaths = async () => {
       if (!byTag.has(key)) byTag.set(key, { tag: t, list: [] })
       byTag.get(key)!.list.push(it)
     }
-  return [...byTag.entries()].map(([key, { tag, list }]) => ({
-    params: { tag: key },
-    props: { tag, list: [...list].sort((a, b) => b.date.valueOf() - a.date.valueOf()) },
-  }))
+  // 1건짜리 태그는 페이지를 만들지 않는다. 본문 쪽도 같은 기준으로 링크를 걸지 않는다.
+  return [...byTag.entries()]
+    .filter(([, { list }]) => list.length >= 2)
+    .map(([key, { tag, list }]) => ({
+      params: { tag: key },
+      props: {
+        tag,
+        // 글을 먼저, 위키를 나중에. 각 묶음 안에서는 최신순.
+        list: [...list].sort(
+          (a, b) =>
+            (a.kind === 'wiki' ? 1 : 0) - (b.kind === 'wiki' ? 1 : 0) ||
+            b.date.valueOf() - a.date.valueOf(),
+        ),
+      },
+    }))
 }
 
 const { tag, list } = Astro.props

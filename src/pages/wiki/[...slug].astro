@@ -4,6 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import WikiTree from '@/components/WikiTree.astro'
 import { getWikiTopic } from '@/consts'
 import { formatDate, readingMinutes, tagSlug } from '@/utils/format'
+import { linkableTagSlugs } from '@/utils/tags'
 
 export const getStaticPaths = async () => {
   const entries = await getCollection('wiki', ({ data }) => !data.draft)
@@ -19,6 +20,7 @@ export const getStaticPaths = async () => {
 
 const { entry, docs } = Astro.props
 const { Content, headings } = await render(entry)
+const linkable = await linkableTagSlugs()
 const topic = getWikiTopic(entry.data.topic)
 const STATUS_LABEL: Record<string, string> = {
   seed: '메모 수준입니다. 뼈대만 잡아 두었습니다.',
@@ -93,11 +95,15 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
       {
         entry.data.tags.length > 0 && (
           <ul class="tags">
-            {entry.data.tags.map(t => (
-              <li>
-                <a href={`/tags/${tagSlug(t)}/`}>#{t}</a>
-              </li>
-            ))}
+            {entry.data.tags.map(t =>
+              linkable.has(tagSlug(t)) ? (
+                <li>
+                  <a href={`/tags/${tagSlug(t)}/`}>#{t}</a>
+                </li>
+              ) : (
+                <li>#{t}</li>
+              ),
+            )}
           </ul>
         )
       }
