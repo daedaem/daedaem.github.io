@@ -94,7 +94,9 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
         entry.data.tags.length > 0 && (
           <ul class="tags">
             {entry.data.tags.map(t => (
-              <li>#{t}</li>
+              <li>
+                <a href={`/tags/${encodeURIComponent(t)}/`}>#{t}</a>
+              </li>
             ))}
           </ul>
         )

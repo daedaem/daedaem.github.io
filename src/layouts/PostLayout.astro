@@ -128,7 +128,9 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
       tags.length > 0 && (
         <ul class="tags">
           {tags.map(t => (
-            <li>#{t}</li>
+            <li>
+              <a href={`/tags/${encodeURIComponent(t)}/`}>#{t}</a>
+            </li>
           ))}
         </ul>
       )
@@ -356,6 +358,12 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
     border-top: 1px solid var(--border);
     font-size: 0.8125rem;
     color: var(--text-muted);
+  }
+  .tags a:hover {
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 0.2em;
   }
 
   .toc {

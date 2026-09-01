@@ -1,0 +1,106 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import { formatDate } from '@/utils/format'
+
+type Item = { kind: 'post' | 'wiki'; title: string; href: string; date: Date }
+
+export const getStaticPaths = async () => {
+  const posts = await getCollection('posts', ({ data }) => !data.draft)
+  const wiki = await getCollection('wiki', ({ data }) => !data.draft)
+  const items: (Item & { tags: string[] })[] = [
+    ...posts.map(p => ({
+      kind: 'post' as const,
+      title: p.data.title,
+      href: `/posts/${p.id}/`,
+      date: p.data.date,
+      tags: p.data.tags ?? [],
+    })),
+    ...wiki.map(w => ({
+      kind: 'wiki' as const,
+      title: w.data.title,
+      href: `/wiki/${w.id}/`,
+      date: w.data.updated ?? w.data.created,
+      tags: w.data.tags ?? [],
+    })),
+  ]
+  const byTag = new Map<string, Item[]>()
+  for (const it of items)
+    for (const t of it.tags) {
+      if (!byTag.has(t)) byTag.set(t, [])
+      byTag.get(t)!.push(it)
+    }
+  return [...byTag.entries()].map(([tag, list]) => ({
+    params: { tag },
+    props: { tag, list: [...list].sort((a, b) => b.date.valueOf() - a.date.valueOf()) },
+  }))
+}
+
+const { tag, list } = Astro.props
+---
+
+<BaseLayout title={`#${tag}`} description={`#${tag} 태그가 달린 글과 위키 문서 ${list.length}건.`}>
+  <div class="wrap page">
+    <header class="head">
+      <h1>#{tag}</h1>
+      <p class="muted">{list.length}건</p>
+    </header>
+    <ul class="list">
+      {
+        list.map(it => (
+          <li>
+            <a href={it.href}>
+              {it.kind === 'wiki' && <span class="kind">[위키]</span>}
+              {it.title}
+            </a>
+            <time datetime={it.date.toISOString()}>{formatDate(it.date)}</time>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-block: 3.5rem 5rem;
+  }
+  h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    letter-spacing: -0.03em;
+  }
+  .head p {
+    margin: 0.5rem 0 0;
+  }
+  .list {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+  }
+  .list li {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0.7rem 0;
+    border-top: 1px solid var(--border);
+    font-size: 0.9375rem;
+  }
+  .list a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 0.2em;
+  }
+  .kind {
+    color: var(--text-dim);
+    font-size: 0.8125rem;
+    margin-right: 0.35rem;
+  }
+  time {
+    color: var(--text-dim);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
