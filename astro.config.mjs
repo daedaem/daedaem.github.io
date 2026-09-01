@@ -8,6 +8,7 @@ export default defineConfig({
   integrations: [mdx(), sitemap()],
   // Gatsby 시절의 한글 URL을 아카이브 주소로 넘긴다. 기존 유입과 북마크를 잃지 않기 위한 것.
   redirects: {
+    "/info/": "/about/",
     "/221223_Javascript-데이터 타입/": "/notes/javascript-data-types/",
     "/221227_js-Export & Import & Class/": "/notes/javascript-export-import-class/",
     "/221230_js-Spread & RestOperators/": "/notes/javascript-spread-rest-operators/",
