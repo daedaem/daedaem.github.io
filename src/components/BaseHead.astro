@@ -69,12 +69,9 @@ const jsonLd =
 </script>
 <title>{fullTitle}</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-  rel="stylesheet"
-  href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
-/>
+{/* 폰트는 셀프 호스팅한다. CDN 장애·차단 환경에서도 글꼴이 유지되고 외부 요청이 없다 */}
+<link rel="stylesheet" href="/fonts/pretendard/pretendardvariable-dynamic-subset.min.css" />
+<link rel="stylesheet" href="/fonts/jetbrains-mono.css" />
 <meta name="description" content={description} />
 <meta name="author" content={SITE.author} />
 <link rel="canonical" href={canonical} />
