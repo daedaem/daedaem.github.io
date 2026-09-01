@@ -22,10 +22,36 @@ const algoCount = (await getCollection('solutions')).length
 <BaseLayout title={SITE.title} description={SITE.description}>
   <div class="wrap-list">
     <section class="intro">
+      <p class="who">조해성 · 3년차 백엔드 개발자</p>
       <h1>{SITE.tagline}</h1>
       <p>
         오래 운영된 시스템을 맡아 화면부터 DB까지 전 계층을 다룹니다. 느린 조회, 어긋난 데이터,
         한 단계뿐이던 로그인 — 거기서 만난 문제를 원인까지 파서 고친 과정을 기록합니다.
+      </p>
+      <ul class="proofs">
+        <li>
+          <a href="/posts/address-search-9s-to-100ms/"
+            >600만 건 주소 조회 9초 → 100밀리초대 — 조회 방식 자체를 교체</a
+          >
+        </li>
+        <li>
+          <a href="/posts/null-and-empty-string-sync-failure/"
+            >수년 묵은 시스템 간 동기화 오류 — 독립된 원인 두 가지 규명</a
+          >
+        </li>
+        <li>
+          <a href="/posts/staged-auth-and-password-migration/"
+            >1차 인증뿐이던 로그인 — 단계 분리와 무중단 비밀번호 이행</a
+          >
+        </li>
+      </ul>
+      <p class="stance">
+        새 기술을 들여오기 전에 지금 시스템의 문제를 정확히 이해하는 것을 먼저 둡니다. 원인이
+        확정될 때까지 좁히고, 바꿀 것과 바꾸지 않을 것을 구분하는 개발자를 지향합니다.
+      </p>
+      <p class="stack-line">
+        Java · Spring · Oracle · MyBatis · C#/.NET · MSSQL
+        <span class="links"><a href="/about/">소개</a> <a href={SITE.githubUrl}>GitHub</a> <a href={SITE.linkedinUrl}>LinkedIn</a></span>
       </p>
     </section>
 
@@ -122,6 +148,66 @@ const algoCount = (await getCollection('solutions')).length
 </BaseLayout>
 
 <style>
+  .who {
+    margin: 0 0 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+  }
+  .proofs {
+    list-style: none;
+    margin: 22px 0 0;
+    padding: 0;
+    max-width: 40rem;
+  }
+  .proofs li {
+    padding: 8px 0;
+    border-top: 1px solid var(--border);
+    font-size: 14.5px;
+  }
+  .proofs li:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .proofs a {
+    color: var(--text);
+  }
+  .proofs a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 0.2em;
+  }
+  .stance {
+    margin: 18px 0 0;
+    max-width: 40rem;
+    font-size: 14.5px;
+    color: var(--text-muted);
+  }
+  .stack-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    align-items: baseline;
+    margin: 20px 0 0;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  .stack-line .links {
+    display: inline-flex;
+    gap: 14px;
+    margin-left: auto;
+  }
+  .stack-line .links a {
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    text-decoration-color: var(--border-strong);
+  }
+  .stack-line .links a:hover {
+    color: var(--text);
+    text-decoration-color: var(--accent);
+  }
   /* 정체성 블록. 오른쪽 위에서 번지는 옅은 색조와 점 격자로 첫 화면에 질감을 준다. */
   .intro {
     position: relative;
