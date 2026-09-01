@@ -125,6 +125,10 @@
     border-radius: 10px;
     background: var(--bg);
     color: var(--text);
+    /* 결과가 길면 대화상자 안에서 스크롤한다. 없으면 뷰포트 높이에서 그대로 잘린다 */
+    max-height: min(72vh, calc(100vh - 14vh - 2rem));
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
   #search-dialog::backdrop {
     background: rgb(0 0 0 / 0.45);
