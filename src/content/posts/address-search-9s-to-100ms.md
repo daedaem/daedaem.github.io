@@ -6,6 +6,7 @@ updated: 2026-09-03
 happened: '2025년 11월 – 2026년 6월'
 cause: '선행 와일드카드 때문에 인덱스를 타지 못했다. 그러나 진짜 문제는 우리가 관리할 이유가 없는 주소 데이터를 직접 들고 있었다는 것이었다.'
 category: 'performance'
+featured: true
 tags: ['Oracle', '인덱스', '실행계획', 'API', '폴백']
 draft: false
 ---

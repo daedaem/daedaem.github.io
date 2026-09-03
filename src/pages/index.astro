@@ -13,7 +13,9 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
 const notes = await getCollection('notes')
 const wiki = await getCollection('wiki', ({ data }) => !data.draft)
 
-const [featured, ...rest] = posts
+// 히어로는 featured로 고정한 글이 있으면 그것, 없으면 최신 글. 나머지는 발행일순 그대로.
+const featured = posts.find((p) => p.data.featured) ?? posts[0]
+const rest = posts.filter((p) => p !== featured)
 const featuredCat = featured ? getCategory(featured.data.category) : undefined
 const featuredProjects = PROJECTS.filter((p) => p.featured)
 const algoCount = (await getCollection('solutions')).length
