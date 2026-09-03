@@ -123,7 +123,7 @@ SELECT a.name, b.company_name
   FULL OUTER JOIN company b ON a.company_id = b.company_id;
 ```
 
-`홍길동`도 `네이버`·`카카오`도 각각 새로운 행으로 나온다. **ANSI 조인에서만 제공하는 기능**이다. 오라클 고유 문법으로는 표현할 수 없어서 `UNION`으로 우회해야 했고, 실제로 오라클은 내부적으로 `UNION` 연산으로 처리한다.
+`홍길동`도 `네이버`·`카카오`도 각각 새로운 행으로 나온다. **ANSI 조인에서만 제공하는 기능**이다. 오라클 고유 문법으로는 표현할 수 없어서 LEFT OUTER와 RIGHT OUTER를 `UNION`으로 합쳐 우회해야 했다. 옛 버전은 내부적으로도 비슷하게 변환했지만, 11g부터는 네이티브 해시 풀 아우터 조인(`HASH JOIN FULL OUTER`)으로 처리한다.
 
 ## 한눈에
 

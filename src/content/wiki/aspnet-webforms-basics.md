@@ -69,7 +69,7 @@ protected void Page_Load(object sender, EventArgs e)
 
 ## ViewState — 상태를 어떻게 들고 있나
 
-HTTP는 상태가 없는데 PostBack마다 컨트롤 값이 유지된다. **ViewState** 덕분이다.
+HTTP는 상태가 없는데 PostBack마다 화면의 상태가 유지된다. 두 경로가 있다. 입력 컨트롤의 값은 폼 POST 데이터로 되돌아오고(`IPostBackDataHandler`), POST되지 않는 상태(Label 텍스트, GridView 바인딩 결과 등)를 PostBack 사이에 들고 있는 것이 **ViewState**다. 텍스트박스 값이 유지되는 것까지 ViewState 덕이라고 이해하면 틀린다.
 
 - 페이지 상태를 PostBack 사이에 유지한다
 - **숨겨진 필드에 인코딩되어 담겨 클라이언트와 왕복한다**
@@ -88,7 +88,7 @@ protected void gvItemList_SelectedIndexChanged(object sender, EventArgs e)
 
 **ViewState는 클라이언트를 왕복한다.** GridView에 큰 데이터를 담으면 숨은 필드가 수백 KB가 되고 그만큼 매 요청이 무거워진다. 목록이 느리면 ViewState 크기를 먼저 의심한다.
 
-**보안 경계가 아니다.** 기본 설정에서는 인코딩될 뿐 암호화가 보장되지 않는다. 권한이나 금액 같은 값을 ViewState에 담고 그대로 믿으면 안 된다. **서버에서 다시 검증해야 한다.**
+**보안 경계가 아니다.** 기본 설정에서는 MAC으로 위조는 막지만(`EnableViewStateMac`, 4.5.2부터 강제) 암호화는 되지 않아 내용이 읽힌다. 권한이나 금액 같은 값을 ViewState에 담고 판단의 근거로 삼으면 안 된다. **서버에서 다시 검증해야 한다.**
 
 ## 페이지 생명주기
 
@@ -100,7 +100,7 @@ protected void gvItemList_SelectedIndexChanged(object sender, EventArgs e)
 3. Page_Load          ← 데이터 로드
 4. Control Events     ← 버튼 클릭 등
 5. Page_PreRender
-6. Page_Render        ← HTML 생성
+6. Render (메서드)     ← HTML 생성. 이벤트가 아니라 오버라이드하는 메서드다
 7. Page_Unload
 ```
 

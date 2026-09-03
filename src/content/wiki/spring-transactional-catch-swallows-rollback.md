@@ -16,7 +16,7 @@ status: 'stable'
 
 - Spring 트랜잭션은 **프록시**가 담당한다. 메서드가 정상 반환하면 commit, 예외가 프록시까지 밖으로 나오면 rollback이다.
 - 서비스 안에서 catch해 문자열을 반환하면 프록시 입장에서는 "정상 종료"다. 중간까지 실행된 DB 수정이 그대로 commit된다.
-- 함정이 하나 더 있다. 기본 설정에서는 **RuntimeException(unchecked)만 롤백**하고 checked 예외는 롤백하지 않는다. catch를 빼더라도 checked 예외가 그대로 나가면 롤백이 안 된다.
+- 함정이 하나 더 있다. 기본 설정에서는 **RuntimeException과 Error만 롤백**하고 checked 예외는 롤백하지 않는다. catch를 빼더라도 checked 예외가 그대로 나가면 롤백이 안 된다.
 
 ## 결정 — 업무 결과와 시스템 오류를 가른다
 
@@ -51,7 +51,7 @@ try {
 
 ### 고르지 않은 대안
 
-catch를 서비스 안에 유지해야만 한다면 `@Transactional(rollbackFor = Exception.class)`를 붙이고, catch 안에서 `TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()`를 호출하는 방법이 있다. 다만 이건 서비스가 트랜잭션 API에 직접 의존하게 되어 차선이다.
+catch를 서비스 안에 유지해야만 한다면 catch 블록에서 `TransactionAspectSupport.currentTransactionStatus().setRollbackOnly()`를 호출하는 방법이 있다. `rollbackFor`는 예외가 프록시 밖으로 나갈 때만 의미가 있어서, 안에서 잡아 정상 반환하는 이 경우에는 붙여도 아무 역할을 하지 않는다. 그리고 이 방법은 서비스가 트랜잭션 API에 직접 의존하게 되어 차선이다.
 
 ## 추가 주의 — 같은 빈 안에서 직접 호출 (self-invocation)
 
@@ -66,6 +66,6 @@ catch를 서비스 안에 유지해야만 한다면 `@Transactional(rollbackFor 
 ## 정리
 
 - 프록시는 예외가 밖으로 나왔는지만 본다. 안에서 삼키면 commit이다.
-- 기본값은 unchecked만 롤백한다. checked 예외는 감싸서 던지거나 `rollbackFor`를 명시한다.
+- 기본값은 RuntimeException과 Error만 롤백한다. checked 예외는 감싸서 던지거나 `rollbackFor`를 명시한다.
 - 업무 결과와 시스템 오류는 다른 채널로 나가야 한다. 전자는 반환값, 후자는 예외.
 - 같은 빈 안에서의 직접 호출은 프록시를 타지 않는다.

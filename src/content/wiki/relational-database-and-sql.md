@@ -77,7 +77,7 @@ DBMS(DataBase Management System)는 데이터 조작과 관리를 전담하는 �
 
 ### 관계형
 
-1970년 에드거 프랭크 커드가 제안했다. 다른 모델과 달리 **데이터 간의 관계(relationship)** 에 초점을 둔다.
+1970년 에드거 프랭크 커드가 제안했다. 이름의 '관계'는 테이블 간 관계(relationship)가 아니라 수학의 **릴레이션(relation)**, 즉 튜플의 집합인 테이블 자체를 가리킨다. 자주 틀리는 지점이다.
 
 사원과 부서 정보를 한 덩어리로 관리하면 구조는 단순하지만 중복이 생긴다.
 
@@ -121,7 +121,7 @@ SQL은 Structured Query Language의 약자로, RDBMS에서 데이터를 다루�
 | **TCL** Transaction Control Language | **트랜잭션** | `COMMIT` `ROLLBACK` |
 | **DCL** Data Control Language | 사용 **권한** | `GRANT` `REVOKE` |
 
-`TRUNCATE`가 DDL인 게 헷갈리기 쉽다. 내부적으로 DROP 후 CREATE에 가깝게 동작하므로 **롤백이 안 된다.** `DELETE`(DML)와 여기서 갈린다.
+`TRUNCATE`가 DDL인 게 헷갈리기 쉽다. Oracle에서는 DDL이라 암묵적으로 COMMIT되고 undo를 남기지 않아 **롤백이 안 된다.** `DELETE`(DML)와 여기서 갈린다. PostgreSQL이나 SQL Server는 트랜잭션 안의 TRUNCATE를 롤백할 수 있어 DBMS마다 다르다.
 
 ## 더 볼 것
 

@@ -60,7 +60,7 @@ END;
 - **`:OLD`** — DML 작업 **전**의 행 값
 - **`:NEW`** — DML 작업 **후**의 행 값
 
-`UPDATE`면 `:OLD`가 변경 전, `:NEW`가 변경 후다. `INSERT`에는 `:OLD`가 없고, `DELETE`에는 `:NEW`가 없다.
+`UPDATE`면 `:OLD`가 변경 전, `:NEW`가 변경 후다. `INSERT`에서는 `:OLD`가, `DELETE`에서는 `:NEW`가 전부 NULL이다. 참조는 되지만 값이 없다.
 
 ```sql
 CREATE OR REPLACE TRIGGER before_employee_update
@@ -77,10 +77,10 @@ END;
 ### 4. 권한이 필요하다
 
 ```sql
-GRANT ALTER ANY TRIGGER, CREATE ANY TRIGGER TO <계정>;
+GRANT CREATE TRIGGER TO <계정>;
 ```
 
-DBA 권한 계정에서 부여해야 한다.
+자기 스키마의 테이블이면 `CREATE TRIGGER` 시스템 권한이면 된다. `CREATE ANY TRIGGER`는 다른 스키마의 테이블에 걸 수 있는 훨씬 강한 권한이라 꼭 필요할 때만 받는다. 어느 쪽이든 DBA 권한 계정에서 부여한다.
 
 ## 직접 해본 예제
 

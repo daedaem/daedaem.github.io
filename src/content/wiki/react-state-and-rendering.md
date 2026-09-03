@@ -16,7 +16,7 @@ status: 'stable'
 const [content, setContent] = useState(초기값)
 ```
 
-`setContent`를 호출할 때마다 컴포넌트가 다시 렌더링된다.
+`setContent`로 값이 바뀌면 컴포넌트가 다시 렌더링된다. 같은 값(`Object.is` 기준)이면 건너뛴다.
 
 ### 초기값이 무거우면 함수로 넘긴다
 
@@ -71,7 +71,7 @@ setExpenses(prev => [expense, ...prev])
 
 여러 `setState`를 한 번의 렌더링으로 묶는 것을 배칭이라고 한다. **여기가 버전에 따라 다르다.**
 
-| | React 17 이하 | **React 18 이상** |
+| | React 17 이하 | **React 18 이상 (`createRoot`)** |
 |---|---|---|
 | React 이벤트 핸들러 안 | 배칭됨 | 배칭됨 |
 | `setTimeout` 안 | **배칭 안 됨** | **배칭됨** |
@@ -80,7 +80,7 @@ setExpenses(prev => [expense, ...prev])
 
 React 17까지는 **React가 관리하는 이벤트 핸들러 안에서만** 배칭했다. 그래서 `await` 뒤에 있는 `setState` 두 개는 렌더링을 두 번 일으켰다.
 
-React 18의 **자동 배칭(automatic batching)** 이 이걸 전부 묶는다. 즉 "콜백이나 프로미스가 없어야 배칭된다"는 설명은 **React 17까지의 이야기**다.
+React 18의 **자동 배칭(automatic batching)** 이 이걸 전부 묶는다. 단, `createRoot`로 마운트했을 때다. React 18에서도 레거시 `ReactDOM.render`를 쓰면 17의 동작이 유지된다. 즉 "콜백이나 프로미스가 없어야 배칭된다"는 설명은 **React 17까지의 이야기**다.
 
 배칭을 피해야 하는 드문 경우에는 `flushSync`를 쓴다.
 
