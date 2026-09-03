@@ -64,4 +64,4 @@ DB 컬럼이 Oracle `NUMBER`라면 Java 쪽 대응 타입은 `BigDecimal`이다.
 
 ## 더 볼 것
 
-- 실제로 금액이 음수로 찍혔던 사례: [DTO 타입 하나가 만든 정수 오버플로](/posts/integer-overflow-negative-amount/)
+- 실제로 금액이 음수로 찍혔던 사례: [VO 필드 타입 하나가 만든 정수 오버플로](/posts/integer-overflow-negative-amount/)

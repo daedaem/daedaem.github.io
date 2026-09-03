@@ -12,6 +12,8 @@ interface Props {
   description: string
   date: Date
   updated?: Date
+  /** 일이 실제로 있었던 시기. 발행일 앞에 따로 보여 준다 */
+  happened?: string
   category?: string
   tags?: string[]
   readingMinutes?: number
@@ -25,7 +27,7 @@ interface Props {
   prev?: { href: string; title: string }
   next?: { href: string; title: string }
   /** 이 글을 뺀 나머지 글. 글 안에서 다른 글로 갈 수 있게 목록을 보여 준다 */
-  others?: { href: string; title: string; category?: string; date: Date }[]
+  others?: { href: string; title: string; category?: string; date: Date; happened?: string }[]
   /** 원인 한 줄. 이 사이트의 시그니처 블록으로, 제목 아래에 고정된 형태로 나온다 */
   cause?: string
 }
@@ -35,6 +37,7 @@ const {
   description,
   date,
   updated,
+  happened,
   category,
   tags = [],
   readingMinutes,
@@ -49,7 +52,7 @@ const {
 
 const linkable = await linkableTagSlugs()
 const cat = category ? getCategory(category) : undefined
-const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 ---
 
 <BaseLayout
@@ -63,13 +66,23 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
   <article class="wrap post">
     <header>
       <div class="meta">
-        {!archived && (
-          <a class="crumb" href="/posts/">
-            글
-          </a>
-        )}
+        {
+          !archived && (
+            <a class="crumb" href="/posts/">
+              글
+            </a>
+          )
+        }
         {!archived && cat && <span class="sep">›</span>}
-        {cat && <a class="cat" href={`/categories/${cat.id}/`} data-cat={cat.id}>{cat.name}</a>}
+        {
+          cat && (
+            <a class="cat" href={`/categories/${cat.id}/`} data-cat={cat.id}>
+              {cat.name}
+            </a>
+          )
+        }
+        {happened && <span class="happened">{happened}의 일</span>}
+        {happened && <span class="sep">·</span>}
         <time datetime={date.toISOString()}>{formatDate(date)} 작성</time>
         {readingMinutes && <span>· {readingMinutes}분</span>}
       </div>
@@ -103,7 +116,9 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
             이해 수준을 기록으로 남기기 위해 오탈자만 고쳤고, 지금 보기에 틀린 내용은 지우지 않고
             <s>취소선</s>을 그은 뒤 바로 아래에 바로잡았습니다.
           </p>
-          <p><a href="/notes/">노트 전체 보기</a></p>
+          <p>
+            <a href="/notes/">노트 전체 보기</a>
+          </p>
         </aside>
       )
     }
@@ -113,7 +128,7 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
         <nav class="toc" aria-label="목차">
           <p>목차</p>
           <ul>
-            {toc.map(h => (
+            {toc.map((h) => (
               <li class={`d${h.depth}`}>
                 <a href={`#${h.slug}`}>{h.text}</a>
               </li>
@@ -130,7 +145,7 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
     {
       tags.length > 0 && (
         <ul class="tags">
-          {tags.map(t =>
+          {tags.map((t) =>
             linkable.has(tagSlug(t)) ? (
               <li>
                 <a href={`/tags/${tagSlug(t)}/`}>#{t}</a>
@@ -172,8 +187,14 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
             <a href="/posts/">전체 보기 →</a>
           </div>
           <ul class="rows">
-            {others.map(o => (
-              <PostRow href={o.href} title={o.title} date={o.date} category={o.category} />
+            {others.map((o) => (
+              <PostRow
+                href={o.href}
+                title={o.title}
+                date={o.date}
+                category={o.category}
+                happened={o.happened}
+              />
             ))}
           </ul>
         </section>

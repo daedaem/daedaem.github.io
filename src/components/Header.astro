@@ -11,8 +11,7 @@ const NAV = [
   { href: '/posts/', label: '글' },
   { href: '/wiki/', label: '위키' },
   { href: '/algorithms/', label: '알고리즘' },
-  { href: '/notes/', label: '노트' },
-  { href: '/projects/', label: '프로젝트' },
+  // 노트(아카이브)는 푸터와 홈 하단에서, 프로젝트는 소개 페이지에서 간다. 첫 화면 메뉴는 지금 쓰는 것만 둔다.
   { href: '/about/', label: '소개' },
 ]
 ---
@@ -27,7 +26,7 @@ const NAV = [
       <nav aria-label="주요 메뉴">
         <ul>
           {
-            NAV.map(item => (
+            NAV.map((item) => (
               <li>
                 <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
                   {item.label}

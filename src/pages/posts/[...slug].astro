@@ -13,8 +13,14 @@ export const getStaticPaths = async () => {
       p ? { href: `/posts/${p.id}/`, title: p.data.title } : undefined
     // 글 안에서 다른 글로 갈 수 있도록 나머지 전부를 넘긴다. 편수가 적어 전부 보여도 짧다.
     const others = posts
-      .filter(p => p.id !== post.id)
-      .map(p => ({ href: `/posts/${p.id}/`, title: p.data.title, category: p.data.category, date: p.data.date }))
+      .filter((p) => p.id !== post.id)
+      .map((p) => ({
+        href: `/posts/${p.id}/`,
+        title: p.data.title,
+        category: p.data.category,
+        date: p.data.date,
+        happened: p.data.happened,
+      }))
     return {
       params: { slug: post.id },
       props: { post, prev: link(posts[i + 1]), next: link(posts[i - 1]), others },
@@ -31,6 +37,7 @@ const { Content, headings } = await render(post)
   description={post.data.description}
   date={post.data.date}
   updated={post.data.updated}
+  happened={post.data.happened}
   category={post.data.category}
   tags={post.data.tags}
   readingMinutes={readingMinutes(post.body ?? '')}
