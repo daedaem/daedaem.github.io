@@ -91,7 +91,7 @@ SHA256 해시함수를 이용한다면 **어떤 길이의 입력값이라도 25
 
 **입력값의 아주 일부만 변경되어도 전혀 다른 값이 출력**되는 특징 때문에 **데이터가 변경되었는지 쉽게 확인할 수 있습니다**
 
-![https://s3.us-west-2.amazonaws.com/secure.notion-static.com/f394a697-78a4-4975-bcfa-d52d84f1b94c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220627%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220627T170144Z&X-Amz-Expires=86400&X-Amz-Signature=ace92e15887f8d75b6559ce9ada1a9b4493913b1ec90b48ebbf550c9c32def30&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject](./hash.png) 
+![해시 함수의 동작](./hash.png) 
 
 [노마드코더 - "비밀번호 털렸다고? 암호화. 해시함수. 5분 설명."](https://youtu.be/67UwxR3ts2E)
 
