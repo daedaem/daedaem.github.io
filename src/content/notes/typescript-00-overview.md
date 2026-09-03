@@ -27,7 +27,7 @@ legacyPath: "/230321_TypeScript - 0.verview/"
 
 > **보충(2026-08-30):** Node.js는 22.6부터 `--experimental-strip-types`, 23.6부터는 옵션 없이 타입 표기를 벗겨 내고 .ts 파일을 직접 실행한다. 타입 검사는 하지 않는다. 브라우저는 여전히 실행하지 못한다.
 
-```bash
+```html
 //index.html
 <!DOCTYPE html>
 <html lang="en">

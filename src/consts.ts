@@ -36,11 +36,7 @@ export const SITE = {
 } as const
 
 export type CategoryId =
-  | 'data-integrity'
-  | 'performance'
-  | 'operations'
-  | 'legacy'
-  | 'auth-security'
+  'data-integrity' | 'performance' | 'operations' | 'legacy' | 'auth-security'
 
 export type Category = {
   id: CategoryId
@@ -83,7 +79,7 @@ export const CATEGORIES: Category[] = [
   },
 ]
 
-export const CATEGORY_MAP = new Map(CATEGORIES.map(c => [c.id, c]))
+export const CATEGORY_MAP = new Map(CATEGORIES.map((c) => [c.id, c]))
 
 export function getCategory(id: string): Category | undefined {
   return CATEGORY_MAP.get(id as CategoryId)
@@ -95,19 +91,54 @@ export function getCategory(id: string): Category | undefined {
  */
 export const WIKI_TOPICS = [
   // hue: 주제 색상(HSL 색상각). 위키 카드와 트리에서 주제를 구분하는 데 쓴다.
-  { id: 'java', name: 'Java', hue: 24, description: '언어 자체와 JVM. 구버전 JDK의 제약을 포함합니다.' },
-  { id: 'spring', name: 'Spring', hue: 140, description: 'Spring Framework와 Spring Boot, JPA와 MyBatis.' },
-  { id: 'database', name: '데이터베이스', hue: 212, description: 'Oracle과 MSSQL, SQL과 PL/SQL, 실행 계획과 인덱스.' },
+  {
+    id: 'java',
+    name: 'Java',
+    hue: 24,
+    description: '언어 자체와 JVM. 구버전 JDK의 제약을 포함합니다.',
+  },
+  {
+    id: 'spring',
+    name: 'Spring',
+    hue: 140,
+    description: 'Spring Framework와 Spring Boot, JPA와 MyBatis.',
+  },
+  {
+    id: 'database',
+    name: '데이터베이스',
+    hue: 212,
+    description: 'Oracle과 MSSQL, SQL과 PL/SQL, 실행 계획과 인덱스.',
+  },
   { id: 'dotnet', name: '.NET', hue: 268, description: 'C#과 ASP.NET Web Forms, IIS.' },
-  { id: 'web', name: '웹·프론트엔드', hue: 188, description: 'HTTP, JSP와 jQuery, React, 브라우저 동작.' },
-  { id: 'infra', name: '인프라·운영', hue: 40, description: 'WAS와 웹서버, 배포, 서버 환경과 로그.' },
-  { id: 'cs', name: '기초 지식', hue: 330, description: '자료구조와 알고리즘, 네트워크, 운영체제.' },
-  { id: 'etc', name: '그 밖에', hue: 0, description: '아직 자리를 못 정한 것들. 쌓이면 주제를 새로 만듭니다.' },
+  {
+    id: 'web',
+    name: '웹·프론트엔드',
+    hue: 188,
+    description: 'HTTP, JSP와 jQuery, React, 브라우저 동작.',
+  },
+  {
+    id: 'infra',
+    name: '인프라·운영',
+    hue: 40,
+    description: 'WAS와 웹서버, 배포, 서버 환경과 로그.',
+  },
+  {
+    id: 'cs',
+    name: '기초 지식',
+    hue: 330,
+    description: '자료구조와 알고리즘, 네트워크, 운영체제.',
+  },
+  {
+    id: 'etc',
+    name: '그 밖에',
+    hue: 0,
+    description: '아직 자리를 못 정한 것들. 쌓이면 주제를 새로 만듭니다.',
+  },
 ] as const
 
 export type WikiTopicId = (typeof WIKI_TOPICS)[number]['id']
 
-export const WIKI_TOPIC_MAP = new Map(WIKI_TOPICS.map(t => [t.id, t]))
+export const WIKI_TOPIC_MAP = new Map(WIKI_TOPICS.map((t) => [t.id, t]))
 
 export function getWikiTopic(id: string) {
   return WIKI_TOPIC_MAP.get(id as WikiTopicId)

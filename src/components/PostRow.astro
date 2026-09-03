@@ -18,7 +18,13 @@ const cat = category ? getCategory(category) : undefined
 
 <li class:list={['row', { 'no-cat': !cat }]}>
   <a href={href}>
-    {cat && <span class="cat" data-cat={cat.id}>{cat.name}</span>}
+    {
+      cat && (
+        <span class="cat" data-cat={cat.id}>
+          {cat.name}
+        </span>
+      )
+    }
     <span class="body">
       <span class="title">{title}</span>
       {description && <span class="desc">{description}</span>}

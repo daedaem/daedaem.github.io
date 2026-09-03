@@ -9,13 +9,13 @@ import { linkableTagSlugs } from '@/utils/tags'
 export const getStaticPaths = async () => {
   const entries = await getCollection('wiki', ({ data }) => !data.draft)
   // 트리에 쓸 전체 문서 목록. 모든 페이지가 같은 목록을 받는다.
-  const docs = entries.map(e => ({
+  const docs = entries.map((e) => ({
     id: e.id,
     title: e.data.title,
     topic: e.data.topic,
     status: e.data.status,
   }))
-  return entries.map(entry => ({ params: { slug: entry.id }, props: { entry, docs } }))
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry, docs } }))
 }
 
 const { entry, docs } = Astro.props
@@ -27,7 +27,7 @@ const STATUS_LABEL: Record<string, string> = {
   growing: '보완하는 중입니다. 빠진 내용이 있을 수 있습니다.',
   stable: '한 차례 정리를 마친 문서입니다.',
 }
-const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 ---
 
 <BaseLayout
@@ -53,12 +53,14 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
         <div class="meta">
           <a class="crumb" href="/wiki/">위키</a>
           {topic && <span class="sep">›</span>}
-          {topic && (
-            <a class="topic" href={`/wiki/#${topic.id}`} style={`--wt: ${topic.hue}`}>
-              <span class="swatch" aria-hidden="true" />
-              {topic.name}
-            </a>
-          )}
+          {
+            topic && (
+              <a class="topic" href={`/wiki/#${topic.id}`} style={`--wt: ${topic.hue}`}>
+                <span class="swatch" aria-hidden="true" />
+                {topic.name}
+              </a>
+            )
+          }
           <time datetime={(entry.data.updated ?? entry.data.created).toISOString()}>
             {
               entry.data.updated
@@ -78,7 +80,7 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
           <nav class="toc" aria-label="목차">
             <p>목차</p>
             <ul>
-              {toc.map(h => (
+              {toc.map((h) => (
                 <li class={`d${h.depth}`}>
                   <a href={`#${h.slug}`}>{h.text}</a>
                 </li>
@@ -95,7 +97,7 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
       {
         entry.data.tags.length > 0 && (
           <ul class="tags">
-            {entry.data.tags.map(t =>
+            {entry.data.tags.map((t) =>
               linkable.has(tagSlug(t)) ? (
                 <li>
                   <a href={`/tags/${tagSlug(t)}/`}>#{t}</a>

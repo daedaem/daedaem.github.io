@@ -17,13 +17,7 @@ const posts = defineCollection({
     cause: z.string().optional(),
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
-    category: z.enum([
-      'data-integrity',
-      'performance',
-      'operations',
-      'legacy',
-      'auth-security',
-    ]),
+    category: z.enum(['data-integrity', 'performance', 'operations', 'legacy', 'auth-security']),
     tags: z.array(z.string()).default([]),
     /** true인 글은 빌드 결과에서 빠집니다. 초안을 저장소에 두고 다듬을 때 씁니다. */
     draft: z.boolean().default(false),

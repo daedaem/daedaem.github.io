@@ -63,8 +63,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const wiki = await getCollection('wiki', ({ data }) => !data.draft)
   return [
     { params: { slug: 'site' }, props: { title: SITE.tagline, kicker: SITE.title } },
-    ...posts.map(p => ({ params: { slug: `posts/${p.id}` }, props: { title: p.data.title, kicker: '글' } })),
-    ...wiki.map(w => ({ params: { slug: `wiki/${w.id}` }, props: { title: w.data.title, kicker: '위키' } })),
+    ...posts.map((p) => ({
+      params: { slug: `posts/${p.id}` },
+      props: { title: p.data.title, kicker: '글' },
+    })),
+    ...wiki.map((w) => ({
+      params: { slug: `wiki/${w.id}` },
+      props: { title: w.data.title, kicker: '위키' },
+    })),
   ]
 }
 

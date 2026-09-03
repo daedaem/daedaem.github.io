@@ -9,14 +9,14 @@ export const getStaticPaths = async () => {
   const posts = await getCollection('posts', ({ data }) => !data.draft)
   const wiki = await getCollection('wiki', ({ data }) => !data.draft)
   const items: (Item & { tags: string[] })[] = [
-    ...posts.map(p => ({
+    ...posts.map((p) => ({
       kind: 'post' as const,
       title: p.data.title,
       href: `/posts/${p.id}/`,
       date: p.data.date,
       tags: p.data.tags ?? [],
     })),
-    ...wiki.map(w => ({
+    ...wiki.map((w) => ({
       kind: 'wiki' as const,
       title: w.data.title,
       href: `/wiki/${w.id}/`,
@@ -60,7 +60,7 @@ const { tag, list } = Astro.props
     </header>
     <ul class="list">
       {
-        list.map(it => (
+        list.map((it) => (
           <li>
             <a href={it.href}>
               {it.kind === 'wiki' && <span class="kind">[위키]</span>}

@@ -7,13 +7,13 @@ export async function GET(context) {
   const wiki = await getCollection('wiki', ({ data }) => !data.draft)
 
   const items = [
-    ...posts.map(p => ({
+    ...posts.map((p) => ({
       title: p.data.title,
       description: p.data.description,
       pubDate: p.data.date,
       link: `/posts/${p.id}/`,
     })),
-    ...wiki.map(w => ({
+    ...wiki.map((w) => ({
       title: `[위키] ${w.data.title}`,
       description: w.data.description,
       pubDate: w.data.updated ?? w.data.created,

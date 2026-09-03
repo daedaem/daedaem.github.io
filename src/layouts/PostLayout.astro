@@ -49,7 +49,7 @@ const {
 
 const linkable = await linkableTagSlugs()
 const cat = category ? getCategory(category) : undefined
-const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 ---
 
 <BaseLayout
@@ -63,13 +63,21 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
   <article class="wrap post">
     <header>
       <div class="meta">
-        {!archived && (
-          <a class="crumb" href="/posts/">
-            글
-          </a>
-        )}
+        {
+          !archived && (
+            <a class="crumb" href="/posts/">
+              글
+            </a>
+          )
+        }
         {!archived && cat && <span class="sep">›</span>}
-        {cat && <a class="cat" href={`/categories/${cat.id}/`} data-cat={cat.id}>{cat.name}</a>}
+        {
+          cat && (
+            <a class="cat" href={`/categories/${cat.id}/`} data-cat={cat.id}>
+              {cat.name}
+            </a>
+          )
+        }
         <time datetime={date.toISOString()}>{formatDate(date)} 작성</time>
         {readingMinutes && <span>· {readingMinutes}분</span>}
       </div>
@@ -103,7 +111,9 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
             이해 수준을 기록으로 남기기 위해 오탈자만 고쳤고, 지금 보기에 틀린 내용은 지우지 않고
             <s>취소선</s>을 그은 뒤 바로 아래에 바로잡았습니다.
           </p>
-          <p><a href="/notes/">노트 전체 보기</a></p>
+          <p>
+            <a href="/notes/">노트 전체 보기</a>
+          </p>
         </aside>
       )
     }
@@ -113,7 +123,7 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
         <nav class="toc" aria-label="목차">
           <p>목차</p>
           <ul>
-            {toc.map(h => (
+            {toc.map((h) => (
               <li class={`d${h.depth}`}>
                 <a href={`#${h.slug}`}>{h.text}</a>
               </li>
@@ -130,7 +140,7 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
     {
       tags.length > 0 && (
         <ul class="tags">
-          {tags.map(t =>
+          {tags.map((t) =>
             linkable.has(tagSlug(t)) ? (
               <li>
                 <a href={`/tags/${tagSlug(t)}/`}>#{t}</a>
@@ -172,7 +182,7 @@ const toc = headings.filter(h => h.depth === 2 || h.depth === 3)
             <a href="/posts/">전체 보기 →</a>
           </div>
           <ul class="rows">
-            {others.map(o => (
+            {others.map((o) => (
               <PostRow href={o.href} title={o.title} date={o.date} category={o.category} />
             ))}
           </ul>

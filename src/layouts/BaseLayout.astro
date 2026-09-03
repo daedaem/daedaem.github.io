@@ -10,6 +10,7 @@ interface Props {
   publishedAt?: Date
   updatedAt?: Date
   ogSlug?: string
+  noindex?: boolean
 }
 ---
 
@@ -19,7 +20,7 @@ interface Props {
     <BaseHead {...Astro.props} />
   </head>
   <body>
-    <a href="#main" class="visually-hidden">본문으로 건너뛰기</a>
+    <a href="#main" class="visually-hidden skip-link">본문으로 건너뛰기</a>
     <Header />
     <main id="main">
       <slot />

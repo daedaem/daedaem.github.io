@@ -51,17 +51,19 @@ const SERIES: Series[] = [
   },
 ]
 
-const grouped = SERIES.map(s => ({
+const grouped = SERIES.map((s) => ({
   ...s,
-  items: notes.filter(n => (s.prefix ? n.id.startsWith(s.prefix) : s.ids!.includes(n.id))),
+  items: notes.filter((n) => (s.prefix ? n.id.startsWith(s.prefix) : s.ids!.includes(n.id))),
 }))
 
-const used = new Set(grouped.flatMap(g => g.items.map(i => i.id)))
-const others = notes.filter(n => !used.has(n.id))
+const used = new Set(grouped.flatMap((g) => g.items.map((i) => i.id)))
+const others = notes.filter((n) => !used.has(n.id))
 
 /** 탭에 쓸 목록. 비어 있는 시리즈는 빼고, 시리즈 밖의 글이 있으면 마지막에 붙인다 */
 const tabs = [
-  ...grouped.filter(g => g.items.length > 0).map(g => ({ id: g.id, title: g.title, count: g.items.length })),
+  ...grouped
+    .filter((g) => g.items.length > 0)
+    .map((g) => ({ id: g.id, title: g.title, count: g.items.length })),
   ...(others.length > 0 ? [{ id: 'others', title: '그 밖의 글', count: others.length }] : []),
 ]
 ---
@@ -76,23 +78,25 @@ const tabs = [
       <p class="lead">
         비전공자로 개발을 시작해 자바스크립트와 타입스크립트의 기초를 다지던 2022~2023년의 노트
         {notes.length}편입니다. 지금 쓰는 글과는 성격이 다르지만, 무엇을 어떤 순서로 익혔는지도
-        기록이라고 생각해 남겨 둡니다. 오탈자만 고쳤고, 지금 보기에 틀린 내용은 지우지 않고
-        취소선을 그은 뒤 바로 아래에 바로잡았습니다.
+        기록이라고 생각해 남겨 둡니다. 오탈자만 고쳤고, 지금 보기에 틀린 내용은 지우지 않고 취소선을
+        그은 뒤 바로 아래에 바로잡았습니다.
       </p>
     </header>
 
     <nav class="tabs" aria-label="시리즈 선택">
       <a href="#" class="tab" data-series="" aria-current="true">전체 <em>{notes.length}</em></a>
-      {tabs.map(t => (
-        <a href={`#${t.id}`} class="tab" data-series={t.id}>
-          {t.title} <em>{t.count}</em>
-        </a>
-      ))}
+      {
+        tabs.map((t) => (
+          <a href={`#${t.id}`} class="tab" data-series={t.id}>
+            {t.title} <em>{t.count}</em>
+          </a>
+        ))
+      }
     </nav>
 
     {
       grouped.map(
-        g =>
+        (g) =>
           g.items.length > 0 && (
             <section class="series" id={g.id} data-series={g.id}>
               <div class="series-head">
@@ -102,7 +106,7 @@ const tabs = [
                 <p class="muted">{g.note}</p>
               </div>
               <ol>
-                {g.items.map(n => (
+                {g.items.map((n) => (
                   <li>
                     <a href={`/notes/${n.id}/`}>{n.data.title.trim()}</a>
                     <span class="dates">
@@ -129,7 +133,7 @@ const tabs = [
             <p class="muted">어느 시리즈에도 속하지 않는 글.</p>
           </div>
           <ol>
-            {others.map(n => (
+            {others.map((n) => (
               <li>
                 <a href={`/notes/${n.id}/`}>{n.data.title.trim()}</a>
                 <span class="dates">
@@ -150,7 +154,7 @@ const tabs = [
     // 탭은 앵커 링크라 JS 없이도 해당 시리즈로 건너뛴다. JS가 있으면 고른 시리즈만 남기고 주소 해시에 기억한다.
     const tabs = [...document.querySelectorAll<HTMLAnchorElement>('.tab')]
     const sections = [...document.querySelectorAll<HTMLElement>('.series')]
-    const ids = new Set(sections.map(s => s.dataset.series))
+    const ids = new Set(sections.map((s) => s.dataset.series))
 
     function select(id: string) {
       for (const s of sections) s.hidden = !!id && s.dataset.series !== id
@@ -165,7 +169,7 @@ const tabs = [
       select(ids.has(id) ? id : '')
     }
     for (const t of tabs) {
-      t.addEventListener('click', e => {
+      t.addEventListener('click', (e) => {
         e.preventDefault()
         const id = t.dataset.series ?? ''
         history.replaceState(null, '', id ? `#${id}` : location.pathname)
@@ -226,6 +230,7 @@ const tabs = [
   .tab[aria-current] {
     background: var(--text);
     color: var(--bg);
+    font-weight: 600;
   }
   .tab[aria-current] em {
     color: var(--bg);

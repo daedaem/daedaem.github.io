@@ -76,4 +76,4 @@ status: 'seed' # seed | growing | stable
 
 `master`에 푸시하면 GitHub Actions가 빌드해 GitHub Pages로 배포합니다(`.github/workflows/deploy.yml`). 주소는 https://daedaem.github.io 입니다. Node 버전은 `.nvmrc`를 따릅니다.
 
-옛 Gatsby 시절의 한글 URL은 `src/legacy-redirects.json`을 통해 `/notes/` 아래 새 주소로 넘깁니다.
+옛 Gatsby 시절의 한글 URL은 `astro.config.mjs`의 `redirects`를 통해 `/notes/` 아래 새 주소로 넘깁니다.

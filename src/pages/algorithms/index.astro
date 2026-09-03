@@ -21,44 +21,46 @@ type Item = {
   lang: string[]
   href: string
 }
-const all: Item[] = solutions.map(s => ({
-  site: s.data.site,
-  tier: s.data.tier,
-  rank: s.data.rank,
-  title: s.data.title,
-  cls: s.data.categories,
-  lang: s.data.langs.map(l => LANG[l] ?? l),
-  href: `/algorithms/${s.id}/`,
-})).sort((a, b) => b.rank - a.rank || a.title.localeCompare(b.title, 'ko'))
+const all: Item[] = solutions
+  .map((s) => ({
+    site: s.data.site,
+    tier: s.data.tier,
+    rank: s.data.rank,
+    title: s.data.title,
+    cls: s.data.categories,
+    lang: s.data.langs.map((l) => LANG[l] ?? l),
+    href: `/algorithms/${s.id}/`,
+  }))
+  .sort((a, b) => b.rank - a.rank || a.title.localeCompare(b.title, 'ko'))
 
-const boj = all.filter(i => i.site === '백준')
-const pgs = all.filter(i => i.site === '프로그래머스')
+const boj = all.filter((i) => i.site === '백준')
+const pgs = all.filter((i) => i.site === '프로그래머스')
 
 /** 백준은 대분류(Bronze/Silver/Gold/Platinum)로 묶고, 프로그래머스는 레벨로 묶는다 */
 const majorOf = (tier: string) => tier.split(' ')[0]
 
 const BOJ_ORDER = ['Platinum', 'Gold', 'Silver', 'Bronze', 'Unrated']
-const bojGroups = BOJ_ORDER.map(g => ({
+const bojGroups = BOJ_ORDER.map((g) => ({
   name: g,
-  items: boj.filter(i => majorOf(i.tier) === g).sort((a, b) => b.rank - a.rank),
-})).filter(g => g.items.length > 0)
+  items: boj.filter((i) => majorOf(i.tier) === g).sort((a, b) => b.rank - a.rank),
+})).filter((g) => g.items.length > 0)
 
 const PGS_ORDER = ['lv4', 'lv3', 'lv2', 'lv1', 'lv0']
-const pgsGroups = PGS_ORDER.map(g => ({
+const pgsGroups = PGS_ORDER.map((g) => ({
   name: g.replace('lv', 'Level '),
-  items: pgs.filter(i => i.tier === g),
-})).filter(g => g.items.length > 0)
+  items: pgs.filter((i) => i.tier === g),
+})).filter((g) => g.items.length > 0)
 
 const countBy = (key: (i: Item) => string[]) => {
   const m = new Map<string, number>()
   for (const i of all) for (const k of key(i)) m.set(k, (m.get(k) ?? 0) + 1)
   return [...m.entries()].sort((a, b) => b[1] - a[1])
 }
-const byCls = countBy(i => i.cls).slice(0, 18)
-const byLang = countBy(i => i.lang)
+const byCls = countBy((i) => i.cls).slice(0, 18)
+const byLang = countBy((i) => i.lang)
 
 /** 백준 Gold 이상. 프로그래머스(rank 100+)와 Unrated는 제외한다 */
-const goldPlus = boj.filter(i => i.rank >= 10 && i.rank < 100).length
+const goldPlus = boj.filter((i) => i.rank >= 10 && i.rank < 100).length
 
 /** 그룹당 한 쪽에 보여 주는 개수. 넘는 건 쪽 번호로 넘긴다. 필터 결과도 같은 단위로 나눈다. */
 const PAGE = 10
@@ -74,9 +76,9 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       <h1>알고리즘</h1>
       <p class="lead">
         2021년 12월부터 2023년 10월까지 푼 문제를 모았습니다. Python으로 시작해 C++, JavaScript,
-        Java로 언어를 바꿔가며 풀었습니다. 풀이 코드는 저장소에 있고, 각 문제에서 바로 열립니다.
-        지금은 실무에서 만난 문제를 <a href="/posts/">글</a>과 <a href="/wiki/">위키</a>에 남기는
-        쪽에 시간을 쓰고 있어, 이후 풀이는 올리지 않고 아카이브로 둡니다.
+        Java, C, SQL로 언어를 바꿔가며 풀었습니다. 풀이 코드는 저장소에 있고, 각 문제에서 바로
+        열립니다. 지금은 실무에서 만난 문제를 <a href="/posts/">글</a>과 <a href="/wiki/">위키</a>에
+        남기는 쪽에 시간을 쓰고 있어, 이후 풀이는 올리지 않고 아카이브로 둡니다.
       </p>
     </header>
 
@@ -88,7 +90,13 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     </section>
 
     <div class="filter" role="search">
-      <input id="q" type="search" placeholder="문제 이름으로 찾기" aria-label="문제 이름으로 찾기" autocomplete="off" />
+      <input
+        id="q"
+        type="search"
+        placeholder="문제 이름으로 찾기"
+        aria-label="문제 이름으로 찾기"
+        autocomplete="off"
+      />
       <span id="count" class="count" aria-live="polite"></span>
       <button type="button" id="clear" class="clear" hidden>필터 지우기</button>
     </div>
@@ -97,21 +105,25 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       <div>
         <h2>많이 푼 유형 <span class="hint">— 누르면 거릅니다</span></h2>
         <div class="chips">
-          {byCls.map(([k, v]) => (
-            <button type="button" class="chip" data-cls={k} aria-pressed="false">
-              {k} <em>{v}</em>
-            </button>
-          ))}
+          {
+            byCls.map(([k, v]) => (
+              <button type="button" class="chip" data-cls={k} aria-pressed="false">
+                {k} <em>{v}</em>
+              </button>
+            ))
+          }
         </div>
       </div>
       <div>
         <h2>언어</h2>
         <div class="chips">
-          {byLang.map(([k, v]) => (
-            <button type="button" class="chip" data-lang={k} aria-pressed="false">
-              {k} <em>{v}</em>
-            </button>
-          ))}
+          {
+            byLang.map(([k, v]) => (
+              <button type="button" class="chip" data-lang={k} aria-pressed="false">
+                {k} <em>{v}</em>
+              </button>
+            ))
+          }
         </div>
       </div>
     </section>
@@ -119,13 +131,18 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     <p class="repo">
       문제 지문은 각 사이트의 저작물이라 싣지 않았습니다. 풀이 코드만 올렸고, 원문은 각 페이지의
       링크에서 볼 수 있습니다. 저장소는
-      <a href="https://github.com/daedaem/algorithm-study-archive">algorithm-study-archive</a>입니다.
+      <a href="https://github.com/daedaem/algorithm-study-archive">algorithm-study-archive</a
+      >입니다.
     </p>
 
     <h2 class="site-title">백준</h2>
     {
-      bojGroups.map(g => (
-        <details class="group" open={g.name === 'Platinum' || g.name === 'Gold'} data-total={g.items.length}>
+      bojGroups.map((g) => (
+        <details
+          class="group"
+          open={g.name === 'Platinum' || g.name === 'Gold'}
+          data-total={g.items.length}
+        >
           <summary>
             {g.name} <em>{g.items.length}</em>
           </summary>
@@ -147,16 +164,27 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
             ))}
           </ul>
           <nav class="pager" aria-label="쪽 이동" hidden={g.items.length <= PAGE}>
-            <button type="button" class="pg prev" disabled>‹ 이전</button>
+            <button type="button" class="pg prev" disabled>
+              ‹ 이전
+            </button>
             <span class="pages">
               {Array.from({ length: pagesOf(g.items.length) }, (_, n) => (
-                <button type="button" class="pg num" data-page={n + 1} aria-current={n === 0 ? 'page' : undefined}>
+                <button
+                  type="button"
+                  class="pg num"
+                  data-page={n + 1}
+                  aria-current={n === 0 ? 'page' : undefined}
+                >
                   {n + 1}
                 </button>
               ))}
             </span>
-            <button type="button" class="pg next" disabled={pagesOf(g.items.length) <= 1}>다음 ›</button>
-            <span class="range">1–{Math.min(PAGE, g.items.length)} / {g.items.length}</span>
+            <button type="button" class="pg next" disabled={pagesOf(g.items.length) <= 1}>
+              다음 ›
+            </button>
+            <span class="range">
+              1–{Math.min(PAGE, g.items.length)} / {g.items.length}
+            </span>
           </nav>
         </details>
       ))
@@ -164,8 +192,12 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
 
     <h2 class="site-title">프로그래머스</h2>
     {
-      pgsGroups.map(g => (
-        <details class="group" open={g.name === 'Level 4' || g.name === 'Level 3'} data-total={g.items.length}>
+      pgsGroups.map((g) => (
+        <details
+          class="group"
+          open={g.name === 'Level 4' || g.name === 'Level 3'}
+          data-total={g.items.length}
+        >
           <summary>
             {g.name} <em>{g.items.length}</em>
           </summary>
@@ -187,16 +219,27 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
             ))}
           </ul>
           <nav class="pager" aria-label="쪽 이동" hidden={g.items.length <= PAGE}>
-            <button type="button" class="pg prev" disabled>‹ 이전</button>
+            <button type="button" class="pg prev" disabled>
+              ‹ 이전
+            </button>
             <span class="pages">
               {Array.from({ length: pagesOf(g.items.length) }, (_, n) => (
-                <button type="button" class="pg num" data-page={n + 1} aria-current={n === 0 ? 'page' : undefined}>
+                <button
+                  type="button"
+                  class="pg num"
+                  data-page={n + 1}
+                  aria-current={n === 0 ? 'page' : undefined}
+                >
                   {n + 1}
                 </button>
               ))}
             </span>
-            <button type="button" class="pg next" disabled={pagesOf(g.items.length) <= 1}>다음 ›</button>
-            <span class="range">1–{Math.min(PAGE, g.items.length)} / {g.items.length}</span>
+            <button type="button" class="pg next" disabled={pagesOf(g.items.length) <= 1}>
+              다음 ›
+            </button>
+            <span class="range">
+              1–{Math.min(PAGE, g.items.length)} / {g.items.length}
+            </span>
           </nav>
         </details>
       ))
@@ -215,10 +258,10 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     const chips = [...document.querySelectorAll<HTMLButtonElement>('.chip')]
     const groups = [...document.querySelectorAll<HTMLDetailsElement>('.group')]
     const page = new Map<HTMLDetailsElement, number>()
-  
+
     let cls = ''
     let lang = ''
-  
+
     function matches(li: HTMLLIElement, term: string) {
       return (
         (!term || (li.dataset.title ?? '').includes(term)) &&
@@ -226,26 +269,26 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
         (!lang || (li.dataset.lang ?? '').split('|').includes(lang))
       )
     }
-  
+
     function renderGroup(g: HTMLDetailsElement, active: boolean) {
       const term = q.value.trim().toLowerCase()
       const rows = [...g.querySelectorAll<HTMLLIElement>('.list li')]
-      const hit = rows.filter(li => matches(li, term))
+      const hit = rows.filter((li) => matches(li, term))
       const pages = Math.max(1, Math.ceil(hit.length / PAGE))
       const cur = Math.min(page.get(g) ?? 1, pages)
       page.set(g, cur)
       const from = (cur - 1) * PAGE
       const to = Math.min(from + PAGE, hit.length)
-  
+
       for (const li of rows) li.hidden = true
       for (const li of hit.slice(from, to)) li.hidden = false
-  
+
       const total = Number(g.dataset.total)
       const em = g.querySelector('summary em')!
       em.textContent = active ? `${hit.length} / ${total}` : String(total)
       g.hidden = active && hit.length === 0
       if (active && hit.length > 0) g.open = true
-  
+
       const nav = g.querySelector<HTMLElement>('.pager')!
       nav.hidden = hit.length <= PAGE
       ;(nav.querySelector('.prev') as HTMLButtonElement).disabled = cur <= 1
@@ -260,12 +303,12 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       }
       return hit.length
     }
-  
+
     function apply() {
       const active = !!(q.value.trim() || cls || lang)
       let shown = 0
       for (const g of groups) shown += renderGroup(g, active)
-  
+
       // 사이트 소제목(백준/프로그래머스)은 아래 그룹이 전부 숨었을 때 같이 숨긴다
       for (const h of document.querySelectorAll<HTMLElement>('.site-title')) {
         let el = h.nextElementSibling
@@ -276,22 +319,23 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
         }
         h.hidden = !any
       }
-  
+
       count.textContent = active ? `${shown}문제` : ''
       clearBtn.hidden = !active
       empty.hidden = !(active && shown === 0)
       for (const c of chips) {
-        const on = (c.dataset.cls && c.dataset.cls === cls) || (c.dataset.lang && c.dataset.lang === lang)
+        const on =
+          (c.dataset.cls && c.dataset.cls === cls) || (c.dataset.lang && c.dataset.lang === lang)
         c.classList.toggle('on', !!on)
         c.setAttribute('aria-pressed', String(!!on))
       }
     }
-  
+
     function resetPages() {
       page.clear()
       apply()
     }
-  
+
     q.addEventListener('input', resetPages)
     for (const c of chips) {
       c.addEventListener('click', () => {
@@ -308,7 +352,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       q.focus()
     })
     for (const g of groups) {
-      g.querySelector('.pager')?.addEventListener('click', e => {
+      g.querySelector('.pager')?.addEventListener('click', (e) => {
         const b = (e.target as HTMLElement).closest<HTMLButtonElement>('.pg')
         if (!b || b.disabled) return
         const cur = page.get(g) ?? 1
@@ -318,12 +362,11 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
         renderGroup(g, !!(q.value.trim() || cls || lang))
         // 그룹 머리가 화면 위로 벗어났을 때만 올린다. 보이는 상태에서 쪽만 넘길 때는 시점을 유지한다.
         const head = g.querySelector('summary')!
-        if (head.getBoundingClientRect().top < 0) head.scrollIntoView({ block: "start" })
+        if (head.getBoundingClientRect().top < 0) head.scrollIntoView({ block: 'start' })
       })
     }
   </script>
 </BaseLayout>
-
 
 <style>
   .page {
@@ -443,7 +486,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     font: inherit;
     font-size: 15px;
     padding: 10px 14px;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--text-dim);
     border-radius: 8px;
     background: var(--bg);
     color: var(--text);
@@ -509,6 +552,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
   .pg[aria-current='page'] {
     background: var(--text);
     color: var(--bg);
+    font-weight: 600;
   }
   .pg:focus-visible {
     outline: 2px solid var(--accent);

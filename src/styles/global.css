@@ -10,9 +10,9 @@
   --border-strong: #dfe3e8;
 
   --text: #191f28;
-  --text-muted: #6b7684;
-  /* 13px 메타 텍스트에 쓰이므로 흰 배경에서 4.5:1을 넘겨야 한다 */
-  --text-dim: #6b7583;
+  /* 칩·탭처럼 --bg-subtle 위에 놓이는 13px 텍스트도 4.5:1을 넘겨야 한다 */
+  --text-muted: #5c6774;
+  --text-dim: #5c6774;
 
   --accent: #1f5fd0;
   --accent-hover: #1749a3;
@@ -26,10 +26,11 @@
   --cat-legacy: #b8860b;
   --cat-auth-security: #0c8599;
 
-  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
-    'Apple SD Gothic Neo', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
-    monospace;
+  --font-sans:
+    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+    system-ui, sans-serif;
+  --font-mono:
+    'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
   /* 본문 폭. 코드 블록과 표가 많아 순수 텍스트 블로그보다 조금 넓게 잡는다. */
   --measure: 44rem;
@@ -82,7 +83,7 @@
 
   --text: #e9ecef;
   --text-muted: #9aa3ad;
-  --text-dim: #767e88;
+  --text-dim: #8a929c;
 
   --accent: #6ea3f5;
   --accent-hover: #8fbaff;
@@ -272,6 +273,11 @@ pre:hover .copy-code,
   }
 }
 
+/* Shiki가 인라인한 흰 배경 대신 --code-bg를 쓴다. 다크 규칙이 더 구체적이라 다크에서는 아래가 이긴다 */
+pre.astro-code {
+  background-color: var(--code-bg) !important;
+}
+
 /* Shiki 이중 테마 — 다크에서 토큰 색을 교체한다 */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) .astro-code,
@@ -342,6 +348,21 @@ th {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* 키보드로 포커스하면 스킵 링크를 드러낸다 */
+.skip-link:focus-visible {
+  position: fixed;
+  inset: 8px auto auto 8px;
+  width: auto;
+  height: auto;
+  clip-path: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  outline: 2px solid var(--accent);
+  z-index: 100;
 }
 
 .table-scroll {

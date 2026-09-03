@@ -27,7 +27,7 @@ const NAV = [
       <nav aria-label="주요 메뉴">
         <ul>
           {
-            NAV.map(item => (
+            NAV.map((item) => (
               <li>
                 <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
                   {item.label}

@@ -28,7 +28,7 @@ if (!slug || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug))
 if (!title) fail('제목이 없습니다. 따옴표로 감싸서 넘기세요.')
 
 const today = new Date().toISOString().slice(0, 10)
-const quote = s => `'${s.replace(/'/g, "''")}'`
+const quote = (s) => `'${s.replace(/'/g, "''")}'`
 
 let dir, body
 if (kind === 'post') {

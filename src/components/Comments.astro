@@ -55,7 +55,10 @@ const g = SITE.giscus
 
     const notify = () => {
       const frame = host.querySelector<HTMLIFrameElement>('iframe.giscus-frame')
-      frame?.contentWindow?.postMessage({ giscus: { setConfig: { theme: effective() } } }, 'https://giscus.app')
+      frame?.contentWindow?.postMessage(
+        { giscus: { setConfig: { theme: effective() } } },
+        'https://giscus.app',
+      )
     }
     document.addEventListener('themechange', notify)
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', notify)

@@ -3,7 +3,17 @@
 ---
 
 <button id="search-open" type="button" aria-label="검색 열기">
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  <svg
+    width="15"
+    height="15"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
     <circle cx="11" cy="11" r="7"></circle>
     <path d="m20 20-3.5-3.5"></path>
   </svg>
@@ -75,7 +85,7 @@
 
   openBtn?.addEventListener('click', open)
 
-  document.addEventListener('keydown', e => {
+  document.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault()
       dialog?.open ? dialog.close() : open()
@@ -83,7 +93,7 @@
   })
 
   // 바깥을 누르면 닫는다
-  dialog?.addEventListener('click', e => {
+  dialog?.addEventListener('click', (e) => {
     if (e.target === dialog) dialog.close()
   })
 </script>

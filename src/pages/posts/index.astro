@@ -32,7 +32,7 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
         <p class="empty muted">아직 발행한 글이 없습니다.</p>
       ) : (
         <ul class="rows">
-          {posts.map(p => (
+          {posts.map((p) => (
             <PostRow
               href={`/posts/${p.id}/`}
               title={p.data.title}

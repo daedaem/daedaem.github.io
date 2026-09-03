@@ -5,7 +5,7 @@ import { readingMinutes } from '@/utils/format'
 
 export const getStaticPaths = async () => {
   const notes = await getCollection('notes')
-  return notes.map(note => ({ params: { slug: note.id }, props: { note } }))
+  return notes.map((note) => ({ params: { slug: note.id }, props: { note } }))
 }
 
 const { note } = Astro.props

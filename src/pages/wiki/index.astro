@@ -10,11 +10,11 @@ const entries = (await getCollection('wiki', ({ data }) => !data.draft)).sort((a
   return bv - av
 })
 
-const grouped = WIKI_TOPICS.map(t => ({
+const grouped = WIKI_TOPICS.map((t) => ({
   ...t,
-  items: entries.filter(e => e.data.topic === t.id),
-  stable: entries.filter(e => e.data.topic === t.id && e.data.status === 'stable').length,
-})).filter(g => g.items.length > 0)
+  items: entries.filter((e) => e.data.topic === t.id),
+  stable: entries.filter((e) => e.data.topic === t.id && e.data.status === 'stable').length,
+})).filter((g) => g.items.length > 0)
 
 const STATUS_LABEL: Record<string, string> = {
   seed: '메모',
@@ -40,7 +40,7 @@ const STATUS_LABEL: Record<string, string> = {
 
     <div class="cards">
       {
-        grouped.map(g => (
+        grouped.map((g) => (
           <a class="card" href={`#${g.id}`} style={`--wt: ${g.hue}`}>
             <span class="card-name">{g.name}</span>
             <span class="card-desc">{g.description}</span>
@@ -55,7 +55,7 @@ const STATUS_LABEL: Record<string, string> = {
     </div>
 
     {
-      grouped.map(g => (
+      grouped.map((g) => (
         <section class="topic" id={g.id} style={`--wt: ${g.hue}`}>
           <div class="topic-head">
             <h2>
@@ -65,7 +65,7 @@ const STATUS_LABEL: Record<string, string> = {
             <p class="muted">{g.description}</p>
           </div>
           <ul>
-            {g.items.map(e => (
+            {g.items.map((e) => (
               <li>
                 <div class="line">
                   <a href={`/wiki/${e.id}/`}>{e.data.title}</a>
@@ -73,7 +73,9 @@ const STATUS_LABEL: Record<string, string> = {
                 </div>
                 <p class="desc muted">{e.data.description}</p>
                 <time datetime={(e.data.updated ?? e.data.created).toISOString()}>
-                  {e.data.updated ? `${formatDate(e.data.updated)} 갱신` : formatDate(e.data.created)}
+                  {e.data.updated
+                    ? `${formatDate(e.data.updated)} 갱신`
+                    : formatDate(e.data.created)}
                 </time>
               </li>
             ))}
@@ -122,7 +124,9 @@ const STATUS_LABEL: Record<string, string> = {
     border-left: 4px solid hsl(var(--wt) 65% 48%);
     border-radius: var(--radius);
     background: linear-gradient(135deg, hsl(var(--wt) 70% 50% / 0.07), transparent 60%) var(--bg);
-    transition: border-color 0.15s ease, transform 0.15s ease;
+    transition:
+      border-color 0.15s ease,
+      transform 0.15s ease;
   }
   .card:hover {
     border-color: hsl(var(--wt) 65% 48%);

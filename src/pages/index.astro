@@ -15,7 +15,7 @@ const wiki = await getCollection('wiki', ({ data }) => !data.draft)
 
 const [featured, ...rest] = posts
 const featuredCat = featured ? getCategory(featured.data.category) : undefined
-const featuredProjects = PROJECTS.filter(p => p.featured)
+const featuredProjects = PROJECTS.filter((p) => p.featured)
 const algoCount = (await getCollection('solutions')).length
 ---
 
@@ -25,8 +25,8 @@ const algoCount = (await getCollection('solutions')).length
       <p class="who">조해성 · 3년차 백엔드 개발자</p>
       <h1>{SITE.tagline}</h1>
       <p>
-        오래 운영된 시스템을 맡아 화면부터 DB까지 전 계층을 다룹니다. 느린 조회, 어긋난 데이터,
-        한 단계뿐이던 로그인 — 거기서 만난 문제를 원인까지 파서 고친 과정을 기록합니다.
+        오래 운영된 시스템을 맡아 화면부터 DB까지 전 계층을 다룹니다. 느린 조회, 어긋난 데이터, 한
+        단계뿐이던 로그인 — 거기서 만난 문제를 원인까지 파서 고친 과정을 기록합니다.
       </p>
       <ul class="proofs">
         <li>
@@ -46,12 +46,16 @@ const algoCount = (await getCollection('solutions')).length
         </li>
       </ul>
       <p class="stance">
-        새 기술을 들여오기 전에 지금 시스템의 문제를 정확히 이해하는 것을 먼저 둡니다. 원인이
-        확정될 때까지 좁히고, 바꿀 것과 바꾸지 않을 것을 구분하는 개발자를 지향합니다.
+        새 기술을 들여오기 전에 지금 시스템의 문제를 정확히 이해하는 것을 먼저 둡니다. 원인이 확정될
+        때까지 좁히고, 바꿀 것과 바꾸지 않을 것을 구분하는 개발자를 지향합니다.
       </p>
       <p class="stack-line">
         Java · Spring · Oracle · MyBatis · C#/.NET · React
-        <span class="links"><a href="/about/">소개</a> <a href={SITE.githubUrl}>GitHub</a> <a href={SITE.linkedinUrl}>LinkedIn</a></span>
+        <span class="links"
+          ><a href="/about/">소개</a>
+          <a href={SITE.githubUrl}>GitHub</a>
+          <a href={SITE.linkedinUrl}>LinkedIn</a></span
+        >
       </p>
     </section>
 
@@ -63,7 +67,7 @@ const algoCount = (await getCollection('solutions')).length
             <a href="/projects/">전체 보기 →</a>
           </div>
           <ul>
-            {featuredProjects.map(p => (
+            {featuredProjects.map((p) => (
               <li>
                 <a href="/projects/">
                   <span class="pname">{p.name}</span>
@@ -83,23 +87,27 @@ const algoCount = (await getCollection('solutions')).length
       ) : (
         <section class="latest">
           <a class="hero" href={`/posts/${featured.id}/`}>
-            {featuredCat && <span class="hero-cat" data-cat={featuredCat.id}>{featuredCat.name}</span>}
+            {featuredCat && (
+              <span class="hero-cat" data-cat={featuredCat.id}>
+                {featuredCat.name}
+              </span>
+            )}
             <h2>{featured.data.title}</h2>
-            {
-              featured.data.cause ? (
-                <p class="hero-cause">
-                  <span class="cause-label">
-                    <Mark size={14} />
-                    원인 한 줄
-                  </span>
-                  {featured.data.cause}
-                </p>
-              ) : (
-                featured.data.description && <p>{featured.data.description}</p>
-              )
-            }
+            {featured.data.cause ? (
+              <p class="hero-cause">
+                <span class="cause-label">
+                  <Mark size={14} />
+                  원인 한 줄
+                </span>
+                {featured.data.cause}
+              </p>
+            ) : (
+              featured.data.description && <p>{featured.data.description}</p>
+            )}
             <span class="hero-meta">
-              <time datetime={featured.data.date.toISOString()}>{formatDate(featured.data.date)}</time>
+              <time datetime={featured.data.date.toISOString()}>
+                {formatDate(featured.data.date)}
+              </time>
               <span>· {readingMinutes(featured.body ?? '')}분</span>
             </span>
           </a>
@@ -111,7 +119,7 @@ const algoCount = (await getCollection('solutions')).length
                 <a href="/posts/">전체 보기 →</a>
               </div>
               <ul class="rows">
-                {rest.slice(0, 8).map(p => (
+                {rest.slice(0, 8).map((p) => (
                   <PostRow
                     href={`/posts/${p.id}/`}
                     title={p.data.title}
@@ -141,7 +149,10 @@ const algoCount = (await getCollection('solutions')).length
       <a class="strip" href="/notes/">
         <div class="strip-num"><b>{notes.length}</b>편</div>
         <div class="strip-title">학습 노트 아카이브</div>
-        <p>개발자로 전환하던 2022~2023년의 기록. 자바스크립트·타입스크립트 학습 노트와 그 시기의 이야기.</p>
+        <p>
+          개발자로 전환하던 2022~2023년의 기록. 자바스크립트·타입스크립트 학습 노트와 그 시기의
+          이야기.
+        </p>
       </a>
     </div>
   </div>
@@ -220,7 +231,11 @@ const algoCount = (await getCollection('solutions')).length
     inset: 0 -24px;
     z-index: -1;
     background:
-      radial-gradient(60rem 22rem at 100% 0%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%),
+      radial-gradient(
+        60rem 22rem at 100% 0%,
+        color-mix(in srgb, var(--accent) 9%, transparent),
+        transparent 70%
+      ),
       radial-gradient(circle, var(--border-strong) 1px, transparent 1.2px) 0 0 / 22px 22px;
     -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent);
     mask-image: linear-gradient(to bottom, #000 40%, transparent);
@@ -403,7 +418,9 @@ const algoCount = (await getCollection('solutions')).length
   }
 
   .strip {
-    transition: transform 0.15s ease, background 0.15s ease;
+    transition:
+      transform 0.15s ease,
+      background 0.15s ease;
   }
   .strip:hover {
     transform: translateY(-1px);

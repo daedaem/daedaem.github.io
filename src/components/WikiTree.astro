@@ -11,19 +11,17 @@ interface Props {
 }
 
 const { docs, current } = Astro.props
-const currentTopic = docs.find(d => d.id === current)?.topic
-const groups = WIKI_TOPICS.map(t => ({
+const currentTopic = docs.find((d) => d.id === current)?.topic
+const groups = WIKI_TOPICS.map((t) => ({
   ...t,
-  items: docs
-    .filter(d => d.topic === t.id)
-    .sort((a, b) => a.title.localeCompare(b.title, 'ko')),
-})).filter(g => g.items.length > 0)
+  items: docs.filter((d) => d.topic === t.id).sort((a, b) => a.title.localeCompare(b.title, 'ko')),
+})).filter((g) => g.items.length > 0)
 ---
 
 <nav class="tree" aria-label="위키 문서">
   <a class="root" href="/wiki/">위키 전체</a>
   {
-    groups.map(g => (
+    groups.map((g) => (
       <details open={g.id === currentTopic} style={`--wt: ${g.hue}`}>
         <summary>
           <span class="swatch" aria-hidden="true" />
@@ -31,7 +29,7 @@ const groups = WIKI_TOPICS.map(t => ({
           <em>{g.items.length}</em>
         </summary>
         <ul>
-          {g.items.map(d => (
+          {g.items.map((d) => (
             <li>
               <a href={`/wiki/${d.id}/`} aria-current={d.id === current ? 'page' : undefined}>
                 {d.title}
