@@ -39,6 +39,7 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
               description={p.data.description}
               date={p.data.date}
               category={p.data.category}
+              happened={p.data.happened}
               readingMinutes={readingMinutes(p.body ?? '')}
             />
           ))}

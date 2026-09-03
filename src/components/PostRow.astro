@@ -10,9 +10,11 @@ interface Props {
   readingMinutes?: number
   /** 목록 페이지에서는 한 줄 요약을 같이 보여 준다. 홈처럼 제목만 둘 때는 생략한다. */
   description?: string
+  /** 일이 실제로 있었던 시기. 있으면 발행일 앞에 보여 준다 */
+  happened?: string
 }
 
-const { href, title, date, category, readingMinutes, description } = Astro.props
+const { href, title, date, category, readingMinutes, description, happened } = Astro.props
 const cat = category ? getCategory(category) : undefined
 ---
 
@@ -30,7 +32,8 @@ const cat = category ? getCategory(category) : undefined
       {description && <span class="desc">{description}</span>}
     </span>
     <span class="meta">
-      <time datetime={date.toISOString()}>{formatDate(date)}</time>
+      {happened && <span class="happened">{happened}의 일 ·</span>}
+      <time datetime={date.toISOString()}>{formatDate(date)} 작성</time>
       {readingMinutes && <span>· {readingMinutes}분</span>}
     </span>
   </a>

@@ -12,6 +12,8 @@ interface Props {
   description: string
   date: Date
   updated?: Date
+  /** 일이 실제로 있었던 시기. 발행일 앞에 따로 보여 준다 */
+  happened?: string
   category?: string
   tags?: string[]
   readingMinutes?: number
@@ -25,7 +27,7 @@ interface Props {
   prev?: { href: string; title: string }
   next?: { href: string; title: string }
   /** 이 글을 뺀 나머지 글. 글 안에서 다른 글로 갈 수 있게 목록을 보여 준다 */
-  others?: { href: string; title: string; category?: string; date: Date }[]
+  others?: { href: string; title: string; category?: string; date: Date; happened?: string }[]
   /** 원인 한 줄. 이 사이트의 시그니처 블록으로, 제목 아래에 고정된 형태로 나온다 */
   cause?: string
 }
@@ -35,6 +37,7 @@ const {
   description,
   date,
   updated,
+  happened,
   category,
   tags = [],
   readingMinutes,
@@ -78,6 +81,8 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
             </a>
           )
         }
+        {happened && <span class="happened">{happened}의 일</span>}
+        {happened && <span class="sep">·</span>}
         <time datetime={date.toISOString()}>{formatDate(date)} 작성</time>
         {readingMinutes && <span>· {readingMinutes}분</span>}
       </div>
@@ -108,8 +113,8 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
           <strong>학습 노트 아카이브 (2022~2023)</strong>
           <p>
             개발자로 전환하며 자바스크립트·타입스크립트의 기초를 정리하던 시기의 글입니다. 당시의
-            이해 수준을 기록으로 남기기 위해 오탈자만 고쳤고, 지금 보기에 틀린 내용은 지우지 않고
-            <s>취소선</s>을 그은 뒤 바로 아래에 바로잡았습니다.
+            이해 수준을 기록으로 남기기 위해 오탈자를 고치고 짧은 보충만 덧붙였으며, 지금 보기에
+            틀린 내용은 지우지 않고 <s>취소선</s>을 그은 뒤 바로 아래에 바로잡았습니다.
           </p>
           <p>
             <a href="/notes/">노트 전체 보기</a>
@@ -183,7 +188,13 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
           </div>
           <ul class="rows">
             {others.map((o) => (
-              <PostRow href={o.href} title={o.title} date={o.date} category={o.category} />
+              <PostRow
+                href={o.href}
+                title={o.title}
+                date={o.date}
+                category={o.category}
+                happened={o.happened}
+              />
             ))}
           </ul>
         </section>

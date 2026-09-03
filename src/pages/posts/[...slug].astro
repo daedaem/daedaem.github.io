@@ -19,6 +19,7 @@ export const getStaticPaths = async () => {
         title: p.data.title,
         category: p.data.category,
         date: p.data.date,
+        happened: p.data.happened,
       }))
     return {
       params: { slug: post.id },
@@ -36,6 +37,7 @@ const { Content, headings } = await render(post)
   description={post.data.description}
   date={post.data.date}
   updated={post.data.updated}
+  happened={post.data.happened}
   category={post.data.category}
   tags={post.data.tags}
   readingMinutes={readingMinutes(post.body ?? '')}

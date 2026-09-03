@@ -157,7 +157,7 @@ interface Named {
   readonly name: string;
 }
 
-interface Greetable extends Named, /*AnotherInterface*/ {
+interface Greetable extends Named /*, AnotherInterface */ {
   greet(phrase: string): void;
 }
 

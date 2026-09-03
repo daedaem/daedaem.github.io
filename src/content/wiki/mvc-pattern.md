@@ -79,14 +79,14 @@ public class OutputView {
 public class Controller {
     public static void main(String[] args) {
         Student student = new Student("기철", 25);
-        OutputView.printProfile(student);
+        new OutputView().printProfile(student);
     }
 }
 ```
 
 ## 스프링에서는
 
-`@RestController`가 Controller, 반환하는 객체가 Model에 해당한다.
+`@Controller`가 Controller, `Model`에 담는 데이터가 Model, 템플릿이 View다. `@RestController`는 View 단계 없이 반환 객체를 메시지 컨버터로 응답 바디에 바로 내보내는 변형이다.
 
 ```java
 @RestController

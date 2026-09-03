@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
 import Mark from '@/components/Mark.astro'
-import { SITE, getCategory } from '@/consts'
+import { SITE, getCategory, careerYear } from '@/consts'
 import { PROJECTS } from '@/data/projects'
 import { readingMinutes, formatDate } from '@/utils/format'
 
@@ -13,7 +13,9 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
 const notes = await getCollection('notes')
 const wiki = await getCollection('wiki', ({ data }) => !data.draft)
 
-const [featured, ...rest] = posts
+// 히어로는 featured로 고정한 글이 있으면 그것, 없으면 최신 글. 나머지는 발행일순 그대로.
+const featured = posts.find((p) => p.data.featured) ?? posts[0]
+const rest = posts.filter((p) => p !== featured)
 const featuredCat = featured ? getCategory(featured.data.category) : undefined
 const featuredProjects = PROJECTS.filter((p) => p.featured)
 const algoCount = (await getCollection('solutions')).length
@@ -22,7 +24,7 @@ const algoCount = (await getCollection('solutions')).length
 <BaseLayout title={SITE.title} description={SITE.description}>
   <div class="wrap-list">
     <section class="intro">
-      <p class="who">조해성 · 3년차 백엔드 개발자</p>
+      <p class="who">조해성 · {careerYear()}년차 백엔드 개발자</p>
       <h1>{SITE.tagline}</h1>
       <p>
         오래 운영된 시스템을 맡아 화면부터 DB까지 전 계층을 다룹니다. 느린 조회, 어긋난 데이터, 한
@@ -41,7 +43,7 @@ const algoCount = (await getCollection('solutions')).length
         </li>
         <li>
           <a href="/posts/staged-auth-and-password-migration/"
-            >1차 인증뿐이던 로그인 — 단계 분리와 무중단 비밀번호 이행</a
+            >1차 인증뿐이던 로그인 — 단계 분리와 사용자를 끊지 않는 비밀번호 저장 방식 이행</a
           >
         </li>
       </ul>
@@ -105,8 +107,9 @@ const algoCount = (await getCollection('solutions')).length
               featured.data.description && <p>{featured.data.description}</p>
             )}
             <span class="hero-meta">
+              {featured.data.happened && <span>{featured.data.happened}의 일 ·</span>}
               <time datetime={featured.data.date.toISOString()}>
-                {formatDate(featured.data.date)}
+                {formatDate(featured.data.date)} 작성
               </time>
               <span>· {readingMinutes(featured.body ?? '')}분</span>
             </span>
@@ -125,6 +128,7 @@ const algoCount = (await getCollection('solutions')).length
                     title={p.data.title}
                     date={p.data.date}
                     category={p.data.category}
+                    happened={p.data.happened}
                     readingMinutes={readingMinutes(p.body ?? '')}
                   />
                 ))}

@@ -56,6 +56,8 @@ npm run dev
 title: '...'
 description: '한 문장 요약'
 date: 2026-01-01
+happened: '2025년 5월' # 일이 실제로 있었던 시기(선택). 발행일과 따로 보여 준다
+featured: false # true면 홈 히어로에 고정(선택). 없으면 최신 글이 올라간다
 category: 'performance' # data-integrity | performance | operations | legacy | auth-security
 tags: []
 draft: true

@@ -18,7 +18,7 @@ status: 'stable'
 
 여기서 두 가지가 갈라져 나왔다.
 
-**하이버네이트 → JPA.** 게빈 킹은 EJB의 Entity Bean에 문제가 많다고 보고 하이버네이트를 만들었다. 점유율이 오르자 자바 표준 논의 기관이 그를 영입해 **JPA(Java Persistence API)** 를 표준으로 삼았다. JPA는 하이버네이트를 계승한 ORM 표준이다. SQL을 직접 쓰는 대신 자바 객체와 테이블을 매핑해 다룬다.
+**하이버네이트 → JPA.** 게빈 킹은 EJB의 Entity Bean에 문제가 많다고 보고 하이버네이트를 만들었다. 점유율이 오르자 자바 표준 논의 기관이 그를 영입해 **JPA(Java Persistence API)** 를 표준으로 삼았다. JPA는 하이버네이트의 영향을 크게 받아 만든 ORM 표준이다. SQL을 직접 쓰는 대신 자바 객체와 테이블을 매핑해 다룬다.
 
 **로드 존슨의 3만 줄 → 스프링.** 로드 존슨은 저서에서 "EJB 없이 순수 자바만으로도 좋은 객체 지향 애플리케이션을 만들 수 있다"는 것을 3만여 줄의 코드로 보여줬다. 이 코드가 스프링의 모체가 됐다. 이름은 **J2EE라는 겨울을 넘어선 새로운 봄**이라는 뜻이다.
 
@@ -136,12 +136,13 @@ class Greeting {
 
 ```java
 class Car {
-    void accelerate(int speed) { speed += 100; }
+    protected int speed;
+    void accelerate() { this.speed += 100; }
 }
 
 class SuperCar extends Car {
     @Override
-    void accelerate(int speed) { speed -= 100; }   // 컴파일은 되지만 LSP 위반
+    void accelerate() { this.speed -= 100; }   // 컴파일은 되지만 LSP 위반
 }
 ```
 
@@ -173,7 +174,7 @@ public class MemberService {
 - 구현 객체를 바꾸면 클라이언트 코드도 같이 바뀐다 (위 DIP 위반 예시)
 - 즉 **다형성만으로는 OCP와 DIP를 지킬 수 없다**
 
-무언가 더 필요하고, 그 자리를 채우는 것이 스프링의 **DI 컨테이너**다. 객체를 만들고 연결하는 일을 프레임워크가 맡으면, 클라이언트는 인터페이스만 알면 되고 구현체 선택은 바깥에서 결정된다.
+무언가 더 필요하다. 객체를 만들고 연결하는 조립 책임을 클라이언트 밖으로 빼면 되는데, 순수 자바로도 `AppConfig` 같은 조립 클래스를 두면 지킬 수 있다. 스프링의 **DI 컨테이너**는 그 조립을 대신 해주는 것이다. 클라이언트는 인터페이스만 알면 되고 구현체 선택은 바깥에서 결정된다.
 
 ## 스프링 생태계
 

@@ -47,6 +47,7 @@ const { category, posts, counts, total } = Astro.props
               title={p.data.title}
               description={p.data.description}
               date={p.data.date}
+              happened={p.data.happened}
               readingMinutes={readingMinutes(p.body ?? '')}
             />
           ))}

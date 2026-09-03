@@ -39,6 +39,7 @@ if (kind === 'post') {
 title: ${quote(title)}
 description: '한 문장 요약. 목록과 검색 결과에 그대로 노출된다.'
 date: ${today}
+# happened: '2026년 1월'   # 일이 실제로 있었던 시기. 발행일과 다르면 채운다
 category: '${category}'
 tags: []
 draft: true

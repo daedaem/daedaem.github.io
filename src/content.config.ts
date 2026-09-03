@@ -17,6 +17,13 @@ const posts = defineCollection({
     cause: z.string().optional(),
     date: z.coerce.date(),
     updated: z.coerce.date().optional(),
+    /**
+     * 일이 실제로 있었던 시기. 발행일과 다르다. 글은 나중에 몰아 쓸 수 있어도 사건의 시기는 따로 남긴다.
+     * '2025년 5월', '2025년 11월 – 2026년 6월'처럼 월 단위 문자열로 쓴다.
+     */
+    happened: z.string().optional(),
+    /** true인 글 하나를 홈 히어로에 고정한다. 없으면 최신 글이 올라간다. 여러 개면 가장 최근 것. */
+    featured: z.boolean().default(false),
     category: z.enum(['data-integrity', 'performance', 'operations', 'legacy', 'auth-security']),
     tags: z.array(z.string()).default([]),
     /** true인 글은 빌드 결과에서 빠집니다. 초안을 저장소에 두고 다듬을 때 씁니다. */
