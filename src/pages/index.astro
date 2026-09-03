@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
 import Mark from '@/components/Mark.astro'
-import { SITE, getCategory } from '@/consts'
+import { SITE, getCategory, careerYear } from '@/consts'
 import { PROJECTS } from '@/data/projects'
 import { readingMinutes, formatDate } from '@/utils/format'
 
@@ -24,7 +24,7 @@ const algoCount = (await getCollection('solutions')).length
 <BaseLayout title={SITE.title} description={SITE.description}>
   <div class="wrap-list">
     <section class="intro">
-      <p class="who">조해성 · 3년차 백엔드 개발자</p>
+      <p class="who">조해성 · {careerYear()}년차 백엔드 개발자</p>
       <h1>{SITE.tagline}</h1>
       <p>
         오래 운영된 시스템을 맡아 화면부터 DB까지 전 계층을 다룹니다. 느린 조회, 어긋난 데이터, 한
