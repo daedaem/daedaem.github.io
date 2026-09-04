@@ -5,9 +5,9 @@ export const SITE = {
   /** 붙여 쓴 표기·영문 표기. 검색엔진에 같은 사이트의 다른 이름으로 알린다 */
   altNames: ['대댐로그', 'daedaem log', 'daedaem'],
   // 홈 화면과 <meta description>에 함께 쓰이는 한 줄 정체성
-  tagline: '레거시 환경에서 구조를 개선해 온 백엔드 개발자',
+  tagline: '증상이 아니라 원인을 고칩니다',
   description:
-    '오래 운영된 시스템을 맡아 느린 조회, 어긋난 데이터, 한 단계뿐이던 로그인 같은 문제를 원인까지 파서 고쳐 온 기록. 증상이 아니라 원인을 씁니다.',
+    '오래 운영된 시스템을 맡아 느린 조회, 어긋난 데이터, 꺼지지 않는 배치 같은 문제를 원인까지 파서 고쳐 온 기록. 증상이 아니라 원인을 씁니다.',
   author: '조해성',
   // 이 값 하나가 canonical, sitemap, RSS에 모두 반영됩니다.
   url: 'https://daedaem.github.io',
