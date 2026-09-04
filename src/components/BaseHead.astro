@@ -34,7 +34,8 @@ const person = {
   '@type': 'Person',
   name: SITE.author,
   url: SITE.url,
-  jobTitle: '백엔드 개발자',
+  /* 국내 채용은 '백엔드 개발자', 영문·외국계는 Software Engineer로 찾는다. 둘 다 남긴다 */
+  jobTitle: ['백엔드 개발자', 'Software Engineer'],
   sameAs: [SITE.githubUrl, SITE.linkedinUrl],
 }
 const jsonLd =
