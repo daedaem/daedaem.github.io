@@ -22,8 +22,7 @@ legacyPath: "/Atomic Design/"
 4. [Templates](https://bradfrost.com/blog/post/atomic-web-design/#templates)
 5. [Pages](https://bradfrost.com/blog/post/atomic-web-design/#pages)
 
-    <img src="https://atomicdesign.bradfrost.com/images/content/instagram-atomic.png" style="max-width:100%; margin: 0 auto;"></img>
-<address><em>출처</em>: <a href="https://atomicdesign.bradfrost.com/chapter-2/#the-part-and-the-whole"> https://atomicdesign.bradfrost.com/chapter-2/#the-part-and-the-whole </a> </address>
+> **이미지 안내(2026-09-04):** 외부 사이트 이미지가 만료되거나 로딩을 막을 수 있어 임베드를 제거했다. [원문 도해 보기](https://atomicdesign.bradfrost.com/chapter-2/#the-part-and-the-whole)
 
 ## 컴포넌트 설계에 대한 나의 과거들
 

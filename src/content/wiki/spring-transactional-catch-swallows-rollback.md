@@ -4,7 +4,7 @@ description: '서비스가 업무 결과를 문자열로 반환하는 구조에�
 topic: 'spring'
 tags: ['Spring', '트랜잭션', '예외', '롤백', 'AOP']
 created: 2026-08-26
-updated: 2026-09-03
+updated: 2026-09-04
 status: 'stable'
 ---
 
@@ -55,7 +55,7 @@ catch를 서비스 안에 유지해야만 한다면 catch 블록에서 `Transact
 
 ## 추가 주의 — 같은 빈 안에서 직접 호출 (self-invocation)
 
-- `this.otherTxMethod()`처럼 같은 클래스 안에서 호출하면 **프록시를 거치지 않아** `@Transactional` 설정(`REQUIRES_NEW`, `rollbackFor` 등)이 전부 무시된다. 바깥 메서드의 트랜잭션에 그냥 합쳐진다.
+- 기본 프록시 방식에서 `this.otherTxMethod()`처럼 같은 클래스 안에서 호출하면 **프록시를 거치지 않아** 안쪽 메서드의 `@Transactional` 설정(`REQUIRES_NEW`, `rollbackFor` 등)이 적용되지 않는다. 바깥 메서드에 트랜잭션이 있으면 그 안에서 계속 실행되고, 바깥에도 없다면 새 트랜잭션은 시작되지 않는다.
 - 특히 "이 부분만 별도 트랜잭션으로 커밋하고 싶다"고 `REQUIRES_NEW`를 붙여도 안 먹힌다.
 - 해결은 별도 빈으로 분리해 주입받거나, 자기 자신의 프록시를 주입받아 호출하는 것이다.
 

@@ -19,8 +19,10 @@ legacyPath: "/230228_코어자바스크립트 ch 6. 프로토 타입/"
 
 ### **프로토타입의 모든 것**
 
-> **new 연산자로 Constructor를 호출하면 instance가 만들어지는데, 이 instance의 생략가능한 프로퍼티인 __proto__는 Constructor로 정의한 prototype을 참조한다.**
+> ~~**new 연산자로 Constructor를 호출하면 instance가 만들어지는데, 이 instance의 생략 가능한 프로퍼티인 `__proto__`는 Constructor로 정의한 prototype을 참조한다.**~~
 >
+
+> **바로잡음(2026-09-04):** 인스턴스에는 내부 슬롯 `[[Prototype]]`이 설정된다. `__proto__`는 보통 `Object.prototype`에서 상속받는 레거시 접근자이지 인스턴스마다 자동 생성되는 자체 프로퍼티가 아니다. 확인과 설정에는 `Object.getPrototypeOf`·`Object.setPrototypeOf`를 쓴다.
 
 `instance.__proto__` == **`Object.getPrototypeOf(instance)`**
 
@@ -40,11 +42,9 @@ var royClone3 = new Object.getPrototypeOf(roy).constructor('로이_클론3', 20)
 var royClone4 = new Person.prototype.constructor('로이_클론4', 15);
 ```
 
-- 생성자함수의 동일한 객체(prototype)에 접근 가능
-  - instance.`__proto__`
-  - instance
-  - Object.getPrototypeOf(instance)
-  - Constructor.prototype
+- ~~생성자 함수의 동일한 객체(prototype)에 `instance.__proto__`, `instance`, `Object.getPrototypeOf(instance)`, `Constructor.prototype`로 접근할 수 있다.~~
+
+> **바로잡음(2026-09-04):** `instance` 자체는 프로토타입 객체와 다른 객체다. 일반적인 `new Constructor()` 결과에서는 `Object.getPrototypeOf(instance) === Constructor.prototype`가 성립한다. `instance.__proto__`도 보통 같은 객체를 가리키지만 레거시 접근자다.
 
 - 생성자 함수 접근 가능
   - Constructor
@@ -230,6 +230,8 @@ var instance = new Constructor();
     Object.getPrototypeOf([instance])
     ```
 
+> **바로잡음(2026-09-04):** 위 목록에서 `[instance]`는 나머지와 같은 객체가 아니다. 일반적인 생성 결과에서 같은 것은 `[constructor].prototype`, `[instance].__proto__`, `Object.getPrototypeOf([instance])` 세 표현이다.
+
 ## 프로토타입 체인
 
 ### 메서드 오버라이드
@@ -312,7 +314,9 @@ var instance = new Constructor();
 
 - 어떤 생성자 함수를 new 연산자와 함께 호출하면 Constructor에서 정의된 내용을 바탕으로 새로운 인스턴스가 생성된다.
 - 이 인스턴스에는 `__proto__` 라는, Constructor의 prototype 프로퍼티를 참조하는 프로퍼티가 자동으로 부여된다.
-- __proto__는 생략 가능한 속성이라서, 인스턴스는 Constructor.prototype의 메서드를 자신의 메서드인 것처럼 호출 가능하다.
+- ~~`__proto__`는 생략 가능한 속성이라서 인스턴스는 `Constructor.prototype`의 메서드를 자신의 메서드인 것처럼 호출할 수 있다.~~
+
+> **바로잡음(2026-09-04):** 문법에서 `__proto__`를 생략하는 것이 아니다. 프로퍼티 조회가 인스턴스의 자체 프로퍼티에서 시작해 `[[Prototype]]` 체인을 따라가기 때문에 `instance.method()`로 호출할 수 있다.
 
 - Constructor.prototype에는 constructor라는 프로퍼티가 있는데, 이는 다시 생성자 함수 자신을 가리킨다. 이 프로퍼티는 인스턴스가 자신의 생성자 함수가 무엇인지 알고자 할 때 필요한 수단
 

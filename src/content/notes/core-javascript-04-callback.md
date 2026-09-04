@@ -71,6 +71,8 @@ document.getElementById('a').addEventListener('click', cbFunc);
 // 콜백함수의 첫번째 인자로는 event객체를 넘겨주도록 정의됨
 ```
 
+> **보충(2026-09-04):** 위 설명은 일반 함수 리스너에 해당한다. 화살표 함수는 자체 `this` 바인딩이 없어 `EventTarget`을 받지 않는다. 리스너 안에서 대상을 확실히 가리키려면 `event.currentTarget`을 쓰는 편이 명확하다.
+
 <br>
 
 ### **콜백함수의 특징 정리**

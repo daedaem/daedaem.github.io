@@ -44,6 +44,8 @@ console.log(filter(1, 2, 3)); // [1]
 
 > 아래 클래스 예제는 Spread·Rest와 무관하다. Export·Import·Class 노트의 내용이 옮겨 붙은 것인데, 당시 노트 그대로 둔다.
 
+> **바로잡음(2026-09-04):** 아래 주석처럼 메서드는 반드시 화살표 함수여야 하는 것이 아니다. 일반 클래스 메서드는 `obj.method()`로 호출하면 `this`가 인스턴스를 가리키고, 콜백으로 메서드 참조만 넘길 때는 화살표 필드나 `bind`를 검토한다.
+
 ```jsx
 class Human{
   gender = 'male';

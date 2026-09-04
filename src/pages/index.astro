@@ -21,7 +21,7 @@ const featuredProjects = PROJECTS.filter((p) => p.featured)
 const algoCount = (await getCollection('solutions')).length
 ---
 
-<BaseLayout title={SITE.title} description={SITE.description}>
+<BaseLayout title={SITE.title} description={SITE.description} searchIndex={false}>
   <div class="wrap-list">
     <section class="intro">
       <p class="who">조해성 · {careerYear()}년차 백엔드 개발자</p>

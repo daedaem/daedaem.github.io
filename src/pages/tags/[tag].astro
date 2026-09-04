@@ -52,7 +52,11 @@ export const getStaticPaths = async () => {
 const { tag, list } = Astro.props
 ---
 
-<BaseLayout title={`#${tag}`} description={`#${tag} 태그가 달린 글과 위키 문서 ${list.length}건.`}>
+<BaseLayout
+  title={`#${tag}`}
+  description={`#${tag} 태그가 달린 글과 위키 문서 ${list.length}건.`}
+  searchIndex={false}
+>
   <div class="wrap page">
     <header class="head">
       <h1>#{tag}</h1>

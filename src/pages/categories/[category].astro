@@ -27,7 +27,7 @@ export const getStaticPaths = async () => {
 const { category, posts, counts, total } = Astro.props
 ---
 
-<BaseLayout title={category.name} description={category.description}>
+<BaseLayout title={category.name} description={category.description} searchIndex={false}>
   <div class="wrap-list">
     <header class="head">
       <h1 data-cat={category.id}>{category.name}</h1>

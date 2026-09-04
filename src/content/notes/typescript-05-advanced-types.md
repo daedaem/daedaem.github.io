@@ -157,7 +157,7 @@ function getArea(shape: Shape): number {
 
 ## Type Casting
 
-- `<input type="text" id="user-input">` 아이디가 "userInput"인 텍스트 입력 요소
+- `<input type="text" id="user-input">` 아이디가 `user-input`인 텍스트 입력 요소
 - 개발자는 HTML 코드에서 이러한 요소들의 ID를 할당했지만, TypeScript는 HTML 파일을 분석하지 않기 때문에 이를 알지 못한다. 따라서 getElementById 메서드를 사용하여 요소를 선택하면, TypeScript는 그것이 단순히 HTML 요소 또는 null임을 추론한다. 이는 우리가 입력 요소의 value를 설정하려고 할 때 문제가 된다.
 - 이 문제를 해결하기 위해 "typecasting"이라는 기능을 사용할 수 있음.
 - **typecasting은 TypeScript에게 특정 요소의 타입을 명시적으로 알려주는 것.**

@@ -4,7 +4,7 @@ description: "Oracle에서 ''와 NULL은 구분되지 않는다. SQL 표준과 �
 topic: 'database'
 tags: ['Oracle', 'NULL', 'SQL']
 created: 2026-08-12
-updated: 2026-08-29
+updated: 2026-09-04
 status: 'growing'
 ---
 
@@ -55,5 +55,4 @@ boolean changed = !Objects.equals(normalize(a), normalize(b));
 
 ## 더 볼 것
 
-- 이 문제로 실제 동기화 오류가 났던 사례: [NULL과 빈 문자열을 같게 취급한 대가](/posts/null-and-empty-string-sync-failure/)
 - `NVL`, `COALESCE`, `NULLIF`의 차이는 아직 정리하지 않았다.

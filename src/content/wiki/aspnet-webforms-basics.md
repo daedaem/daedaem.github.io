@@ -4,7 +4,7 @@ description: 'Code-Behind 구조로 도는 레거시 .NET 화면을 읽기 위�
 topic: 'dotnet'
 tags: ['ASP.NET', 'C#', 'WebForms', 'ViewState', '레거시']
 created: 2025-12-29
-updated: 2026-08-30
+updated: 2026-09-04
 status: 'growing'
 ---
 
@@ -41,7 +41,7 @@ ApplicationForm.aspx.cs   ← 서버 코드 (Code-Behind)
 
 `runat="server"`가 붙으면 **서버에서 처리되는 컨트롤**이 되고, C# 코드에서 `txtApplicantName.Text`처럼 직접 접근할 수 있다. 최종적으로는 평범한 HTML로 렌더링된다.
 
-`OnClick="btnSubmit_Click"`은 자바스크립트가 아니라 **서버 메서드**를 가리킨다. 버튼을 누르면 페이지가 서버로 통째로 다시 전송된다.
+`OnClick="btnSubmit_Click"`은 자바스크립트가 아니라 **서버 메서드**를 가리킨다. 버튼을 누르면 페이지 폼이 서버로 다시 전송된다. 드롭다운 변경도 `AutoPostBack="true"`처럼 PostBack을 일으키도록 설정했을 때 같은 왕복이 생긴다.
 
 ## PostBack — 이 모델의 핵심
 
@@ -130,7 +130,12 @@ private bool SaveApplication()
 }
 ```
 
-`AddWithValue`로 **파라미터 바인딩**을 쓴다. 레거시 화면에서 문자열을 이어 붙여 쿼리를 만드는 코드를 보면 SQL Injection 지점이므로 바꾼다.
+문자열을 이어 붙이지 않고 **파라미터 바인딩**을 쓴다. `AddWithValue`도 SQL Injection은 막지만 값에서 DB 타입과 길이를 추론해 예상치 못한 형 변환이나 실행 계획 차이를 만들 수 있다. 가능하면 `SqlDbType`과 길이를 명시한다.
+
+```csharp
+cmd.Parameters.Add("@ApplicantName", SqlDbType.NVarChar, 100)
+   .Value = txtApplicantName.Text.Trim();
+```
 
 `using` 블록은 Java의 try-with-resources와 같다. 블록을 벗어나면 커넥션이 닫힌다.
 

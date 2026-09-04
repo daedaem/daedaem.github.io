@@ -27,7 +27,9 @@ legacyPath: "/230202_코어자바스크립트 ch 2. 실행컨텍스트/"
 
 - 전역공간, 함수, module, eval
 
-eval은 논외고 전역공간, 함수, module 모두 하나의 함수공간으로 봐도 무방하다. 따라서, **실행컨텍스트는 함수를 실행할 때 필요한 환경정보를 담은 객체**라고 할 수 있다.
+~~eval은 논외고 전역 공간, 함수, module 모두 하나의 함수 공간으로 봐도 무방하다. 따라서 실행 컨텍스트는 함수를 실행할 때 필요한 환경 정보를 담은 객체라고 할 수 있다.~~
+
+> **바로잡음(2026-09-04):** 전역 코드·함수 코드·`eval` 코드·모듈 코드는 명세에서 서로 다른 실행 컨텍스트를 만든다. 특히 ES 모듈은 함수 공간과 같지 않다. 실행 컨텍스트는 현재 코드를 평가·실행하는 데 필요한 상태를 담는 명세상의 기록이라고 이해한다.
 
 <br>
 
@@ -41,9 +43,9 @@ eval은 논외고 전역공간, 함수, module 모두 하나의 함수공간으�
 
 - Variable Environment, Lexical Environment, this
 - VariableEnvironment와 LexicalEnvironment에는 현재 환경과 관련된 식별자 정보들
-- VariableEnvironment는 식별자 정보 수집, LexicalEnvironment에는 각 식별자의 ‘데이터’추적
-- 실행컨텍스트 실행하는 동안 변수 값들이 변화가 생기면,
-VariableEnvironment는 변화 반영x, **LexicalEnvironment는 변화 반영 됨**
+- ~~VariableEnvironment는 식별자 정보를 수집하고, LexicalEnvironment는 각 식별자의 데이터를 추적한다. 실행 중 변수 값이 바뀌면 VariableEnvironment에는 반영되지 않고 LexicalEnvironment에만 반영된다.~~
+
+> **바로잡음(2026-09-04):** 둘은 초기값과 변경값의 스냅샷을 나눠 보관하는 구조가 아니다. 현대 ECMAScript 명세에서 `LexicalEnvironment`와 `VariableEnvironment`는 각각 현재 어휘 선언과 `var` 선언에 쓰는 Environment Record를 가리키며, 코드 종류에 따라 같은 레코드일 수도 다를 수도 있다.
 
 <br>
 
@@ -94,12 +96,13 @@ console.log(a); // 1
   - 중단했던 (2)의 다음 줄부터 실행 - > (3)
   - 콜스택에 아무것도 남지 않으면 종료
   
-    <img src='https://velog.velcdn.com/images/sangmin-iam/post/1874434f-0082-4a8a-b87b-8211e6853d5d/image.png' style="max-width:400px; margin:0 auto;">
+> **이미지 안내(2026-09-04):** 외부 블로그 이미지 임베드는 제거했다. 위 실행 순서대로 전역 → `outer` → `inner` 컨텍스트가 스택에 쌓이고 역순으로 빠지는 그림이었다.
 
 ## 02 VariableEnvironment
 
-- VariableEnvironment에 담기는 내용은 LexicalEnvironment와 같지만, **최초 실행 시의 스냅샷을 유지**
-- 실행 컨텍스트를 생성할 때 VariableEnvironment에 정보를 먼저 담은 다음, 이를 복사해서 LexicalEnvironment를 만든다. 주로 활용하는 것은 LexicalEnvironment
+- ~~VariableEnvironment에 담기는 내용은 LexicalEnvironment와 같지만 최초 실행 시의 스냅샷을 유지한다. 실행 컨텍스트를 만들 때 VariableEnvironment를 먼저 만들고 이를 복사해 LexicalEnvironment를 만든다.~~
+
+> **바로잡음(2026-09-04):** 책의 학습용 비유다. 실제 명세에서는 두 필드가 Environment Record를 가리키며, 블록의 `let`·`const`와 함수·전역의 `var`가 서로 다른 환경에 기록될 수 있게 구분한다.
 - LexicalEnvironment와 동일하게 **Environment Record**와 **Outer Environment Reference**로 구성
 
 ## 03 LexicalEnvironment
@@ -157,7 +160,7 @@ console.log(a); // 1
 
 - 실행 컨텍스트 생성할 때는 VariableEnvironment와 LexicalEnvironment가 동일 내용으로 구성되지만 LexicalEnvironment는 함수 실행 도중에 변경되는 사항이 즉시 반영되는 반면, VariableEnvironment는 초기 상태를 유지
 
-VariableEnvironment와 LexicalEnvironment는 매개변수명, 변수의 식별자, 선언한 함수의 함수명 등을 수집하는 **environmentRecord**와 바로 직전 컨텍스트의 LexicalEnvironment 정보를 참조하는 **outerEnvironmentReference**로 구성
+VariableEnvironment와 LexicalEnvironment는 식별자 바인딩을 담는 **Environment Record**와 바깥 어휘 환경을 가리키는 참조로 이어진다. 이 바깥 참조는 호출 스택의 바로 직전 함수가 아니라 **코드가 선언된 어휘적 위치**를 따른다.
 
 ### 호이스팅
 

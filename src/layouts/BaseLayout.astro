@@ -11,7 +11,11 @@ interface Props {
   updatedAt?: Date
   ogSlug?: string
   noindex?: boolean
+  /** 목록·태그 페이지처럼 검색 결과에 직접 노출할 필요가 없는 페이지는 false */
+  searchIndex?: boolean
 }
+
+const { searchIndex = true } = Astro.props
 ---
 
 <!doctype html>
@@ -22,7 +26,11 @@ interface Props {
   <body>
     <a href="#main" class="visually-hidden skip-link">본문으로 건너뛰기</a>
     <Header />
-    <main id="main">
+    <main
+      id="main"
+      data-pagefind-body={searchIndex ? true : undefined}
+      data-pagefind-ignore={searchIndex ? undefined : 'all'}
+    >
       <slot />
     </main>
     <Footer />

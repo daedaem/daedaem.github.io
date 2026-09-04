@@ -4,7 +4,7 @@ description: 'Model·View·Controller를 나누는 이유와, 셋 사이의 의�
 topic: 'cs'
 tags: ['MVC', '디자인패턴', 'Java', '아키텍처']
 created: 2023-06-11
-updated: 2026-08-29
+updated: 2026-09-04
 status: 'stable'
 ---
 
@@ -28,9 +28,9 @@ status: 'stable'
 
 **유연성.** 하나의 변경이 전체로 번지지 않는다. UI를 바꿔도 비즈니스 로직이나 데이터 접근 코드는 그대로다.
 
-## 의존 방향 — 여기가 진짜 규칙이다
+## 이 글에서 사용하는 의존 방향
 
-MVC를 "세 개로 나눈다"로만 이해하면 금방 무너진다. 실제로 지켜야 하는 건 **누가 누구에게 의존해도 되는가**다.
+MVC는 Smalltalk, 데스크톱 GUI, 서버 사이드 웹 프레임워크에서 서로 다른 형태로 발전했다. 따라서 모든 MVC에 통용되는 의존 방향 하나가 있는 것은 아니다. 여기서는 콘솔 애플리케이션과 서버 사이드 MVC를 설명할 때 쓰기 쉬운 다음 구조를 기준으로 한다.
 
 ```
 Controller ──▶ Model
@@ -58,7 +58,7 @@ public class Student {
 
 데이터와 그걸 꺼내는 방법만 있다. 출력도 요청 처리도 없다.
 
-**2. View는 Model에만 의존한다.** Controller에는 의존하면 안 된다.
+**2. View는 화면 표현에 집중한다.** 이 예제에서는 Model 형태의 데이터를 받아 출력하고 Controller를 직접 호출하지 않는다.
 
 ```java
 public class OutputView {
@@ -69,11 +69,11 @@ public class OutputView {
 }
 ```
 
-**3. View가 Model에서 받는 데이터는 "사용자마다 달라지는 것"만이다.** 쇼핑몰이라면 고객 이름·주소는 Model에서 받지만, 고객과 무관하게 고정된 문구는 받지 않는다.
+**3. 고정 문구와 표시 형식은 View에 두고, 요청마다 달라지는 데이터는 바깥에서 받는다.** 쇼핑몰이라면 고객 이름·주소는 전달받지만, 고객과 무관하게 고정된 문구까지 Model에 넣어 전달하지 않는다.
 
 **4. Controller는 Model과 View 양쪽에 의존해도 된다.** 잇는 게 역할이니 당연하다.
 
-**5. View가 Model의 데이터를 받을 때는 반드시 Controller를 거친다.**
+**5. 이 예제에서는 Controller가 Model을 만들고 View에 전달한다.** 프레임워크에 따라 View가 Model의 변경을 관찰하는 고전 MVC처럼 흐름이 달라질 수 있다.
 
 ```java
 public class Controller {
@@ -86,7 +86,7 @@ public class Controller {
 
 ## 스프링에서는
 
-`@Controller`가 Controller, `Model`에 담는 데이터가 Model, 템플릿이 View다. `@RestController`는 View 단계 없이 반환 객체를 메시지 컨버터로 응답 바디에 바로 내보내는 변형이다.
+Spring MVC에서는 `@Controller`가 요청을 받고, `Model`에 담은 표시 데이터와 템플릿이 View를 구성한다. 여기서 Spring의 `Model`은 앞에서 말한 도메인 객체 하나와 같은 뜻이 아니라 **View에 전달할 속성 모음**이다. `@RestController`는 View 템플릿 대신 반환 객체를 메시지 컨버터로 응답 바디에 내보낸다.
 
 ```java
 @RestController

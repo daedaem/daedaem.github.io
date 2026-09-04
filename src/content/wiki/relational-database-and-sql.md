@@ -4,7 +4,7 @@ description: '파일 시스템이 왜 부족했는지부터 계층형·네트워
 topic: 'database'
 tags: ['RDBMS', 'Oracle', 'SQL', '데이터모델링']
 created: 2023-07-23
-updated: 2026-08-29
+updated: 2026-09-04
 status: 'stable'
 ---
 
@@ -44,7 +44,7 @@ DBMS(DataBase Management System)는 데이터 조작과 관리를 전담하는 �
 
 | 파일 시스템의 문제 | DBMS |
 |---|---|
-| 데이터 중복 | 하나의 소프트웨어가 관리하므로 중복을 피한다 |
+| 데이터 중복 | 중앙 관리와 키·제약조건·정규화로 중복을 통제할 수 있다 |
 | 응용 프로그램이 각자 데이터를 직접 관리 | 여러 프로그램이 하나의 DBMS를 통해 **동시에 공유** |
 | 프로그램마다 데이터 쓰는 방식이 다름 | 관리 방식이 **통합**된다 |
 | 데이터가 특정 프로그램에 종속 | 프로그램을 바꿔도 데이터는 그대로 쓸 수 있다 |
@@ -87,7 +87,7 @@ DBMS(DataBase Management System)는 데이터 조작과 관리를 전담하는 �
 | 0002 | 성춘향 | 대리 | 연구 | 인천 |
 | 0004 | 심청이 | 사원 | **회계** | **서울** |
 
-회계팀 이름이 바뀌면 해당 부서 사원을 전부 찾아 고쳐야 한다. 그래서 **중복될 수 있는 데이터는 별도 릴레이션으로 떼어내고 코드로 연결한다.**
+회계팀 이름이 바뀌면 해당 부서 사원을 전부 찾아 고쳐야 한다. 그래서 **중복될 수 있는 데이터는 별도 릴레이션으로 떼어내고 키로 연결한다.**
 
 | 사원 번호 | 이름 | 직급 | 부서 코드 |
 |---|---|---|---|
@@ -116,12 +116,14 @@ SQL은 Structured Query Language의 약자로, RDBMS에서 데이터를 다루�
 | 종류 | 무엇을 다루나 | 명령 |
 |---|---|---|
 | **DQL** Data Query Language | 저장된 데이터를 **조회** | `SELECT` |
-| **DML** Data Manipulation Language | 테이블의 **데이터** | `SELECT` `INSERT` `UPDATE` `DELETE` |
+| **DML** Data Manipulation Language | 테이블의 **데이터** | `INSERT` `UPDATE` `DELETE` (분류에 따라 `SELECT` 포함) |
 | **DDL** Data Definition Language | 테이블·인덱스 등 **객체** | `CREATE` `ALTER` `DROP` `TRUNCATE` |
 | **TCL** Transaction Control Language | **트랜잭션** | `COMMIT` `ROLLBACK` |
 | **DCL** Data Control Language | 사용 **권한** | `GRANT` `REVOKE` |
 
-`TRUNCATE`가 DDL인 게 헷갈리기 쉽다. Oracle에서는 DDL이라 암묵적으로 COMMIT되고 undo를 남기지 않아 **롤백이 안 된다.** `DELETE`(DML)와 여기서 갈린다. PostgreSQL이나 SQL Server는 트랜잭션 안의 TRUNCATE를 롤백할 수 있어 DBMS마다 다르다.
+`SELECT`를 DQL로 따로 떼지 않고 DML에 포함하는 분류도 있어 교재와 DBMS 문서마다 표가 조금씩 다르다.
+
+`TRUNCATE`가 DDL인 게 헷갈리기 쉽다. Oracle에서는 실행 전후로 암묵적 COMMIT이 일어나고 각 행을 지우는 undo를 남기지 않아 **ROLLBACK으로 되돌릴 수 없다.** `DELETE`(DML)와 여기서 갈린다. PostgreSQL이나 SQL Server는 트랜잭션 안의 TRUNCATE를 롤백할 수 있어 DBMS마다 다르다.
 
 ## 더 볼 것
 

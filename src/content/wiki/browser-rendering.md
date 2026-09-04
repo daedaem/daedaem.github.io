@@ -4,7 +4,7 @@ description: 'DNS 조회부터 DOM·CSSOM·Render Tree, Layout과 Paint까지. �
 topic: 'web'
 tags: ['브라우저', '렌더링', 'DOM', 'CSSOM', 'Reflow']
 created: 2023-02-07
-updated: 2026-08-30
+updated: 2026-09-04
 status: 'stable'
 ---
 
@@ -79,7 +79,7 @@ DOM과 CSSOM을 결합한다. **표시할 노드만** 포함한다.
 
 ## Critical Rendering Path와 성능
 
-요즘 화면은 **초당 60번** 다시 그린다(60fps). 브라우저가 이걸 못 따라가면 스크롤이나 드래그에서 버벅임(**Jank**)이 생긴다.
+많은 화면이 60Hz 이상으로 갱신된다. 브라우저가 한 프레임의 시간 안에 작업을 끝내지 못하면 스크롤이나 드래그에서 버벅임(**Jank**)이 생긴다. 목표 프레임 시간은 디스플레이 주사율에 따라 달라진다.
 
 그래서 중요한 게 **어느 단계부터 다시 도는가**다.
 
@@ -87,9 +87,9 @@ DOM과 CSSOM을 결합한다. **표시할 노드만** 포함한다.
 |---|---|
 | 요소의 크기·위치 변경, 창 크기 변경 | JS → Style → **Layout** → Paint → Composite |
 | 배경색·글자색·그림자 등 **크기가 안 변하는** 변경 | JS → Style → ~~Layout~~ → **Paint** → Composite |
-| `transform`, `opacity` 등 | JS → Style → ~~Layout~~ → ~~Paint~~ → **Composite** |
+| 합성 레이어의 `transform`, `opacity` 변경 | JS → Style → ~~Layout~~ → ~~Paint~~ → **Composite** |
 
-**세 번째가 가장 싸다.** 애니메이션을 `left`/`top`이 아니라 `transform`으로 만드는 이유가 여기 있다. Layout과 Paint를 건너뛰고 합성만 하기 때문이다.
+**세 번째가 보통 가장 싸다.** 애니메이션을 `left`/`top`보다 `transform`으로 만드는 이유가 여기 있다. 다만 브라우저가 해당 요소를 합성 레이어로 올렸을 때 Layout과 Paint를 건너뛸 수 있으며, 레이어를 지나치게 늘리면 메모리 비용이 커진다.
 
 어떤 CSS 속성이 어느 단계를 유발하는지는 **CSS Triggers** 같은 자료로 확인할 수 있다.
 
