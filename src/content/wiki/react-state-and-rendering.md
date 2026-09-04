@@ -1,5 +1,5 @@
 ---
-title: 'setState가 비동기라는 말의 뜻'
+title: 'React 상태 업데이트 배칭과 setState'
 description: 'useState의 지연 초기화, 이전 값에 의존할 때 콜백을 써야 하는 이유, 그리고 React 18에서 바뀐 자동 배칭.'
 topic: 'web'
 tags: ['React', 'useState', '렌더링', '배칭']

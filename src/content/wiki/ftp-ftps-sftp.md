@@ -1,5 +1,5 @@
 ---
-title: 'FTP·FTPS·SFTP는 이름만 비슷하다'
+title: 'FTP·FTPS·SFTP의 차이와 방화벽 영향'
 description: 'FTP의 액티브/패시브 모드, FTPS와 SFTP의 차이. SFTP는 FTP의 보안판이 아니라 SSH 위에 새로 설계된 별개 프로토콜이다.'
 topic: 'infra'
 tags: ['FTP', 'SFTP', 'FTPS', 'SSH', '프로토콜']

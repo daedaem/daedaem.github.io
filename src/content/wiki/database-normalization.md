@@ -1,5 +1,5 @@
 ---
-title: '정규화와 그 대가'
+title: '정규화 1NF~BCNF와 반정규화'
 description: '삽입·삭제·갱신 이상이 왜 생기는지, 1NF부터 BCNF까지 무엇을 없애는지, 그리고 정규화와 조회 비용 사이의 균형.'
 topic: 'database'
 tags: ['정규화', '이상현상', 'RDBMS', 'JOIN', '설계']
