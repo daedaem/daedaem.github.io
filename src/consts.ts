@@ -1,5 +1,9 @@
 export const SITE = {
   title: '대댐 로그',
+  /** 홈의 <title>. 이름만 있는 것보다 무엇을 하는 곳인지가 함께 있어야 검색에서 찾힌다 */
+  homeTitle: '대댐 로그 — 조해성 기술 블로그',
+  /** 붙여 쓴 표기·영문 표기. 검색엔진에 같은 사이트의 다른 이름으로 알린다 */
+  altNames: ['대댐로그', 'daedaem log', 'daedaem'],
   // 홈 화면과 <meta description>에 함께 쓰이는 한 줄 정체성
   tagline: '레거시 환경에서 구조를 개선해 온 백엔드 개발자',
   description:

@@ -26,7 +26,7 @@ const {
 } = Astro.props
 
 const canonical = new URL(Astro.url.pathname, Astro.site)
-const fullTitle = title === SITE.title ? title : `${title} · ${SITE.title}`
+const fullTitle = title === SITE.title ? SITE.homeTitle : `${title} · ${SITE.title}`
 const ogImage = new URL(`/og/${ogSlug}.png`, Astro.site)
 
 /** 검색엔진이 저자와 글을 이해하도록 구조화 데이터를 넣는다 */
@@ -55,6 +55,7 @@ const jsonLd =
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: SITE.title,
+        alternateName: SITE.altNames,
         description,
         url: SITE.url,
         inLanguage: 'ko-KR',
