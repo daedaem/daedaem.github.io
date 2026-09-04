@@ -106,9 +106,8 @@ const algoCount = (await getCollection('solutions')).length
               featured.data.description && <p>{featured.data.description}</p>
             )}
             <span class="hero-meta">
-              {featured.data.happened && <span>{featured.data.happened}의 일 ·</span>}
               <time datetime={featured.data.date.toISOString()}>
-                {formatDate(featured.data.date)} 작성
+                {formatDate(featured.data.date)}
               </time>
               <span>· {readingMinutes(featured.body ?? '')}분</span>
             </span>
@@ -127,7 +126,6 @@ const algoCount = (await getCollection('solutions')).length
                     title={p.data.title}
                     date={p.data.date}
                     category={p.data.category}
-                    happened={p.data.happened}
                     readingMinutes={readingMinutes(p.body ?? '')}
                   />
                 ))}

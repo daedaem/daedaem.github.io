@@ -27,7 +27,7 @@ interface Props {
   prev?: { href: string; title: string }
   next?: { href: string; title: string }
   /** 이 글을 뺀 나머지 글. 글 안에서 다른 글로 갈 수 있게 목록을 보여 준다 */
-  others?: { href: string; title: string; category?: string; date: Date; happened?: string }[]
+  others?: { href: string; title: string; category?: string; date: Date }[]
   /** 원인 한 줄. 이 사이트의 시그니처 블록으로, 제목 아래에 고정된 형태로 나온다 */
   cause?: string
 }
@@ -188,13 +188,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
           </div>
           <ul class="rows">
             {others.map((o) => (
-              <PostRow
-                href={o.href}
-                title={o.title}
-                date={o.date}
-                category={o.category}
-                happened={o.happened}
-              />
+              <PostRow href={o.href} title={o.title} date={o.date} category={o.category} />
             ))}
           </ul>
         </section>

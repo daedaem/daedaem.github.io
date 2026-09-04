@@ -19,7 +19,6 @@ export const getStaticPaths = async () => {
         title: p.data.title,
         category: p.data.category,
         date: p.data.date,
-        happened: p.data.happened,
       }))
     return {
       params: { slug: post.id },
