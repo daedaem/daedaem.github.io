@@ -6,7 +6,7 @@ happened: '2026년 3월'
 cause: 'Oracle 데이터파일은 크기를 미리 잡아 두고 안을 채워 나가는 구조라, OS가 보는 사용률과 DB가 실제로 쓰는 양이 다르다. 알람은 전자를 보고 울린다.'
 category: 'operations'
 tags: ['Oracle', '테이블스페이스', '운영', '모니터링']
-draft: true
+draft: false
 ---
 
 > 명령어와 쿼리는 일반적인 형태다. 서버 구성과 실측값은 적지 않는다.
