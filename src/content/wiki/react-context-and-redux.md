@@ -1,5 +1,5 @@
 ---
-title: 'React Context와 Redux — 무엇을 언제 쓰나'
+title: 'React Context와 Redux'
 description: 'Context는 상태 관리 도구가 아니다. 전달과 관리의 차이, Context의 두 가지 한계, 그리고 Redux의 단방향 흐름.'
 topic: 'web'
 tags: ['React', 'Context', 'Redux', '상태관리']

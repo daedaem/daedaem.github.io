@@ -1,5 +1,5 @@
 ---
-title: 'MVC 패턴 — 무엇을 나누고, 무엇에 의존하면 안 되는가'
+title: 'MVC 패턴'
 description: 'Model·View·Controller를 나누는 이유와, 셋 사이의 의존 방향 규칙. 코드로 지키는 방법까지.'
 topic: 'cs'
 tags: ['MVC', '디자인패턴', 'Java', '아키텍처']

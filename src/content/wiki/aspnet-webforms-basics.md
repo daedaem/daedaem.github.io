@@ -1,5 +1,5 @@
 ---
-title: 'ASP.NET Web Forms — PostBack, ViewState, 그리고 페이지 생명주기'
+title: 'ASP.NET Web Forms — PostBack, ViewState, 페이지 생명주기'
 description: 'Code-Behind 구조로 도는 레거시 .NET 화면을 읽기 위해 알아야 하는 것들. 왜 Page_Load에 IsPostBack 검사가 붙어 있는가.'
 topic: 'dotnet'
 tags: ['ASP.NET', 'C#', 'WebForms', 'ViewState', '레거시']

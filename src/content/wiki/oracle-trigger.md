@@ -1,5 +1,5 @@
 ---
-title: 'Oracle 트리거 — 언제 쓰고, 무엇을 조심해야 하나'
+title: 'Oracle 트리거'
 description: 'DML/DDL/SYSTEM 트리거의 구분, BEFORE와 AFTER의 차이, :NEW와 :OLD의 의미. 그리고 트리거가 공짜가 아닌 이유.'
 topic: 'database'
 tags: ['Oracle', '트리거', 'PL/SQL', 'DML']

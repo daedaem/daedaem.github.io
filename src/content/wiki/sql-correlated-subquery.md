@@ -1,5 +1,5 @@
 ---
-title: '상관 서브쿼리와 NOT EXISTS — NOT IN이 느리고 위험한 이유'
+title: 'NOT IN이 느리고 위험한 이유'
 description: '서브쿼리가 메인 쿼리의 컬럼을 참조하면 무엇이 달라지는가. 수백만 건 적재에서 NOT IN을 NOT EXISTS로 바꿔 속도를 되찾은 기록.'
 topic: 'database'
 tags: ['SQL', '서브쿼리', 'NOT EXISTS', 'NULL', '성능']

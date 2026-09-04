@@ -1,5 +1,5 @@
 ---
-title: '커스텀 훅 — 로직을 컴포넌트에서 떼어내기'
+title: '커스텀 훅은 상태가 아니라 로직을 공유한다'
 description: 'use로 시작해야 하는 이유, 훅마다 상태가 격리된다는 것, 그리고 useCallback 없이 쓰면 무한 루프에 빠지는 이유.'
 topic: 'web'
 tags: ['React', 'Custom Hooks', 'useCallback', 'useEffect']

@@ -1,5 +1,5 @@
 ---
-title: 'MPA·SPA·CSR·SSR·SSG — 무엇을 쓸지 어떻게 고르나'
+title: 'MPA·SPA·CSR·SSR·SSG'
 description: '렌더링을 어디서 할 것인가의 문제. 각 방식이 무엇을 얻고 무엇을 잃는지, 그리고 상황별로 무엇을 고르는지.'
 topic: 'web'
 tags: ['CSR', 'SSR', 'SSG', 'SPA', 'SEO']
