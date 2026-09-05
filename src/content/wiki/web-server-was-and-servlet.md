@@ -4,7 +4,7 @@ description: '정적 리소스와 애플리케이션 로직을 왜 나누는지,
 topic: 'infra'
 tags: ['WAS', '서블릿', '톰캣', '스레드풀', 'HTTP']
 created: 2023-07-11
-updated: 2026-09-04
+updated: 2026-09-05
 status: 'stable'
 ---
 
@@ -66,7 +66,7 @@ public class HelloServlet extends HttpServlet {
 2. 개발자는 `Request`에서 필요한 값을 꺼낸다
 3. 개발자는 `Response`에 응답을 담는다
 4. WAS가 `Response`의 내용으로 HTTP 응답 메시지를 만들어 보낸다
-5. 응답이 끝나면 두 객체를 소멸시킨다
+5. 요청 처리가 끝나면 애플리케이션은 두 객체를 보관해 재사용하지 않는다. 컨테이너는 객체를 회수하거나 재활용할 수 있으며, 비동기 요청은 비동기 처리가 완료될 때까지 생명주기가 이어진다
 
 ### 서블릿 컨테이너
 

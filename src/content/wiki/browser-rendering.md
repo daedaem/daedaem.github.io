@@ -4,7 +4,7 @@ description: 'DNS 조회부터 DOM·CSSOM·Render Tree, Layout과 Paint까지. �
 topic: 'web'
 tags: ['브라우저', '렌더링', 'DOM', 'CSSOM', 'Reflow']
 created: 2023-02-07
-updated: 2026-09-04
+updated: 2026-09-05
 status: 'stable'
 ---
 
@@ -12,7 +12,7 @@ status: 'stable'
 
 1. 주소창에 URL을 입력한다
 2. **캐싱된 DNS 기록**을 먼저 본다. 없으면 DNS에 질의해 IP를 받는다
-3. 서버와 **TCP 3-way handshake**로 연결한다. HTTPS면 여기에 **TLS handshake**가 더해진다
+3. 새 HTTP/1.1·HTTP/2 연결은 TCP를 사용하며 HTTPS에는 TLS 협상이 더해진다. HTTP/3는 UDP 기반 QUIC을 사용한다. 기존 연결을 재사용하면 매 요청마다 새 연결을 만들지 않는다
 4. HTTP 요청을 보낸다
 5. 응답으로 HTML을 받는다
 6. **파싱하며 그린다** — 데이터를 다 받고 시작하는 게 아니라, 받는 대로 반복해서 일어난다

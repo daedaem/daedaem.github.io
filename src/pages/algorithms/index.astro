@@ -249,7 +249,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     <p class="empty" id="empty" hidden>조건에 맞는 문제가 없습니다.</p>
   </div>
   <script>
-    // 정적 목록을 클라이언트에서 거른 뒤 그룹마다 30개씩 쪽으로 나눈다.
+    // 정적 목록을 클라이언트에서 거른 뒤 그룹마다 10개씩 쪽으로 나눈다.
     // 검색어·유형·언어 세 조건은 AND이고, 조건이 바뀌면 모든 그룹을 1쪽으로 되돌린다.
     const PAGE = 10
     const q = document.getElementById('q') as HTMLInputElement

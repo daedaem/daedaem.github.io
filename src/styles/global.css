@@ -137,6 +137,11 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* 목록의 grid/flex 스타일이 페이지네이션·필터의 숨김 상태를 덮어쓰지 않게 한다. */
+[hidden]:not([hidden='until-found']) {
+  display: none !important;
+}
+
 body {
   margin: 0;
   background: var(--bg);

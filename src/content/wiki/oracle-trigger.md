@@ -4,7 +4,7 @@ description: 'DML/DDL/SYSTEM 트리거의 구분, BEFORE와 AFTER의 차이, :NE
 topic: 'database'
 tags: ['Oracle', '트리거', 'PL/SQL', 'DML']
 created: 2023-09-10
-updated: 2026-09-04
+updated: 2026-09-05
 status: 'stable'
 ---
 
@@ -44,7 +44,9 @@ END;
 - **`BEFORE`** — DML 작업이 실행되기 **전**. 데이터 검증이나 값 변환에 쓴다
 - **`AFTER`** — DML 작업이 실행된 **후**. 완료 후 추가 작업(감사 로그 등)에 쓴다
 
-값을 바꾸려면 `BEFORE`여야 한다. `AFTER`에서는 이미 반영된 뒤라 늦다.
+현재 행의 `:NEW` 값을 대입해 바꾸려면 `BEFORE` 행 트리거를 사용한다. `AFTER`에서 `:NEW`에 대입할 수는 없다. 여기서 AFTER는 커밋 이후라는 뜻이 아니며, 일반적인 트리거 작업은 원래 DML과 함께 롤백된다.
+
+`UPDATE OF salary`는 `salary`가 UPDATE의 SET 절에 포함될 때 실행된다. `SET salary = salary`처럼 값이 같아도 실행되므로 실제 값의 변경 여부는 NULL까지 고려해 별도로 비교해야 한다.
 
 ### 2. FOR EACH ROW / 문 단위
 
@@ -105,7 +107,7 @@ UPDATE student SET grade = 7 WHERE studno = 10101;
 
 ## 조심할 것
 
-트리거는 편하지만 공짜가 아니다. **해당 테이블의 모든 DML에 따라붙는 코드**다.
+트리거는 편하지만 공짜가 아니다. **해당 테이블에서 등록한 이벤트와 조건에 맞는 DML에 따라붙는 코드**다.
 
 **보이지 않는다.** 애플리케이션 코드를 아무리 읽어도 트리거는 안 보인다. 값이 이상하게 바뀌는데 원인을 못 찾을 때 트리거를 의심해야 하는 이유다. 반대로 내가 트리거를 걸어두면 **다음 사람이 같은 함정에 빠진다.**
 

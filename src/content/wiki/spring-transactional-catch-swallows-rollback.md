@@ -4,7 +4,7 @@ description: '서비스가 업무 결과를 문자열로 반환하는 구조에�
 topic: 'spring'
 tags: ['Spring', '트랜잭션', '예외', '롤백', 'AOP']
 created: 2026-08-26
-updated: 2026-09-04
+updated: 2026-09-05
 status: 'stable'
 ---
 
@@ -14,7 +14,9 @@ status: 'stable'
 
 ## 원인
 
-- Spring 트랜잭션은 **프록시**가 담당한다. 메서드가 정상 반환하면 commit, 예외가 프록시까지 밖으로 나오면 rollback이다.
+아래 설명은 트랜잭션이 아직 `rollback-only`로 표시되지 않은 경우를 전제로 한다. 다른 빈의 내부 트랜잭션이나 영속성 계층에서 이미 롤백 전용으로 표시했다면, 바깥에서 예외를 잡아 정상 반환해도 커밋되지 않는다. `REQUIRED`로 공유한 내부 트랜잭션의 실패라면 바깥 커밋 시 `UnexpectedRollbackException`이 발생할 수 있다. [Spring 트랜잭션 전파 문서](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/tx-propagation.html)
+
+- 기본 프록시 방식에서는 프록시가 정상 반환 여부, 밖으로 나온 예외의 롤백 규칙, rollback-only 상태를 보고 트랜잭션을 마무리한다. 모든 예외가 자동으로 롤백되는 것은 아니다.
 - 서비스 안에서 catch해 문자열을 반환하면 프록시 입장에서는 "정상 종료"다. 중간까지 실행된 DB 수정이 그대로 commit된다.
 - 함정이 하나 더 있다. 기본 설정에서는 **RuntimeException과 Error만 롤백**하고 checked 예외는 롤백하지 않는다. catch를 빼더라도 checked 예외가 그대로 나가면 롤백이 안 된다.
 
@@ -65,7 +67,7 @@ catch를 서비스 안에 유지해야만 한다면 catch 블록에서 `Transact
 
 ## 정리
 
-- 프록시는 예외가 밖으로 나왔는지만 본다. 안에서 삼키면 commit이다.
+- 프록시는 예외와 롤백 규칙, 트랜잭션의 rollback-only 상태를 함께 본다. 파싱 예외를 안에서 삼키고 롤백 표시도 하지 않으면 commit될 수 있다.
 - 기본값은 RuntimeException과 Error만 롤백한다. checked 예외는 감싸서 던지거나 `rollbackFor`를 명시한다.
 - 업무 결과와 시스템 오류는 다른 채널로 나가야 한다. 전자는 반환값, 후자는 예외.
 - 같은 빈 안에서의 직접 호출은 프록시를 타지 않는다.

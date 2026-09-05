@@ -4,7 +4,7 @@ description: '서브쿼리가 메인 쿼리의 컬럼을 참조하면 무엇이 
 topic: 'database'
 tags: ['SQL', '서브쿼리', 'NOT EXISTS', 'NULL', '성능']
 created: 2025-12-22
-updated: 2026-09-04
+updated: 2026-09-05
 status: 'growing'
 ---
 
@@ -31,7 +31,7 @@ SELECT t.city, t.street
 | 실제 실행 | 옵티마이저가 조인·캐시 등으로 바꿀 수 있음 | 옵티마이저가 세미/안티 조인 등으로 바꿀 수 있음 |
 | 예 | `WHERE id IN (SELECT id FROM ...)` | `WHERE EXISTS (SELECT 1 FROM ... WHERE a.id = t.id)` |
 
-행마다 반복 실행된다니 느릴 것 같지만, 실제로는 반대인 경우가 많다. 아래가 그 경우다.
+논리적 평가 방식만으로 속도를 판단할 수는 없다. 아래 사례도 비교 조건이 함께 바뀌었으므로, 문법 차이만의 성능 비교로 볼 수 없다.
 
 ## 겪은 문제 — 수백만 건 적재가 끝나지 않음
 
@@ -88,7 +88,7 @@ SELECT * FROM temp_address WHERE address_id NOT IN (SELECT address_id FROM addre
 -- 결과: 0건
 ```
 
-`x NOT IN (1, 2, NULL)`은 내부적으로 `x <> 1 AND x <> 2 AND x <> NULL`이 된다. 마지막 조건이 참도 거짓도 아닌 **UNKNOWN**이 되고, `AND`로 묶인 전체가 UNKNOWN이 되어 아무 행도 통과하지 못한다.
+`x NOT IN (1, 2, NULL)`은 `x <> 1 AND x <> 2 AND x <> NULL`과 같은 의미다. 마지막 비교는 **UNKNOWN**이다. `x`가 1이나 2라면 전체는 FALSE이고, 다른 값이면 UNKNOWN이므로 어느 경우에도 TRUE가 되지 않아 행이 통과하지 못한다.
 
 **오류가 나지 않고 그냥 0건이 나오기 때문에** 눈치채기 어렵다. `NOT EXISTS`는 같은 형태의 함정을 피하지만, 양쪽 비교값이 NULL일 때 그것을 같은 값으로 취급해야 한다면 `IS NOT DISTINCT FROM` 또는 DBMS에 맞는 NULL-safe 비교를 별도로 설계해야 한다.
 

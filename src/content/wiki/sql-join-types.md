@@ -4,7 +4,7 @@ description: '오라클 고유 문법과 ANSI 조인의 차이, 그리고 다섯
 topic: 'database'
 tags: ['SQL', 'JOIN', 'Oracle', 'ANSI']
 created: 2023-12-03
-updated: 2026-08-29
+updated: 2026-09-05
 status: 'stable'
 ---
 
@@ -51,7 +51,7 @@ COMMIT;
 
 ## INNER JOIN
 
-두 테이블의 **교집합**이다. 오라클에서 그냥 "조인"이라고 하면 보통 이걸 말한다.
+조인 조건이 참인 **행의 쌍을 결합**한다. 같은 키의 행이 여러 개면 조합 수만큼 결과가 나오므로, 중복을 제거하는 집합의 교집합과는 다르다.
 
 ```sql
 -- ANSI
@@ -123,7 +123,18 @@ SELECT a.name, b.company_name
   FULL OUTER JOIN company b ON a.company_id = b.company_id;
 ```
 
-`홍길동`도 `네이버`·`카카오`도 각각 새로운 행으로 나온다. **ANSI 조인에서만 제공하는 기능**이다. 오라클 고유 문법으로는 표현할 수 없어서 LEFT OUTER와 RIGHT OUTER를 `UNION`으로 합쳐 우회해야 했다. 옛 버전은 내부적으로도 비슷하게 변환했지만, 11g부터는 네이티브 해시 풀 아우터 조인(`HASH JOIN FULL OUTER`)으로 처리한다.
+`홍길동`도 `네이버`·`카카오`도 결과에 나온다. `(+)` 문법으로 FULL OUTER JOIN을 직접 표현할 수는 없다. 우회한다면 왼쪽 외부 조인 결과에 **오른쪽에서 짝이 없는 행만** `UNION ALL`로 더해야 중복 행을 보존할 수 있다. 양쪽 외부 조인을 단순 `UNION`하면 실제로 존재하는 중복까지 제거할 수 있다.
+
+```sql
+SELECT a.name, b.company_name
+  FROM usertable a
+  LEFT JOIN company b ON a.company_id = b.company_id
+UNION ALL
+SELECT a.name, b.company_name
+  FROM usertable a
+ RIGHT JOIN company b ON a.company_id = b.company_id
+ WHERE a.user_id IS NULL; -- 왼쪽 PK는 NOT NULL: 짝 없는 행만 선택
+```
 
 ## 한눈에
 

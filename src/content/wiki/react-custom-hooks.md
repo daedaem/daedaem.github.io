@@ -1,16 +1,16 @@
 ---
 title: '커스텀 훅은 상태가 아니라 로직을 공유한다'
-description: 'use로 시작해야 하는 이유, 훅마다 상태가 격리된다는 것, 그리고 useCallback 없이 쓰면 무한 루프에 빠지는 이유.'
+description: 'use로 시작하는 이름 규칙, 호출마다 격리되는 상태, Effect 의존성의 참조가 바뀌어 반복 요청이 생기는 조건.'
 topic: 'web'
 tags: ['React', 'Custom Hooks', 'useCallback', 'useEffect']
 created: 2023-03-01
-updated: 2026-08-30
+updated: 2026-09-05
 status: 'stable'
 ---
 
 ## 왜 쓰나
 
-여러 컴포넌트에서 같은 로직을 반복할 때, 일반 함수로는 못 빼는 부분이 있다. **`useState`나 `useEffect` 같은 훅은 컴포넌트 함수 안에서만 호출할 수 있기 때문이다.**
+여러 컴포넌트에서 같은 로직을 반복할 때, 일반 함수로는 못 빼는 부분이 있다. **`useState`나 `useEffect`는 함수 컴포넌트 또는 커스텀 훅의 최상위에서 호출해야 하기 때문이다.**
 
 커스텀 훅은 이 제약을 우회하는 게 아니라, **React가 훅으로 인정하는 함수를 하나 더 만드는 것**이다. 그래서 이름 규칙이 있다.
 
@@ -88,19 +88,28 @@ const useHttp = (requestConfig, applyData) => {
 
 `applyData`를 인자로 받는 게 핵심이다. **가져온 데이터를 어떻게 쓸지는 훅이 정하지 않고 호출한 쪽이 정한다.** 훅은 요청·로딩·에러만 책임진다.
 
-## useCallback을 빼면 무한 루프에 빠진다
+## Effect 의존성이 매번 바뀌면 반복 요청이 생길 수 있다
 
 여기가 실수하기 쉬운 지점이다.
 
 ```javascript
-const { isLoading, error, sendRequest: fetchTasks } = useHttp(
-  { url: 'https://.../tasks.json' },
-  transformTasks,
-)
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import useHttp from './hooks/use-http'
 
-useEffect(() => {
-  fetchTasks()
-}, [fetchTasks])
+function Tasks() {
+  const [tasks, setTasks] = useState([])
+  const config = useMemo(() => ({ url: '/tasks.json' }), [])
+  const transformTasks = useCallback(data => setTasks(data), [])
+  const { isLoading, error, sendRequest: fetchTasks } = useHttp(config, transformTasks)
+
+  useEffect(() => {
+    fetchTasks()
+  }, [fetchTasks])
+
+  if (isLoading) return <p>불러오는 중</p>
+  if (error) return <p>{error}</p>
+  return <pre>{JSON.stringify(tasks, null, 2)}</pre>
+}
 ```
 
 `useCallback`이 없으면 이렇게 돈다.
@@ -113,7 +122,7 @@ fetchTasks 재생성 → useEffect 의존성 변경 → 실행 → setState → 
 
 **함수는 렌더될 때마다 새 객체로 만들어지므로** 의존성 배열이 매번 "바뀐 것"으로 판정된다. `useCallback`으로 감싸면 의존성이 실제로 바뀔 때만 새로 만들어져 루프가 끊긴다.
 
-주의할 게 하나 더 있다. 위 예시의 `requestConfig`가 **호출부에서 인라인 객체 리터럴로 넘어오면** 그것도 매 렌더마다 새 객체다. 그러면 `useCallback`의 의존성이 매번 바뀌어 루프가 다시 생긴다. 설정 객체를 `useMemo`로 감싸거나, 훅 시그니처를 바꿔 `sendRequest(config)`처럼 호출 시점에 받는 편이 안전하다.
+`requestConfig`를 인라인 객체로 넘기거나 `applyData` 함수를 매번 새로 만들면 `useCallback`의 의존성도 바뀐다. 위 예시는 두 참조를 안정화했다. 다른 방법은 `sendRequest(config)`처럼 호출 시점에 설정을 받거나 Effect 안에서 필요한 값을 구성하는 것이다. 이 예제는 의존성 설명용으로, 실서비스에서는 취소 처리와 이전 요청 응답이 최신 상태를 덮어쓰는 경쟁도 처리해야 한다.
 
 ## 정리 순서
 

@@ -4,7 +4,7 @@ description: 'useState의 지연 초기화, 이전 값에 의존할 때 콜백�
 topic: 'web'
 tags: ['React', 'useState', '렌더링', '배칭']
 created: 2023-01-05
-updated: 2026-08-30
+updated: 2026-09-05
 status: 'stable'
 ---
 
@@ -33,6 +33,8 @@ const [cost, setCost] = useState(() => heavyWork())
 ```
 
 첫 번째는 **결과를 인자로 넘기므로 매 렌더마다 함수가 호출된다.** 결과값은 첫 렌더 이후 무시되는데도 계산은 계속한다. 두 번째는 함수 자체를 넘기고 React가 최초에만 호출한다.
+
+여기서 최초란 컴포넌트가 마운트되어 상태를 초기화하는 시점이다. 재마운트하면 다시 실행된다. 개발 모드의 Strict Mode에서는 순수성을 확인하려고 초기화 함수를 두 번 호출할 수 있으므로 부수 효과를 넣지 않는다. [React useState 문서](https://react.dev/reference/react/useState)
 
 ## 이전 값에 의존하면 콜백을 쓴다
 

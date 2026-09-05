@@ -4,7 +4,7 @@ description: 'Context는 상태 관리 도구가 아니다. 전달과 관리의 
 topic: 'web'
 tags: ['React', 'Context', 'Redux', '상태관리']
 created: 2023-02-02
-updated: 2026-08-30
+updated: 2026-09-05
 status: 'stable'
 ---
 
@@ -85,6 +85,8 @@ export const AuthContextProvider = props => {
 ```
 
 App은 화면을 그리는 데 집중하고, 인증 상태 관리는 context 파일이 맡는다. **컴포넌트 하나가 하나의 임무만 갖게 하는 것**이다.
+
+이 예제의 `localStorage.isLoggedIn`은 화면 상태를 설명하기 위한 값이다. 사용자가 직접 바꿀 수 있으므로 실제 인증 근거로 사용하면 안 된다. 실제 서비스는 서버가 세션이나 토큰을 검증하고, 클라이언트는 그 결과로 표시 상태를 갱신한다.
 
 ## Context의 두 가지 한계
 
