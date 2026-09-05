@@ -30,18 +30,21 @@
   const dialog = document.getElementById('search-dialog') as HTMLDialogElement | null
   const mount = document.getElementById('search-mount')
   let loaded = false
+  let loading: Promise<void> | undefined
 
   async function ensureLoaded() {
     if (loaded || !mount) return
-    loaded = true
     // Pagefind 번들은 astro build 이후에 생성되므로 번들러가 미리 해석하면 안 된다.
     // 경로를 변수에 담아 정적 분석을 피한다.
     const base = '/pagefind/'
 
-    const css = document.createElement('link')
-    css.rel = 'stylesheet'
-    css.href = base + 'pagefind-ui.css'
-    document.head.appendChild(css)
+    if (!document.getElementById('pagefind-css')) {
+      const css = document.createElement('link')
+      css.id = 'pagefind-css'
+      css.rel = 'stylesheet'
+      css.href = base + 'pagefind-ui.css'
+      document.head.appendChild(css)
+    }
 
     // pagefind-ui.js는 ES 모듈이 아니라 window.PagefindUI에 붙는 일반 스크립트다.
     // 문서대로 <script> 태그로 싣는다. import()로 실으면 Pagefind가 자기 경로를 찾지 못한다.
@@ -49,14 +52,18 @@
       const s = document.createElement('script')
       s.src = base + 'pagefind-ui.js'
       s.onload = () => resolve()
-      s.onerror = () => reject(new Error('pagefind-ui.js load failed'))
+      s.onerror = () => {
+        s.remove()
+        reject(new Error('pagefind-ui.js load failed'))
+      }
       document.head.appendChild(s)
     }).catch(() => {})
     const PagefindUI = (window as any).PagefindUI
     if (!PagefindUI) {
-      mount.textContent = '검색 색인을 불러오지 못했습니다. 빌드 후에만 동작합니다.'
+      mount.textContent = '검색을 불러오지 못했습니다. 연결을 확인한 뒤 검색창을 다시 열어 주세요.'
       return
     }
+    mount.replaceChildren()
     new PagefindUI({
       element: '#search-mount',
       bundlePath: base,
@@ -74,13 +81,18 @@
         searching: '검색 중…',
       },
     })
+    loaded = true
   }
 
   async function open() {
     if (!dialog) return
-    await ensureLoaded()
-    dialog.showModal()
-    dialog.querySelector<HTMLInputElement>('input')?.focus()
+    if (!dialog.open) dialog.showModal()
+    if (!loaded && !loading) {
+      if (mount) mount.textContent = '검색을 준비하고 있습니다…'
+      loading = ensureLoaded().finally(() => { loading = undefined })
+    }
+    await loading
+    if (dialog.open) dialog.querySelector<HTMLInputElement>('input')?.focus()
   }
 
   openBtn?.addEventListener('click', open)
@@ -144,7 +156,7 @@
     background: rgb(0 0 0 / 0.45);
   }
 
-  :root {
+  #search-dialog {
     --pagefind-ui-primary: var(--text);
     --pagefind-ui-text: var(--text);
     --pagefind-ui-background: var(--bg);
