@@ -2,7 +2,13 @@
 // Pagefind는 빌드 후 dist/pagefind 에 생성된다. 개발 서버에서는 동작하지 않는다.
 ---
 
-<button id="search-open" type="button" aria-label="검색 열기">
+<button
+  id="search-open"
+  type="button"
+  aria-label="검색 열기"
+  aria-haspopup="dialog"
+  aria-controls="search-dialog"
+>
   <svg
     width="15"
     height="15"
@@ -22,6 +28,10 @@
 </button>
 
 <dialog id="search-dialog" aria-label="검색">
+  <div class="search-heading">
+    <span>글·위키·학습 기록 검색</span>
+    <button id="search-close" type="button" aria-label="검색 닫기">닫기 ×</button>
+  </div>
   <div id="search-mount"></div>
 </dialog>
 
@@ -29,6 +39,7 @@
   const openBtn = document.getElementById('search-open') as HTMLButtonElement | null
   const dialog = document.getElementById('search-dialog') as HTMLDialogElement | null
   const mount = document.getElementById('search-mount')
+  const closeBtn = document.getElementById('search-close')
   let loaded = false
   let loading: Promise<void> | undefined
 
@@ -89,15 +100,20 @@
     if (!dialog.open) dialog.showModal()
     if (!loaded && !loading) {
       if (mount) mount.textContent = '검색을 준비하고 있습니다…'
-      loading = ensureLoaded().finally(() => {
-        loading = undefined
-      })
+      loading = ensureLoaded()
+        .catch(() => {
+          if (mount) mount.textContent = '검색을 시작하지 못했습니다. 창을 닫고 다시 열어 주세요.'
+        })
+        .finally(() => {
+          loading = undefined
+        })
     }
     await loading
     if (dialog.open) dialog.querySelector<HTMLInputElement>('input')?.focus()
   }
 
   openBtn?.addEventListener('click', open)
+  closeBtn?.addEventListener('click', () => dialog?.close())
 
   document.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
@@ -106,9 +122,18 @@
     }
   })
 
-  // 바깥을 누르면 닫는다
+  // 대화상자 내부의 빈 여백이 아니라 실제 바깥 영역을 눌렀을 때만 닫는다.
   dialog?.addEventListener('click', (e) => {
-    if (e.target === dialog) dialog.close()
+    if (e.target !== dialog) return
+    const rect = dialog.getBoundingClientRect()
+    if (
+      e.clientX < rect.left ||
+      e.clientX > rect.right ||
+      e.clientY < rect.top ||
+      e.clientY > rect.bottom
+    ) {
+      dialog.close()
+    }
   })
 </script>
 
@@ -156,6 +181,37 @@
   }
   #search-dialog::backdrop {
     background: rgb(0 0 0 / 0.45);
+  }
+
+  .search-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    position: sticky;
+    top: -1rem;
+    z-index: 1;
+    margin: -1rem -1rem 0.75rem;
+    padding: 0.5rem 1rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+  }
+  #search-close {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.5rem;
+    border: 0;
+    border-radius: 6px;
+    background: var(--bg-subtle);
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+  }
+  #search-close:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 
   #search-dialog {

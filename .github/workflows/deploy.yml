@@ -25,7 +25,10 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - run: npm run check
+      - run: npm test
       - run: npm run build
+      - run: npm run check:site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
 import Mark from '@/components/Mark.astro'
-import { SITE, getCategory, careerYear } from '@/consts'
+import { SITE, getCategory, careerLength } from '@/consts'
 import { PROJECTS } from '@/data/projects'
 import { readingMinutes, formatDate } from '@/utils/format'
 
@@ -24,13 +24,13 @@ const algoCount = (await getCollection('solutions')).length
 <BaseLayout title={SITE.title} description={SITE.description} searchIndex={false}>
   <div class="wrap-list">
     <section class="intro">
-      <p class="who">{careerYear()}년차 백엔드 개발자</p>
+      <p class="who">조해성 · 백엔드 개발자 · 경력 {careerLength()}</p>
       <h1>{SITE.tagline}</h1>
       <p>
         화면부터 DB 내부까지 전 계층을 직접 들여다봅니다. 느린 조회, 어긋난 데이터, 레거시 코드 등
         일하면서 만난 문제를 어디까지 파고 무엇을 바꿨는지 기록합니다.
       </p>
-      <ul class="proofs">
+      <ul class="proofs" aria-label="대표 문제 해결 사례">
         <li>
           <a href="/posts/address-search-9s-to-100ms/"
             >600만 건 주소 조회를 1초대로 개선한 뒤 조회 방식을 교체</a

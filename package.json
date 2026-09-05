@@ -9,6 +9,8 @@
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "check": "astro check",
+    "check:site": "node scripts/check-site.mjs",
+    "test": "node --test scripts/*.test.mjs",
     "new": "node scripts/new.mjs",
     "format": "prettier --write \"**/*.{astro,ts,js,md,mdx,json,css}\"",
     "postinstall": "astro sync"
