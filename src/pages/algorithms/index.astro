@@ -76,10 +76,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     <header class="head">
       <h1>알고리즘</h1>
       <p class="lead">
-        2021년 12월부터 2023년 10월까지 푼 문제를 모았습니다. Python으로 시작해 C++, JavaScript,
-        Java, C, SQL로 언어를 바꿔가며 풀었습니다. 풀이 코드는 저장소에 있고, 각 문제에서 바로
-        열립니다. 지금은 실무에서 만난 문제를 <a href="/posts/">글</a>과 <a href="/wiki/">위키</a>에
-        남기는 쪽에 시간을 쓰고 있어, 이후 풀이는 올리지 않고 아카이브로 둡니다.
+        2021년 12월부터 2023년 10월까지의 풀이 기록. 문제 이름으로 찾거나 난이도별로 넘겨 봅니다.
       </p>
     </header>
 
@@ -102,39 +99,38 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       <button type="button" id="clear" class="clear" hidden>필터 지우기</button>
     </div>
 
-    <section class="facets">
-      <div>
-        <h2>많이 푼 유형 <span class="hint">— 누르면 거릅니다</span></h2>
-        <div class="chips">
-          {
-            byCls.map(([k, v]) => (
-              <button type="button" class="chip" data-cls={k} aria-pressed="false">
-                {k} <em>{v}</em>
-              </button>
-            ))
-          }
+    <details class="advanced-facets">
+      <summary>유형·언어로 좁히기 <span id="facet-state"></span></summary>
+      <section class="facets" aria-label="알고리즘 상세 필터">
+        <div>
+          <h2>많이 푼 유형 <span class="hint">— 누르면 거릅니다</span></h2>
+          <div class="chips">
+            {
+              byCls.map(([k, v]) => (
+                <button type="button" class="chip" data-cls={k} aria-pressed="false">
+                  {k} <em>{v}</em>
+                </button>
+              ))
+            }
+          </div>
         </div>
-      </div>
-      <div>
-        <h2>언어</h2>
-        <div class="chips">
-          {
-            byLang.map(([k, v]) => (
-              <button type="button" class="chip" data-lang={k} aria-pressed="false">
-                {k} <em>{v}</em>
-              </button>
-            ))
-          }
+        <div>
+          <h2>언어</h2>
+          <div class="chips">
+            {
+              byLang.map(([k, v]) => (
+                <button type="button" class="chip" data-lang={k} aria-pressed="false">
+                  {k} <em>{v}</em>
+                </button>
+              ))
+            }
+          </div>
         </div>
-      </div>
-    </section>
-
-    <p class="repo">
-      문제 지문은 각 사이트의 저작물이라 싣지 않았습니다. 풀이 코드만 올렸고, 원문은 각 페이지의
-      링크에서 볼 수 있습니다. 저장소는
-      <a href="https://github.com/daedaem/algorithm-study-archive">algorithm-study-archive</a
-      >입니다.
-    </p>
+      </section>
+      <p class="repo">
+        유형 분류는 백준 풀이 기준입니다. 프로그래머스 풀이는 아직 유형 미분류입니다.
+      </p>
+    </details>
 
     <h2 class="site-title">백준</h2>
     {
@@ -247,6 +243,11 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     }
 
     <p class="empty" id="empty" hidden>조건에 맞는 문제가 없습니다.</p>
+    <p class="repo">
+      문제 지문은 원문 링크에서, 풀이 기록은 <a
+        href="https://github.com/daedaem/algorithm-study-archive">algorithm-study-archive</a
+      >에서도 볼 수 있습니다.
+    </p>
   </div>
   <script>
     // 정적 목록을 클라이언트에서 거른 뒤 그룹마다 10개씩 쪽으로 나눈다.
@@ -322,6 +323,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       }
 
       count.textContent = active ? `${shown}문제` : ''
+      document.getElementById('facet-state')!.textContent = [cls, lang].filter(Boolean).join(' · ')
       clearBtn.hidden = !active
       empty.hidden = !(active && shown === 0)
       for (const c of chips) {
@@ -371,7 +373,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
 
 <style>
   .page {
-    padding-block: 3.5rem 5rem;
+    padding-block: 1.5rem 5rem;
   }
   .head h1 {
     margin: 0;
@@ -396,24 +398,22 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
   }
 
   .stats {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-    margin: 32px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin: 1rem 0 0;
   }
   .stat {
-    background: var(--bg-subtle);
-    border-radius: var(--radius);
-    padding: 18px;
-    text-align: center;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
   }
   .stat b {
-    display: block;
-    font-size: 26px;
+    font-size: 1rem;
     letter-spacing: -0.03em;
   }
   .stat span {
-    font-size: 13px;
+    font-size: 0.875rem;
     color: var(--text-muted);
   }
 
@@ -421,7 +421,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     display: grid;
     grid-template-columns: 1.6fr 1fr;
     gap: 28px;
-    margin-top: 36px;
+    margin-top: 1rem;
   }
   .facets h2 {
     font-size: 13px;
@@ -430,6 +430,26 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     text-transform: uppercase;
     color: var(--text-muted);
     margin: 0 0 10px;
+  }
+  .advanced-facets {
+    margin-top: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .advanced-facets > summary {
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    min-height: 44px;
+    align-content: center;
+  }
+  #facet-state {
+    color: var(--accent);
+    margin-left: 0.5rem;
+  }
+  .advanced-facets .repo {
+    font-size: 0.875rem;
+    margin-block: 1rem;
   }
   .facets .hint {
     font-weight: 400;
@@ -581,7 +601,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
   }
 
   .site-title {
-    margin: 44px 0 12px;
+    margin: 24px 0 12px;
     font-size: 20px;
     letter-spacing: -0.03em;
     padding-bottom: 8px;
@@ -657,14 +677,10 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       padding-top: 1.5rem;
     }
     .stats {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
       margin-top: 20px;
     }
-    .stat {
-      padding: 12px;
-    }
     .stat b {
-      font-size: 22px;
+      font-size: 1rem;
     }
     .facets {
       grid-template-columns: 1fr;

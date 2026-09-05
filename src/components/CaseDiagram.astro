@@ -1,0 +1,98 @@
+---
+// 공개된 주소 사례의 판단 순서만 요약한다. 운영 구조나 새 성과를 추가하지 않는다.
+---
+
+<div class="case-diagram" role="group" aria-label="주소 조회 사례의 판단 순서">
+  <p class="diagram-label">조회 속도에서 관리 범위까지</p>
+  <ol>
+    <li>
+      <span class="step" aria-hidden="true">01</span><div>
+        <strong>실행 계획 확인</strong><span>선행 와일드카드와 범위 스캔</span>
+      </div>
+    </li>
+    <li>
+      <span class="step" aria-hidden="true">02</span><div>
+        <strong>DB 조회 개선</strong><span>9초 → 1초대</span>
+      </div>
+    </li>
+    <li>
+      <span class="step" aria-hidden="true">03</span><div>
+        <strong>주소 관리 범위 재검토</strong><span>직접 보유에서 외부 조회로</span>
+      </div>
+    </li>
+  </ol>
+</div>
+<style>
+  .case-diagram {
+    padding: 1.5rem;
+    background: color-mix(in srgb, var(--accent) 6%, var(--bg));
+    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+  }
+  .diagram-label {
+    margin: 0 0 1.25rem;
+    color: var(--accent);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.25rem;
+  }
+  li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 17px;
+    top: 36px;
+    bottom: -1.25rem;
+    width: 1px;
+    background: var(--border-strong);
+  }
+  .step {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    background: var(--bg);
+  }
+  strong {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  li div > span {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: 0.15rem;
+  }
+  @media (max-width: 600px) {
+    .case-diagram {
+      padding: 1rem;
+    }
+    ol {
+      gap: 0.75rem;
+    }
+    li:not(:last-child)::after {
+      bottom: -0.75rem;
+    }
+    .diagram-label {
+      margin-bottom: 0.75rem;
+    }
+  }
+</style>

@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
 import Mark from '@/components/Mark.astro'
+import CaseDiagram from '@/components/CaseDiagram.astro'
 import { SITE, getCategory } from '@/consts'
 import { PROJECTS } from '@/data/projects'
 import { readingMinutes, formatDate } from '@/utils/format'
@@ -22,7 +23,7 @@ const algoCount = (await getCollection('solutions')).length
 ---
 
 <BaseLayout title={SITE.title} description={SITE.description} searchIndex={false}>
-  <div class="wrap-list">
+  <div class="wrap-wide home">
     <section class="intro">
       <p class="who">조해성 · 백엔드 개발자</p>
       <h1>{SITE.tagline}</h1>
@@ -73,36 +74,45 @@ const algoCount = (await getCollection('solutions')).length
         <p class="empty muted">아직 발행한 글이 없습니다.</p>
       ) : (
         <section class="latest">
-          <a class="hero" href={`/posts/${featured.id}/`}>
-            {featuredCat && (
-              <span class="hero-cat" data-cat={featuredCat.id}>
-                {featuredCat.name}
-              </span>
-            )}
-            <h2>{featured.data.title}</h2>
-            {featured.data.cause ? (
-              <p class="hero-cause">
-                <span class="cause-label">
-                  <Mark size={14} />
-                  원인 한 줄
+          <a
+            class:list={['hero', { 'has-diagram': featured.id === 'address-search-9s-to-100ms' }]}
+            href={`/posts/${featured.id}/`}
+          >
+            <div class="hero-copy">
+              {featuredCat && (
+                <span class="hero-cat" data-cat={featuredCat.id}>
+                  {featuredCat.name}
                 </span>
-                {featured.data.cause}
-              </p>
-            ) : (
-              featured.data.description && <p>{featured.data.description}</p>
-            )}
-            <span class="hero-meta">
-              <time datetime={featured.data.date.toISOString()}>
-                {formatDate(featured.data.date)}
-              </time>
-              <span>· {readingMinutes(featured.body ?? '')}분</span>
-            </span>
+              )}
+              <h2>{featured.data.title}</h2>
+              {featured.data.cause ? (
+                <p class="hero-cause">
+                  <span class="cause-label">
+                    <Mark size={14} />
+                    원인 한 줄
+                  </span>
+                  {featured.data.cause}
+                </p>
+              ) : (
+                featured.data.description && <p>{featured.data.description}</p>
+              )}
+              <span class="hero-meta">
+                <time datetime={featured.data.date.toISOString()}>
+                  {formatDate(featured.data.date)}
+                </time>
+                <span>· {readingMinutes(featured.body ?? '')}분</span>
+              </span>
+              <span class="read-case">
+                판단 과정 읽기 <span aria-hidden="true">→</span>
+              </span>
+            </div>
+            {featured.id === 'address-search-9s-to-100ms' && <CaseDiagram />}
           </a>
 
           {rest.length > 0 && (
             <>
               <div class="sec-head">
-                <h2>글</h2>
+                <h2>최근 사례</h2>
                 <a href="/posts/">전체 보기 →</a>
               </div>
               <ul class="rows">
@@ -146,6 +156,16 @@ const algoCount = (await getCollection('solutions')).length
 </BaseLayout>
 
 <style>
+  .hero-copy {
+    min-width: 0;
+  }
+  .read-case {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--accent);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
   .entry-paths {
     display: flex;
     flex-wrap: wrap;
@@ -209,7 +229,7 @@ const algoCount = (await getCollection('solutions')).length
   /* 정체성 블록. 오른쪽 위에서 번지는 옅은 색조와 점 격자로 첫 화면에 질감을 준다. */
   .intro {
     position: relative;
-    padding: 56px 0 40px;
+    padding: 32px 0 28px;
     border-bottom: 1px solid var(--border);
   }
   .intro::before {
@@ -244,6 +264,10 @@ const algoCount = (await getCollection('solutions')).length
     color: var(--text-muted);
     max-width: 37rem;
   }
+  .intro .stack-line {
+    max-width: none;
+    font-size: 0.875rem;
+  }
 
   .empty {
     padding: 40px 0;
@@ -252,7 +276,17 @@ const algoCount = (await getCollection('solutions')).length
   /* 최신 글 히어로 */
   .hero {
     display: block;
-    padding: 40px 0 36px;
+    padding: 28px;
+    margin-block: 28px 36px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+  }
+  .hero.has-diagram {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 28px;
   }
 
   .hero-cat {
@@ -264,9 +298,10 @@ const algoCount = (await getCollection('solutions')).length
 
   .hero h2 {
     margin: 10px 0 0;
-    font-size: clamp(28px, 4.2vw, 36px);
+    font-size: clamp(24px, 3vw, 30px);
     line-height: 1.4;
     letter-spacing: -0.035em;
+    text-wrap: balance;
   }
 
   .hero:hover h2 {
@@ -334,7 +369,7 @@ const algoCount = (await getCollection('solutions')).length
 
   .sec-head h2 {
     margin: 0;
-    font-size: 0.8125rem;
+    font-size: 0.9375rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -342,7 +377,7 @@ const algoCount = (await getCollection('solutions')).length
   }
 
   .sec-head a {
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     color: var(--accent);
   }
 
@@ -450,7 +485,11 @@ const algoCount = (await getCollection('solutions')).length
       padding: 28px 0 24px;
     }
     .hero {
-      padding: 28px 0 26px;
+      padding: 20px;
+    }
+    .hero.has-diagram {
+      grid-template-columns: 1fr;
+      gap: 20px;
     }
   }
 </style>

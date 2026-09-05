@@ -63,7 +63,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
   updatedAt={updated}
   ogSlug={ogSlug}
 >
-  <article class="wrap post">
+  <article class:list={['wrap', 'post', { 'with-toc': toc.length > 2 }]}>
     <header>
       <div class="meta">
         {
@@ -126,14 +126,16 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
     {
       toc.length > 2 && (
         <nav class="toc" aria-label="목차" data-pagefind-ignore>
-          <p>목차</p>
-          <ul>
-            {toc.map((h) => (
-              <li class={`d${h.depth}`}>
-                <a href={`#${h.slug}`}>{h.text}</a>
-              </li>
-            ))}
-          </ul>
+          <details open>
+            <summary>목차</summary>
+            <ul>
+              {toc.map((h) => (
+                <li class={`d${h.depth}`}>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </details>
         </nav>
       )
     }
@@ -198,6 +200,19 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
     {!archived && <Comments />}
   </article>
 </BaseLayout>
+
+<script>
+  // 좁은 화면에서는 접힌 목차로 시작한다. JS가 없어도 목차는 그대로 읽을 수 있다.
+  const contents = document.querySelector<HTMLDetailsElement>('.post > .toc details')
+  const wide = matchMedia('(min-width: 1200px)')
+  if (contents) {
+    const sync = () => {
+      contents.open = wide.matches
+    }
+    sync()
+    wide.addEventListener('change', sync)
+  }
+</script>
 
 <style>
   .post {
@@ -395,13 +410,47 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
     border-radius: var(--radius);
     font-size: 0.875rem;
   }
-  .toc p {
-    margin: 0 0 0.5rem;
-    font-weight: 700;
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--text-muted);
+  .toc summary {
+    cursor: pointer;
+    min-height: 44px;
+    align-content: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .toc details[open] summary {
+    margin-bottom: 0.5rem;
+  }
+  .toc a {
+    display: block;
+    padding-block: 0.25rem;
+    line-height: 1.65;
+  }
+  @media (min-width: 1200px) {
+    .post.with-toc {
+      max-width: var(--measure-wide);
+      display: grid;
+      grid-template-columns: minmax(0, var(--measure)) minmax(0, 13rem);
+      column-gap: 3rem;
+      align-items: start;
+    }
+    .with-toc > :not(.toc) {
+      grid-column: 1;
+      min-width: 0;
+    }
+    .with-toc > .toc {
+      grid-column: 2;
+      grid-row: 1 / span 8;
+      position: sticky;
+      top: 6rem;
+      max-height: calc(100vh - 7rem);
+      overflow-y: auto;
+      margin-top: 0;
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border-left: 1px solid var(--border-strong);
+      border-radius: 0;
+    }
   }
   .toc ul {
     list-style: none;

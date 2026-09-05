@@ -52,6 +52,7 @@ test('related reading and comments are explicitly excluded from search', (t) => 
       <section aria-label="다른 글" data-pagefind-ignore>별개의 글 제목</section>
       <aside data-pagefind-ignore="all" aria-label="연결된 문서">연결된 문서 제목</aside>
       <section aria-label="댓글" data-pagefind-ignore>댓글 안내</section>
+      <nav aria-label="학습 기록 탐색" data-pagefind-ignore>학습 기록 전체</nav>
     </main>`,
   })
   assert.deepEqual(checkSite(root, site).errors, [])
@@ -61,8 +62,9 @@ test('missing search exclusions fail the build check', (t) => {
   const root = fixture(t, {
     'index.html': `<section aria-label="다른 글">다른 글 제목</section>
       <aside aria-label="연결된 문서">연결된 문서 제목</aside>
-      <section aria-label="댓글" data-pagefind-ignore-disabled>댓글 안내</section>`,
+      <section aria-label="댓글" data-pagefind-ignore-disabled>댓글 안내</section>
+      <nav aria-label="학습 기록 탐색">학습 기록 전체</nav>`,
   })
-  assert.equal(checkSite(root, site).errors.length, 3)
+  assert.equal(checkSite(root, site).errors.length, 4)
   assert.ok(checkSite(root, site).errors.every((error) => error.includes('excluded from search')))
 })

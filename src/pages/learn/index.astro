@@ -1,0 +1,136 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+const solutions = await getCollection('solutions')
+const notes = await getCollection('notes')
+const transition = notes.filter((n) => ['first-post', 'scsa'].includes(n.id))
+---
+
+<BaseLayout
+  title="학습 기록"
+  description="알고리즘 풀이와 2022~2023년 학습 노트, 개발자로 전환하던 시기의 기록."
+  searchIndex={false}
+>
+  <div class="wrap-list page">
+    <header>
+      <h1>학습 기록</h1><p>문제를 풀고, 개념을 익히고, 개발자로 방향을 바꾸던 기록입니다.</p>
+    </header>
+    <div class="collections">
+      <a href="/algorithms/" class="collection"
+        ><span class="count">{solutions.length}문제</span><h2>
+          알고리즘 <span aria-hidden="true">↗</span>
+        </h2><p>백준·프로그래머스 풀이를 문제 이름, 난이도, 언어로 찾습니다.</p><span class="period"
+          >2021–2023 · 풀이 아카이브</span
+        ></a
+      >
+      <a href="/notes/" class="collection"
+        ><span class="count">{notes.length}편</span><h2>
+          학습 노트 <span aria-hidden="true">↗</span>
+        </h2><p>JavaScript·TypeScript·웹 기초를 정리한 노트와 그 시기의 이야기입니다.</p><span
+          class="period">2022–2023 · 원문과 바로잡음</span
+        ></a
+      >
+    </div>
+    <section class="transition">
+      <h2>전환기의 기록</h2><p>기술 노트와는 별개로, 그때의 선택과 경험을 남겼습니다.</p><ul>
+        {
+          transition.map((note) => (
+            <li>
+              <a href={`/notes/${note.id}/`}>
+                {note.data.title.trim()} <span aria-hidden="true">→</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+    <p class="wiki-link">
+      계속 갱신하는 개념과 예제는 <a href="/wiki/">학습 위키 →</a>에 있습니다.
+    </p>
+  </div>
+</BaseLayout>
+<style>
+  .page {
+    padding-block: 2rem 4rem;
+  }
+  h1 {
+    margin: 0;
+    font-size: 2rem;
+  }
+  header p,
+  .transition p {
+    color: var(--text-muted);
+    margin: 0.5rem 0 0;
+  }
+  .collections {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+  .collection {
+    padding: 1.5rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+  }
+  .collection:hover {
+    border-color: var(--accent);
+  }
+  .count {
+    color: var(--accent);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  h2 {
+    font-size: 1.25rem;
+    margin: 0.5rem 0;
+  }
+  .collection h2 {
+    display: flex;
+    justify-content: space-between;
+  }
+  .collection p {
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+  .period {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  .transition {
+    margin-top: 2.5rem;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  li a {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  a:hover {
+    color: var(--accent);
+  }
+  .wiki-link {
+    margin-top: 2rem;
+    color: var(--text-muted);
+    font-size: 0.9375rem;
+  }
+  .wiki-link a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  @media (max-width: 600px) {
+    .collections {
+      grid-template-columns: 1fr;
+    }
+    .page {
+      padding-top: 1.25rem;
+    }
+  }
+</style>

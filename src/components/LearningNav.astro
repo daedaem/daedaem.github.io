@@ -1,0 +1,41 @@
+---
+const path = Astro.url.pathname
+const links = [
+  { href: '/learn/', label: '학습 기록 전체' },
+  { href: '/algorithms/', label: '알고리즘' },
+  { href: '/notes/', label: '학습 노트' },
+]
+---
+
+<nav class="wrap-wide learning-nav" aria-label="학습 기록 탐색" data-pagefind-ignore>
+  {
+    links.map((link) => (
+      <a href={link.href} aria-current={path.startsWith(link.href) ? 'page' : undefined}>
+        {link.label}
+      </a>
+    ))
+  }
+</nav>
+<style>
+  .learning-nav {
+    display: flex;
+    gap: 1.25rem;
+    padding-top: 1rem;
+    font-size: 0.875rem;
+  }
+  a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+  }
+  a[aria-current] {
+    color: var(--accent);
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  a:hover {
+    color: var(--text);
+  }
+</style>

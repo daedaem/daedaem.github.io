@@ -3,18 +3,10 @@ import { SITE } from '@/consts'
 import Search from './Search.astro'
 import ThemeToggle from './ThemeToggle.astro'
 import Mark from './Mark.astro'
+import { PRIMARY_NAV, activeNavigation } from '@/utils/navigation.mjs'
 
 const path = Astro.url.pathname
-const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href))
-
-const NAV = [
-  { href: '/posts/', label: '글' },
-  { href: '/wiki/', label: '위키' },
-  { href: '/algorithms/', label: '알고리즘' },
-  { href: '/notes/', label: '노트' },
-  { href: '/projects/', label: '프로젝트' },
-  { href: '/about/', label: '소개' },
-]
+const active = activeNavigation(path)
 ---
 
 <header>
@@ -27,9 +19,9 @@ const NAV = [
       <nav aria-label="주요 메뉴">
         <ul>
           {
-            NAV.map((item) => (
+            PRIMARY_NAV.map((item) => (
               <li>
-                <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                <a href={item.href} aria-current={active === item.href ? 'page' : undefined}>
                   {item.label}
                 </a>
               </li>

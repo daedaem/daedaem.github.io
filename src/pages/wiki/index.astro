@@ -31,10 +31,8 @@ const documents = entries.map((entry) => ({
   <div class="wrap-wide library">
     <header class="library-head">
       <div>
-        <p class="eyebrow">계속 고쳐 쓰는 지식 저장소</p><h1>학습 위키</h1>
-        <p class="lead">
-          막혔던 개념과 확인한 원리를 쌓습니다. 짧은 메모에서 시작해, 예제와 근거를 보태며 고칩니다.
-        </p>
+        <h1>학습 위키</h1>
+        <p class="lead">막혔던 개념과 확인한 원리. 주제로 고르거나 키워드로 다시 찾습니다.</p>
       </div>
       <p class="total"><strong>{entries.length}</strong>개 문서 · {groups.length}개 주제</p>
     </header>
@@ -42,19 +40,21 @@ const documents = entries.map((entry) => ({
       <aside class="subjects">
         <nav aria-label="위키 주제">
           <p class="nav-label">주제별로 찾기</p>
-          <a href="/wiki/" data-topic="" aria-current="page"
-            >전체 문서 <span>{entries.length}</span></a
-          >
-          {
-            groups.map((g) => (
-              <a href={'#' + g.id} data-topic={g.id}>
-                <>
-                  <span>{g.name}</span>
-                  <span>{g.count}</span>
-                </>
-              </a>
-            ))
-          }
+          <div class="topic-grid">
+            <a href="/wiki/" data-topic="" data-name="최근 갱신한 문서" aria-current="page"
+              ><span>전체</span><span>{entries.length}</span></a
+            >
+            {
+              groups.map((g) => (
+                <a href={'#' + g.id} data-topic={g.id} data-name={g.name}>
+                  <>
+                    <span>{g.name}</span>
+                    <span>{g.count}</span>
+                  </>
+                </a>
+              ))
+            }
+          </div>
         </nav>
         <p class="legend">메모 → 보완 중 → 정리됨<br />완성도보다 기록을 먼저 둡니다.</p>
         <a class="write-link" href="/admin/">작성자 편집 안내</a>
@@ -71,27 +71,34 @@ const documents = entries.map((entry) => ({
               autocomplete="off"
             /></label
           >
-          <div class="selects">
-            <label
-              >정리 상태<select id="wiki-status" name="status"
-                ><option value="">모든 상태</option>{
-                  Object.entries(statuses).map(([value, label]) => (
-                    <option value={value}>{label}</option>
-                  ))
-                }</select
-              ></label
-            >
-            <label
-              >정렬<select id="wiki-sort" name="sort"
-                ><option value="updated">최근 갱신순</option><option value="title">제목순</option
-                ></select
-              ></label
-            >
-            <button type="reset">초기화</button>
-          </div>
+          <details id="wiki-options" class="advanced">
+            <summary>상태·정렬 <span id="wiki-options-state"></span></summary>
+            <div class="selects">
+              <label
+                >정리 상태<select id="wiki-status" name="status"
+                  ><option value="">모든 상태</option>{
+                    Object.entries(statuses).map(([value, label]) => (
+                      <option value={value}>{label}</option>
+                    ))
+                  }</select
+                ></label
+              >
+              <label
+                >정렬<select id="wiki-sort" name="sort"
+                  ><option value="updated">최근 갱신순</option><option value="title">제목순</option
+                  ></select
+                ></label
+              >
+              <button type="reset">초기화</button>
+            </div>
+          </details>
         </form>
         <div class="result-head">
-          <h2 id="wiki-heading">전체 문서</h2><p id="wiki-count" role="status" aria-live="polite">
+          <h2 id="wiki-heading">최근 갱신한 문서</h2><p
+            id="wiki-count"
+            role="status"
+            aria-live="polite"
+          >
             {entries.length}개 문서
           </p>
         </div>
@@ -202,8 +209,14 @@ const documents = entries.map((entry) => ({
       else link.removeAttribute('aria-current')
     }
     document.getElementById('wiki-heading')!.textContent = topic
-      ? topics.find((link) => link.dataset.topic === topic)!.querySelector('span')!.textContent
-      : '전체 문서'
+      ? topics.find((link) => link.dataset.topic === topic)!.dataset.name!
+      : query.value.trim() || status.value
+        ? '검색 결과'
+        : sort.value === 'title'
+          ? '전체 문서 · 제목순'
+          : '최근 갱신한 문서'
+    document.getElementById('wiki-options-state')!.textContent =
+      status.value || sort.value !== 'updated' ? '· 조건 적용 중' : ''
     document.getElementById('wiki-count')!.textContent =
       result.total +
       '개 문서' +
@@ -236,6 +249,8 @@ const documents = entries.map((entry) => ({
     query.value = params.get('q') ?? ''
     status.value = params.get('status') ?? ''
     sort.value = params.get('sort') === 'title' ? 'title' : 'updated'
+    ;(document.getElementById('wiki-options') as HTMLDetailsElement).open =
+      !!status.value || sort.value !== 'updated'
     const requested = location.hash.slice(1) || params.get('topic') || ''
     topic = topics.some((link) => link.dataset.topic === requested) ? requested : ''
     page = Number(params.get('page')) || 1
@@ -292,21 +307,15 @@ const documents = entries.map((entry) => ({
 </script>
 <style>
   .library {
-    padding-top: 3rem;
+    padding-top: 2rem;
   }
   .library-head {
     display: flex;
     align-items: end;
     justify-content: space-between;
     gap: 2rem;
-    padding-bottom: 2rem;
+    padding-bottom: 1.25rem;
     border-bottom: 1px solid var(--border-strong);
-  }
-  .eyebrow {
-    margin: 0 0 0.5rem;
-    color: var(--accent);
-    font-size: 0.875rem;
-    font-weight: 600;
   }
   h1 {
     margin: 0;
@@ -331,8 +340,8 @@ const documents = entries.map((entry) => ({
   .library-layout {
     display: grid;
     grid-template-columns: 12rem minmax(0, 1fr);
-    gap: 3rem;
-    padding-top: 2rem;
+    gap: 2.5rem;
+    padding-top: 1.5rem;
   }
   .subjects {
     position: sticky;
@@ -382,11 +391,23 @@ const documents = entries.map((entry) => ({
   }
   .filters {
     display: grid;
-    gap: 1rem;
-    padding: 1.25rem;
+    gap: 0.5rem;
+  }
+  .advanced summary {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding-block: 0.5rem;
+    min-height: 44px;
+  }
+  .advanced[open] .selects {
+    padding: 1rem;
     background: var(--bg-subtle);
     border: 1px solid var(--border);
     border-radius: var(--radius);
+  }
+  #wiki-options-state {
+    color: var(--accent);
   }
   label {
     display: grid;
@@ -438,7 +459,7 @@ const documents = entries.map((entry) => ({
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    margin-top: 1.75rem;
+    margin-top: 1rem;
   }
   h2 {
     font-size: 1rem;
@@ -454,7 +475,7 @@ const documents = entries.map((entry) => ({
     margin: 0;
   }
   .documents li {
-    padding: 1.5rem 0;
+    padding: 1.1rem 0;
     border-bottom: 1px solid var(--border);
   }
   .doc-meta {
@@ -516,29 +537,51 @@ const documents = entries.map((entry) => ({
     }
     .subjects {
       position: static;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
-    .subjects nav {
-      display: flex;
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0.4rem;
-      overflow-x: auto;
-      padding: 3px;
     }
-    .nav-label,
     .legend,
     .write-link {
       display: none;
     }
     .subjects nav a {
-      white-space: nowrap;
-      gap: 0.75rem;
-      flex: none;
+      gap: 0.25rem;
+      font-size: 0.875rem;
+      padding: 0.5rem;
+      border: 1px solid var(--border-strong);
+    }
+    .nav-label {
+      margin-bottom: 0.5rem;
     }
     .total {
       margin-bottom: 0;
     }
     .library {
-      padding-top: 2rem;
+      padding-top: 1.25rem;
+    }
+    .library-head {
+      padding-bottom: 1rem;
+    }
+    .library-head h1 {
+      font-size: 1.875rem;
+    }
+    .total {
+      margin-top: 0.5rem;
+    }
+    .total strong {
+      font-size: 1rem;
+    }
+    .result-head {
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+    .result-head p {
+      margin: 0.25rem 0;
     }
   }
 </style>
