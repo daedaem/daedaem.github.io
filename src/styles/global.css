@@ -135,6 +135,15 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* 목차와 검색 결과의 앵커가 고정 헤더 뒤로 들어가지 않게 한다. */
+  scroll-padding-top: 6rem;
+}
+
+@media (max-width: 640px) {
+  html {
+    /* 모바일 헤더는 로고·도구와 메뉴의 두 줄이다. */
+    scroll-padding-top: 7.5rem;
+  }
 }
 
 /* 목록의 grid/flex 스타일이 페이지네이션·필터의 숨김 상태를 덮어쓰지 않게 한다. */
@@ -201,6 +210,11 @@ pre {
   overflow-x: auto;
   font-size: 0.875rem;
   line-height: 1.65;
+}
+
+/* 인라인 코드의 em 축소를 블록 코드에 다시 적용하지 않는다. */
+pre code {
+  font-size: inherit;
 }
 
 /* 코드 블록 우상단: 언어 라벨과 복사 버튼. 버튼은 BaseLayout의 스크립트가 붙인다. */

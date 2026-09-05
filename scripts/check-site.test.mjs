@@ -44,3 +44,25 @@ test('invalid escaping is reported instead of crashing', (t) => {
   const root = fixture(t, { 'index.html': '<a href="/%invalid/">bad</a>' })
   assert.equal(checkSite(root, site).errors.length, 1)
 })
+
+test('related reading and comments are explicitly excluded from search', (t) => {
+  const root = fixture(t, {
+    'index.html': `<main data-pagefind-body>
+      <h1>실제 글 제목</h1><p>본문은 검색에 남는다.</p>
+      <section aria-label="다른 글" data-pagefind-ignore>별개의 글 제목</section>
+      <aside data-pagefind-ignore="all" aria-label="연결된 문서">연결된 문서 제목</aside>
+      <section aria-label="댓글" data-pagefind-ignore>댓글 안내</section>
+    </main>`,
+  })
+  assert.deepEqual(checkSite(root, site).errors, [])
+})
+
+test('missing search exclusions fail the build check', (t) => {
+  const root = fixture(t, {
+    'index.html': `<section aria-label="다른 글">다른 글 제목</section>
+      <aside aria-label="연결된 문서">연결된 문서 제목</aside>
+      <section aria-label="댓글" data-pagefind-ignore-disabled>댓글 안내</section>`,
+  })
+  assert.equal(checkSite(root, site).errors.length, 3)
+  assert.ok(checkSite(root, site).errors.every((error) => error.includes('excluded from search')))
+})

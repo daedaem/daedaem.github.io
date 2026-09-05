@@ -34,29 +34,12 @@ const algoCount = (await getCollection('solutions')).length
         <a class="primary-path" href="/posts/"
           >문제 해결 사례 읽기 <span aria-hidden="true">↗</span></a
         >
-        <a href="/wiki/">학습 위키 탐색 <span aria-hidden="true">→</span></a>
+        <a href="/about/">소개·경력 보기 <span aria-hidden="true">→</span></a>
       </div>
-      <ul class="proofs" aria-label="대표 문제 해결 사례">
-        <li>
-          <a href="/posts/address-search-9s-to-100ms/"
-            >600만 건 주소 조회를 1초대로 개선한 뒤 조회 방식을 교체</a
-          >
-        </li>
-        <li>
-          <a href="/posts/null-and-empty-string-sync-failure/"
-            >5년 넘게 남아 있던 시스템 간 동기화 오류의 원인 두 가지를 규명</a
-          >
-        </li>
-        <li>
-          <a href="/posts/retire-flash-module-by-integration/"
-            >지원이 끝난 Flash 계약 모듈을 다시 만들지 않고 기존 시스템 연동으로 대체</a
-          >
-        </li>
-      </ul>
       <p class="stack-line">
         Java · Spring · Oracle · MyBatis · C#/.NET · React
         <span class="links"
-          ><a href="/about/">소개</a>
+          ><a href="/wiki/">학습 위키</a>
           <a href={SITE.githubUrl}>GitHub</a>
           <a href={SITE.linkedinUrl}>LinkedIn</a></span
         >
@@ -193,29 +176,6 @@ const algoCount = (await getCollection('solutions')).length
     letter-spacing: 0.02em;
     color: var(--accent);
   }
-  .proofs {
-    list-style: none;
-    margin: 22px 0 0;
-    padding: 0;
-    max-width: 40rem;
-  }
-  .proofs li {
-    padding: 8px 0;
-    border-top: 1px solid var(--border);
-    font-size: 14.5px;
-  }
-  .proofs li:first-child {
-    border-top: 0;
-    padding-top: 0;
-  }
-  .proofs a {
-    color: var(--text);
-  }
-  .proofs a:hover {
-    text-decoration: underline;
-    text-decoration-color: var(--accent);
-    text-underline-offset: 0.2em;
-  }
   .stance {
     margin: 18px 0 0;
     max-width: 40rem;
@@ -240,7 +200,7 @@ const algoCount = (await getCollection('solutions')).length
     color: var(--text-muted);
     text-decoration: underline;
     text-underline-offset: 0.2em;
-    text-decoration-color: var(--border-strong);
+    text-decoration-color: var(--text-muted);
   }
   .stack-line .links a:hover {
     color: var(--text);
