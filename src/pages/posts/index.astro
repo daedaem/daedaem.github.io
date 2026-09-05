@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
 import CategoryNav from '@/components/CategoryNav.astro'
+import PageHead from '@/components/PageHead.astro'
 import { readingMinutes } from '@/utils/format'
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
@@ -18,13 +19,12 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
   searchIndex={false}
 >
   <div class="wrap-list">
-    <header class="head">
-      <h1>글</h1>
+    <PageHead title="글">
       <p>
         실제로 맡아 고친 문제를 남깁니다. 무엇이 원인이었는지, 왜 그 방법을 골랐는지, 고르지 않은
         선택지는 무엇이었는지까지 씁니다.
       </p>
-    </header>
+    </PageHead>
 
     <CategoryNav counts={counts} total={posts.length} />
 
@@ -50,21 +50,6 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
 </BaseLayout>
 
 <style>
-  .head {
-    padding: 48px 0 28px;
-  }
-  .head h1 {
-    margin: 0;
-    font-size: 28px;
-    letter-spacing: -0.035em;
-  }
-  .head p {
-    margin: 12px 0 0;
-    max-width: 37rem;
-    color: var(--text-muted);
-    font-size: 15.5px;
-    line-height: 1.8;
-  }
   .rows {
     list-style: none;
     margin: 28px 0 72px;
@@ -73,10 +58,5 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
   }
   .empty {
     padding: 40px 0 72px;
-  }
-  @media (max-width: 640px) {
-    .head {
-      padding: 24px 0 20px;
-    }
   }
 </style>

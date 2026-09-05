@@ -38,6 +38,89 @@
   --measure-list: 52rem;
   --measure-wide: 64rem;
   --radius: 12px;
+
+  /* 같은 역할의 UI만 공유한다. 홈 문구와 글 제목은 별도의 위계를 유지한다. */
+  --type-caption: 0.8125rem;
+  --type-label: 0.875rem;
+  --type-body: 1rem;
+  --type-section: 1.25rem;
+  --type-page-title: 1.875rem;
+  --type-article-h2: 1.5rem;
+  --type-article-h3: 1.1875rem;
+  --page-inset: 2rem;
+  --control-size: 2.75rem;
+  --control-radius: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --page-inset: 1.5rem;
+    --type-page-title: 1.75rem;
+  }
+}
+
+/* 목록의 입력·조작 요소. 읽기 전용 상태 배지는 이 규칙에 포함하지 않는다. */
+.list-input,
+.control-button,
+.filter-chip {
+  font: inherit;
+  min-height: var(--control-size);
+  border-radius: var(--control-radius);
+}
+.list-input {
+  min-width: 0;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--text-dim);
+  background: var(--bg);
+  color: var(--text);
+  font-size: var(--type-body);
+}
+.list-input::placeholder {
+  color: var(--text-muted);
+}
+.control-button,
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: var(--control-size);
+  padding: 0.5rem 0.75rem;
+  font-size: var(--type-label);
+  line-height: 1.5;
+  cursor: pointer;
+}
+.control-button {
+  border: 1px solid var(--border-strong);
+  background: var(--bg);
+  color: var(--text);
+}
+.filter-chip {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  text-decoration: none;
+}
+:is(.control-button, .filter-chip):hover:not(:disabled) {
+  border-color: var(--accent);
+}
+.control-button:disabled {
+  color: var(--text-muted);
+  opacity: 0.6;
+  cursor: default;
+}
+.filter-chip[aria-pressed='true'],
+.filter-chip[aria-current]:not([aria-current='false']),
+.control-button[aria-current='page'] {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+  font-weight: 600;
+}
+:is(.list-input, .control-button, .filter-chip):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 /*

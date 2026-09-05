@@ -1,0 +1,45 @@
+---
+interface Props {
+  title: string
+  category?: string
+  divider?: boolean
+  compact?: boolean
+}
+const { title, category, divider = false, compact = false } = Astro.props
+---
+
+<header class:list={['page-head', { divider, compact }]}>
+  <h1 data-cat={category}>{title}</h1>
+  <div class="description"><slot /></div>
+</header>
+<style>
+  .page-head {
+    padding-block: var(--page-inset) 1.5rem;
+  }
+  .compact {
+    padding-top: 1.5rem;
+  }
+  .divider {
+    border-bottom: 1px solid var(--border-strong);
+  }
+  h1 {
+    margin: 0;
+    font-size: var(--type-page-title);
+    line-height: 1.35;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+  h1[data-cat]::before {
+    width: 12px;
+    height: 12px;
+    margin-right: 0.4em;
+    vertical-align: 0.1em;
+  }
+  .description :global(p) {
+    margin: 0.75rem 0 0;
+    max-width: 44rem;
+    font-size: var(--type-body);
+    line-height: 1.75;
+    color: var(--text-muted);
+  }
+</style>

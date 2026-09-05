@@ -223,13 +223,15 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
   }
   .body :global(h2) {
     margin-top: 3.25rem;
-    font-size: 21px;
+    font-size: var(--type-article-h2);
+    line-height: 1.5;
     padding-bottom: 0.4rem;
     border-bottom: 1px solid var(--border);
   }
   .body :global(h3) {
     margin-top: 2.25rem;
-    font-size: 1.125rem;
+    font-size: var(--type-article-h3);
+    line-height: 1.5;
   }
   .body :global(p),
   .body :global(ul),

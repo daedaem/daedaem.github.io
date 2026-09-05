@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import PageHead from '@/components/PageHead.astro'
 import { WIKI_TOPICS, getWikiTopic } from '@/consts'
 import { formatDate } from '@/utils/format'
 const entries = (await getCollection('wiki', ({ data }) => !data.draft)).sort(
@@ -29,13 +30,9 @@ const documents = entries.map((entry) => ({
   searchIndex={false}
 >
   <div class="wrap-wide library">
-    <header class="library-head">
-      <div>
-        <h1>학습 위키</h1>
-        <p class="lead">막혔던 개념과 확인한 원리. 주제로 고르거나 키워드로 다시 찾습니다.</p>
-      </div>
-      <p class="total"><strong>{entries.length}</strong>개 문서 · {groups.length}개 주제</p>
-    </header>
+    <PageHead title="학습 위키" divider>
+      <p class="lead">막혔던 개념과 확인한 원리. 주제로 고르거나 키워드로 다시 찾습니다.</p>
+    </PageHead>
     <div class="library-layout">
       <aside class="subjects">
         <nav aria-label="위키 주제">
@@ -56,18 +53,17 @@ const documents = entries.map((entry) => ({
             }
           </div>
         </nav>
-        <p class="legend">메모 → 보완 중 → 정리됨<br />완성도보다 기록을 먼저 둡니다.</p>
-        <a class="write-link" href="/admin/">작성자 편집 안내</a>
       </aside>
       <section class="results" aria-label="위키 문서 목록">
         {groups.map((g) => <span id={g.id} class="topic-anchor" aria-hidden="true" />)}
         <form id="wiki-filter" role="search" class="filters">
           <label class="query"
-            >문서 찾기<input
+            >이 위키에서 찾기<input
               id="wiki-query"
+              class="list-input"
               name="q"
               type="search"
-              placeholder="제목, 설명, 태그로 찾기"
+              placeholder="이 목록의 제목·설명·태그로 거르기"
               autocomplete="off"
             /></label
           >
@@ -75,7 +71,7 @@ const documents = entries.map((entry) => ({
             <summary>상태·정렬 <span id="wiki-options-state"></span></summary>
             <div class="selects">
               <label
-                >정리 상태<select id="wiki-status" name="status"
+                >정리 상태<select id="wiki-status" name="status" class="list-input"
                   ><option value="">모든 상태</option>{
                     Object.entries(statuses).map(([value, label]) => (
                       <option value={value}>{label}</option>
@@ -84,13 +80,14 @@ const documents = entries.map((entry) => ({
                 ></label
               >
               <label
-                >정렬<select id="wiki-sort" name="sort"
+                >정렬<select id="wiki-sort" name="sort" class="list-input"
                   ><option value="updated">최근 갱신순</option><option value="title">제목순</option
                   ></select
                 ></label
               >
-              <button type="reset">초기화</button>
+              <button type="reset" class="control-button">초기화</button>
             </div>
+            <p class="legend">메모: 짧은 기록 · 보완 중: 설명 추가 중 · 정리됨: 한 차례 정리</p>
           </details>
         </form>
         <div class="result-head">
@@ -137,12 +134,12 @@ const documents = entries.map((entry) => ({
         <div id="wiki-empty" class="empty" hidden>
           <h3>조건에 맞는 문서가 없습니다.</h3><p>
             검색어를 줄이거나 주제·정리 상태를 바꿔 보세요.
-          </p><button type="button" id="wiki-reset">전체 문서 보기</button>
+          </p><button type="button" id="wiki-reset" class="control-button">전체 문서 보기</button>
         </div>
         <nav class="pagination" aria-label="위키 쪽 이동" id="wiki-pagination" hidden>
-          <button id="wiki-prev" type="button">← 이전</button><span id="wiki-page"></span><button
-            id="wiki-next"
-            type="button">다음 →</button
+          <button id="wiki-prev" type="button" class="control-button">← 이전</button><span
+            id="wiki-page"></span><button id="wiki-next" class="control-button" type="button"
+            >다음 →</button
           >
         </nav>
         <noscript
@@ -306,37 +303,6 @@ const documents = entries.map((entry) => ({
   readURL()
 </script>
 <style>
-  .library {
-    padding-top: 2rem;
-  }
-  .library-head {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: 2rem;
-    padding-bottom: 1.25rem;
-    border-bottom: 1px solid var(--border-strong);
-  }
-  h1 {
-    margin: 0;
-    font-size: clamp(2rem, 4vw, 2.75rem);
-    letter-spacing: -0.04em;
-  }
-  .lead {
-    max-width: 35rem;
-    margin: 0.75rem 0 0;
-    color: var(--text-muted);
-    font-size: 1rem;
-  }
-  .total {
-    color: var(--text-muted);
-    font-size: 0.875rem;
-    white-space: nowrap;
-  }
-  .total strong {
-    color: var(--text);
-    font-size: 1.5rem;
-  }
   .library-layout {
     display: grid;
     grid-template-columns: 12rem minmax(0, 1fr);
@@ -376,15 +342,7 @@ const documents = entries.map((entry) => ({
     font-size: 0.875rem;
     line-height: 1.8;
     color: var(--text-muted);
-    border-top: 1px solid var(--border);
-    padding-top: 1rem;
-    margin-top: 1.5rem;
-  }
-  .write-link {
-    display: block;
-    font-size: 0.875rem;
-    padding-block: 0.75rem;
-    color: var(--accent);
+    margin: 0.75rem 0 0;
   }
   .results {
     min-width: 0;
@@ -415,23 +373,8 @@ const documents = entries.map((entry) => ({
     font-size: 0.875rem;
     color: var(--text-muted);
   }
-  input,
-  select,
-  button {
-    font: inherit;
-    color: var(--text);
-    background: var(--bg);
-    border: 1px solid var(--border-strong);
-    border-radius: 7px;
-    min-height: 44px;
-    padding: 0.6rem 0.75rem;
-  }
   input {
     width: 100%;
-    font-size: 1rem;
-  }
-  input::placeholder {
-    color: var(--text-muted);
   }
   .selects {
     display: flex;
@@ -441,14 +384,6 @@ const documents = entries.map((entry) => ({
   }
   .selects label {
     flex: 1;
-  }
-  button {
-    cursor: pointer;
-    font-size: 0.875rem;
-  }
-  button:disabled {
-    opacity: 0.45;
-    cursor: default;
   }
   :is(input, select, button, a):focus-visible {
     outline: 2px solid var(--accent);
@@ -528,9 +463,6 @@ const documents = entries.map((entry) => ({
     color: var(--text-muted);
   }
   @media (max-width: 760px) {
-    .library-head {
-      display: block;
-    }
     .library-layout {
       display: block;
       padding-top: 1.25rem;
@@ -544,10 +476,6 @@ const documents = entries.map((entry) => ({
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0.4rem;
     }
-    .legend,
-    .write-link {
-      display: none;
-    }
     .subjects nav a {
       gap: 0.25rem;
       font-size: 0.875rem;
@@ -556,24 +484,6 @@ const documents = entries.map((entry) => ({
     }
     .nav-label {
       margin-bottom: 0.5rem;
-    }
-    .total {
-      margin-bottom: 0;
-    }
-    .library {
-      padding-top: 1.25rem;
-    }
-    .library-head {
-      padding-bottom: 1rem;
-    }
-    .library-head h1 {
-      font-size: 1.875rem;
-    }
-    .total {
-      margin-top: 0.5rem;
-    }
-    .total strong {
-      font-size: 1rem;
     }
     .result-head {
       align-items: baseline;

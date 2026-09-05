@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import PageHead from '@/components/PageHead.astro'
+import PageNumbers from '@/components/PageNumbers.astro'
 import { getCollection } from 'astro:content'
 
 const LANG: Record<string, string> = {
@@ -73,12 +75,11 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
   searchIndex={false}
 >
   <div class="wrap-wide page">
-    <header class="head">
-      <h1>알고리즘</h1>
-      <p class="lead">
+    <PageHead title="알고리즘" compact>
+      <p>
         2021년 12월부터 2023년 10월까지의 풀이 기록. 문제 이름으로 찾거나 난이도별로 넘겨 봅니다.
       </p>
-    </header>
+    </PageHead>
 
     <section class="stats">
       <div class="stat"><b>{all.length}</b><span>전체</span></div>
@@ -90,13 +91,14 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     <div class="filter" role="search">
       <input
         id="q"
+        class="list-input"
         type="search"
         placeholder="문제 이름으로 찾기"
         aria-label="문제 이름으로 찾기"
         autocomplete="off"
       />
       <span id="count" class="count" aria-live="polite"></span>
-      <button type="button" id="clear" class="clear" hidden>필터 지우기</button>
+      <button type="button" id="clear" class="control-button" hidden>필터 지우기</button>
     </div>
 
     <details class="advanced-facets">
@@ -107,7 +109,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
           <div class="chips">
             {
               byCls.map(([k, v]) => (
-                <button type="button" class="chip" data-cls={k} aria-pressed="false">
+                <button type="button" class="chip filter-chip" data-cls={k} aria-pressed="false">
                   {k} <em>{v}</em>
                 </button>
               ))
@@ -119,7 +121,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
           <div class="chips">
             {
               byLang.map(([k, v]) => (
-                <button type="button" class="chip" data-lang={k} aria-pressed="false">
+                <button type="button" class="chip filter-chip" data-lang={k} aria-pressed="false">
                   {k} <em>{v}</em>
                 </button>
               ))
@@ -160,23 +162,16 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
               </li>
             ))}
           </ul>
-          <nav class="pager" aria-label="쪽 이동" hidden={g.items.length <= PAGE}>
-            <button type="button" class="pg prev" disabled>
+          <nav class="pager" aria-label={`${g.name} 쪽 이동`} hidden={g.items.length <= PAGE}>
+            <button type="button" class="pg control-button prev" disabled>
               ‹ 이전
             </button>
-            <span class="pages">
-              {Array.from({ length: pagesOf(g.items.length) }, (_, n) => (
-                <button
-                  type="button"
-                  class="pg num"
-                  data-page={n + 1}
-                  aria-current={n === 0 ? 'page' : undefined}
-                >
-                  {n + 1}
-                </button>
-              ))}
-            </span>
-            <button type="button" class="pg next" disabled={pagesOf(g.items.length) <= 1}>
+            <PageNumbers total={pagesOf(g.items.length)} />
+            <button
+              type="button"
+              class="pg control-button next"
+              disabled={pagesOf(g.items.length) <= 1}
+            >
               다음 ›
             </button>
             <span class="range">
@@ -215,23 +210,16 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
               </li>
             ))}
           </ul>
-          <nav class="pager" aria-label="쪽 이동" hidden={g.items.length <= PAGE}>
-            <button type="button" class="pg prev" disabled>
+          <nav class="pager" aria-label={`${g.name} 쪽 이동`} hidden={g.items.length <= PAGE}>
+            <button type="button" class="pg control-button prev" disabled>
               ‹ 이전
             </button>
-            <span class="pages">
-              {Array.from({ length: pagesOf(g.items.length) }, (_, n) => (
-                <button
-                  type="button"
-                  class="pg num"
-                  data-page={n + 1}
-                  aria-current={n === 0 ? 'page' : undefined}
-                >
-                  {n + 1}
-                </button>
-              ))}
-            </span>
-            <button type="button" class="pg next" disabled={pagesOf(g.items.length) <= 1}>
+            <PageNumbers total={pagesOf(g.items.length)} />
+            <button
+              type="button"
+              class="pg control-button next"
+              disabled={pagesOf(g.items.length) <= 1}
+            >
               다음 ›
             </button>
             <span class="range">
@@ -250,6 +238,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     </p>
   </div>
   <script>
+    import { paginationWindow } from '@/utils/pagination.mjs'
     // 정적 목록을 클라이언트에서 거른 뒤 그룹마다 10개씩 쪽으로 나눈다.
     // 검색어·유형·언어 세 조건은 AND이고, 조건이 바뀌면 모든 그룹을 1쪽으로 되돌린다.
     const PAGE = 10
@@ -297,11 +286,15 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       ;(nav.querySelector('.next') as HTMLButtonElement).disabled = cur >= pages
       nav.querySelector('.range')!.textContent = `${from + 1}–${to} / ${hit.length}`
       // 쪽 번호 버튼은 서버에서 그려 둔 것을 그대로 쓴다. JS로 새로 만들면 Astro 스코프 스타일이 안 붙는다.
+      const { numbers, gapBefore } = paginationWindow(pages, cur)
       for (const b of nav.querySelectorAll<HTMLButtonElement>('.num')) {
         const n = Number(b.dataset.page)
-        b.hidden = n > pages
+        b.hidden = !numbers.includes(n)
         if (n === cur) b.setAttribute('aria-current', 'page')
         else b.removeAttribute('aria-current')
+      }
+      for (const gap of nav.querySelectorAll<HTMLElement>('.pg-gap')) {
+        gap.hidden = !gapBefore.includes(Number(gap.dataset.before))
       }
       return hit.length
     }
@@ -373,35 +366,14 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
 
 <style>
   .page {
-    padding-block: 1.5rem 5rem;
-  }
-  .head h1 {
-    margin: 0;
-    font-size: 30px;
-    letter-spacing: -0.035em;
-  }
-  .lead {
-    margin: 14px 0 0;
-    max-width: 40rem;
-    color: var(--text-muted);
-    font-size: 15.5px;
-    line-height: 1.8;
-  }
-  .lead a {
-    color: var(--text);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-    text-decoration-color: var(--border-strong);
-  }
-  .lead a:hover {
-    text-decoration-color: var(--accent);
+    padding-bottom: 5rem;
   }
 
   .stats {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem 1.25rem;
-    margin: 1rem 0 0;
+    margin: 0;
   }
   .stat {
     display: inline-flex;
@@ -424,10 +396,9 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     margin-top: 1rem;
   }
   .facets h2 {
-    font-size: 13px;
+    font-size: var(--type-label);
     font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    letter-spacing: 0;
     color: var(--text-muted);
     margin: 0 0 10px;
   }
@@ -464,28 +435,6 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     margin: 0;
     padding: 0;
   }
-  .chip {
-    font: inherit;
-    font-size: 13px;
-    background: var(--bg-subtle);
-    border: 1px solid transparent;
-    border-radius: 999px;
-    padding: 5px 12px;
-    color: var(--text-muted);
-    cursor: pointer;
-  }
-  .chip:hover {
-    border-color: var(--border-strong);
-    color: var(--text);
-  }
-  .chip:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-  .chip.on {
-    background: var(--text);
-    color: var(--bg);
-  }
   .chip.on em {
     color: var(--bg);
   }
@@ -504,83 +453,35 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
   }
   .filter input {
     flex: 1 1 16rem;
-    font: inherit;
-    font-size: 15px;
-    padding: 10px 14px;
-    border: 1px solid var(--text-dim);
-    border-radius: 8px;
-    background: var(--bg);
-    color: var(--text);
-  }
-  .filter input:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 1px;
   }
   .count {
-    font-size: 13.5px;
+    font-size: var(--type-label);
     color: var(--text-muted);
     font-variant-numeric: tabular-nums;
-  }
-  .clear {
-    font: inherit;
-    font-size: 13px;
-    padding: 6px 12px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--bg-subtle);
-    color: var(--text-muted);
-    cursor: pointer;
-  }
-  .clear:hover {
-    color: var(--text);
-    border-color: var(--accent);
   }
 
   .pager {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 4px 8px;
+    gap: 8px;
     margin: 0 0 12px;
-    padding: 10px 0 0 1.2em;
+    padding-top: 12px;
     border-top: 1px solid var(--border);
-    font-size: 13.5px;
+    font-size: var(--type-label);
   }
-  .pages {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2px;
+  .prev {
+    grid-column: 1;
+    grid-row: 2;
   }
-  .pg {
-    font: inherit;
-    font-size: 13.5px;
-    min-width: 2em;
-    padding: 4px 8px;
-    border: 1px solid transparent;
-    border-radius: 6px;
-    background: none;
-    color: var(--accent);
-    cursor: pointer;
-    font-variant-numeric: tabular-nums;
-  }
-  .pg:hover:not(:disabled) {
-    background: var(--bg-subtle);
-  }
-  .pg:disabled {
-    color: var(--text-dim);
-    cursor: default;
-  }
-  .pg[aria-current='page'] {
-    background: var(--text);
-    color: var(--bg);
-    font-weight: 600;
-  }
-  .pg:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 1px;
+  .next {
+    grid-column: 3;
+    grid-row: 2;
   }
   .range {
-    margin-left: auto;
+    grid-column: 2;
+    grid-row: 2;
+    text-align: center;
     color: var(--text-dim);
     font-variant-numeric: tabular-nums;
   }
@@ -602,7 +503,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
 
   .site-title {
     margin: 24px 0 12px;
-    font-size: 20px;
+    font-size: var(--type-section);
     letter-spacing: -0.03em;
     padding-bottom: 8px;
     border-bottom: 1px solid var(--border);
@@ -654,7 +555,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     border-top: 1px solid var(--border);
   }
   .tier {
-    font-size: 12px;
+    font-size: var(--type-caption);
     color: var(--text-dim);
     font-variant-numeric: tabular-nums;
   }
@@ -667,18 +568,12 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
   }
   .cls,
   .lang {
-    font-size: 12.5px;
+    font-size: var(--type-caption);
     color: var(--text-dim);
     white-space: nowrap;
   }
 
   @media (max-width: 760px) {
-    .page {
-      padding-top: 1.5rem;
-    }
-    .stats {
-      margin-top: 20px;
-    }
     .stat b {
       font-size: 1rem;
     }

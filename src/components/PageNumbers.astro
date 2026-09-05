@@ -1,0 +1,53 @@
+---
+import { paginationWindow } from '@/utils/pagination.mjs'
+interface Props {
+  total: number
+}
+const { total } = Astro.props
+const { numbers, gapBefore } = paginationWindow(total, 1)
+---
+
+<span class="pages">
+  {
+    Array.from({ length: total }, (_, index) => index + 1).map((number) => (
+      <>
+        <span
+          class="pg-gap"
+          data-before={number}
+          hidden={!gapBefore.includes(number)}
+          aria-hidden="true"
+        >
+          …
+        </span>
+        <button
+          type="button"
+          class="pg control-button num"
+          data-page={number}
+          hidden={!numbers.includes(number)}
+          aria-label={`${number}쪽`}
+          aria-current={number === 1 ? 'page' : undefined}
+        >
+          {number}
+        </button>
+      </>
+    ))
+  }
+</span>
+<style>
+  .pages {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px;
+    grid-column: 1 / -1;
+    grid-row: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .pg-gap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 10px;
+    color: var(--text-muted);
+  }
+</style>

@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
 import CategoryNav from '@/components/CategoryNav.astro'
+import PageHead from '@/components/PageHead.astro'
 import { CATEGORIES } from '@/consts'
 import { readingMinutes } from '@/utils/format'
 
@@ -29,10 +30,9 @@ const { category, posts, counts, total } = Astro.props
 
 <BaseLayout title={category.name} description={category.description} searchIndex={false}>
   <div class="wrap-list">
-    <header class="head">
-      <h1 data-cat={category.id}>{category.name}</h1>
+    <PageHead title={category.name} category={category.id}>
       <p>{category.description}</p>
-    </header>
+    </PageHead>
 
     <CategoryNav counts={counts} total={total} active={category.id} />
 
@@ -57,27 +57,6 @@ const { category, posts, counts, total } = Astro.props
 </BaseLayout>
 
 <style>
-  .head {
-    padding: 48px 0 28px;
-  }
-  .head h1 {
-    margin: 0;
-    font-size: 28px;
-    letter-spacing: -0.035em;
-  }
-  .head h1[data-cat]::before {
-    width: 12px;
-    height: 12px;
-    margin-right: 0.4em;
-    vertical-align: 0.1em;
-  }
-  .head p {
-    margin: 12px 0 0;
-    max-width: 37rem;
-    color: var(--text-muted);
-    font-size: 15.5px;
-    line-height: 1.8;
-  }
   .rows {
     list-style: none;
     margin: 28px 0 72px;
@@ -86,10 +65,5 @@ const { category, posts, counts, total } = Astro.props
   }
   .empty {
     padding: 40px 0 72px;
-  }
-  @media (max-width: 640px) {
-    .head {
-      padding: 24px 0 20px;
-    }
   }
 </style>
