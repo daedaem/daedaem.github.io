@@ -1,0 +1,93 @@
+---
+import { getCollection } from 'astro:content'
+interface Props {
+  current: string
+  tags: string[]
+}
+const { current, tags } = Astro.props
+const pool = [
+  ...(await getCollection('wiki', ({ data }) => !data.draft)),
+  ...(await getCollection('posts', ({ data }) => !data.draft)),
+]
+const currentURL = '/wiki/' + current + '/'
+const candidates = pool.filter((e) => !(e.collection === 'wiki' && e.id === current))
+const references = candidates.filter((e) => e.body?.includes(currentURL))
+const related = candidates
+  .filter((e) => !references.includes(e))
+  .map((entry) => ({
+    entry,
+    score: entry.data.tags.filter((tag) => tags.some((t) => t.toLowerCase() === tag.toLowerCase()))
+      .length,
+  }))
+  .filter((e) => e.score > 0)
+  .sort((a, b) => b.score - a.score || a.entry.data.title.localeCompare(b.entry.data.title, 'ko'))
+  .slice(0, 3)
+  .map((e) => e.entry)
+---
+
+{
+  (references.length > 0 || related.length > 0) && (
+    <aside class="related" data-pagefind-ignore aria-label="연결된 문서">
+      {references.length > 0 && (
+        <section>
+          <h2>이 문서를 참고한 글</h2>
+          <ul>
+            {references.map((e) => (
+              <li>
+                <span>{e.collection === 'posts' ? '사례' : '위키'}</span>
+                <a href={'/' + e.collection + '/' + e.id + '/'}>{e.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {related.length > 0 && (
+        <section>
+          <h2>같은 주제로 이어 읽기</h2>
+          <ul>
+            {related.map((e) => (
+              <li>
+                <span>{e.collection === 'posts' ? '사례' : '위키'}</span>
+                <a href={'/' + e.collection + '/' + e.id + '/'}>{e.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </aside>
+  )
+}
+<style>
+  .related {
+    border-top: 1px solid var(--border-strong);
+    margin-top: 3rem;
+    padding-top: 1rem;
+  }
+  section + section {
+    margin-top: 1.5rem;
+  }
+  h2 {
+    font-size: 1rem;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-block: 0.7rem;
+  }
+  li span {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  a {
+    font-size: 0.9375rem;
+  }
+  a:hover {
+    color: var(--accent);
+  }
+</style>

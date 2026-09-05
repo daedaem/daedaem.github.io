@@ -1,5 +1,12 @@
-import { defineCollection, z } from 'astro:content'
+import { defineCollection } from 'astro:content'
+import { z } from 'astro/zod'
 import { glob } from 'astro/loaders'
+
+// 웹 편집기의 비어 있는 선택 날짜도 '미입력'으로 처리한다.
+const optionalDate = z.preprocess(
+  (value) => (value === '' || value === null ? undefined : value),
+  z.coerce.date().optional(),
+)
 
 /**
  * posts — 현재 쓰는 글. 파일명이 그대로 URL이 되므로 ASCII 슬러그로 만듭니다.
@@ -16,7 +23,7 @@ const posts = defineCollection({
      */
     cause: z.string().optional(),
     date: z.coerce.date(),
-    updated: z.coerce.date().optional(),
+    updated: optionalDate,
     /**
      * 일이 실제로 있었던 시기. 발행일과 다르다. 글은 나중에 몰아 쓸 수 있어도 사건의 시기는 따로 남긴다.
      * '2025년 5월', '2025년 11월 – 2026년 6월'처럼 월 단위 문자열로 쓴다.
@@ -48,7 +55,7 @@ const notes = defineCollection({
       /** 노션 TIL DB의 작성일시. 블로그 발행일이 아니라 노트를 처음 쓴 날이다. */
       date: z.coerce.date(),
       /** 노션 TIL DB의 최종 수정일 */
-      updated: z.coerce.date().optional(),
+      updated: optionalDate,
       summary: z.string().default(''),
       categories: z.array(z.string()).default([]),
       thumbnail: image().optional(),
@@ -69,7 +76,7 @@ const wiki = defineCollection({
     topic: z.enum(['java', 'spring', 'database', 'dotnet', 'web', 'infra', 'cs', 'etc']),
     tags: z.array(z.string()).default([]),
     created: z.coerce.date(),
-    updated: z.coerce.date().optional(),
+    updated: optionalDate,
     /**
      * seed   — 메모 수준. 뼈대만 있음
      * growing — 내용은 있지만 더 채울 계획

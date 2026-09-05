@@ -1,4 +1,5 @@
 ---
+draft: false
 title: 'MVC 패턴'
 description: 'Model·View·Controller를 나누는 이유와, 셋 사이의 의존 방향 규칙. 코드로 지키는 방법까지.'
 topic: 'cs'

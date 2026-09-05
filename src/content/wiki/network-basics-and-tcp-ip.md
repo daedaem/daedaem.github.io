@@ -1,4 +1,5 @@
 ---
+draft: false
 title: '네트워크 기초와 TCP/IP'
 description: '처리량·지연시간·토폴로지부터 IP의 세 가지 한계, TCP가 그것을 메우는 방식, 3-way/4-way handshake, TCP/IP 4계층까지.'
 topic: 'cs'

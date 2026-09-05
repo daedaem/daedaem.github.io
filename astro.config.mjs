@@ -1,13 +1,19 @@
 import { defineConfig } from 'astro/config'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
+import { unified } from '@astrojs/markdown-remark'
 import { SITE } from './src/consts.ts'
 import remarkNoteHeadings from './src/plugins/remark-note-headings.mjs'
 import rehypeContentFixups from './src/plugins/rehype-content-fixups.mjs'
 
 export default defineConfig({
   site: SITE.url,
-  integrations: [mdx(), sitemap()],
+  // 기존 본문의 인라인 공백과 remark/rehype 보정 규칙을 유지한다.
+  compressHTML: true,
+  integrations: [
+    mdx(),
+    sitemap({ filter: (page) => !new URL(page).pathname.startsWith('/admin/') }),
+  ],
   // Gatsby 시절의 한글 URL을 아카이브 주소로 넘긴다. 기존 유입과 북마크를 잃지 않기 위한 것.
   redirects: {
     '/info/': '/about/',
@@ -41,8 +47,10 @@ export default defineConfig({
     '/첫 글/': '/notes/first-post/',
   },
   markdown: {
-    remarkPlugins: [remarkNoteHeadings],
-    rehypePlugins: [rehypeContentFixups],
+    processor: unified({
+      remarkPlugins: [remarkNoteHeadings],
+      rehypePlugins: [rehypeContentFixups],
+    }),
     shikiConfig: {
       themes: { light: 'github-light', dark: 'github-dark' },
       wrap: true,

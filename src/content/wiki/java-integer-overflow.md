@@ -1,4 +1,5 @@
 ---
+draft: false
 title: 'Java 정수 오버플로는 예외를 던지지 않는다'
 description: 'int 범위를 넘으면 예외 없이 32비트 값이 순환한다. 금액과 카운트의 범위에 맞는 타입을 고르는 법.'
 topic: 'java'

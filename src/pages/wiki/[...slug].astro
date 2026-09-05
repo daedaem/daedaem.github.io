@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import WikiTree from '@/components/WikiTree.astro'
+import RelatedReading from '@/components/RelatedReading.astro'
 import { getWikiTopic } from '@/consts'
 import { formatDate, readingMinutes, tagSlug } from '@/utils/format'
 import { linkableTagSlugs } from '@/utils/tags'
@@ -109,6 +110,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
           </ul>
         )
       }
+      <RelatedReading current={entry.id} tags={entry.data.tags} />
     </article>
   </div>
 </BaseLayout>

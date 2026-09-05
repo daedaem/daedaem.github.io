@@ -60,6 +60,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   for (const asset of [
     'index.html',
     'posts/index.html',
+    'wiki/index.html',
+    'admin/index.html',
     'about/index.html',
     'pagefind/pagefind.js',
     'pagefind/pagefind-ui.js',

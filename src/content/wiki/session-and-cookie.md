@@ -1,4 +1,5 @@
 ---
+draft: false
 title: '세션과 쿠키는 어떻게 로그인을 유지하나'
 description: '세션은 서버가 가진 사물함이고 세션 쿠키는 브라우저가 가진 열쇠다. 왜 코드에서 쿠키 생성부를 찾을 수 없는지, getSession()이 세션을 매번 만들지 않는 이유, 그리고 Secure·HttpOnly를 켜는 순서.'
 topic: 'web'

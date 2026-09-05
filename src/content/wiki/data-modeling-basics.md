@@ -1,4 +1,5 @@
 ---
+draft: false
 title: '데이터 모델링 기초 — 개념·논리·물리와 데이터 독립성'
 description: '개논물 3단계, 외개내 3층 스키마, 모델링의 3요소. SQLD를 준비하며 정리한 개념 노트.'
 topic: 'database'

@@ -1,0 +1,165 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+---
+
+<BaseLayout
+  title="글쓰기·문서 관리"
+  description="대댐 로그 작성자를 위한 편집 안내."
+  noindex={true}
+  searchIndex={false}
+>
+  <div class="wrap editor">
+    <p class="eyebrow">작성자 도구</p>
+    <h1>글쓰기·문서 관리</h1>
+    <p class="lead">
+      GitHub 계정을 Pages CMS에 연결하면 학습 위키와 문제 해결 사례를 브라우저에서 작성·수정·삭제할
+      수 있습니다. 이 페이지는 편집기 연결 안내입니다.
+    </p>
+    <a class="launch" href="https://app.pagescms.org/" rel="noopener noreferrer"
+      >Pages CMS 편집기 열기 ↗</a
+    >
+    <p class="hint">
+      처음 사용한다면 GitHub 로그인과 저장소 접근 승인이 필요합니다.
+      <strong>daedaem/daedaem.github.io</strong> 저장소만 연결하세요. 작업 브랜치는
+      <strong>master</strong>입니다. 이 안내 페이지는 로그인 화면이 아니며, 편집 권한은 GitHub와
+      Pages CMS에서 확인합니다.
+    </p>
+    <section class="notice" aria-labelledby="disclosure">
+      <h2 id="disclosure">이곳은 비공개 노트가 아닙니다</h2>
+      <p>
+        ‘사이트 미발행’을 켜도 공개 GitHub 저장소에는 원문이 남습니다. 회사·고객사 식별 정보, 운영
+        구성, 보안 사고, 진행 중 회사 업무, 개인정보는 초안이나 이미지에도 넣지 마세요. 삭제해도 Git
+        이력까지 지워지지는 않습니다.
+      </p>
+    </section>
+    <section>
+      <h2>쓰고 반영하기</h2>
+      <ol>
+        <li>
+          <strong>학습 위키</strong>는 주제를 고르고 ‘메모’ 상태로 시작합니다. 실제로 맡아 해결한
+          일은 <strong>문제 해결 사례</strong>에 씁니다.
+        </li>
+        <li>
+          새 파일명은 날짜·시간으로 자동 제안됩니다. 생성할 때 <code>java-enum-state.md</code>처럼
+          내용을 설명하는 영문 소문자·숫자·하이픈으로 바꿀 수 있습니다. 파일명이 주소이므로 발행 후
+          바꾸지 않습니다.
+        </li>
+        <li>
+          코드·표·링크를 미리 보고 저장합니다. 기존 Markdown·HTML을 정확히 유지하려면 <strong
+            >Source</strong
+          > 모드를 사용합니다.
+        </li>
+        <li>
+          사실과 공개 범위를 직접 확인한 뒤 ‘사이트 미발행’을 끄고 저장합니다. <a
+            href="https://github.com/daedaem/daedaem.github.io/actions/workflows/deploy.yml"
+            rel="noopener noreferrer">배포 상태</a
+          >가 성공하면 실제 글을 확인합니다.
+        </li>
+      </ol>
+      <p>
+        저장과 배포는 별개입니다. 검사가 실패하면 기존 사이트가 유지됩니다. 잘못된 필수 항목이나
+        연결이 끊어진 내부 링크를 고친 뒤 다시 저장하세요.
+      </p>
+    </section>
+    <section>
+      <h2>노션에서 옮길 때</h2>
+      <ul>
+        <li>
+          공개 가능한 학습 내용만 한 문서씩 옮깁니다. 같은 주제의 위키가 있으면 새 글 대신
+          보완합니다.
+        </li>
+        <li>
+          페이지 본문은 복사하거나 Markdown으로 내보낸 뒤 Source 모드에 붙입니다. 노션 전용
+          블록·내부 링크는 일반 제목·표·블로그 링크로 바꿉니다.
+        </li>
+        <li>
+          노션 이미지 주소는 만료되거나 접근이 제한될 수 있습니다. 공개 권한과 민감 정보 여부를
+          확인한 이미지 파일을 CMS에서 다시 올립니다.
+        </li>
+        <li>
+          원본은 이전 결과를 확인하기 전까지 삭제하지 않습니다. 비공개 업무 메모와 지원서 문서는
+          비공개 공간에 남깁니다.
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h2>수정·삭제와 복구</h2>
+      <p>
+        수정할 때는 최종 수정일을 갱신합니다. 문서를 삭제하려면 다른 글에서 연결한 링크도 함께
+        정리해야 합니다. 홈의 대표 사례처럼 직접 연결된 글을 삭제하면 배포 검사가 막을 수 있습니다.
+        이전 내용은 GitHub 변경 이력에서 복구할 수 있습니다.
+      </p>
+      <p>
+        옛 학습 노트는 새로 만들거나 삭제하지 않습니다. 오탈자는 고치고, 틀린 설명은 취소선과
+        바로잡음으로 남깁니다.
+      </p>
+    </section>
+    <a class="back" href="/wiki/">← 학습 위키로</a>
+  </div>
+</BaseLayout>
+<style>
+  .editor {
+    padding-top: 3rem;
+  }
+  .eyebrow {
+    color: var(--accent);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  h1 {
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    letter-spacing: -0.04em;
+    margin: 0;
+  }
+  .lead {
+    font-size: 1.0625rem;
+    color: var(--text-muted);
+    margin-top: 1rem;
+  }
+  .launch {
+    display: inline-block;
+    padding: 0.85rem 1.25rem;
+    margin-block: 1rem 0.25rem;
+    background: var(--text);
+    color: var(--bg);
+    font-weight: 600;
+    border-radius: 8px;
+  }
+  .hint {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  section {
+    margin-top: 2.5rem;
+  }
+  h2 {
+    font-size: 1.125rem;
+  }
+  p,
+  li {
+    line-height: 1.85;
+  }
+  li {
+    margin-block: 0.7rem;
+  }
+  .notice {
+    padding: 1rem 1.5rem;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    background: var(--bg-subtle);
+  }
+  section a,
+  .back {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .back {
+    display: inline-block;
+    margin-top: 2rem;
+  }
+  a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+</style>

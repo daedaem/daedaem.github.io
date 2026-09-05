@@ -1,4 +1,5 @@
 ---
+draft: false
 title: '브라우저는 주소창에 URL을 넣으면 무엇을 하나'
 description: 'DNS 조회부터 DOM·CSSOM·Render Tree, Layout과 Paint까지. 그리고 어떤 CSS 속성이 Layout을 다시 유발하는가.'
 topic: 'web'

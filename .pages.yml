@@ -1,0 +1,154 @@
+# GitHub App은 이 블로그 저장소만 선택해 연결한다.
+# draft는 사이트 미발행이지 비공개 저장소가 아니다.
+media:
+  input: public/uploads
+  output: /uploads
+  categories: [image]
+content:
+  - name: wiki
+    label: 학습 위키
+    type: collection
+    path: src/content/wiki
+    format: yaml-frontmatter
+    subfolders: false
+    filename:
+      # 한글 제목으로도 유효한 ASCII 파일명이 기본 생성되도록 한다.
+      template: '{year}-{month}-{day}-{hour}{minute}{second}.md'
+      field: create
+    operations:
+      create: true
+      delete: true
+      rename: false
+    view:
+      primary: title
+      fields: [title, topic, status, draft, updated]
+      sort: [updated, created, title]
+      default: { sort: updated, order: desc }
+    fields:
+      - name: title
+        label: 제목
+        type: string
+        required: true
+      - name: description
+        label: 한 문장 요약
+        type: text
+        required: true
+      - name: topic
+        label: 주제
+        type: select
+        required: true
+        default: etc
+        options:
+          values:
+            - { name: java, label: Java }
+            - { name: spring, label: Spring }
+            - { name: database, label: 데이터베이스 }
+            - { name: dotnet, label: .NET }
+            - { name: web, label: 웹·프론트엔드 }
+            - { name: infra, label: 인프라·운영 }
+            - { name: cs, label: 기초 지식 }
+            - { name: etc, label: 그 밖에 }
+      - name: status
+        label: 정리 상태
+        type: select
+        required: true
+        default: seed
+        options:
+          values:
+            - { name: seed, label: 메모 }
+            - { name: growing, label: 보완 중 }
+            - { name: stable, label: 정리됨 }
+      - name: tags
+        label: 태그
+        type: string
+        list: true
+      - name: created
+        label: 처음 쓴 날짜
+        type: date
+        required: true
+        options: { format: yyyy-MM-dd }
+      - name: updated
+        label: 최종 수정일
+        type: date
+        default: ''
+        options: { format: yyyy-MM-dd }
+      - name: draft
+        label: 사이트 미발행
+        type: boolean
+        default: true
+        description: '켜면 사이트에만 숨깁니다. GitHub의 원문과 변경 이력은 공개됩니다. 회사 정보·개인정보는 입력하지 마세요.'
+      - name: body
+        label: 본문
+        type: rich-text
+        description: '개념, 작은 예제, 선택의 이유와 한계, 공식 출처 순으로 기록합니다. 기존 코드·HTML이 있는 글은 Source 모드에서 편집하고 확인하세요.'
+        options:
+          format: markdown
+          switcher: true
+  - name: posts
+    label: 문제 해결 사례
+    type: collection
+    path: src/content/posts
+    format: yaml-frontmatter
+    subfolders: false
+    filename:
+      template: '{year}-{month}-{day}-{hour}{minute}{second}.md'
+      field: create
+    operations:
+      create: true
+      delete: true
+      rename: false
+    view:
+      primary: title
+      fields: [title, category, draft, date]
+      sort: [date, title]
+      default: { sort: date, order: desc }
+    fields:
+      - { name: title, label: 제목, type: string, required: true }
+      - { name: description, label: 한 문장 요약, type: text, required: true }
+      - { name: cause, label: 원인 한 줄, type: text }
+      - name: category
+        label: 사례 분류
+        type: select
+        required: true
+        options:
+          values:
+            - { name: data-integrity, label: 데이터 정합성 }
+            - { name: performance, label: 성능 }
+            - { name: operations, label: 운영·장애 대응 }
+            - { name: legacy, label: 레거시 대응 }
+            - { name: auth-security, label: 인증·보안 }
+      - { name: tags, label: 태그, type: string, list: true }
+      - { name: date, label: 작성일, type: date, required: true, options: { format: yyyy-MM-dd } }
+      - {
+          name: updated,
+          label: 최종 수정일,
+          type: date,
+          default: '',
+          options: { format: yyyy-MM-dd },
+        }
+      - { name: happened, label: 실제 일이 있었던 시기, type: string }
+      - { name: featured, label: 홈 대표 글, type: boolean, default: false }
+      - name: draft
+        label: 사이트 미발행
+        type: boolean
+        default: true
+        description: '실제 경험·수치·공개 범위를 직접 검토한 뒤 해제하세요. 미발행이어도 GitHub 원문은 공개됩니다.'
+      - name: body
+        label: 본문
+        type: rich-text
+        description: '직접 한 일과 검토만 한 대안을 구분합니다. 회사 식별 정보, 보안 사고 사실, 진행 중 회사 업무를 넣지 마세요.'
+        options: { format: markdown, switcher: true }
+  - name: notes
+    label: 옛 학습 노트 — 원문 편집
+    type: collection
+    path: src/content/notes
+    format: yaml-frontmatter
+    operations:
+      create: false
+      rename: false
+      delete: false
+    # 옛 HTML·이미지 경로·취소선을 보존하기 위해 raw 편집기를 쓴다.
+    view:
+      primary: title
+      sort: [date, title]
+      default: { sort: date, order: desc }

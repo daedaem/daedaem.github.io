@@ -1,4 +1,5 @@
 ---
+draft: false
 title: 'JOIN 다섯 가지 — INNER, CROSS, LEFT/RIGHT/FULL OUTER'
 description: '오라클 고유 문법과 ANSI 조인의 차이, 그리고 다섯 가지 JOIN이 각각 무엇을 남기고 무엇을 버리는지 샘플 테이블로 확인하기.'
 topic: 'database'

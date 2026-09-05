@@ -1,4 +1,5 @@
 ---
+draft: false
 title: '구버전 JDK에서 TLS 핸드셰이크가 실패하는 이유'
 description: '"Could not generate DH keypair", "handshake_failure"가 날 때 프로토콜·암호군·인증서·JDK 업데이트 버전을 순서대로 확인하는 방법.'
 topic: 'java'

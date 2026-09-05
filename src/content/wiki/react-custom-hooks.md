@@ -1,4 +1,5 @@
 ---
+draft: false
 title: '커스텀 훅은 상태가 아니라 로직을 공유한다'
 description: 'use로 시작하는 이름 규칙, 호출마다 격리되는 상태, Effect 의존성의 참조가 바뀌어 반복 요청이 생기는 조건.'
 topic: 'web'

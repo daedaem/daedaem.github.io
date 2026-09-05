@@ -1,4 +1,5 @@
 ---
+draft: false
 title: 'NOT IN의 NULL 함정과 NOT EXISTS'
 description: '서브쿼리가 메인 쿼리의 컬럼을 참조하면 무엇이 달라지는가. NOT IN의 NULL 의미론과 실행 계획을 함께 보는 방법.'
 topic: 'database'

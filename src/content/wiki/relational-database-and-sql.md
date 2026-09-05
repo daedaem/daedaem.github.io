@@ -1,4 +1,5 @@
 ---
+draft: false
 title: '관계형 데이터베이스는 무엇을 해결했나'
 description: '파일 시스템이 왜 부족했는지부터 계층형·네트워크형·객체지향형을 거쳐 관계형이 표준이 된 이유, 그리고 SQL 다섯 갈래(DQL·DML·DDL·TCL·DCL).'
 topic: 'database'

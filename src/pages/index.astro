@@ -30,6 +30,12 @@ const algoCount = (await getCollection('solutions')).length
         화면부터 DB 내부까지 전 계층을 직접 들여다봅니다. 느린 조회, 어긋난 데이터, 레거시 코드 등
         일하면서 만난 문제를 어디까지 파고 무엇을 바꿨는지 기록합니다.
       </p>
+      <div class="entry-paths" aria-label="방문 목적에 맞게 읽기">
+        <a class="primary-path" href="/posts/"
+          >문제 해결 사례 읽기 <span aria-hidden="true">↗</span></a
+        >
+        <a href="/wiki/">학습 위키 탐색 <span aria-hidden="true">→</span></a>
+      </div>
       <ul class="proofs" aria-label="대표 문제 해결 사례">
         <li>
           <a href="/posts/address-search-9s-to-100ms/"
@@ -46,16 +52,7 @@ const algoCount = (await getCollection('solutions')).length
             >지원이 끝난 Flash 계약 모듈을 다시 만들지 않고 기존 시스템 연동으로 대체</a
           >
         </li>
-        <li>
-          <a href="/posts/staged-auth-and-password-migration/"
-            >로그인 인증을 단계로 재설계하고 비밀번호 저장 방식을 이행</a
-          >
-        </li>
       </ul>
-      <p class="stance">
-        새 기술을 들여오기 전에 지금 시스템의 문제를 정확히 이해하는 것을 먼저 둡니다. 원인이 확정될
-        때까지 좁히고, 바꿀 것과 바꾸지 않을 것을 구분하는 개발자를 지향합니다.
-      </p>
       <p class="stack-line">
         Java · Spring · Oracle · MyBatis · C#/.NET · React
         <span class="links"
@@ -166,6 +163,29 @@ const algoCount = (await getCollection('solutions')).length
 </BaseLayout>
 
 <style>
+  .entry-paths {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .entry-paths a {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.7rem 1rem;
+    min-height: 44px;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    background: var(--bg);
+  }
+  .entry-paths .primary-path {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
   .who {
     margin: 0 0 10px;
     font-size: 13.5px;
