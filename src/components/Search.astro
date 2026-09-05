@@ -89,7 +89,9 @@
     if (!dialog.open) dialog.showModal()
     if (!loaded && !loading) {
       if (mount) mount.textContent = '검색을 준비하고 있습니다…'
-      loading = ensureLoaded().finally(() => { loading = undefined })
+      loading = ensureLoaded().finally(() => {
+        loading = undefined
+      })
     }
     await loading
     if (dialog.open) dialog.querySelector<HTMLInputElement>('input')?.focus()
