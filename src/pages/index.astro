@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
 import Mark from '@/components/Mark.astro'
-import CaseDiagram from '@/components/CaseDiagram.astro'
 import { SITE, getCategory } from '@/consts'
 import { PROJECTS } from '@/data/projects'
 import { readingMinutes, formatDate } from '@/utils/format'
@@ -86,11 +85,7 @@ const algoCount = (await getCollection('solutions')).length
         <p class="empty muted">아직 발행한 글이 없습니다.</p>
       ) : (
         <section class="latest">
-          <a
-            class:list={['hero', { 'has-diagram': featured.id === 'address-search-9s-to-100ms' }]}
-            href={`/posts/${featured.id}/`}
-            aria-labelledby="featured-case-title"
-          >
+          <a class="hero" href={`/posts/${featured.id}/`} aria-labelledby="featured-case-title">
             <div class="hero-copy">
               {featuredCat && (
                 <span class="hero-cat" data-cat={featuredCat.id}>
@@ -119,7 +114,6 @@ const algoCount = (await getCollection('solutions')).length
                 판단 과정 읽기 <span aria-hidden="true">→</span>
               </span>
             </div>
-            {featured.id === 'address-search-9s-to-100ms' && <CaseDiagram />}
           </a>
 
           {rest.length > 0 && (
@@ -319,12 +313,6 @@ const algoCount = (await getCollection('solutions')).length
     border-radius: var(--radius);
     background: var(--bg-card);
   }
-  .hero.has-diagram {
-    display: grid;
-    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-    align-items: center;
-    gap: 28px;
-  }
 
   .hero-cat {
     display: block;
@@ -522,10 +510,6 @@ const algoCount = (await getCollection('solutions')).length
     }
     .hero {
       padding: 20px;
-    }
-    .hero.has-diagram {
-      grid-template-columns: 1fr;
-      gap: 20px;
     }
   }
 </style>
