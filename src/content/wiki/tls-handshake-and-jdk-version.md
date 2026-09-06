@@ -5,7 +5,7 @@ description: '"Could not generate DH keypair", "handshake_failure"가 날 때 �
 topic: 'java'
 tags: ['Java', 'JDK', 'TLS', 'HTTPS', '레거시']
 created: 2026-09-04
-updated: 2026-09-04
+updated: 2026-09-06
 status: 'stable'
 ---
 
@@ -28,12 +28,14 @@ The server selected protocol version TLS10 is not accepted
 | 런타임 | SunJSSE 클라이언트의 대표적인 차이 |
 |---|---|
 | JDK 6 | 초기 릴리스의 기본은 TLS 1.0. 다만 6u111부터 TLS 1.1, 6u121부터 TLS 1.2 지원이 추가됨 |
-| JDK 7 | TLS 1.1·1.2를 지원하지만 클라이언트에서는 기본 비활성 |
+| JDK 7 | 초기 릴리스는 TLS 1.1·1.2를 지원하되 클라이언트 기본값에서는 비활성. Oracle JDK 7u131부터는 둘 다 기본 활성 |
 | JDK 8 | TLS 1.1·1.2가 클라이언트에서 기본 활성. 이후 업데이트에서 취약 프로토콜·알고리즘 기본 차단도 계속 바뀜 |
 
 따라서 `java -version`에서 메이저 버전만 보면 부족하다. 같은 JDK 6·7·8이라도 업데이트 릴리스와 보안 속성(`jdk.tls.disabledAlgorithms`)에 따라 지원·활성 값이 달라진다. `Could not generate DH keypair`도 특정 JDK/공급자 구현이 서버의 DH 파라미터를 처리하지 못했다는 단서이지, 모든 JDK 6에 동일한 1024비트 상한이 있다는 일반 규칙으로 쓰면 안 된다.
 
-먼저 `-Djavax.net.debug=ssl,handshake` 로그로 클라이언트가 제안한 프로토콜과 암호군, 서버 응답, 인증서 검증 실패 지점을 확인한다. JDK 7처럼 지원은 하지만 기본 비활성인 버전은 `https.protocols`나 애플리케이션의 `SSLContext` 설정으로 달라질 수 있다. 다만 약한 프로토콜을 다시 켜는 방식은 보안 검토 없이 적용하지 않는다.
+Oracle JDK 7u131에서 TLS 1.1·1.2의 클라이언트 기본 활성화가 명시되었다. 이후 보안 업데이트에서는 다시 기본 차단이 바뀔 수 있으므로 이 표를 모든 후속 버전의 고정값으로 보지 않는다. [Oracle 7u131 릴리스 노트](https://www.oracle.com/java/technologies/javase/7u131-relnotes.html)
+
+먼저 `-Djavax.net.debug=ssl,handshake` 로그로 클라이언트가 제안한 프로토콜과 암호군, 서버 응답, 인증서 검증 실패 지점을 확인한다. 지원 여부뿐 아니라 `https.protocols`, 애플리케이션의 `SSLContext`와 보안 속성도 함께 확인한다. 다만 약한 프로토콜을 다시 켜는 방식은 보안 검토 없이 적용하지 않는다.
 
 ## 서버 쪽을 낮추는 것은 답이 아니다
 
@@ -54,6 +56,6 @@ The server selected protocol version TLS10 is not accepted
 ## 정리
 
 - 핸드셰이크 실패는 JDK의 정확한 업데이트 버전과 디버그 로그를 먼저 확인한다.
-- JDK 메이저 버전만으로 지원 프로토콜과 DH 한계를 단정할 수 없다. JDK 6 후반 업데이트에도 TLS 1.2 지원이 추가됐고, JDK 7은 TLS 1.2가 클라이언트 기본값이 아니었다.
+- JDK 메이저 버전만으로 지원 프로토콜과 DH 한계를 단정할 수 없다. JDK 6 후반 업데이트에도 TLS 1.2 지원이 추가됐고, Oracle JDK 7u131에서는 클라이언트 기본 활성값이 바뀌었다.
 - 서버의 보안 수준을 낮춰 달라는 요청은 하지 않는다.
 - 런타임을 못 올리면 통신 모듈 분리나 기존 경로 경유가 선택지이고, 어느 쪽이든 이유를 기록으로 남긴다.

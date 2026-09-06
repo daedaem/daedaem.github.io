@@ -22,6 +22,7 @@ type Item = {
   cls: string[]
   lang: string[]
   href: string
+  needsReview: boolean
 }
 const all: Item[] = solutions
   .map((s) => ({
@@ -32,6 +33,7 @@ const all: Item[] = solutions
     cls: s.data.categories,
     lang: s.data.langs.map((l) => LANG[l] ?? l),
     href: `/algorithms/${s.id}/`,
+    needsReview: Boolean(s.data.reviewNote),
   }))
   .sort((a, b) => b.rank - a.rank || a.title.localeCompare(b.title, 'ko'))
 
@@ -156,6 +158,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
                 <span class="tier">{i.tier}</span>
                 <a class="name" href={i.href}>
                   {i.title}
+                  {i.needsReview && <span class="review-label"> · 확인 필요</span>}
                 </a>
                 <span class="cls">{i.cls.slice(0, 3).join(' · ')}</span>
                 <span class="lang">{i.lang.join(', ')}</span>
@@ -204,6 +207,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
                 <span class="tier">{g.name.replace('Level ', 'Lv')}</span>
                 <a class="name" href={i.href}>
                   {i.title}
+                  {i.needsReview && <span class="review-label"> · 확인 필요</span>}
                 </a>
                 <span class="cls">{i.cls.slice(0, 3).join(' · ')}</span>
                 <span class="lang">{i.lang.join(', ')}</span>

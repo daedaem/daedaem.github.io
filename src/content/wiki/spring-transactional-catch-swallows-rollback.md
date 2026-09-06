@@ -5,7 +5,7 @@ description: '서비스가 업무 결과를 문자열로 반환하는 구조에�
 topic: 'spring'
 tags: ['Spring', '트랜잭션', '예외', '롤백', 'AOP']
 created: 2026-08-26
-updated: 2026-09-05
+updated: 2026-09-06
 status: 'stable'
 ---
 
@@ -64,7 +64,18 @@ catch를 서비스 안에 유지해야만 한다면 catch 블록에서 `Transact
 
 ## 확인 방법
 
-`org.springframework.transaction` 로그 레벨을 DEBUG로 올리면 "Initiating transaction rollback / commit"이 찍힌다. catch해서 문자열을 반환하는 케이스가 commit으로 나오는 것을 직접 볼 수 있다.
+실제로 사용하는 트랜잭션 매니저의 로거를 DEBUG로 설정한다. 공통 상위 클래스도 `getClass()`를 기준으로 로거를 만들기 때문에, `org.springframework.transaction`만 켜서는 다른 패키지의 JDBC/JPA 매니저 로그까지 보장되지 않는다. [Spring AbstractPlatformTransactionManager 소스](https://github.com/spring-projects/spring-framework/blob/main/spring-tx/src/main/java/org/springframework/transaction/support/AbstractPlatformTransactionManager.java)
+
+예를 들어 Log4j 1.x 설정을 사용하는 레거시 애플리케이션이라면 다음 중 실제 사용하는 매니저의 줄을 적용한다. 로깅 프레임워크가 다르면 같은 로거 이름을 해당 설정 형식으로 옮긴다.
+
+```properties
+# JDBC: 실제 클래스가 DataSourceTransactionManager일 때
+log4j.logger.org.springframework.jdbc.datasource.DataSourceTransactionManager=DEBUG
+# JPA: 실제 클래스가 JpaTransactionManager일 때
+log4j.logger.org.springframework.orm.jpa.JpaTransactionManager=DEBUG
+```
+
+다른 구현체나 하위 클래스를 쓰면 그 클래스 이름을 확인한다. JTA 매니저처럼 `org.springframework.transaction` 아래에 있는 구현은 기존 패키지 설정으로도 보일 수 있다. rollback-only가 아닌 상태에서 문자열을 정상 반환하는 경로와, 예외가 프록시 밖으로 나가는 경로를 비교해 commit/rollback 로그를 확인한다. Log4j 1.x는 구형 환경을 읽기 위한 설정 예시이지 신규 도입 권장이 아니다.
 
 ## 정리
 

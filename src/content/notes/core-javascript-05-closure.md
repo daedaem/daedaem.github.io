@@ -1,7 +1,7 @@
 ---
 slug: 'core-javascript-05-closure'
 date: '2023-02-15T14:54:16Z'
-updated: '2023-11-16T08:22:13Z'
+updated: '2026-09-06'
 title: '코어자바스크립트 ch5. 클로저'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '내부 함수와 LexicalEnvironment의 조합에서 나타나는 특별한 현상'
@@ -530,6 +530,20 @@ ex) Flux 아키텍처 구현체 Redux의 미들웨어 예시
       : next(action);
   }
   ```
+
+당시 예제에서 변경 후 상태로 표시한 부분: ~~`console.log('next state', store.getState());` (`next(action)` 호출 전)~~
+
+> **바로잡음(2026-09-06):** 앞의 코드는 다음 미들웨어로 액션을 전달하기 전에 상태를 읽으므로 변경 전 상태를 출력한다. 일반적인 동기 액션 처리에서는 `next(action)`이 돌아온 뒤 상태를 읽는다. 다음 미들웨어가 처리를 지연시키는 경우까지 완료를 보장하는 것은 아니다. [Redux 미들웨어 문서](https://redux.js.org/understanding/history-and-design/middleware)
+
+```js
+// 2026-09-06 교정 예제: 액션 전달 후 상태 조회
+const logger = store => next => action => {
+  console.log('dispatching', action);
+  const dispatched = next(action);
+  console.log('next state', store.getState());
+  return dispatched;
+};
+```
 
 ## 4. 정리
 

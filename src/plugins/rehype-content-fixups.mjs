@@ -19,7 +19,10 @@ export default function rehypeContentFixups() {
       ) {
         // 행 사이의 공백 텍스트는 rehype-raw가 표 밖으로 밀어내 빈 줄만 남기므로 미리 지운다
         walk(node, null, (n) => {
-          if (n.children)
+          if (
+            n.children &&
+            ['table', 'thead', 'tbody', 'tfoot', 'tr', 'colgroup'].includes(n.tagName)
+          )
             n.children = n.children.filter((c) => !(c.type === 'text' && !c.value.trim()))
         })
         const i = parent.children.indexOf(node)

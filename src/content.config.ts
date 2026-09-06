@@ -88,7 +88,7 @@ const wiki = defineCollection({
 })
 
 /**
- * solutions — 알고리즘 풀이. 본문은 본인이 작성한 코드만 담는다.
+ * solutions — 과거 알고리즘 학습 코드. 출처·문제 연결의 확인이 필요한 기록은 표시한다.
  * 문제 지문과 예제 입출력은 원 사이트의 저작물이라 싣지 않고 링크로 보낸다.
  */
 const solutions = defineCollection({
@@ -105,6 +105,7 @@ const solutions = defineCollection({
     runtime: z.string().default(''),
     problemUrl: z.string().default(''),
     langs: z.array(z.string()).default([]),
+    reviewNote: z.string().optional(),
   }),
 })
 

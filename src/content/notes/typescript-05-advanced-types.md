@@ -1,7 +1,7 @@
 ---
 slug: 'typescript-05-advanced-types'
 date: '2023-03-24T14:34:43Z'
-updated: '2023-04-12T10:38:03Z'
+updated: '2026-09-06'
 title: '타입스크립트 - 4. Advanced Typing Concepts'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: '타입 가드, 식별된 공용체 ,함수 오버로드'
@@ -293,6 +293,21 @@ fetchedUserData.job?.title
 ```
 
 > **바로잡음(2026-08-30):** 원래는 `fetchedUserData?.job.title`이라고 적혀 있었다. `?.`는 **없을 수도 있는 것 바로 뒤**에 붙인다. 여기서 없을 수 있는 건 `fetchedUserData`가 아니라 `job`이므로 `job?.title`이 맞다. 원래 코드는 `job`이 없으면 그대로 TypeError가 난다.
+
+타입 선언이 빠진 위 예제의 접근: ~~`fetchedUserData.job?.title`~~
+
+> **바로잡음(2026-09-06):** 선택적 체이닝은 null/undefined 접근을 막는 문법이지, 추론 타입에 없는 속성을 추가하는 문법은 아니다. 위 예제를 TypeScript로 검사하면 `job`이 선언되지 않아 오류가 난다. 선택 속성이 있는 타입을 먼저 선언한다. [TypeScript 선택 속성 문서](https://www.typescriptlang.org/docs/handbook/2/objects.html#optional-properties)
+
+```ts
+// 2026-09-06 교정 예제: 선택 속성 모델
+type UserData = {
+  id: string;
+  name: string;
+  job?: { title: string };
+};
+const fetchedUserData: UserData = { id: 'u1', name: 'Haesung' };
+const jobTitle = fetchedUserData.job?.title; // undefined
+```
 
 ### Nullish Coalescing(Null 병합 연산자)
 

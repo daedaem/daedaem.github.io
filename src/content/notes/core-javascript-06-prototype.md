@@ -1,7 +1,7 @@
 ---
 slug: 'core-javascript-06-prototype'
 date: '2023-02-18T09:07:29Z'
-updated: '2023-11-16T08:22:18Z'
+updated: '2026-09-06'
 title: '코어자바스크립트 ch6. 프로토타입'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: 'prototype / [[Prototype]] / constructor'
@@ -40,6 +40,20 @@ var royClone2 = new roy.constructor('로이_클론2', 25);
 var royClone3 = new Object.getPrototypeOf(roy).constructor('로이_클론3', 20);
 
 var royClone4 = new Person.prototype.constructor('로이_클론4', 15);
+```
+
+~~`new Object.getPrototypeOf(roy).constructor(...)`로 생성자를 호출할 수 있다.~~
+
+> **바로잡음(2026-09-06):** 위 당시 예제의 `royClone3`는 `Object.getPrototypeOf` 자체를 생성자로 호출하려 해 `TypeError`가 난다. 생성자로 쓸 표현식을 괄호로 묶어야 한다. 기존 예제는 기록으로 남기고, 해당 줄은 아래처럼 실행한다.
+
+```js
+// 2026-09-06 교정 예제: 생성자 표현식
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+const roy = new Person('로이', 30);
+const royClone3 = new (Object.getPrototypeOf(roy).constructor)('로이_클론3', 20);
 ```
 
 - ~~생성자 함수의 동일한 객체(prototype)에 `instance.__proto__`, `instance`, `Object.getPrototypeOf(instance)`, `Constructor.prototype`로 접근할 수 있다.~~
@@ -299,16 +313,33 @@ var instance = new Constructor();
     Grade.prototype = [];
     ```
 
-- 이렇게 g 인스턴스는 프로토타입 체인에 따라 g 객체 자신이 지니는 멤버, Grade의 prototype에 있는 멤버, Array.prototype에 있는 멤버, 끝으로 Object.prototype에 있는 멤버에까지 모두 접근할 수 있게 된다.
+- ~~이렇게 g 인스턴스는 프로토타입 체인에 따라 g 객체 자신이 지니는 멤버, Grade의 prototype에 있는 멤버, Array.prototype에 있는 멤버, 끝으로 Object.prototype에 있는 멤버에까지 모두 접근할 수 있게 된다.~~
 
-    ```jsx
-    console.log(g); // Grade(2) [100, 80]
-    g.pop()
-    console.log(g) // Grade(1) [100]
-    g.push(90)
-    console.log(g) // Grade(2) [100, 90]
-    
-    ```
+> **바로잡음(2026-09-06):** `g`를 만든 뒤 `Grade.prototype`을 교체해도 기존 `g`의 프로토타입은 바뀌지 않는다. 위 순서대로라면 아래 `g.pop()`에서 오류가 난다. 프로토타입을 먼저 설정한 뒤 새 인스턴스를 만들어야 한다. 아래의 당시 코드는 그대로 보존한다.
+
+```jsx
+console.log(g); // Grade(2) [100, 80]
+g.pop()
+console.log(g) // Grade(1) [100]
+g.push(90)
+console.log(g) // Grade(2) [100, 90]
+```
+
+```js
+// 2026-09-06 교정 예제: 프로토타입 설정 후 생성
+function Grade(...scores) {
+  scores.forEach((score, index) => { this[index] = score; });
+  this.length = scores.length;
+}
+Grade.prototype = Object.create(Array.prototype, {
+  constructor: { value: Grade, writable: true, configurable: true }
+});
+const g = new Grade(100, 80);
+g.pop();
+g.push(90);
+// g[0] === 100, g[1] === 90, g.length === 2
+// 배열 메서드를 빌려 쓰는 유사 배열이다. Array.isArray(g)는 false다.
+```
 
 ### 정리
 

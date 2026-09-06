@@ -5,7 +5,7 @@ description: '오라클 고유 문법과 ANSI 조인의 차이, 그리고 다섯
 topic: 'database'
 tags: ['SQL', 'JOIN', 'Oracle', 'ANSI']
 created: 2023-12-03
-updated: 2026-09-05
+updated: 2026-09-06
 status: 'stable'
 ---
 
@@ -21,6 +21,8 @@ status: 'stable'
 
 ## 샘플 테이블
 
+아래 이름과 데이터는 JOIN 결과를 설명하기 위한 가상 예시다.
+
 ```sql
 CREATE TABLE usertable (
     user_id     INT NOT NULL PRIMARY KEY,
@@ -28,27 +30,27 @@ CREATE TABLE usertable (
     name        VARCHAR2(20)
 );
 
-INSERT INTO usertable VALUES (1001, 1, '카리나');
-INSERT INTO usertable VALUES (1002, 1, '윈터');
-INSERT INTO usertable VALUES (1003, 2, '쯔위');
-INSERT INTO usertable VALUES (1004, 2, '사나');
-INSERT INTO usertable VALUES (1005, 2, '트와이스');
-INSERT INTO usertable VALUES (1006, 6, '홍길동');   -- 소속사 없음
+INSERT INTO usertable VALUES (1001, 1, '사용자 A');
+INSERT INTO usertable VALUES (1002, 1, '사용자 B');
+INSERT INTO usertable VALUES (1003, 2, '사용자 C');
+INSERT INTO usertable VALUES (1004, 2, '사용자 D');
+INSERT INTO usertable VALUES (1005, 2, '사용자 E');
+INSERT INTO usertable VALUES (1006, 6, '사용자 F');   -- 회사 없음
 
 CREATE TABLE company (
     company_id    INT NOT NULL PRIMARY KEY,
     company_name  VARCHAR2(20)
 );
 
-INSERT INTO company VALUES (1, 'SM');
-INSERT INTO company VALUES (2, 'JYP');
-INSERT INTO company VALUES (3, '네이버');   -- 소속 인원 없음
-INSERT INTO company VALUES (4, '카카오');   -- 소속 인원 없음
+INSERT INTO company VALUES (1, '가상회사 A');
+INSERT INTO company VALUES (2, '가상회사 B');
+INSERT INTO company VALUES (3, '가상회사 C');   -- 소속 인원 없음
+INSERT INTO company VALUES (4, '가상회사 D');   -- 소속 인원 없음
 
 COMMIT;
 ```
 
-**양쪽에 짝이 없는 행을 하나씩 심어둔 게 요점이다.** `홍길동`은 `company_id = 6`이라 회사가 없고, `네이버`·`카카오`는 소속 인원이 없다. 이 셋이 JOIN마다 어떻게 되는지 보면 차이가 한눈에 들어온다.
+**양쪽에 짝이 없는 행을 하나씩 심어둔 게 요점이다.** `사용자 F`는 `company_id = 6`이라 회사가 없고, `가상회사 C`·`가상회사 D`는 소속 인원이 없다. 이 셋이 JOIN마다 어떻게 되는지 보면 차이가 한눈에 들어온다.
 
 ## INNER JOIN
 
@@ -66,7 +68,7 @@ SELECT a.name, b.company_name
  WHERE a.company_id = b.company_id;
 ```
 
-조인 컬럼 값이 **양쪽 모두에 존재해야** 조회된다. 따라서 `홍길동`(회사 없음)도, `네이버`·`카카오`(인원 없음)도 결과에서 빠진다. 5행이 남는다.
+조인 컬럼 값이 **양쪽 모두에 존재해야** 조회된다. 따라서 `사용자 F`(회사 없음)도, `가상회사 C`·`가상회사 D`(인원 없음)도 결과에서 빠진다. 5행이 남는다.
 
 ## CROSS JOIN
 
@@ -78,7 +80,7 @@ SELECT a.name, b.company_name
  CROSS JOIN company b;
 ```
 
-`usertable` 6행 × `company` 4행 = **24행**이 나온다. 모든 가수가 모든 소속사에 속한 것처럼 보이는 데이터다.
+`usertable` 6행 × `company` 4행 = **24행**이 나온다. 모든 사용자가 모든 회사에 속한 것처럼 보이는 데이터다.
 
 실수로 조인 조건을 빠뜨리면 이게 발생한다. 수만 행짜리 테이블 둘이면 결과가 억 단위가 되므로, **의도한 게 아니라면 조인 조건이 빠졌는지 먼저 의심한다.**
 
@@ -98,7 +100,7 @@ SELECT a.name, b.company_name
  WHERE a.company_id = b.company_id(+);
 ```
 
-`LEFT`는 **왼쪽 테이블을 기준으로 삼는다**는 뜻이다. `홍길동`도 결과에 나오고, `company_name`만 `NULL`이 된다. 6행이 남는다.
+`LEFT`는 **왼쪽 테이블을 기준으로 삼는다**는 뜻이다. `사용자 F`도 결과에 나오고, `company_name`만 `NULL`이 된다. 6행이 남는다.
 
 `OUTER` 키워드는 생략하고 `LEFT JOIN`으로 써도 결과는 같다. 다만 **의도를 드러내려면 붙이는 편이 좋다.**
 
@@ -112,7 +114,7 @@ SELECT a.name, b.company_name
  RIGHT OUTER JOIN company b ON a.company_id = b.company_id;
 ```
 
-`company`의 모든 행이 나오므로 소속 가수가 없는 `네이버`·`카카오`도 조회되고, `name`이 `NULL`이 된다. 반대로 `홍길동`은 빠진다.
+`company`의 모든 행이 나오므로 소속 사용자가 없는 `가상회사 C`·`가상회사 D`도 조회되고, `name`이 `NULL`이 된다. 반대로 `사용자 F`는 빠진다.
 
 ## FULL OUTER JOIN
 
@@ -124,7 +126,7 @@ SELECT a.name, b.company_name
   FULL OUTER JOIN company b ON a.company_id = b.company_id;
 ```
 
-`홍길동`도 `네이버`·`카카오`도 결과에 나온다. `(+)` 문법으로 FULL OUTER JOIN을 직접 표현할 수는 없다. 우회한다면 왼쪽 외부 조인 결과에 **오른쪽에서 짝이 없는 행만** `UNION ALL`로 더해야 중복 행을 보존할 수 있다. 양쪽 외부 조인을 단순 `UNION`하면 실제로 존재하는 중복까지 제거할 수 있다.
+`사용자 F`도 `가상회사 C`·`가상회사 D`도 결과에 나온다. `(+)` 문법으로 FULL OUTER JOIN을 직접 표현할 수는 없다. 우회한다면 왼쪽 외부 조인 결과에 **오른쪽에서 짝이 없는 행만** `UNION ALL`로 더해야 중복 행을 보존할 수 있다. 양쪽 외부 조인을 단순 `UNION`하면 실제로 존재하는 중복까지 제거할 수 있다.
 
 ```sql
 SELECT a.name, b.company_name

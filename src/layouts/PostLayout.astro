@@ -19,6 +19,7 @@ interface Props {
   readingMinutes?: number
   /** 아카이브 글 상단에 안내 배너를 띄운다 */
   archived?: boolean
+  archiveKind?: 'learning' | 'personal'
   /** OG 카드 경로 */
   ogSlug?: string
   /** 본문 헤딩. h2·h3만 목차에 쓴다 */
@@ -42,6 +43,7 @@ const {
   tags = [],
   readingMinutes,
   archived = false,
+  archiveKind = 'learning',
   ogSlug,
   headings = [],
   prev,
@@ -109,13 +111,22 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 
     {
       archived && (
-        <aside class="archived">
-          <strong>학습 노트 아카이브 (2022~2023)</strong>
-          <p>
-            개발자로 전환하며 자바스크립트·타입스크립트의 기초를 정리하던 시기의 글입니다. 당시의
-            이해 수준을 기록으로 남기기 위해 오탈자를 고치고 짧은 보충만 덧붙였으며, 지금 보기에
-            틀린 내용은 지우지 않고 <s>취소선</s>을 그은 뒤 바로 아래에 바로잡았습니다.
-          </p>
+        <aside class="archived" data-pagefind-ignore>
+          <strong>
+            {archiveKind === 'personal' ? '개인 기록 아카이브' : '학습 노트 아카이브 (2022~2023)'}
+          </strong>
+          {archiveKind === 'personal' ? (
+            <p>
+              당시의 경험과 생각을 남긴 글입니다. 나중에 덧붙인 내용은 본문에 시점을 구분해
+              표시했습니다.
+            </p>
+          ) : (
+            <p>
+              개발자로 전환하며 자바스크립트·타입스크립트의 기초를 정리하던 시기의 글입니다. 당시의
+              이해 수준을 기록으로 남기기 위해 오탈자를 고치고 짧은 보충만 덧붙였으며, 지금 보기에
+              틀린 내용은 지우지 않고 <s>취소선</s>을 그은 뒤 바로 아래에 바로잡았습니다.
+            </p>
+          )}
           <p>
             <a href="/notes/">노트 전체 보기</a>
           </p>

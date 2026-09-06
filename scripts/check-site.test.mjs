@@ -68,3 +68,24 @@ test('missing search exclusions fail the build check', (t) => {
   assert.equal(checkSite(root, site).errors.length, 4)
   assert.ok(checkSite(root, site).errors.every((error) => error.includes('excluded from search')))
 })
+
+test('algorithm boilerplate, related links, archive banners and TOCs stay out of search', (t) => {
+  const blocks = {
+    'algorithms/example/index.html':
+      '<p class="notice muted">안내</p><section class="related">추천</section>',
+    'notes/example/index.html': '<aside class="archived">아카이브 공통 문구</aside>',
+    'wiki/example/index.html': '<nav class="toc" aria-label="목차">목차</nav>',
+  }
+  const broken = fixture(t, blocks)
+  assert.equal(checkSite(broken, site).errors.length, 4)
+  const fixed = fixture(
+    t,
+    Object.fromEntries(
+      Object.entries(blocks).map(([file, html]) => [
+        file,
+        html.replace(/<(p|section|aside|nav)\b/g, '<$1 data-pagefind-ignore'),
+      ]),
+    ),
+  )
+  assert.deepEqual(checkSite(fixed, site).errors, [])
+})

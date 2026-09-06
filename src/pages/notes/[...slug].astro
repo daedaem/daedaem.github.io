@@ -20,6 +20,7 @@ const { Content } = await render(note)
   tags={note.data.categories}
   readingMinutes={readingMinutes(note.body ?? '')}
   archived
+  archiveKind={note.data.categories.includes('내 이야기') ? 'personal' : 'learning'}
 >
   <Content />
 </PostLayout>

@@ -5,7 +5,7 @@ description: '빅오 표기법부터 배열·연결리스트·스택·큐·그�
 topic: 'cs'
 tags: ['자료구조', '알고리즘', '빅오', '트리', '해시']
 created: 2023-02-01
-updated: 2026-09-05
+updated: 2026-09-06
 status: 'stable'
 ---
 
@@ -30,7 +30,8 @@ for (int i = 0; i < n; i++)
 ```
 
 ```java
-for (int j = 1; j < n; j *= 2) { }
+// n은 0 이상인 int 입력. j는 int 범위를 넘어 두 배가 되어도 넘치지 않게 한다.
+for (long j = 1; j < n; j *= 2) { }
 // O(log n) — 매번 두 배씩 건너뛴다
 ```
 
@@ -116,4 +117,4 @@ C++ STL에서 `map`/`set`은 **균형 이진 트리(레드블랙)**, `unordered_
 
 ## 더 볼 것
 
-- [알고리즘 풀이 494문제](/algorithms/) — 여기 나온 자료구조를 실제로 쓴 기록
+- [알고리즘 학습 기록](/algorithms/) — 자료구조를 적용하며 남긴 코드

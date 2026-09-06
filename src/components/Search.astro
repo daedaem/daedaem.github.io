@@ -24,7 +24,7 @@
     <path d="m20 20-3.5-3.5"></path>
   </svg>
   <span>검색</span>
-  <kbd>⌘K</kbd>
+  <kbd id="search-shortcut">Ctrl K</kbd>
 </button>
 
 <dialog id="search-dialog" aria-label="검색">
@@ -40,6 +40,11 @@
   const dialog = document.getElementById('search-dialog') as HTMLDialogElement | null
   const mount = document.getElementById('search-mount')
   const closeBtn = document.getElementById('search-close')
+  const shortcut = document.getElementById('search-shortcut')
+  if (shortcut)
+    shortcut.textContent = /Macintosh|Mac OS X|iPhone|iPad|iPod/.test(navigator.userAgent)
+      ? '⌘K'
+      : 'Ctrl K'
   let loaded = false
   let loading: Promise<void> | undefined
 

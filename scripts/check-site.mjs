@@ -18,8 +18,15 @@ export function checkSite(root, site) {
     const base = new URL(name.replace(/index\.html$/, ''), site)
     const html = readFileSync(file, 'utf8')
     // 본문 아래 탐색 목록·댓글 안내가 검색어에 걸려 무관한 글이 노출되지 않게 한다.
-    for (const tag of html.matchAll(/<(?:section|aside|nav)\b[^>]*>/gi)) {
-      if (!/\baria-label=(["'])(?:다른 글|연결된 문서|댓글|학습 기록 탐색)\1/.test(tag[0])) continue
+    for (const tag of html.matchAll(/<(?:section|aside|nav|p)\b[^>]*>/gi)) {
+      const classes = (tag[0].match(/\bclass=(["'])(.*?)\1/)?.[2] ?? '').split(/\s+/)
+      const readingChrome =
+        /\baria-label=(["'])(?:다른 글|연결된 문서|댓글|학습 기록 탐색|같은 유형의 다른 문제|목차)\1/.test(
+          tag[0],
+        ) ||
+        classes.includes('archived') ||
+        (name.startsWith('algorithms/') && classes.some((c) => c === 'notice' || c === 'related'))
+      if (!readingChrome) continue
       if (!/\sdata-pagefind-ignore(?=[\s=>])/.test(tag[0])) {
         errors.push(`${name}: reading navigation/comments must be excluded from search`)
       }

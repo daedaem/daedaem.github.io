@@ -5,7 +5,7 @@ description: 'Code-Behind 구조로 도는 레거시 .NET 화면을 읽기 위�
 topic: 'dotnet'
 tags: ['ASP.NET', 'C#', 'WebForms', 'ViewState', '레거시']
 created: 2025-12-29
-updated: 2026-09-04
+updated: 2026-09-06
 status: 'growing'
 ---
 
@@ -29,7 +29,7 @@ ApplicationForm.aspx.cs   ← 서버 코드 (Code-Behind)
 
 ```csharp
 <asp:GridView ID="gvItemList" runat="server" AutoGenerateColumns="False"
-    OnSelectedIndexChanged="gvItemList_SelectedIndexChanged">
+    DataKeyNames="ItemId" OnSelectedIndexChanged="gvItemList_SelectedIndexChanged">
     <Columns>
         <asp:BoundField DataField="ItemName" HeaderText="항목명" />
         <asp:CommandField ShowSelectButton="True" SelectText="선택" />
@@ -80,10 +80,13 @@ HTTP는 상태가 없는데 PostBack마다 화면의 상태가 유지된다. 두
 protected void gvItemList_SelectedIndexChanged(object sender, EventArgs e)
 {
     GridViewRow row = gvItemList.SelectedRow;
-    lblSelectedItem.Text = row.Cells[1].Text;
-    ViewState["SelectedItemId"] = row.Cells[0].Text;   // 다음 PostBack까지 유지
+    if (row == null || gvItemList.SelectedDataKey == null) return;
+    lblSelectedItem.Text = row.Cells[0].Text;  // 항목명. 1열은 선택 버튼이다.
+    ViewState["SelectedItemId"] = gvItemList.SelectedDataKey.Value;
 }
 ```
+
+목록 데이터는 `ItemId`와 `ItemName`을 제공한다고 가정한다. 키는 표시 열의 순서에 의존하지 않도록 `DataKeyNames="ItemId"`로 지정하고 `SelectedDataKey`에서 읽는다. [Microsoft 문서](https://learn.microsoft.com/en-us/dotnet/api/system.web.ui.webcontrols.gridview.selecteddatakey?view=netframework-4.8.1)
 
 주의할 점이 있다.
 

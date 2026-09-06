@@ -2,7 +2,7 @@
 // 라이트/다크 전환. 저장값이 없으면 시스템 설정을 따르고, 누르면 실효 테마의 반대로 고정한다.
 ---
 
-<button id="theme-toggle" type="button" aria-label="다크 모드로 전환" aria-pressed="false">
+<button id="theme-toggle" type="button" aria-label="다크 모드로 전환">
   <svg
     class="sun"
     width="16"
@@ -46,12 +46,11 @@
     return media.matches ? 'dark' : 'light'
   }
 
-  // 아이콘은 CSS가 바꾸지만, 스크린리더용 라벨과 눌림 상태는 여기서 맞춘다
+  // 다음 동작을 이름으로 알리는 일반 버튼이므로 aria-pressed는 쓰지 않는다.
   function sync() {
     if (!btn) return
     const dark = effective() === 'dark'
     btn.setAttribute('aria-label', dark ? '라이트 모드로 전환' : '다크 모드로 전환')
-    btn.setAttribute('aria-pressed', String(dark))
   }
 
   btn?.addEventListener('click', () => {

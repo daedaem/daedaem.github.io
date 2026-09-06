@@ -1,7 +1,7 @@
 ---
 slug: 'core-javascript-02-execution-context'
 date: '2022-12-30T07:23:21Z'
-updated: '2023-11-16T08:20:35Z'
+updated: '2026-09-06'
 title: '코어자바스크립트 ch2. 실행 컨텍스트'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: 'VariableEnvironment, LexicalEnvironment, ThisBinding'
@@ -158,7 +158,9 @@ console.log(a); // 1
   - 함수 실행에 의한 컨텍스트
 - 객체 활성화되는 시점에 VariableEnvironment, LexicalEnvironment, ThisBinding 세가지 정보 수집
 
-- 실행 컨텍스트 생성할 때는 VariableEnvironment와 LexicalEnvironment가 동일 내용으로 구성되지만 LexicalEnvironment는 함수 실행 도중에 변경되는 사항이 즉시 반영되는 반면, VariableEnvironment는 초기 상태를 유지
+- ~~실행 컨텍스트 생성할 때는 VariableEnvironment와 LexicalEnvironment가 동일 내용으로 구성되지만 LexicalEnvironment는 함수 실행 도중에 변경되는 사항이 즉시 반영되는 반면, VariableEnvironment는 초기 상태를 유지~~
+
+> **바로잡음(2026-09-06):** VariableEnvironment는 초기 값의 스냅샷이 아니라 `var` 선언의 바인딩을 담는 Environment Record를 가리킨다. LexicalEnvironment는 식별자 탐색에 쓰는 환경을 가리킨다. 두 참조가 같은 환경을 가리킬 수도 있으며, 변수에 재할당한 값이 초기 상태로 고정되는 것은 아니다. [ECMAScript 실행 컨텍스트 명세](https://tc39.es/ecma262/2026/multipage/executable-code-and-execution-contexts.html#sec-execution-contexts)
 
 VariableEnvironment와 LexicalEnvironment는 식별자 바인딩을 담는 **Environment Record**와 바깥 어휘 환경을 가리키는 참조로 이어진다. 이 바깥 참조는 호출 스택의 바로 직전 함수가 아니라 **코드가 선언된 어휘적 위치**를 따른다.
 

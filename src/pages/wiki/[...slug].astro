@@ -78,7 +78,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 
       {
         toc.length > 2 && (
-          <nav class="toc" aria-label="목차">
+          <nav class="toc" aria-label="목차" data-pagefind-ignore>
             <p>목차</p>
             <ul>
               {toc.map((h) => (

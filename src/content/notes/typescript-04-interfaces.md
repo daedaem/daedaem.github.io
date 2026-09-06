@@ -1,7 +1,7 @@
 ---
 slug: 'typescript-04-interfaces'
 date: '2023-03-23T16:27:04Z'
-updated: '2023-03-24T14:32:09Z'
+updated: '2026-09-06'
 title: '타입스크립트 - 3.2 Interface'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: 'Interface, 추상 클래스, 상속'
@@ -146,6 +146,22 @@ let user1: Greetable;
 
 user1 = new Person('Max');
 // user1.name = 'Manu'; // readonly 이므로 에러
+```
+
+당시 예제의 주석: ~~`// user1.name = 'Manu'; // readonly 이므로 에러`~~
+
+> **바로잡음(2026-09-06):** 앞에서 선언한 `Greetable.name`은 변경 가능한 속성이다. 별도의 `Named` 선언만으로 연결되지 않으므로 위 주석은 맞지 않는다. `Named` 타입으로 접근하거나 `Greetable extends Named`로 연결해야 한다. 아래 예제는 읽기 전용 타입을 통한 재할당만 막으며 원본 객체를 동결하지 않는다. [TypeScript readonly 문서](https://www.typescriptlang.org/docs/handbook/2/objects.html#readonly-properties)
+
+```ts
+// 2026-09-06 교정 예제: readonly 타입을 통한 접근
+interface Named {
+  readonly name: string;
+}
+const person = { name: 'Max' };
+const named: Named = person;
+// @ts-expect-error: readonly 타입을 통해서는 재할당할 수 없다.
+named.name = 'Manu';
+person.name = 'Manu'; // 변경 가능한 타입을 통한 접근은 허용된다.
 ```
 
 ## Interface extends
