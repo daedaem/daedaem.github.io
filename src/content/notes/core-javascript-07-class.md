@@ -1,7 +1,7 @@
 ---
 slug: 'core-javascript-07-class'
 date: '2023-02-26T10:18:38Z'
-updated: '2023-11-16T00:57:24Z'
+updated: '2026-09-04'
 title: '코어자바스크립트 ch7. 클래스'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: 'superclass / subclass / Inheritance'

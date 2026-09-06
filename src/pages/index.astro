@@ -2,10 +2,11 @@
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
+import ContentDates from '@/components/ContentDates.astro'
 import Mark from '@/components/Mark.astro'
 import { SITE, getCategory } from '@/consts'
 import { PROJECTS } from '@/data/projects'
-import { readingMinutes, formatDate } from '@/utils/format'
+import { readingMinutes } from '@/utils/format'
 import { selectHomeContent } from '@/utils/home-content.mjs'
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
@@ -105,9 +106,7 @@ const algoCount = (await getCollection('solutions')).length
                 featured.data.description && <p>{featured.data.description}</p>
               )}
               <span class="hero-meta">
-                <time datetime={featured.data.date.toISOString()}>
-                  {formatDate(featured.data.date)}
-                </time>
+                <ContentDates date={featured.data.date} updated={featured.data.updated} />
                 <span>· {readingMinutes(featured.body ?? '')}분</span>
               </span>
               <span class="read-case">
@@ -128,6 +127,7 @@ const algoCount = (await getCollection('solutions')).length
                     href={`/posts/${p.id}/`}
                     title={p.data.title}
                     date={p.data.date}
+                    updated={p.data.updated}
                     category={p.data.category}
                     readingMinutes={readingMinutes(p.body ?? '')}
                   />

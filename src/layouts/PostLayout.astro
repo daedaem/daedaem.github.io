@@ -3,8 +3,9 @@ import BaseLayout from './BaseLayout.astro'
 import Comments from '@/components/Comments.astro'
 import PostRow from '@/components/PostRow.astro'
 import Mark from '@/components/Mark.astro'
+import ContentDates from '@/components/ContentDates.astro'
 import { getCategory } from '@/consts'
-import { tagSlug, formatDate } from '@/utils/format'
+import { tagSlug } from '@/utils/format'
 import { linkableTagSlugs } from '@/utils/tags'
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
   description: string
   date: Date
   updated?: Date
-  /** 일이 실제로 있었던 시기. 발행일 앞에 따로 보여 준다 */
+  /** 일이 실제로 있었던 시기. 작성·수정일과 별도로 보여 준다 */
   happened?: string
   category?: string
   tags?: string[]
@@ -28,7 +29,7 @@ interface Props {
   prev?: { href: string; title: string }
   next?: { href: string; title: string }
   /** 이 글을 뺀 나머지 글. 글 안에서 다른 글로 갈 수 있게 목록을 보여 준다 */
-  others?: { href: string; title: string; category?: string; date: Date }[]
+  others?: { href: string; title: string; category?: string; date: Date; updated?: Date }[]
   /** 원인 한 줄. 이 사이트의 시그니처 블록으로, 제목 아래에 고정된 형태로 나온다 */
   cause?: string
 }
@@ -67,28 +68,37 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 >
   <article class:list={['wrap', 'post', { 'with-toc': toc.length > 2 }]}>
     <header>
-      <div class="meta">
-        {
-          !archived && (
+      {
+        !archived && (
+          <nav class="breadcrumbs" aria-label="글 위치" data-pagefind-ignore>
             <a class="crumb" href="/posts/">
               글
             </a>
-          )
-        }
-        {!archived && cat && <span class="sep">›</span>}
-        {
-          cat && (
-            <a class="cat" href={`/categories/${cat.id}/`} data-cat={cat.id}>
-              {cat.name}
-            </a>
-          )
-        }
-        {happened && <span class="happened">{happened}의 일</span>}
-        {happened && <span class="sep">·</span>}
-        <time datetime={date.toISOString()}>{formatDate(date)} 작성</time>
-        {readingMinutes && <span>· {readingMinutes}분</span>}
-      </div>
+            {cat && (
+              <span class="sep" aria-hidden="true">
+                ›
+              </span>
+            )}
+            {cat && (
+              <a class="cat" href={`/categories/${cat.id}/`} data-cat={cat.id}>
+                {cat.name}
+              </a>
+            )}
+          </nav>
+        )
+      }
       <h1>{title}</h1>
+      <div class="meta" data-pagefind-ignore>
+        <ContentDates date={date} updated={updated} original={archived} />
+        {readingMinutes && <span>{readingMinutes}분</span>}
+      </div>
+      {
+        happened && (
+          <p class="happened" data-pagefind-ignore>
+            사례 시점: {happened}
+          </p>
+        )
+      }
       {
         cause ? (
           <p class="cause">
@@ -100,11 +110,6 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
           </p>
         ) : (
           description && <p class="lead">{description}</p>
-        )
-      }
-      {
-        updated && updated.getTime() !== date.getTime() && (
-          <p class="updated muted">최종 수정 {formatDate(updated)}</p>
         )
       }
     </header>
@@ -201,7 +206,13 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
           </div>
           <ul class="rows">
             {others.map((o) => (
-              <PostRow href={o.href} title={o.title} date={o.date} category={o.category} />
+              <PostRow
+                href={o.href}
+                title={o.title}
+                date={o.date}
+                updated={o.updated}
+                category={o.category}
+              />
             ))}
           </ul>
         </section>
@@ -230,13 +241,19 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
     padding-top: 3rem;
   }
 
-  .meta {
+  .meta,
+  .breadcrumbs {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.8125rem;
     color: var(--text-muted);
+  }
+
+  .meta {
+    margin-top: 0.8rem;
+    gap: 0.4rem 0.8rem;
   }
 
   .cat {
@@ -323,9 +340,10 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
     white-space: nowrap;
   }
 
-  .updated {
+  .happened {
     margin: 0.5rem 0 0;
     font-size: 0.8125rem;
+    color: var(--text-muted);
   }
 
   .archived {

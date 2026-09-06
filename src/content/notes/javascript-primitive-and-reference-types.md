@@ -1,7 +1,7 @@
 ---
 slug: 'javascript-primitive-and-reference-types'
 date: '2022-12-27T15:25:20Z'
-updated: '2023-11-16T08:19:45Z'
+updated: '2026-08-30'
 title: 'JavaScript - 참조형 & 원시형 데이터 타입'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '데이터 타입 - 참조형, 원시형'

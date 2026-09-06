@@ -1,18 +1,19 @@
 ---
 import { getCategory } from '@/consts'
-import { formatDate } from '@/utils/format'
+import ContentDates from './ContentDates.astro'
 
 interface Props {
   href: string
   title: string
   date: Date
+  updated?: Date
   category?: string
   readingMinutes?: number
   /** 목록 페이지에서는 한 줄 요약을 같이 보여 준다. 홈처럼 제목만 둘 때는 생략한다. */
   description?: string
 }
 
-const { href, title, date, category, readingMinutes, description } = Astro.props
+const { href, title, date, updated, category, readingMinutes, description } = Astro.props
 const cat = category ? getCategory(category) : undefined
 ---
 
@@ -30,8 +31,8 @@ const cat = category ? getCategory(category) : undefined
       {description && <span class="desc">{description}</span>}
     </span>
     <span class="meta">
-      <time datetime={date.toISOString()}>{formatDate(date)}</time>
-      {readingMinutes && <span>· {readingMinutes}분</span>}
+      <ContentDates date={date} updated={updated} stacked />
+      {readingMinutes && <span>{readingMinutes}분</span>}
     </span>
   </a>
 </li>
@@ -93,9 +94,11 @@ const cat = category ? getCategory(category) : undefined
   }
 
   .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
     font-size: 13px;
     color: var(--text-dim);
-    white-space: nowrap;
     font-variant-numeric: tabular-nums;
   }
 

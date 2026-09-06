@@ -45,7 +45,7 @@ const posts = defineCollection({
 const notes = defineCollection({
   loader: glob({
     base: './src/content/notes',
-    pattern: '**/*.md',
+    pattern: '**/*.{md,mdx}',
     generateId: ({ data }) => data.slug as string,
   }),
   schema: ({ image }) =>
@@ -54,7 +54,7 @@ const notes = defineCollection({
       title: z.string(),
       /** 노션 TIL DB의 작성일시. 블로그 발행일이 아니라 노트를 처음 쓴 날이다. */
       date: z.coerce.date(),
-      /** 노션 TIL DB의 최종 수정일 */
+      /** 원문 보충·기술 교정을 포함한 최종 수정일. 원문 작성일(date)과 구분한다. */
       updated: optionalDate,
       summary: z.string().default(''),
       categories: z.array(z.string()).default([]),

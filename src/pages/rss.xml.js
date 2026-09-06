@@ -1,6 +1,7 @@
 import rss from '@astrojs/rss'
 import { getCollection } from 'astro:content'
 import { SITE } from '@/consts'
+import { formatDate } from '@/utils/format'
 
 export async function GET(context) {
   const posts = await getCollection('posts', ({ data }) => !data.draft)
@@ -15,7 +16,8 @@ export async function GET(context) {
     })),
     ...wiki.map((w) => ({
       title: `[위키] ${w.data.title}`,
-      description: w.data.description,
+      // 위키는 갱신 알림도 전한다. created를 검증 없이 블로그 최초 공개일로 취급하지 않는다.
+      description: `${w.data.description} (최초 작성 ${formatDate(w.data.created)}${w.data.updated ? ` · 최근 갱신 ${formatDate(w.data.updated)}` : ''})`,
       pubDate: w.data.updated ?? w.data.created,
       link: `/wiki/${w.id}/`,
     })),

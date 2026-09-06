@@ -1,6 +1,7 @@
 ---
 slug: 'semantic-html'
 date: '2022-06-18'
+updated: '2026-09-06'
 title: '시멘틱 태그'
 categories: ['Web Frontend', 'TIL', 'HTML']
 summary: '시멘틱 태그의 중요성'
@@ -8,7 +9,7 @@ thumbnail: './SemanticHTML.png'
 legacyPath: "/Semantic HTML/"
 ---
 
-# 시멘틱 태그
+<span id="시멘틱-태그" aria-hidden="true"></span>
 
 모 기업 코딩테스트를 치면서 시멘틱 태그의 중요성을 깨닫게 되었다. 평소 별생각 없이 대부분의 HTML 태그를 div 태그로 사용하고 있었다. 올바른 코드 작성 습관을 알고 있었다면 쉽게 풀 수 있는 문제였다. 오늘은 시멘틱 태그에 대해 학습하고 무한 div 태그로 만들어 놓은 내 프로젝트의 코드들을 수정해 보려고 한다.
 

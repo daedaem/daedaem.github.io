@@ -1,11 +1,11 @@
 ---
 draft: false
 title: 'React Context와 Redux'
-description: 'Context는 상태 관리 도구가 아니다. 전달과 관리의 차이, Context의 두 가지 한계, 그리고 Redux의 단방향 흐름.'
+description: 'Context의 값 전달과 상태 변경 로직을 구분한다. useReducer와의 조합, 구독 범위와 렌더링 비용, Redux의 단방향 흐름.'
 topic: 'web'
 tags: ['React', 'Context', 'Redux', '상태관리']
 created: 2023-02-02
-updated: 2026-09-05
+updated: 2026-09-06
 status: 'stable'
 ---
 
@@ -19,13 +19,11 @@ status: 'stable'
 | **컴포넌트 간** — 여러 컴포넌트에 영향 | 모달 열림 상태 | props chain, Context, Redux |
 | **앱 전역** | 사용자 인증 상태 | Context, Redux |
 
-## Context는 상태 관리 도구가 아니다
+## Context는 값을 전달하고, 상태 변경 로직은 따로 둔다
 
 여기가 가장 자주 오해되는 지점이다.
 
-> React 공식 문서는 Context를 설명하면서 **"전달"과 "공유"만 말하고 "관리"는 말하지 않는다.**
-
-Context가 하는 일은 **단계마다 props를 넘기지 않고도 트리 전체에 값을 내려주는 것**이다. props drilling을 없애는 도구지, 상태를 어떻게 바꿀지 관리하는 도구가 아니다. Redux와 여기서 갈린다.
+Context 자체는 **단계마다 props를 넘기지 않고도 하위 컴포넌트에 값을 전달하는 수단**이다. 상태와 변경 로직은 `useState`나 `useReducer` 등에 두고, 그 값과 변경 함수를 Context로 전달할 수 있다. React 공식 문서도 reducer와 Context를 결합한 상태 관리 패턴을 설명한다. Context만으로 상태 변경 규칙이나 저장소가 생기는 것은 아니라는 구분이다. [React: reducer와 Context로 확장하기](https://react.dev/learn/scaling-up-with-reducer-and-context)
 
 의존성 주입에 가깝다고 보면 이해가 쉽다.
 
@@ -106,9 +104,9 @@ const Button = props => (
 
 여러 곳에서 공통으로 쓸 컴포넌트에 특정 context 동작을 박아 넣으면 **재사용이 막힌다.** 이런 건 props로 받는다.
 
-### 2. 상태 변경이 잦으면 맞지 않는다
+### 2. 구독 범위와 렌더링 비용을 확인해야 한다
 
-Provider의 `value`가 바뀌면 **구독 중인 컴포넌트가 전부 다시 렌더링된다.** 매초 바뀌는 값 같은 것에는 부적합하다.
+Provider의 이전·다음 `value`를 `Object.is`로 비교해 달라지면 **그 Context를 읽는 하위 컴포넌트가 다시 렌더링된다.** 갱신 빈도만으로 부적합하다고 단정할 수는 없다. 구독하는 컴포넌트 수와 렌더링 비용을 확인하고, 독립적인 값은 Context를 분리한다. 값이 실제로 바뀌지 않았는데도 새 객체·함수 참조 때문에 전파된다면 `useMemo`·`useCallback`을 검토할 수 있다. 실제 값 변경에 따른 전파까지 막는 것은 아니다. [React: useContext와 렌더링](https://react.dev/reference/react/useContext)
 
 그리고 Provider가 늘면 중첩이 깊어진다.
 

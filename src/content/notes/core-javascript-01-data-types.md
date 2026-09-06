@@ -1,7 +1,7 @@
 ---
 slug: 'core-javascript-01-data-types'
 date: '2023-01-08T06:26:16Z'
-updated: '2023-11-16T08:21:22Z'
+updated: '2026-09-04'
 title: '코어자바스크립트 ch1. 데이터 타입'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '원시형 참조형'

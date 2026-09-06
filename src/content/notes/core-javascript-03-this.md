@@ -1,7 +1,7 @@
 ---
 slug: 'core-javascript-03-this'
 date: '2023-01-26T12:14:31Z'
-updated: '2023-11-16T08:21:26Z'
+updated: '2026-09-04'
 title: '코어자바스크립트 ch3. This'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '함수 호출 될 때, 결정되는 this'

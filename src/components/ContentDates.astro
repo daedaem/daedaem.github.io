@@ -1,0 +1,42 @@
+---
+import { formatDate } from '@/utils/format'
+
+interface Props {
+  date: Date
+  updated?: Date
+  original?: boolean
+  stacked?: boolean
+}
+const { date, updated, original = false, stacked = false } = Astro.props
+---
+
+<span class:list={['content-dates', { stacked }]}>
+  <time datetime={date.toISOString()}>{original ? '원문 작성' : '작성'} {formatDate(date)}</time>
+  {
+    updated && updated.getTime() !== date.getTime() && (
+      <time datetime={updated.toISOString()}>수정 {formatDate(updated)}</time>
+    )
+  }
+</span>
+
+<style>
+  .content-dates {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.8rem;
+    color: var(--text-dim);
+    font-size: var(--type-caption);
+    font-variant-numeric: tabular-nums;
+  }
+  time {
+    white-space: nowrap;
+  }
+  .stacked {
+    flex-direction: column;
+  }
+  @media (max-width: 640px) {
+    .stacked {
+      flex-direction: row;
+    }
+  }
+</style>

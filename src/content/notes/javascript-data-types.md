@@ -1,6 +1,7 @@
 ---
 slug: 'javascript-data-types'
 date: '2022-12-23'
+updated: '2026-09-03'
 title: 'JavaScript - 데이터타입'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: 'let, const, var'

@@ -1,7 +1,7 @@
 ---
 slug: 'modern-js-deep-dive-05-expressions-and-statements'
 date: '2023-03-19T10:23:19Z'
-updated: '2023-03-19T14:23:36Z'
+updated: '2026-09-05'
 title: '모던 JS Deep Dive - 5. 표현식과 문'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '값, 리터럴, 표현식, 문'

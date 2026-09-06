@@ -24,6 +24,7 @@ const g = SITE.giscus
 }
 
 <script>
+  import { connectCommentTheme } from '@/utils/comment-theme.mjs'
   // 테마는 사이트 토글을 따른다. 처음에는 실효 테마로 띄우고, 토글되면 iframe에 알린다.
   const host = document.querySelector<HTMLElement>('.comments')
   if (host) {
@@ -52,17 +53,15 @@ const g = SITE.giscus
       loading: 'lazy',
     }
     for (const [k, v] of Object.entries(attrs)) s.setAttribute(`data-${k}`, v)
+    connectCommentTheme({
+      host,
+      script: s,
+      readTheme: effective,
+      page: window,
+      document,
+      media: window.matchMedia('(prefers-color-scheme: dark)'),
+    })
     host.querySelector('.giscus')?.appendChild(s)
-
-    const notify = () => {
-      const frame = host.querySelector<HTMLIFrameElement>('iframe.giscus-frame')
-      frame?.contentWindow?.postMessage(
-        { giscus: { setConfig: { theme: effective() } } },
-        'https://giscus.app',
-      )
-    }
-    document.addEventListener('themechange', notify)
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', notify)
   }
 </script>
 
@@ -79,5 +78,11 @@ const g = SITE.giscus
   .comments p {
     margin: 0.4rem 0 1.25rem;
     font-size: 0.875rem;
+  }
+  /* 외부 CSS가 늦게 와도 iframe 기본 너비(300px)가 좁은 본문을 밀어내지 않는다. */
+  .comments :global(iframe.giscus-frame) {
+    width: 100%;
+    max-width: 100%;
+    border: 0;
   }
 </style>

@@ -1,9 +1,17 @@
 ---
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
-import { formatDate, tagSlug } from '@/utils/format'
+import { tagSlug } from '@/utils/format'
+import ContentDates from '@/components/ContentDates.astro'
 
-type Item = { kind: 'post' | 'wiki'; title: string; href: string; date: Date }
+type Item = {
+  kind: 'post' | 'wiki'
+  title: string
+  href: string
+  date: Date
+  updated?: Date
+  sortDate: Date
+}
 
 export const getStaticPaths = async () => {
   const posts = await getCollection('posts', ({ data }) => !data.draft)
@@ -14,13 +22,17 @@ export const getStaticPaths = async () => {
       title: p.data.title,
       href: `/posts/${p.id}/`,
       date: p.data.date,
+      updated: p.data.updated,
+      sortDate: p.data.date,
       tags: p.data.tags ?? [],
     })),
     ...wiki.map((w) => ({
       kind: 'wiki' as const,
       title: w.data.title,
       href: `/wiki/${w.id}/`,
-      date: w.data.updated ?? w.data.created,
+      date: w.data.created,
+      updated: w.data.updated,
+      sortDate: w.data.updated ?? w.data.created,
       tags: w.data.tags ?? [],
     })),
   ]
@@ -43,7 +55,7 @@ export const getStaticPaths = async () => {
         list: [...list].sort(
           (a, b) =>
             (a.kind === 'wiki' ? 1 : 0) - (b.kind === 'wiki' ? 1 : 0) ||
-            b.date.valueOf() - a.date.valueOf(),
+            b.sortDate.valueOf() - a.sortDate.valueOf(),
         ),
       },
     }))
@@ -70,7 +82,7 @@ const { tag, list } = Astro.props
               {it.kind === 'wiki' && <span class="kind">[위키]</span>}
               {it.title}
             </a>
-            <time datetime={it.date.toISOString()}>{formatDate(it.date)}</time>
+            <ContentDates date={it.date} updated={it.updated} stacked />
           </li>
         ))
       }
@@ -97,6 +109,7 @@ const { tag, list } = Astro.props
   }
   .list li {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
     align-items: baseline;
     justify-content: space-between;
@@ -113,11 +126,5 @@ const { tag, list } = Astro.props
     color: var(--text-dim);
     font-size: 0.8125rem;
     margin-right: 0.35rem;
-  }
-  time {
-    color: var(--text-dim);
-    font-size: 0.8125rem;
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
   }
 </style>

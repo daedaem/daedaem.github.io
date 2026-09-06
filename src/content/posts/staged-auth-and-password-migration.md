@@ -143,9 +143,9 @@ public void changePassword(String userId, String newRawPassword) {
 
 범용 해시는 빠르게 설계된 해시다. 파일 무결성 검증 같은 용도에서는 빠른 것이 장점이다.
 
-비밀번호 저장에서는 이게 단점이 된다. 공격자가 유출된 해시를 두고 무차별 대입을 할 때, 해시가 빠를수록 초당 더 많이 시도할 수 있다. GPU를 쓰면 범용 해시는 초당 수십억 회 계산된다.
+비밀번호 저장에서는 이게 단점이 된다. 공격자가 유출된 해시를 두고 무차별 대입을 할 때, 해시가 빠를수록 초당 더 많이 시도할 수 있다. GPU 병렬 계산으로 공격 비용이 더 낮아질 수도 있다.
 
-비밀번호용 해시는 의도적으로 느리게 설계되어 있다. bcrypt, scrypt, Argon2가 그렇다. 작업 계수를 조절해 한 번의 계산에 일부러 시간을 쓰게 만든다. 정상 로그인에서 0.1초는 문제가 안 되지만, 무차별 대입에서 0.1초는 시도 횟수를 수억 분의 일로 떨어뜨린다.
+비밀번호용 해시는 의도적으로 계산 비용을 높이도록 설계되어 있다. bcrypt, scrypt, Argon2가 그렇다. 작업 계수를 조절하고, scrypt·Argon2처럼 메모리 비용을 설정할 수 있는 알고리즘은 그 비용도 조절해 대입 한 번에 필요한 자원을 늘린다. 적절한 값은 서버 성능과 동시 로그인 부하를 측정해 정해야 한다. 시도 속도의 감소 배율은 알고리즘·설정·공격자 하드웨어에 따라 달라 단정할 수 없다. [OWASP 비밀번호 저장 지침](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#using-work-factors)
 
 Spring Security를 쓴다면 `BCryptPasswordEncoder`가 기본 선택지고, `DelegatingPasswordEncoder`는 여러 인코더를 함께 두어 이 글에서 쓴 것과 같은 순차 이행을 표준적인 방식으로 지원한다.
 

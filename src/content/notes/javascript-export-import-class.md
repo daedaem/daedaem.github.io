@@ -1,7 +1,7 @@
 ---
 slug: 'javascript-export-import-class'
 date: '2022-12-27T12:40:05Z'
-updated: '2023-11-16T08:19:34Z'
+updated: '2026-09-04'
 title: 'JavaScript - Export & Import / Class'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: 'Export, Import / Class'

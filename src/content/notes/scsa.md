@@ -1,15 +1,16 @@
 ---
 slug: 'scsa'
 date: '2022-12-21'
-title: '삼성전자 공채에 합격하고, 역량테스트에서 세 번 떨어진 기록'
+updated: '2026-09-06'
+title: '삼성전자 SCSA 합격, 최종 입사는 하지 못했다'
 categories: ['내 이야기', '잡담']
-summary: '6개월간 준비했고, 세 번의 역량테스트를 넘지 못했다. 그때의 기록.'
+summary: '합격 후 교육을 거쳤지만 역량테스트를 통과하지 못해 최종 입사하지 못했다. 당시의 도전과 배움을 남긴 기록.'
 
 thumbnail: './SCSA.assets/passSCSA.jpg'
 legacyPath: "/SCSA/"
 ---
 
-### 삼성전자 공채에 합격하고, 역량테스트에서 세 번 떨어진 기록
+<span id="삼성전자-공채에-합격하고-역량테스트에서-세-번-떨어진-기록" aria-hidden="true"></span>
 
 **공채 합격 안내**
 ![삼성전자 SCSA 면접 합격 안내 화면](./SCSA.assets/passSCSA.jpg)
