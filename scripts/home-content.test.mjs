@@ -34,12 +34,45 @@ test('draft and missing proof targets never leave dangling home links', () => {
   assert.deepEqual(visibleIds(result), ['published'])
 })
 
-test('moving a proof into the featured slot does not duplicate it', () => {
+test('ranked proofs take priority over featured and are safe without another case', () => {
   const result = selectHomeContent(HOME_PROOFS.map((p, i) => post(p.id, { featured: i === 1 })))
-  assert.equal(result.proofs.length, 2)
+  assert.equal(result.featured, undefined)
+  assert.deepEqual(result.proofs, HOME_PROOFS)
   assert.equal(visibleIds(result).length, 3)
   assert.equal(new Set(visibleIds(result)).size, 3)
   assert.deepEqual(result.rest, [])
+})
+
+test('application highlights follow the requested priority, not publication order', () => {
+  const result = selectHomeContent(HOME_PROOFS.map((p) => post(p.id)).reverse())
+  assert.deepEqual(
+    result.proofs.map((p) => p.id),
+    [
+      'null-and-empty-string-sync-failure',
+      'address-search-9s-to-100ms',
+      'retire-flash-module-by-integration',
+    ],
+  )
+  assert.match(result.proofs[1].text, /9초에서 1초대/)
+  assert.doesNotMatch(result.proofs[1].text, /100\s*(ms|밀리초)/)
+})
+
+test('the former featured address case stays second and the next case is shown once', () => {
+  const posts = [
+    post('disk'),
+    post('auth'),
+    ...HOME_PROOFS.map((p, index) => post(p.id, { featured: index === 1 })),
+    post('older'),
+  ]
+  const result = selectHomeContent(posts)
+  assert.equal(result.featured.id, 'disk')
+  assert.deepEqual(result.proofs, HOME_PROOFS)
+  assert.deepEqual(
+    result.rest.map((p) => p.id),
+    ['auth', 'older'],
+  )
+  assert.equal(visibleIds(result).length, new Set(visibleIds(result)).size)
+  assert.deepEqual([...visibleIds(result)].sort(), posts.map((p) => p.id).sort())
 })
 
 test('empty content is safe and selection never mutates its input', () => {

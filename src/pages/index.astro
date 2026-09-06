@@ -15,7 +15,7 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
 const notes = await getCollection('notes')
 const wiki = await getCollection('wiki', ({ data }) => !data.draft)
 
-// 히어로는 featured로 고정한 글이 있으면 그것, 없으면 최신 글. 나머지는 발행일순 그대로.
+// 성과 3개를 우선 배치하고, 나머지에서 대표 카드와 발행일순 목록을 고른다.
 const { featured, proofs, rest } = selectHomeContent(posts)
 const featuredCat = featured ? getCategory(featured.data.category) : undefined
 const featuredProjects = PROJECTS.filter((p) => p.featured)
@@ -31,16 +31,21 @@ const algoCount = (await getCollection('solutions')).length
         느린 조회와 어긋난 데이터처럼, 운영 중 만난 문제를 로그와 데이터 흐름을 따라 추적합니다.
         무엇을 확인했고 왜 그 방법을 골랐는지, 해결 과정과 배운 점을 기록합니다.
       </p>
-      {/* 결과를 한 줄씩. 대표 사례 카드가 주소 건을 다루므로 여기서는 뺀다 */}
+      {/* 지원서에서 먼저 보여 줄 우선순위. 아래 대표 카드·목록과 중복하지 않는다 */}
       {
         proofs.length > 0 && (
-          <ul class="proofs">
-            {proofs.map((proof) => (
+          <ol class="proofs" aria-label="대표 성과, 우선순위 순">
+            {proofs.map((proof, index) => (
               <li>
-                <a href={`/posts/${proof.id}/`}>{proof.text}</a>
+                <a href={`/posts/${proof.id}/`}>
+                  <span class="proof-rank" aria-hidden="true">
+                    {index + 1}.
+                  </span>
+                  <span>{proof.text}</span>
+                </a>
               </li>
             ))}
-          </ul>
+          </ol>
         )
       }
       <div class="entry-paths" aria-label="방문 목적에 맞게 읽기">
@@ -86,34 +91,36 @@ const algoCount = (await getCollection('solutions')).length
         <p class="empty muted">아직 발행한 글이 없습니다.</p>
       ) : (
         <section class="latest">
-          <a class="hero" href={`/posts/${featured.id}/`} aria-labelledby="featured-case-title">
-            <div class="hero-copy">
-              {featuredCat && (
-                <span class="hero-cat" data-cat={featuredCat.id}>
-                  {featuredCat.name}
-                </span>
-              )}
-              <h2 id="featured-case-title">{featured.data.title}</h2>
-              {featured.data.cause ? (
-                <p class="hero-cause">
-                  <span class="cause-label">
-                    <Mark size={14} />
-                    원인 한 줄
+          {featured && (
+            <a class="hero" href={`/posts/${featured.id}/`} aria-labelledby="featured-case-title">
+              <div class="hero-copy">
+                {featuredCat && (
+                  <span class="hero-cat" data-cat={featuredCat.id}>
+                    {featuredCat.name}
                   </span>
-                  {featured.data.cause}
-                </p>
-              ) : (
-                featured.data.description && <p>{featured.data.description}</p>
-              )}
-              <span class="hero-meta">
-                <ContentDates date={featured.data.date} updated={featured.data.updated} />
-                <span>· {readingMinutes(featured.body ?? '')}분</span>
-              </span>
-              <span class="read-case">
-                판단 과정 읽기 <span aria-hidden="true">→</span>
-              </span>
-            </div>
-          </a>
+                )}
+                <h2 id="featured-case-title">{featured.data.title}</h2>
+                {featured.data.cause ? (
+                  <p class="hero-cause">
+                    <span class="cause-label">
+                      <Mark size={14} />
+                      원인 한 줄
+                    </span>
+                    {featured.data.cause}
+                  </p>
+                ) : (
+                  featured.data.description && <p>{featured.data.description}</p>
+                )}
+                <span class="hero-meta">
+                  <ContentDates date={featured.data.date} updated={featured.data.updated} />
+                  <span>· {readingMinutes(featured.body ?? '')}분</span>
+                </span>
+                <span class="read-case">
+                  판단 과정 읽기 <span aria-hidden="true">→</span>
+                </span>
+              </div>
+            </a>
+          )}
 
           {rest.length > 0 && (
             <>
@@ -190,7 +197,15 @@ const algoCount = (await getCollection('solutions')).length
     padding-top: 0;
   }
   .proofs a {
+    display: grid;
+    grid-template-columns: 1.25rem minmax(0, 1fr);
+    gap: 0.5rem;
     color: var(--text);
+  }
+  .proof-rank {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
   }
   .proofs a:hover {
     text-decoration: underline;
