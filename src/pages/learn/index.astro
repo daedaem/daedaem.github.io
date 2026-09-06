@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import PageHead from '@/components/PageHead.astro'
 const solutions = await getCollection('solutions')
 const notes = await getCollection('notes')
 const transition = notes.filter((n) => ['first-post', 'scsa'].includes(n.id))
@@ -12,20 +13,20 @@ const transition = notes.filter((n) => ['first-post', 'scsa'].includes(n.id))
   searchIndex={false}
 >
   <div class="wrap-list page">
-    <header>
-      <h1>학습 기록</h1><p>문제를 풀고, 개념을 익히고, 개발자로 방향을 바꾸던 기록입니다.</p>
-    </header>
+    <PageHead title="학습 기록">
+      <p>문제를 풀고, 개념을 익히고, 개발자로 방향을 바꾸던 기록입니다.</p>
+    </PageHead>
     <div class="collections">
-      <a href="/algorithms/" class="collection"
-        ><span class="count">{solutions.length}문제</span><h2>
-          알고리즘 <span aria-hidden="true">↗</span>
+      <a href="/algorithms/" class="collection" aria-labelledby="learn-algorithms-title"
+        ><span class="count">문제 {solutions.length}개</span><h2 id="learn-algorithms-title">
+          알고리즘 <span aria-hidden="true">→</span>
         </h2><p>백준·프로그래머스 풀이를 문제 이름, 난이도, 언어로 찾습니다.</p><span class="period"
           >2021–2023 · 풀이 아카이브</span
         ></a
       >
-      <a href="/notes/" class="collection"
-        ><span class="count">{notes.length}편</span><h2>
-          학습 노트 <span aria-hidden="true">↗</span>
+      <a href="/notes/" class="collection" aria-labelledby="learn-notes-title"
+        ><span class="count">노트 {notes.length}편</span><h2 id="learn-notes-title">
+          학습 노트 <span aria-hidden="true">→</span>
         </h2><p>JavaScript·TypeScript·웹 기초를 정리한 노트와 그 시기의 이야기입니다.</p><span
           class="period">2022–2023 · 원문과 바로잡음</span
         ></a
@@ -51,13 +52,8 @@ const transition = notes.filter((n) => ['first-post', 'scsa'].includes(n.id))
 </BaseLayout>
 <style>
   .page {
-    padding-block: 2rem 4rem;
+    padding-bottom: 4rem;
   }
-  h1 {
-    margin: 0;
-    font-size: var(--type-page-title);
-  }
-  header p,
   .transition p {
     color: var(--text-muted);
     margin: 0.5rem 0 0;
@@ -66,7 +62,7 @@ const transition = notes.filter((n) => ['first-post', 'scsa'].includes(n.id))
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.25rem;
-    margin-top: 2rem;
+    margin-top: 0.5rem;
   }
   .collection {
     padding: 1.5rem;
@@ -128,9 +124,6 @@ const transition = notes.filter((n) => ['first-post', 'scsa'].includes(n.id))
   @media (max-width: 600px) {
     .collections {
       grid-template-columns: 1fr;
-    }
-    .page {
-      padding-top: 1.25rem;
     }
   }
 </style>

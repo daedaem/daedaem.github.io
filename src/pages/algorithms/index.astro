@@ -98,6 +98,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
         placeholder="문제 이름으로 찾기"
         aria-label="문제 이름으로 찾기"
         autocomplete="off"
+        maxlength="200"
       />
       <span id="count" class="count" aria-live="polite"></span>
       <button type="button" id="clear" class="control-button" hidden>필터 지우기</button>
@@ -143,6 +144,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
           class="group"
           open={g.name === 'Platinum' || g.name === 'Gold'}
           data-total={g.items.length}
+          data-group={`boj-${g.name.toLowerCase()}`}
         >
           <summary>
             {g.name} <em>{g.items.length}</em>
@@ -192,6 +194,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
           class="group"
           open={g.name === 'Level 4' || g.name === 'Level 3'}
           data-total={g.items.length}
+          data-group={`pgs-${g.name.replace('Level ', 'lv')}`}
         >
           <summary>
             {g.name} <em>{g.items.length}</em>
@@ -243,6 +246,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
   </div>
   <script>
     import { paginationWindow } from '@/utils/pagination.mjs'
+    import { readAlgorithmState, writeAlgorithmState } from '@/utils/algorithm-state.mjs'
     // 정적 목록을 클라이언트에서 거른 뒤 그룹마다 10개씩 쪽으로 나눈다.
     // 검색어·유형·언어 세 조건은 AND이고, 조건이 바뀌면 모든 그룹을 1쪽으로 되돌린다.
     const PAGE = 10
@@ -256,6 +260,40 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
 
     let cls = ''
     let lang = ''
+    const defaultOpen = new Map(groups.map((g) => [g, g.open]))
+    const choices = {
+      categories: chips.flatMap((c) => (c.dataset.cls ? [c.dataset.cls] : [])),
+      languages: chips.flatMap((c) => (c.dataset.lang ? [c.dataset.lang] : [])),
+      groups: Object.fromEntries(
+        groups.map((g) => [
+          g.dataset.group!,
+          Math.max(1, Math.ceil(Number(g.dataset.total) / PAGE)),
+        ]),
+      ),
+    }
+    let urlTimer: ReturnType<typeof setTimeout> | undefined
+    function persistURL() {
+      clearTimeout(urlTimer)
+      const expanded = groups.filter((g) => g.open).map((g) => g.dataset.group!)
+      const usesDefault = groups.every((g) => g.open === defaultOpen.get(g))
+      const url = writeAlgorithmState(location.href, {
+        query: q.value,
+        category: cls,
+        language: lang,
+        pages: Object.fromEntries(groups.map((g) => [g.dataset.group!, page.get(g) ?? 1])),
+        expanded: usesDefault ? undefined : expanded,
+      })
+      if (url.href === location.href) return
+      try {
+        history.replaceState(history.state, '', url)
+      } catch {
+        // A browser history quota must not prevent filtering the visible list.
+      }
+    }
+    function scheduleURL() {
+      clearTimeout(urlTimer)
+      urlTimer = setTimeout(persistURL, 200)
+    }
 
     function matches(li: HTMLLIElement, term: string) {
       return (
@@ -265,7 +303,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       )
     }
 
-    function renderGroup(g: HTMLDetailsElement, active: boolean) {
+    function renderGroup(g: HTMLDetailsElement, active: boolean, expandMatches = false) {
       const term = q.value.trim().toLowerCase()
       const rows = [...g.querySelectorAll<HTMLLIElement>('.list li')]
       const hit = rows.filter((li) => matches(li, term))
@@ -282,7 +320,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       const em = g.querySelector('summary em')!
       em.textContent = active ? `${hit.length} / ${total}` : String(total)
       g.hidden = active && hit.length === 0
-      if (active && hit.length > 0) g.open = true
+      if (expandMatches && active && hit.length > 0) g.open = true
 
       const nav = g.querySelector<HTMLElement>('.pager')!
       nav.hidden = hit.length <= PAGE
@@ -303,10 +341,10 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       return hit.length
     }
 
-    function apply() {
+    function apply(sync = true, expandMatches = false) {
       const active = !!(q.value.trim() || cls || lang)
       let shown = 0
-      for (const g of groups) shown += renderGroup(g, active)
+      for (const g of groups) shown += renderGroup(g, active, expandMatches)
 
       // 사이트 소제목(백준/프로그래머스)은 아래 그룹이 전부 숨었을 때 같이 숨긴다
       for (const h of document.querySelectorAll<HTMLElement>('.site-title')) {
@@ -329,11 +367,13 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
         c.classList.toggle('on', !!on)
         c.setAttribute('aria-pressed', String(!!on))
       }
+      if (sync) scheduleURL()
     }
 
     function resetPages() {
       page.clear()
-      apply()
+      for (const g of groups) g.open = defaultOpen.get(g) ?? false
+      apply(true, true)
     }
 
     q.addEventListener('input', resetPages)
@@ -360,11 +400,38 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
         else if (b.classList.contains('next')) page.set(g, cur + 1)
         else page.set(g, Number(b.dataset.page))
         renderGroup(g, !!(q.value.trim() || cls || lang))
+        scheduleURL()
         // 그룹 머리가 화면 위로 벗어났을 때만 올린다. 보이는 상태에서 쪽만 넘길 때는 시점을 유지한다.
         const head = g.querySelector('summary')!
         if (head.getBoundingClientRect().top < 0) head.scrollIntoView({ block: 'start' })
       })
+      g.addEventListener('toggle', scheduleURL)
     }
+    function readURL() {
+      clearTimeout(urlTimer)
+      const state = readAlgorithmState(location.search, choices)
+      q.value = state.query
+      cls = state.category
+      lang = state.language
+      for (const g of groups) {
+        const id = g.dataset.group!
+        page.set(g, state.pages[id])
+        g.open =
+          state.expanded?.includes(id) ?? (state.pages[id] > 1 || defaultOpen.get(g) || false)
+      }
+      apply(false, state.expanded === undefined)
+    }
+    // Flush even when a result is opened before the typing debounce expires.
+    document.addEventListener(
+      'click',
+      (e) => {
+        if ((e.target as Element).closest('.list a')) persistURL()
+      },
+      { capture: true },
+    )
+    addEventListener('pagehide', persistURL)
+    addEventListener('popstate', readURL)
+    readURL()
   </script>
 </BaseLayout>
 

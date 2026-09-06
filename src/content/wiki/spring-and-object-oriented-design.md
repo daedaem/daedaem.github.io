@@ -5,7 +5,7 @@ description: 'EJB의 겨울에서 스프링이 나온 배경부터 다형성·SO
 topic: 'spring'
 tags: ['Spring', '객체지향', 'SOLID', '다형성', 'DI']
 created: 2023-05-21
-updated: 2026-08-29
+updated: 2026-09-06
 status: 'stable'
 ---
 
@@ -102,7 +102,9 @@ class MemberService {
 
 ### SRP · 단일 책임 원칙
 
-한 클래스는 하나의 책임만 가진다. "하나의 책임"이 모호한데, **판단 기준은 변경이다.** 변경했을 때 파급 효과가 작으면 잘 지킨 것이다.
+한 모듈에는 **하나의 변경 이유**가 있어야 한다. 여기서 책임은 메서드 개수가 아니라, 변경을 요구하는 하나의 주체(같은 업무 목적을 가진 사람들의 집단)에 대한 책임이다. 서로 다른 업무 요구로 바뀌는 코드를 한 클래스에 섞지 않는 것이 핵심이다.
+
+변경의 파급 범위가 작은지는 설계를 살피는 보조 기준이지만, 그것만으로 SRP를 지켰다고 판단할 수는 없다. [로버트 마틴의 SRP 설명](https://blog.cleancoder.com/uncle-bob/2014/05/08/SingleReponsibilityPrinciple.html)
 
 ### OCP · 개방-폐쇄 원칙
 

@@ -46,13 +46,15 @@ ApplicationForm.aspx.cs   ← 서버 코드 (Code-Behind)
 
 ## PostBack — 이 모델의 핵심
 
-**PostBack(재게시)은 페이지 자체를 서버로 다시 보내 재생성하는 것**이다.
+**PostBack(재게시)은 폼 값과 페이지 상태를 서버로 다시 보내 처리하는 것**이다. HTML 페이지 자체를 업로드하는 것은 아니다.
 
 ```
 사용자 동작 → PostBack → 서버 처리 → 페이지 재생성 → 클라이언트 전송
 ```
 
-버튼 하나를 눌러도, 드롭다운을 바꿔도 화면 전체가 왕복한다. Ajax 이전 시대의 모델이라 그렇다.
+일반적인 전체 PostBack에서는 서버가 페이지를 다시 렌더링하고 브라우저가 새 HTML로 화면을 교체한다. 드롭다운은 `AutoPostBack="true"`로 설정했을 때 값 변경만으로 이 요청을 보낸다.
+
+`UpdatePanel`의 비동기 PostBack은 화면 일부만 갱신할 수 있다. 다만 폼 값과 ViewState 전송, 서버의 페이지 생명주기는 여전히 거친다. 부분 렌더링이지 서버 처리가 사라지는 것은 아니다. [Microsoft의 페이지 생명주기 설명](https://learn.microsoft.com/en-us/previous-versions/aspnet/ms178472(v=vs.100))
 
 여기서 가장 자주 보게 되는 코드가 나온다.
 
@@ -162,7 +164,7 @@ cmd.Parameters.Add("@ApplicantName", SqlDbType.NVarChar, 100)
 
 | | Spring MVC | Web Forms |
 |---|---|---|
-| 요청 단위 | URL → 컨트롤러 메서드 | **페이지 전체가 서버로 왕복** |
+| 요청 단위 | URL → 컨트롤러 메서드 | **페이지를 대상으로 폼 값·상태 전송 후 이벤트 처리** |
 | 상태 유지 | 세션 또는 무상태 | **ViewState가 클라이언트를 왕복** |
 | 화면과 로직 | 템플릿과 컨트롤러가 분리 | `.aspx`와 `.aspx.cs`가 **한 쌍으로 묶임** |
 | 이벤트 | HTTP 메서드 매핑 | 버튼 클릭 같은 **UI 이벤트가 서버 메서드** |
@@ -171,6 +173,6 @@ Web Forms는 "웹을 데스크톱 폼처럼" 다루려 한 설계다. 그래서 
 
 ## 아직 정리 못 한 것
 
-- `UpdatePanel`(부분 PostBack)의 동작과 한계
+- `UpdatePanel`의 부분 렌더링(비동기 PostBack) 설정과 한계
 - Master Page와 사용자 정의 컨트롤
 - `Session`과 ViewState를 갈라 쓰는 기준

@@ -1,5 +1,6 @@
 ---
 // Pagefind는 빌드 후 dist/pagefind 에 생성된다. 개발 서버에서는 동작하지 않는다.
+import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
 ---
 
 <button
@@ -32,6 +33,13 @@
     <span>글·위키·학습 기록 검색</span>
     <button id="search-close" type="button" aria-label="검색 닫기">닫기 ×</button>
   </div>
+  <label class="search-scope" id="search-scope-label" hidden>
+    검색 범위
+    <select id="search-scope" class="list-input">
+      <option value="">전체</option>
+      {SEARCH_SCOPES.map((scope) => <option value={scope}>{scope}</option>)}
+    </select>
+  </label>
   <div id="search-mount"></div>
 </dialog>
 
@@ -41,6 +49,12 @@
   const mount = document.getElementById('search-mount')
   const closeBtn = document.getElementById('search-close')
   const shortcut = document.getElementById('search-shortcut')
+  const scope = document.getElementById('search-scope') as HTMLSelectElement
+  const scopeLabel = document.getElementById('search-scope-label')!
+  let searchUI: { triggerFilters: (filters: Record<string, string[]>) => void } | undefined
+  scope.addEventListener('change', () => {
+    searchUI?.triggerFilters({ 구분: scope.value ? [scope.value] : [] })
+  })
   if (shortcut)
     shortcut.textContent = /Macintosh|Mac OS X|iPhone|iPad|iPod/.test(navigator.userAgent)
       ? '⌘K'
@@ -80,7 +94,7 @@
       return
     }
     mount.replaceChildren()
-    new PagefindUI({
+    searchUI = new PagefindUI({
       element: '#search-mount',
       bundlePath: base,
       showSubResults: true,
@@ -97,6 +111,7 @@
         searching: '검색 중…',
       },
     })
+    scopeLabel.hidden = false
     loaded = true
   }
 
@@ -143,6 +158,22 @@
 </script>
 
 <style is:global>
+  .search-scope {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+  .search-scope select {
+    width: auto;
+    min-width: 9rem;
+  }
+  /* The native selector above controls the same filters without a second filter panel. */
+  #search-mount .pagefind-ui__filter-panel {
+    display: none;
+  }
   #search-open {
     display: inline-flex;
     align-items: center;

@@ -17,11 +17,20 @@ export function checkSite(root, site) {
     const name = relative(root, file).split(sep).join('/')
     const base = new URL(name.replace(/index\.html$/, ''), site)
     const html = readFileSync(file, 'utf8')
+    const ids = [...html.matchAll(/\sid=(["'])(.*?)\1/g)].map((match) => match[2])
+    for (const tag of html.matchAll(/<a\b[^>]*>/gi)) {
+      const labels = tag[0].match(/\baria-labelledby=(["'])(.*?)\1/)?.[2]
+      if (!labels) continue
+      for (const id of labels.split(/\s+/)) {
+        if (ids.filter((value) => value === id).length !== 1)
+          errors.push(`${name}: link label must reference one unique element: ${id}`)
+      }
+    }
     // 본문 아래 탐색 목록·댓글 안내가 검색어에 걸려 무관한 글이 노출되지 않게 한다.
     for (const tag of html.matchAll(/<(?:section|aside|nav|p)\b[^>]*>/gi)) {
       const classes = (tag[0].match(/\bclass=(["'])(.*?)\1/)?.[2] ?? '').split(/\s+/)
       const readingChrome =
-        /\baria-label=(["'])(?:다른 글|연결된 문서|댓글|학습 기록 탐색|같은 유형의 다른 문제|목차)\1/.test(
+        /\baria-label=(["'])(?:다른 글|이어 읽을 사례|연결된 문서|댓글|학습 기록 탐색|같은 유형의 다른 문제|목차)\1/.test(
           tag[0],
         ) ||
         classes.includes('archived') ||

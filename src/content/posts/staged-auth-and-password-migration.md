@@ -8,6 +8,7 @@ cause: 'ID와 비밀번호만 맞으면 세션에 권한까지 실리는 구조�
 category: 'auth-security'
 tags: ['인증', '비밀번호', 'salt', '해시', '마이그레이션']
 draft: false
+featured: true
 ---
 
 > 코드와 테이블명은 문제의 구조를 보여주기 위해 일반적인 형태로 옮긴 것이다. 실제 시스템의 코드가 아니다.

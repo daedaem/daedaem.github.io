@@ -7,7 +7,7 @@ export const SITE = {
   // 홈 화면과 <meta description>에 함께 쓰이는 한 줄 정체성
   tagline: '증상이 아니라 원인을 고칩니다',
   description:
-    '느린 조회, 어긋난 데이터, 레거시 코드 등 일하면서 만난 문제를 화면부터 DB 내부까지 파고들어 고쳐 온 기록. 증상이 아니라 원인을 씁니다.',
+    '레거시 시스템을 개발·운영하는 백엔드 개발자 조해성의 기록. 데이터 정합성, 조회 성능, 시스템 연동을 개선하며 내린 판단과 결과를 남깁니다.',
   author: '조해성',
   // 이 값 하나가 canonical, sitemap, RSS에 모두 반영됩니다.
   url: 'https://daedaem.github.io',

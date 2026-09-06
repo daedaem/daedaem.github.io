@@ -50,6 +50,7 @@ test('related reading and comments are explicitly excluded from search', (t) => 
     'index.html': `<main data-pagefind-body>
       <h1>실제 글 제목</h1><p>본문은 검색에 남는다.</p>
       <section aria-label="다른 글" data-pagefind-ignore>별개의 글 제목</section>
+      <section aria-label="이어 읽을 사례" data-pagefind-ignore>연관 사례 제목</section>
       <aside data-pagefind-ignore="all" aria-label="연결된 문서">연결된 문서 제목</aside>
       <section aria-label="댓글" data-pagefind-ignore>댓글 안내</section>
       <nav aria-label="학습 기록 탐색" data-pagefind-ignore>학습 기록 전체</nav>
@@ -63,10 +64,23 @@ test('missing search exclusions fail the build check', (t) => {
     'index.html': `<section aria-label="다른 글">다른 글 제목</section>
       <aside aria-label="연결된 문서">연결된 문서 제목</aside>
       <section aria-label="댓글" data-pagefind-ignore-disabled>댓글 안내</section>
-      <nav aria-label="학습 기록 탐색">학습 기록 전체</nav>`,
+      <nav aria-label="학습 기록 탐색">학습 기록 전체</nav>
+      <section aria-label="이어 읽을 사례">연관 사례 제목</section>`,
   })
-  assert.equal(checkSite(root, site).errors.length, 4)
+  assert.equal(checkSite(root, site).errors.length, 5)
   assert.ok(checkSite(root, site).errors.every((error) => error.includes('excluded from search')))
+})
+
+test('card links name one existing unique title', (t) => {
+  const valid = fixture(t, {
+    'index.html': '<a aria-labelledby="case-title"><h2 id="case-title">사례 제목</h2></a>',
+  })
+  assert.deepEqual(checkSite(valid, site).errors, [])
+  const invalid = fixture(t, {
+    'index.html':
+      '<a aria-labelledby="missing">제목</a><a aria-labelledby="duplicate">제목</a><h2 id="duplicate">하나</h2><h2 id="duplicate">둘</h2>',
+  })
+  assert.equal(checkSite(invalid, site).errors.length, 2)
 })
 
 test('algorithm boilerplate, related links, archive banners and TOCs stay out of search', (t) => {

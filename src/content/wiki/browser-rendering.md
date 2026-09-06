@@ -5,7 +5,7 @@ description: 'DNS 조회부터 DOM·CSSOM·Render Tree, Layout과 Paint까지. �
 topic: 'web'
 tags: ['브라우저', '렌더링', 'DOM', 'CSSOM', 'Reflow']
 created: 2023-02-07
-updated: 2026-09-05
+updated: 2026-09-06
 status: 'stable'
 ---
 
@@ -44,10 +44,10 @@ CSS를 파싱해 만든다. **HTML 대신 CSS를 대상으로 하는 DOM**이라
 
 ### 3. 중간에 끼어드는 자바스크립트
 
-여기가 중요하다.
+아래는 HTML 파서가 `async`·`defer` 없는 일반 외부 스크립트(classic script)를 만났을 때의 흐름이다.
 
 ```
-HTML 파싱 중 <script> 만남
+HTML 파싱 중 <script src="app.js"> 만남
   → DOM 생성 중단
   → 자바스크립트 엔진에 제어권 넘김
   → 파일 요청·수신·파싱·실행 (AST 생성 후 실행)
@@ -55,7 +55,13 @@ HTML 파싱 중 <script> 만남
   → 중단했던 지점부터 DOM 생성 재개
 ```
 
-**스크립트가 DOM 생성을 막는다.** `<script>`를 `<body>` 끝에 두거나 `defer`를 쓰는 이유가 이것이다.
+이 경우 **스크립트의 다운로드·실행이 끝날 때까지 HTML 파싱이 멈춘다.** 일반 인라인 스크립트도 파일 다운로드만 없을 뿐, 실행하는 동안 파싱을 막는다.
+
+- `defer`가 있는 외부 스크립트는 HTML과 병렬로 내려받고, 파싱이 끝난 뒤 문서에 선언한 순서대로 실행한다.
+- `async`는 병렬로 내려받되 준비되는 대로 실행한다. 실행 시점에는 파싱이 멈출 수 있고, 스크립트 사이의 실행 순서를 보장하지 않는다.
+- `type="module"`은 기본적으로 파싱 뒤에 실행된다. 여기에 `async`를 붙이면 모듈과 의존성의 준비가 끝나는 대로 실행한다.
+
+따라서 모든 `<script>`가 같은 방식으로 파싱을 막는다고 보면 안 된다. [MDN의 script 요소 설명](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script)
 
 ### 4. Render Tree — 화면에 그려질 것만
 

@@ -15,10 +15,11 @@ interface Props {
 
 const { href, title, date, updated, category, readingMinutes, description } = Astro.props
 const cat = category ? getCategory(category) : undefined
+const titleId = `post-row-${encodeURIComponent(href)}`
 ---
 
 <li class:list={['row', { 'no-cat': !cat }]}>
-  <a href={href}>
+  <a href={href} aria-labelledby={titleId}>
     {
       cat && (
         <span class="cat" data-cat={cat.id}>
@@ -27,7 +28,7 @@ const cat = category ? getCategory(category) : undefined
       )
     }
     <span class="body">
-      <span class="title">{title}</span>
+      <span class="title" id={titleId}>{title}</span>
       {description && <span class="desc">{description}</span>}
     </span>
     <span class="meta">

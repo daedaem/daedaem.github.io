@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content'
 import PostLayout from '@/layouts/PostLayout.astro'
 import { readingMinutes } from '@/utils/format'
+import { selectRelatedPosts } from '@/utils/related-posts.mjs'
 
 export const getStaticPaths = async () => {
   const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
@@ -11,16 +12,16 @@ export const getStaticPaths = async () => {
   return posts.map((post, i) => {
     const link = (p?: (typeof posts)[number]) =>
       p ? { href: `/posts/${p.id}/`, title: p.data.title } : undefined
-    // 글 안에서 다른 글로 갈 수 있도록 나머지 전부를 넘긴다. 편수가 적어 전부 보여도 짧다.
-    const others = posts
-      .filter((p) => p.id !== post.id)
-      .map((p) => ({
+    // 이전·다음과 겹치지 않는 관련 사례 세 편만 빌드 시 고른다.
+    const others = selectRelatedPosts(posts, post, [posts[i + 1]?.id, posts[i - 1]?.id]).map(
+      (p) => ({
         href: `/posts/${p.id}/`,
         title: p.data.title,
         category: p.data.category,
         date: p.data.date,
         updated: p.data.updated,
-      }))
+      }),
+    )
     return {
       params: { slug: post.id },
       props: { post, prev: link(posts[i + 1]), next: link(posts[i - 1]), others },

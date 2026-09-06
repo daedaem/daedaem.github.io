@@ -28,7 +28,7 @@ interface Props {
   /** 이전 글(더 오래된 글)과 다음 글(더 새 글) */
   prev?: { href: string; title: string }
   next?: { href: string; title: string }
-  /** 이 글을 뺀 나머지 글. 글 안에서 다른 글로 갈 수 있게 목록을 보여 준다 */
+  /** 현재 글과 이전·다음을 제외하고 고른 관련 사례 */
   others?: { href: string; title: string; category?: string; date: Date; updated?: Date }[]
   /** 원인 한 줄. 이 사이트의 시그니처 블록으로, 제목 아래에 고정된 형태로 나온다 */
   cause?: string
@@ -199,9 +199,9 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 
     {
       others.length > 0 && (
-        <section class="others" aria-label="다른 글" data-pagefind-ignore>
+        <section class="others" aria-label="이어 읽을 사례" data-pagefind-ignore>
           <div class="others-head">
-            <h2>다른 글</h2>
+            <h2>이어 읽을 사례</h2>
             <a href="/posts/">전체 보기 →</a>
           </div>
           <ul class="rows">
@@ -233,6 +233,40 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
     }
     sync()
     wide.addEventListener('change', sync)
+  }
+
+  const entries = [...document.querySelectorAll<HTMLAnchorElement>('.post > .toc a[href^="#"]')]
+    .map((link) => ({
+      link,
+      heading: document.getElementById(decodeURIComponent(link.hash.slice(1))),
+    }))
+    .filter((entry) => entry.heading)
+  if (entries.length) {
+    const updateCurrent = () => {
+      const marker = Math.max(128, innerHeight * 0.2)
+      const atBottom = scrollY + innerHeight >= document.documentElement.scrollHeight - 2
+      const current = atBottom
+        ? entries.at(-1)
+        : entries.filter(({ heading }) => heading!.getBoundingClientRect().top <= marker).at(-1)
+      for (const entry of entries) {
+        if (entry === current) entry.link.setAttribute('aria-current', 'location')
+        else entry.link.removeAttribute('aria-current')
+      }
+    }
+    // Scrolling across a tall section or jumping several headings must also update the marker.
+    let scheduled = false
+    const schedule = () => {
+      if (scheduled) return
+      scheduled = true
+      requestAnimationFrame(() => {
+        updateCurrent()
+        scheduled = false
+      })
+    }
+    addEventListener('scroll', schedule, { passive: true })
+    addEventListener('resize', schedule)
+    addEventListener('hashchange', schedule)
+    updateCurrent()
   }
 </script>
 
@@ -498,6 +532,12 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
   }
   .toc a:hover {
     color: var(--text);
+  }
+  .toc a[aria-current='location'] {
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
   }
 
   .adjacent {

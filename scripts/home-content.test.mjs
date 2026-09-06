@@ -83,3 +83,21 @@ test('empty content is safe and selection never mutates its input', () => {
     ['second'],
   )
 })
+
+test('the authentication case is the featured card without changing proof priority', () => {
+  const posts = [
+    post('disk'),
+    post('staged-auth-and-password-migration', { featured: true }),
+    ...HOME_PROOFS.map((p) => post(p.id)),
+    post('overflow'),
+    post('batch'),
+  ]
+  const result = selectHomeContent(posts)
+  assert.equal(result.featured.id, 'staged-auth-and-password-migration')
+  assert.deepEqual(result.proofs, HOME_PROOFS)
+  assert.deepEqual(
+    result.rest.map((p) => p.id),
+    ['disk', 'overflow', 'batch'],
+  )
+  assert.equal(new Set(visibleIds(result)).size, 7)
+})
