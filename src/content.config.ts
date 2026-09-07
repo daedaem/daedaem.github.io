@@ -52,7 +52,7 @@ const notes = defineCollection({
     z.object({
       slug: z.string(),
       title: z.string(),
-      /** 노션 TIL DB의 작성일시. 블로그 발행일이 아니라 노트를 처음 쓴 날이다. */
+      /** 출처별로 보존한 원문 날짜. 노션 TIL 작성일시 또는 옛 블로그 발행일이며 수정일과 구분한다. */
       date: z.coerce.date(),
       /** 원문 보충·기술 교정을 포함한 최종 수정일. 원문 작성일(date)과 구분한다. */
       updated: optionalDate,

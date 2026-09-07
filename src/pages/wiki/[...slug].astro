@@ -3,8 +3,9 @@ import { getCollection, render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import WikiTree from '@/components/WikiTree.astro'
 import RelatedReading from '@/components/RelatedReading.astro'
+import ContentDates from '@/components/ContentDates.astro'
 import { getWikiTopic } from '@/consts'
-import { formatDate, readingMinutes, tagSlug } from '@/utils/format'
+import { readingMinutes, tagSlug } from '@/utils/format'
 import { linkableTagSlugs } from '@/utils/tags'
 
 export const getStaticPaths = async () => {
@@ -62,13 +63,12 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
               </a>
             )
           }
-          <time datetime={(entry.data.updated ?? entry.data.created).toISOString()}>
-            {
-              entry.data.updated
-                ? `${formatDate(entry.data.updated)} 갱신`
-                : formatDate(entry.data.created)
-            }
-          </time>
+          <ContentDates
+            date={entry.data.created}
+            updated={entry.data.updated}
+            dateLabel="처음 작성"
+            updatedLabel="마지막 수정"
+          />
           <span>· {readingMinutes(entry.body ?? '')}분</span>
         </div>
         <h1>{entry.data.title}</h1>

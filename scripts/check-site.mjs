@@ -1,11 +1,32 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { resolve, relative, join, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'
+import yaml from 'js-yaml'
 
 const walk = (dir) =>
   readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
     entry.isDirectory() ? walk(join(dir, entry.name)) : [join(dir, entry.name)],
   )
+
+// 공통 날짜 컴포넌트가 원문 날짜를 수정일로 덮어 숨기지 않는지 생성 HTML에서 확인한다.
+export function checkDateDisplay(html, date, updated) {
+  const dates = html.match(
+    /<span\b[^>]*class="[^"]*\bcontent-dates\b[^"]*"[^>]*>([\s\S]*?)<\/span>/,
+  )?.[1]
+  if (!dates) return ['content dates missing']
+  const actual = [...dates.matchAll(/<time\b[^>]*datetime="([^"]+)"[^>]*>([\s\S]*?)<\/time>/g)]
+  const first = new Date(date).toISOString()
+  const revised = updated ? new Date(updated).toISOString() : undefined
+  const expected = revised && revised !== first ? [first, revised] : [first]
+  const errors = []
+  if (actual.length !== expected.length) errors.push('unexpected number of content dates')
+  expected.forEach((value, index) => {
+    if (actual[index]?.[1] !== value) errors.push(`content date ${index + 1} differs from metadata`)
+    if (!actual[index]?.[2].replace(/<[^>]*>/g, '').trim())
+      errors.push(`content date ${index + 1} has no visible text`)
+  })
+  return errors
+}
 
 // Astro가 생성한 HTML의 따옴표로 감싼 href/src만 검사한다. 범용 HTML 파서는 아니다.
 export function checkSite(root, site) {
@@ -100,10 +121,21 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
     for (const file of walk(resolve('src/content', collection)).filter((f) => /\.mdx?$/.test(f))) {
       const content = readFileSync(file, 'utf8')
       const frontmatter = content.match(/^---\r?\n([\s\S]*?)\r?\n---/)
-      if (!frontmatter || !/^draft:\s*true\s*(?:#.*)?$/m.test(frontmatter[1])) continue
+      if (!frontmatter) continue
       const slug = relative(resolve('src/content', collection), file).replace(/\.mdx?$/, '')
-      if (existsSync(join(root, collection, slug, 'index.html'))) {
+      const output = join(root, collection, slug, 'index.html')
+      const data = yaml.load(frontmatter[1])
+      if (data.draft && existsSync(output)) {
         result.errors.push(`Draft was generated: ${collection}/${slug}`)
+      }
+      if (collection === 'wiki' && !data.draft) {
+        if (!existsSync(output)) result.errors.push(`Published wiki missing: ${slug}`)
+        else
+          result.errors.push(
+            ...checkDateDisplay(readFileSync(output, 'utf8'), data.created, data.updated).map(
+              (error) => `wiki/${slug}: ${error}`,
+            ),
+          )
       }
     }
   }

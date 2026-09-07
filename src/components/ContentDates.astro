@@ -6,15 +6,26 @@ interface Props {
   updated?: Date
   original?: boolean
   stacked?: boolean
+  dateLabel?: string
+  updatedLabel?: string
 }
-const { date, updated, original = false, stacked = false } = Astro.props
+const {
+  date,
+  updated,
+  original = false,
+  stacked = false,
+  dateLabel = original ? '원문 작성' : '작성',
+  updatedLabel = '수정',
+} = Astro.props
 ---
 
 <span class:list={['content-dates', { stacked }]}>
-  <time datetime={date.toISOString()}>{original ? '원문 작성' : '작성'} {formatDate(date)}</time>
+  <time datetime={date.toISOString()}>{dateLabel} {formatDate(date)}</time>
   {
     updated && updated.getTime() !== date.getTime() && (
-      <time datetime={updated.toISOString()}>수정 {formatDate(updated)}</time>
+      <time datetime={updated.toISOString()}>
+        {updatedLabel} {formatDate(updated)}
+      </time>
     )
   }
 </span>
