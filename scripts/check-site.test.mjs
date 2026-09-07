@@ -50,7 +50,7 @@ test('related reading and comments are explicitly excluded from search', (t) => 
     'index.html': `<main data-pagefind-body>
       <h1>실제 글 제목</h1><p>본문은 검색에 남는다.</p>
       <section aria-label="다른 글" data-pagefind-ignore>별개의 글 제목</section>
-      <section aria-label="이어 읽을 사례" data-pagefind-ignore>연관 사례 제목</section>
+      <section aria-label="이어 읽을 글" data-pagefind-ignore>연관 사례 제목</section>
       <aside data-pagefind-ignore="all" aria-label="연결된 문서">연결된 문서 제목</aside>
       <section aria-label="댓글" data-pagefind-ignore>댓글 안내</section>
       <nav aria-label="학습 기록 탐색" data-pagefind-ignore>학습 기록 전체</nav>
@@ -65,7 +65,7 @@ test('missing search exclusions fail the build check', (t) => {
       <aside aria-label="연결된 문서">연결된 문서 제목</aside>
       <section aria-label="댓글" data-pagefind-ignore-disabled>댓글 안내</section>
       <nav aria-label="학습 기록 탐색">학습 기록 전체</nav>
-      <section aria-label="이어 읽을 사례">연관 사례 제목</section>`,
+      <section aria-label="이어 읽을 글">연관 사례 제목</section>`,
   })
   assert.equal(checkSite(root, site).errors.length, 5)
   assert.ok(checkSite(root, site).errors.every((error) => error.includes('excluded from search')))

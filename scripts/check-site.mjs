@@ -30,7 +30,7 @@ export function checkSite(root, site) {
     for (const tag of html.matchAll(/<(?:section|aside|nav|p)\b[^>]*>/gi)) {
       const classes = (tag[0].match(/\bclass=(["'])(.*?)\1/)?.[2] ?? '').split(/\s+/)
       const readingChrome =
-        /\baria-label=(["'])(?:다른 글|이어 읽을 사례|연결된 문서|댓글|학습 기록 탐색|같은 유형의 다른 문제|목차)\1/.test(
+        /\baria-label=(["'])(?:다른 글|이어 읽을 사례|이어 읽을 글|연결된 문서|댓글|학습 기록 탐색|같은 유형의 다른 문제|목차)\1/.test(
           tag[0],
         ) ||
         classes.includes('archived') ||

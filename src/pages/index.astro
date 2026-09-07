@@ -2,530 +2,345 @@
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
-import ContentDates from '@/components/ContentDates.astro'
-import Mark from '@/components/Mark.astro'
-import { SITE, getCategory } from '@/consts'
-import { PROJECTS } from '@/data/projects'
-import { readingMinutes } from '@/utils/format'
-import { selectHomeContent } from '@/utils/home-content.mjs'
+import { SITE, getCategory, getWikiTopic } from '@/consts'
+import { readingMinutes, formatDate } from '@/utils/format'
+import { selectHomeContent, selectRecentWiki } from '@/utils/home-content.mjs'
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 )
 const notes = await getCollection('notes')
 const wiki = await getCollection('wiki', ({ data }) => !data.draft)
-
-// 성과 3개를 우선 배치하고, 나머지에서 대표 카드와 발행일순 목록을 고른다.
-const { featured, proofs, rest } = selectHomeContent(posts)
-const featuredCat = featured ? getCategory(featured.data.category) : undefined
-const featuredProjects = PROJECTS.filter((p) => p.featured)
 const algoCount = (await getCollection('solutions')).length
+const { recommended, rest } = selectHomeContent(posts)
+const recentWiki = selectRecentWiki(wiki)
 ---
 
 <BaseLayout title={SITE.title} description={SITE.description} searchIndex={false}>
   <div class="wrap-wide home">
-    <section class="intro">
+    <header class="intro">
       <p class="who">조해성 · 백엔드 개발자</p>
       <h1>{SITE.tagline}</h1>
-      <p>
-        여러 업무 도메인의 레거시 시스템을 개발·운영합니다. 기존 코드를 고치는 일부터 시스템 연동을
-        바꾸고 지원이 끝난 모듈을 걷어내는 일까지 맡습니다. 그 과정에서 내린 판단과 결과를
-        기록합니다.
+      <p class="lead">
+        레거시 시스템을 개발·운영하며 만난 문제의 원인과, 해결 과정에서 내린 판단을 기록합니다.
       </p>
-      {/* 지원서에서 먼저 보여 줄 우선순위. 아래 대표 카드·목록과 중복하지 않는다 */}
-      {
-        proofs.length > 0 && (
-          <ol class="proofs" aria-label="대표 성과, 우선순위 순">
-            {proofs.map((proof, index) => (
-              <li>
-                <a href={`/posts/${proof.id}/`}>
-                  <span class="proof-rank" aria-hidden="true">
-                    {index + 1}.
-                  </span>
-                  <span>{proof.text}</span>
-                </a>
-              </li>
-            ))}
-          </ol>
-        )
-      }
-      <div class="entry-paths" aria-label="방문 목적에 맞게 읽기">
-        <a class="primary-path" href="/posts/"
-          >문제 해결 사례 읽기 <span aria-hidden="true">→</span></a
-        >
-        <a href="/about/">소개·경력 보기 <span aria-hidden="true">→</span></a>
-      </div>
-      <p class="stack-line">
-        Java · Spring · Oracle · MyBatis · C#/.NET · React
-        <span class="links"
-          ><a href="/wiki/">학습 위키</a>
-          <a href={SITE.githubUrl}>GitHub</a>
-          <a href={SITE.linkedinUrl}>LinkedIn</a></span
-        >
-      </p>
-    </section>
+    </header>
 
     {
-      featuredProjects.length > 0 && (
-        <section class="projects">
-          <div class="sec-head">
-            <h2>프로젝트</h2>
-            <a href="/projects/">전체 보기 →</a>
+      recommended.length > 0 && (
+        <section class="reading-section" aria-labelledby="recommended-title">
+          <div class="section-head">
+            <h2 id="recommended-title">먼저 읽을 글</h2>
+            <a href="/posts/">
+              글 전체 보기 <span aria-hidden="true">→</span>
+            </a>
           </div>
-          <ul>
-            {featuredProjects.map((p) => (
-              <li>
-                <a href="/projects/">
-                  <span class="pname">{p.name}</span>
-                  <span class="ptag">{p.tagline}</span>
-                  <span class="pstack">{p.stack.slice(0, 4).join(' · ')}</span>
-                </a>
-              </li>
-            ))}
+          <ul class="recommendations">
+            {recommended.map((post) => {
+              const cat = getCategory(post.data.category)
+              const titleId = `recommended-${post.id}`
+              return (
+                <li class="recommendation">
+                  <div class="reading-meta">
+                    {cat && <span data-cat={cat.id}>{cat.name}</span>}
+                    <span>{readingMinutes(post.body ?? '')}분</span>
+                  </div>
+                  <h3 id={titleId}>
+                    <a href={`/posts/${post.id}/`}>{post.data.title}</a>
+                  </h3>
+                  <p>{post.readingNote}</p>
+                  <span class="read-link" aria-hidden="true">
+                    글 읽기 →
+                  </span>
+                </li>
+              )
+            })}
           </ul>
         </section>
       )
     }
 
     {
-      posts.length === 0 ? (
-        <p class="empty muted">아직 발행한 글이 없습니다.</p>
-      ) : (
-        <section class="latest">
-          {featured && (
-            <a class="hero" href={`/posts/${featured.id}/`} aria-labelledby="featured-case-title">
-              <div class="hero-copy">
-                {featuredCat && (
-                  <span class="hero-cat" data-cat={featuredCat.id}>
-                    {featuredCat.name}
-                  </span>
-                )}
-                <h2 id="featured-case-title">{featured.data.title}</h2>
-                {featured.data.cause ? (
-                  <p class="hero-cause">
-                    <span class="cause-label">
-                      <Mark size={14} />
-                      원인 한 줄
-                    </span>
-                    {featured.data.cause}
-                  </p>
-                ) : (
-                  featured.data.description && <p>{featured.data.description}</p>
-                )}
-                <span class="hero-meta">
-                  <ContentDates date={featured.data.date} updated={featured.data.updated} />
-                  <span>· {readingMinutes(featured.body ?? '')}분</span>
-                </span>
-                <span class="read-case">
-                  판단 과정 읽기 <span aria-hidden="true">→</span>
-                </span>
-              </div>
-            </a>
-          )}
-
-          {rest.length > 0 && (
-            <>
-              <div class="sec-head">
-                <h2>더 읽을 사례</h2>
-                <a href="/posts/">전체 보기 →</a>
-              </div>
-              <ul class="rows">
-                {rest.slice(0, 8).map((p) => (
-                  <PostRow
-                    href={`/posts/${p.id}/`}
-                    title={p.data.title}
-                    date={p.data.date}
-                    updated={p.data.updated}
-                    category={p.data.category}
-                    readingMinutes={readingMinutes(p.body ?? '')}
-                  />
-                ))}
-              </ul>
-            </>
-          )}
+      rest.length > 0 && (
+        <section class="reading-section other-posts" aria-labelledby="other-posts-title">
+          <div class="section-head">
+            <h2 id="other-posts-title">다른 글</h2>
+            <span class="section-note">최근 작성순</span>
+          </div>
+          <ul class="rows">
+            {rest.slice(0, 8).map((post) => (
+              <PostRow
+                href={`/posts/${post.id}/`}
+                title={post.data.title}
+                description={post.data.description}
+                date={post.data.date}
+                updated={post.data.updated}
+                category={post.data.category}
+                readingMinutes={readingMinutes(post.body ?? '')}
+              />
+            ))}
+          </ul>
+          <a class="all-posts" href="/posts/">
+            글 전체 보기 <span aria-hidden="true">→</span>
+          </a>
         </section>
       )
     }
+    {posts.length === 0 && <p class="empty muted">아직 발행한 글이 없습니다.</p>}
 
-    <div class="strips">
-      <a class="strip" href="/wiki/" aria-labelledby="wiki-strip-title">
-        <div class="strip-num">문서 <b>{wiki.length}</b>개</div>
-        <h2 class="strip-title" id="wiki-strip-title">위키</h2>
-        <p>일하다 막힌 것을 그때그때 정리해 쌓는 곳. 완성되지 않은 항목도 그대로 둡니다.</p>
-      </a>
-      <a class="strip" href="/algorithms/" aria-labelledby="algorithms-strip-title">
-        <div class="strip-num">문제 <b>{algoCount}</b>개</div>
-        <h2 class="strip-title" id="algorithms-strip-title">알고리즘</h2>
-        <p>백준·프로그래머스 풀이 기록. 티어와 유형, 사용한 언어별로 정리했습니다.</p>
-      </a>
-      <a class="strip" href="/notes/" aria-labelledby="notes-strip-title">
-        <div class="strip-num">노트 <b>{notes.length}</b>편</div>
-        <h2 class="strip-title" id="notes-strip-title">학습 노트 아카이브</h2>
-        <p>
-          개발자로 전환하던 2022~2023년의 기록. 자바스크립트·타입스크립트 학습 노트와 그 시기의
-          이야기.
-        </p>
-      </a>
+    <div class="notebook">
+      <section aria-labelledby="recent-wiki-title">
+        <div class="section-head">
+          <h2 id="recent-wiki-title">최근 정리한 위키</h2>
+          <a href="/wiki/">전체 {wiki.length}편 <span aria-hidden="true">→</span></a>
+        </div>
+        {
+          recentWiki.length > 0 ? (
+            <ul class="wiki-entries">
+              {recentWiki.map((entry) => (
+                <li>
+                  <a href={`/wiki/${entry.id}/`}>
+                    <span class="wiki-topic">{getWikiTopic(entry.data.topic)?.name}</span>
+                    <span class="wiki-title">{entry.data.title}</span>
+                  </a>
+                  <time datetime={(entry.data.updated ?? entry.data.created).toISOString()}>
+                    {formatDate(entry.data.updated ?? entry.data.created)}
+                    {entry.data.updated ? ' 갱신' : ' 작성'}
+                  </time>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="muted">아직 공개한 위키 문서가 없습니다.</p>
+          )
+        }
+      </section>
+
+      <section class="archive" aria-labelledby="archive-title">
+        <div class="section-head">
+          <h2 id="archive-title">학습 기록</h2>
+          <a href="/learn/">둘러보기 <span aria-hidden="true">→</span></a>
+        </div>
+        <p>문제를 풀고 개념을 익히던 기록. 당시의 노트와 이후의 바로잡음을 함께 남깁니다.</p>
+        <ul class="archive-links">
+          <li>
+            <a href="/algorithms/"><span>알고리즘</span><span>{algoCount}문제 →</span></a>
+          </li>
+          <li>
+            <a href="/notes/"><span>학습 노트 아카이브</span><span>{notes.length}편 →</span></a>
+          </li>
+        </ul>
+      </section>
     </div>
   </div>
 </BaseLayout>
 
 <style>
-  .hero-copy {
-    min-width: 0;
+  .home {
+    padding-bottom: 3.5rem;
   }
-  .read-case {
-    display: inline-block;
-    margin-top: 1rem;
-    color: var(--accent);
-    font-size: 0.875rem;
-    font-weight: 600;
-  }
-  .proofs {
-    list-style: none;
-    margin: 20px 0 0;
-    padding: 0;
-    max-width: 40rem;
-  }
-  .proofs li {
-    padding: 8px 0;
-    border-top: 1px solid var(--border);
-    font-size: 14.5px;
-    line-height: 1.6;
-  }
-  .proofs li:first-child {
-    border-top: 0;
-    padding-top: 0;
-  }
-  .proofs a {
-    display: grid;
-    grid-template-columns: 1.25rem minmax(0, 1fr);
-    gap: 0.5rem;
-    color: var(--text);
-  }
-  .proof-rank {
-    color: var(--accent);
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-  }
-  .proofs a:hover {
-    text-decoration: underline;
-    text-decoration-color: var(--accent);
-    text-underline-offset: 0.2em;
-  }
-  .entry-paths {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
-  }
-  .entry-paths a {
-    display: inline-flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.7rem 1rem;
-    min-height: 44px;
-    border: 1px solid var(--border-strong);
-    border-radius: 8px;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    background: var(--bg);
-  }
-  .entry-paths .primary-path {
-    background: var(--text);
-    color: var(--bg);
-    border-color: var(--text);
+  .intro {
+    padding-block: 2rem 1.75rem;
+    border-bottom: 1px solid var(--border-strong);
   }
   .who {
-    margin: 0 0 10px;
-    font-size: 13.5px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    margin: 0 0 0.5rem;
     color: var(--accent);
+    font-size: var(--type-label);
+    font-weight: 600;
   }
-  .stance {
-    margin: 18px 0 0;
-    max-width: 40rem;
-    font-size: 14.5px;
-    color: var(--text-muted);
-  }
-  .stack-line {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 16px;
-    align-items: baseline;
-    margin: 20px 0 0;
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-  .stack-line .links {
-    display: inline-flex;
-    gap: 14px;
-    margin-left: auto;
-  }
-  .stack-line .links a {
-    color: var(--text-muted);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-    text-decoration-color: var(--text-muted);
-  }
-  .stack-line .links a:hover {
-    color: var(--text);
-    text-decoration-color: var(--accent);
-  }
-  /* 정체성 블록. 오른쪽 위에서 번지는 옅은 색조와 점 격자로 첫 화면에 질감을 준다. */
-  .intro {
-    position: relative;
-    padding: 32px 0 28px;
-    border-bottom: 1px solid var(--border);
-  }
-  .intro::before {
-    content: '';
-    position: absolute;
-    inset: 0 -24px;
-    z-index: -1;
-    background:
-      radial-gradient(
-        60rem 22rem at 100% 0%,
-        color-mix(in srgb, var(--accent) 9%, transparent),
-        transparent 70%
-      ),
-      radial-gradient(circle, var(--border-strong) 1px, transparent 1.2px) 0 0 / 22px 22px;
-    -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent);
-    mask-image: linear-gradient(to bottom, #000 40%, transparent);
-    pointer-events: none;
-  }
-
-  .intro h1 {
+  h1 {
     margin: 0;
-    font-size: clamp(22px, 3.2vw, 26px);
+    font-size: clamp(1.375rem, 3.2vw, 1.625rem);
     line-height: 1.45;
     letter-spacing: -0.035em;
-    max-width: 38rem;
   }
-
-  .intro p {
-    margin: 12px 0 0;
-    font-size: 15.5px;
+  .lead {
+    margin: 0.75rem 0 0;
+    max-width: 40rem;
+    font-size: var(--type-body);
     line-height: 1.8;
     color: var(--text-muted);
-    max-width: 37rem;
   }
-  .intro .stack-line {
-    max-width: none;
-    font-size: 0.875rem;
+  .reading-section {
+    margin-top: 2rem;
   }
-
-  .empty {
-    padding: 40px 0;
-  }
-
-  /* 최신 글 히어로 */
-  .hero {
-    display: block;
-    padding: 28px;
-    margin-block: 28px 36px;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius);
-    background: var(--bg-card);
-  }
-
-  .hero-cat {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-muted);
-  }
-
-  .hero h2 {
-    margin: 10px 0 0;
-    font-size: clamp(24px, 3vw, 30px);
-    line-height: 1.4;
-    letter-spacing: -0.035em;
-    text-wrap: balance;
-  }
-
-  .hero:hover h2 {
-    color: var(--accent);
-  }
-
-  .hero p {
-    margin: 14px 0 0;
-    font-size: 16px;
-    line-height: 1.8;
-    color: var(--text-muted);
-    max-width: 42rem;
-  }
-
-  .hero-cause {
-    margin: 14px 0 0;
-    padding: 0.8rem 1rem 0.85rem;
-    border-left: 3px solid var(--accent);
-    border-radius: 0 8px 8px 0;
-    background: color-mix(in srgb, var(--accent) 7%, var(--bg-subtle));
-    font-size: 15.5px;
-    line-height: 1.75;
-    font-weight: 500;
-    color: var(--text);
-    max-width: 44rem;
-  }
-  .cause-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-right: 0.6rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    color: var(--accent);
-    vertical-align: 0.1em;
-    white-space: nowrap;
-  }
-
-  .hero-meta {
-    display: flex;
-    gap: 5px;
-    margin-top: 16px;
-    font-size: 13.5px;
-    color: var(--text-dim);
-  }
-
-  .rows {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .projects {
-    margin-top: 36px;
-  }
-
-  .sec-head {
+  .section-head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin-bottom: 1rem;
   }
-
-  .sec-head h2 {
+  .section-head h2 {
     margin: 0;
-    font-size: 0.9375rem;
-    font-weight: 700;
-    letter-spacing: 0;
+    font-size: var(--type-section);
+    letter-spacing: -0.025em;
+  }
+  .section-head a,
+  .all-posts {
+    color: var(--accent);
+    font-size: var(--type-label);
+    min-height: var(--control-size);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .section-note {
+    font-size: var(--type-caption);
     color: var(--text-muted);
   }
-
-  .sec-head a {
-    font-size: 0.875rem;
-    color: var(--accent);
-  }
-
-  .projects ul {
+  .recommendations {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .recommendation {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 1.25rem 0 0.5rem;
+    border-top: 2px solid var(--text);
+  }
+  .reading-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    color: var(--text-muted);
+    font-size: var(--type-caption);
+  }
+  .recommendation h3 {
+    margin: 0.85rem 0 0;
+    font-size: 1.25rem;
+    line-height: 1.55;
+    letter-spacing: -0.025em;
+    overflow-wrap: anywhere;
+  }
+  .recommendation h3 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .recommendation p {
+    margin: 0.75rem 0 1rem;
+    font-size: var(--type-body);
+    line-height: 1.75;
+    color: var(--text-muted);
+  }
+  .read-link {
+    margin-top: auto;
+    color: var(--accent);
+    font-size: var(--type-label);
+    font-weight: 600;
+  }
+  .recommendation:hover h3 a {
+    color: var(--accent);
+  }
+  .recommendation:focus-within {
+    outline: 2px solid var(--accent);
+    outline-offset: 6px;
+    border-radius: 2px;
+  }
+  .recommendation h3 a:focus-visible {
+    outline: none;
+  }
+  .rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .other-posts {
+    margin-top: 3rem;
+  }
+  .all-posts {
+    margin-top: 0.5rem;
+  }
+  .notebook {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 3rem;
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-strong);
+  }
+  .wiki-entries,
+  .archive-links {
     list-style: none;
     margin: 0;
     padding: 0;
   }
-
-  .projects ul a {
-    display: block;
-    height: 100%;
-    padding: 16px 18px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    transition: border-color 0.15s ease;
+  .wiki-entries li {
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--border);
   }
-
-  .projects ul a:hover {
-    border-color: var(--accent);
+  .wiki-entries li:first-child {
+    padding-top: 0;
   }
-
-  .pname {
+  .wiki-entries a {
     display: block;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
   }
-
-  .ptag {
+  .wiki-topic,
+  time {
     display: block;
-    margin-top: 5px;
-    font-size: 13px;
+    font-size: var(--type-caption);
+    color: var(--text-muted);
+  }
+  .wiki-title {
+    display: block;
+    margin-block: 0.25rem;
+    font-size: var(--type-body);
+    font-weight: 600;
     line-height: 1.6;
+  }
+  .wiki-entries a:hover .wiki-title,
+  .archive-links a:hover {
+    color: var(--accent);
+  }
+  .archive p {
+    margin: 0 0 1rem;
+    font-size: var(--type-body);
+    color: var(--text-muted);
+    line-height: 1.75;
+  }
+  .archive-links a {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-block: 0.75rem;
+    min-height: var(--control-size);
+    border-top: 1px solid var(--border);
+    font-size: var(--type-label);
+  }
+  .archive-links a span:last-child {
     color: var(--text-muted);
   }
-
-  .pstack {
-    display: block;
-    margin-top: 9px;
-    font-size: 12px;
-    color: var(--text-dim);
+  .empty {
+    padding-block: 2rem;
   }
-
-  .strips {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-    margin: 48px 0 56px;
-  }
-
-  .strip {
-    display: block;
-    background: var(--bg-subtle);
-    border-radius: var(--radius);
-    padding: 22px;
-  }
-
-  .strip {
-    transition:
-      transform 0.15s ease,
-      background 0.15s ease;
-  }
-  .strip:hover {
-    transform: translateY(-1px);
-    background: var(--bg-card);
-    box-shadow: inset 0 0 0 1px var(--border-strong);
-  }
-  .strip-num {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-  }
-  .strip-num b {
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -0.04em;
-    color: var(--text);
-    margin-right: 2px;
-    line-height: 1.1;
-  }
-  .strip-title {
-    margin: 10px 0 0;
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: -0.025em;
-  }
-
-  .strip p {
-    margin: 6px 0 0;
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--text-muted);
-  }
-
-  @media (max-width: 720px) {
-    .projects ul,
-    .strips {
-      grid-template-columns: 1fr;
-    }
+  @media (max-width: 760px) {
     .intro {
-      padding: 28px 0 24px;
+      padding-block: 1.5rem;
     }
-    .hero {
-      padding: 20px;
+    .recommendations,
+    .notebook {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .recommendations {
+      gap: 1.5rem;
+    }
+    .notebook {
+      gap: 2rem;
+    }
+    .recommendation h3 {
+      font-size: 1.1875rem;
     }
   }
 </style>

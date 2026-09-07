@@ -1,103 +1,135 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { HOME_PROOFS, selectHomeContent } from '../src/utils/home-content.mjs'
+import {
+  HOME_READING_PICKS,
+  selectHomeContent,
+  selectRecentWiki,
+} from '../src/utils/home-content.mjs'
 
 const post = (id, data = {}) => ({ id, data })
-const visibleIds = ({ featured, proofs, rest }) =>
-  [featured?.id, ...proofs.map((p) => p.id), ...rest.map((p) => p.id)].filter(Boolean)
+const visibleIds = ({ recommended, rest }) => [...recommended, ...rest].map((p) => p.id)
+const pickIds = HOME_READING_PICKS.map((p) => p.id)
 
-test('approved proofs remain and each published case appears once on home', () => {
+test('three recommended reads and other posts show all seven posts without duplicates', () => {
   const posts = [
-    post('newest'),
-    ...HOME_PROOFS.map((p) => post(p.id)),
-    post('address', { featured: true }),
-    post('older'),
+    post('disk'),
+    post('staged-auth-and-password-migration', { featured: true }),
+    ...pickIds.map((id) => post(id)),
+    post('overflow'),
+    post('batch'),
   ]
   const result = selectHomeContent(posts)
-  assert.equal(result.featured.id, 'address')
-  assert.deepEqual(result.proofs, HOME_PROOFS)
+  assert.deepEqual(
+    result.recommended.map((p) => p.id),
+    pickIds,
+  )
   assert.deepEqual(
     result.rest.map((p) => p.id),
-    ['newest', 'older'],
+    ['disk', 'staged-auth-and-password-migration', 'overflow', 'batch'],
   )
-  assert.equal(visibleIds(result).length, new Set(visibleIds(result)).size)
+  assert.equal(new Set(visibleIds(result)).size, 7)
   assert.deepEqual([...visibleIds(result)].sort(), posts.map((p) => p.id).sort())
 })
 
-test('draft and missing proof targets never leave dangling home links', () => {
+test('draft and missing recommended targets never leave dangling links', () => {
   const result = selectHomeContent([
-    post(HOME_PROOFS[0].id, { draft: true, featured: true }),
+    post(pickIds[0], { draft: true, featured: true }),
+    post(pickIds[1]),
     post('published'),
+    post('hidden', { draft: true }),
   ])
-  assert.equal(result.featured.id, 'published')
-  assert.deepEqual(result.proofs, [])
-  assert.deepEqual(visibleIds(result), ['published'])
-})
-
-test('ranked proofs take priority over featured and are safe without another case', () => {
-  const result = selectHomeContent(HOME_PROOFS.map((p, i) => post(p.id, { featured: i === 1 })))
-  assert.equal(result.featured, undefined)
-  assert.deepEqual(result.proofs, HOME_PROOFS)
-  assert.equal(visibleIds(result).length, 3)
-  assert.equal(new Set(visibleIds(result)).size, 3)
-  assert.deepEqual(result.rest, [])
-})
-
-test('application highlights follow the requested priority, not publication order', () => {
-  const result = selectHomeContent(HOME_PROOFS.map((p) => post(p.id)).reverse())
   assert.deepEqual(
-    result.proofs.map((p) => p.id),
+    result.recommended.map((p) => p.id),
+    [pickIds[1]],
+  )
+  assert.deepEqual(visibleIds(result), [pickIds[1], 'published'])
+})
+
+test('recommendation priority is independent of publication order and featured flags', () => {
+  const result = selectHomeContent(
+    pickIds.map((id, i) => post(id, { featured: i === 2 })).reverse(),
+  )
+  assert.deepEqual(
+    result.recommended.map((p) => p.id),
     [
       'null-and-empty-string-sync-failure',
       'address-search-9s-to-100ms',
       'retire-flash-module-by-integration',
     ],
   )
-  assert.match(result.proofs[1].text, /9초에서 1초대/)
-  assert.doesNotMatch(result.proofs[1].text, /100\s*(ms|밀리초)/)
+  assert.deepEqual(result.rest, [])
+  assert.match(result.recommended[1].readingNote, /9초에서 1초대/)
+  assert.doesNotMatch(result.recommended[1].readingNote, /100\s*(ms|밀리초)/)
 })
 
-test('the former featured address case stays second and the next case is shown once', () => {
-  const posts = [
-    post('disk'),
-    post('auth'),
-    ...HOME_PROOFS.map((p, index) => post(p.id, { featured: index === 1 })),
-    post('older'),
-  ]
+test('selection preserves original metadata and body without mutating posts', () => {
+  const data = Object.freeze({ title: '원래 제목', date: new Date('2026-08-12'), featured: true })
+  const original = Object.freeze({ id: pickIds[0], data, body: '원래 본문' })
+  const posts = Object.freeze([
+    Object.freeze(post('newer')),
+    original,
+    Object.freeze(post('older')),
+  ])
   const result = selectHomeContent(posts)
-  assert.equal(result.featured.id, 'disk')
-  assert.deepEqual(result.proofs, HOME_PROOFS)
+  assert.equal(result.recommended[0].data, data)
+  assert.equal(result.recommended[0].body, original.body)
+  assert.equal(original.readingNote, undefined)
   assert.deepEqual(
     result.rest.map((p) => p.id),
-    ['auth', 'older'],
+    ['newer', 'older'],
   )
-  assert.equal(visibleIds(result).length, new Set(visibleIds(result)).size)
-  assert.deepEqual([...visibleIds(result)].sort(), posts.map((p) => p.id).sort())
-})
-
-test('empty content is safe and selection never mutates its input', () => {
-  assert.deepEqual(selectHomeContent([]), { featured: undefined, proofs: [], rest: [] })
-  const posts = Object.freeze([Object.freeze(post('first')), Object.freeze(post('second'))])
   assert.deepEqual(
-    selectHomeContent(posts).rest.map((p) => p.id),
-    ['second'],
+    posts.map((p) => p.id),
+    ['newer', pickIds[0], 'older'],
   )
 })
 
-test('the authentication case is the featured card without changing proof priority', () => {
-  const posts = [
-    post('disk'),
-    post('staged-auth-and-password-migration', { featured: true }),
-    ...HOME_PROOFS.map((p) => post(p.id)),
-    post('overflow'),
-    post('batch'),
+test('empty content and a home without recommendations remain safe', () => {
+  assert.deepEqual(selectHomeContent([]), { recommended: [], rest: [] })
+  assert.deepEqual(visibleIds(selectHomeContent([post('only')])), ['only'])
+})
+
+const wiki = (id, created, overrides = {}) => ({
+  id,
+  data: { title: id, created: new Date(created), ...overrides },
+})
+
+test('recent wiki uses updated or created dates and excludes drafts before limiting', () => {
+  const entries = [
+    wiki('old', '2026-08-01'),
+    wiki('updated', '2026-08-01', { updated: new Date('2026-09-06') }),
+    wiki('hidden', '2026-09-07', { draft: true }),
+    wiki('new', '2026-09-07'),
+    wiki('third', '2026-09-05'),
   ]
-  const result = selectHomeContent(posts)
-  assert.equal(result.featured.id, 'staged-auth-and-password-migration')
-  assert.deepEqual(result.proofs, HOME_PROOFS)
   assert.deepEqual(
-    result.rest.map((p) => p.id),
-    ['disk', 'overflow', 'batch'],
+    selectRecentWiki(entries).map((p) => p.id),
+    ['new', 'updated', 'third'],
   )
-  assert.equal(new Set(visibleIds(result)).size, 7)
+  assert.deepEqual(
+    selectRecentWiki(entries, 1).map((p) => p.id),
+    ['new'],
+  )
+})
+
+test('wiki date ties use title then id consistently without mutating input', () => {
+  const entries = Object.freeze([
+    Object.freeze(wiki('z', '2026-09-06', { title: '나' })),
+    Object.freeze(wiki('b', '2026-09-06', { title: '가' })),
+    Object.freeze(wiki('a', '2026-09-06', { title: '가' })),
+  ])
+  assert.deepEqual(
+    selectRecentWiki(entries).map((p) => p.id),
+    ['a', 'b', 'z'],
+  )
+  assert.deepEqual(
+    selectRecentWiki([...entries].reverse()).map((p) => p.id),
+    ['a', 'b', 'z'],
+  )
+  assert.deepEqual(
+    entries.map((p) => p.id),
+    ['z', 'b', 'a'],
+  )
+  assert.deepEqual(selectRecentWiki([]), [])
+  assert.deepEqual(selectRecentWiki(entries, 0), [])
 })
