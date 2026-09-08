@@ -17,6 +17,12 @@ import { SITE } from '@/consts'
         >에, 공부하며 확인한 원리는
         <a href="/wiki/">위키</a>에 기록합니다.
       </p>
+      <nav class="about-nav" aria-label="소개 바로가기" data-pagefind-ignore>
+        <a href="#work">해 온 일</a>
+        <a href="#stack">기술</a>
+        <a href="#projects">프로젝트</a>
+        <a href="#contact">연락</a>
+      </nav>
     </header>
 
     <section>
@@ -33,7 +39,7 @@ import { SITE } from '@/consts'
     </section>
 
     <section>
-      <h2>해 온 일</h2>
+      <h2 id="work" tabindex="-1">해 온 일</h2>
       <p>실제로 맡아 해결한 문제들입니다. 자세한 판단 과정은 각 글에 있습니다.</p>
       <ul class="work">
         <li>
@@ -75,7 +81,7 @@ import { SITE } from '@/consts'
     </section>
 
     <section>
-      <h2>다루는 기술</h2>
+      <h2 id="stack" tabindex="-1">다루는 기술</h2>
       <dl class="stack">
         <div>
           <dt>주력</dt>
@@ -133,7 +139,7 @@ import { SITE } from '@/consts'
     </section>
 
     <section>
-      <h2>프로젝트</h2>
+      <h2 id="projects" tabindex="-1">프로젝트</h2>
       <p>
         개인 프로젝트의 현재 진행 상태와 교육 과정에서 참여한 팀 프로젝트는 <a href="/projects/"
           >프로젝트 기록 →</a
@@ -142,7 +148,7 @@ import { SITE } from '@/consts'
     </section>
 
     <section>
-      <h2>연락</h2>
+      <h2 id="contact" tabindex="-1">연락</h2>
       <ul class="contact">
         <li>
           <span>Email</span>
@@ -167,6 +173,24 @@ import { SITE } from '@/consts'
   }
   .head {
     padding-bottom: 0.5rem;
+  }
+  .about-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+    margin-top: 0.75rem;
+  }
+  .about-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-size);
+    font-size: var(--type-label);
+    color: var(--accent);
+  }
+  .about-nav a:focus-visible,
+  h2:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
   }
   h1 {
     margin: 0;
