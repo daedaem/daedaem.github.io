@@ -25,6 +25,7 @@ const recentWiki = selectRecentWiki(wiki)
         느린 조회와 어긋난 데이터처럼 운영 중 만난 문제를, 화면에서 DB까지 로그와 데이터 흐름을 따라
         추적합니다. 무엇을 확인했고 왜 그 방법을 골랐는지 기록합니다.
       </p>
+      <a class="about-link" href="/about/">소개·경력 <span aria-hidden="true">→</span></a>
     </header>
 
     {
@@ -47,12 +48,14 @@ const recentWiki = selectRecentWiki(wiki)
                     <span>{readingMinutes(post.body ?? '')}분</span>
                   </div>
                   <h3 id={titleId}>
-                    <a href={`/posts/${post.id}/`}>{post.data.title}</a>
+                    <a href={`/posts/${post.id}/`}>
+                      <span>{post.data.title}</span>
+                      <span class="read-arrow" aria-hidden="true">
+                        →
+                      </span>
+                    </a>
                   </h3>
                   <p>{post.readingNote}</p>
-                  <span class="read-link" aria-hidden="true">
-                    글 읽기 →
-                  </span>
                 </li>
               )
             })}
@@ -71,6 +74,7 @@ const recentWiki = selectRecentWiki(wiki)
           <ul class="rows">
             {rest.slice(0, 8).map((post) => (
               <PostRow
+                compact
                 href={`/posts/${post.id}/`}
                 title={post.data.title}
                 description={post.data.description}
@@ -180,13 +184,17 @@ const recentWiki = selectRecentWiki(wiki)
     letter-spacing: -0.025em;
   }
   .section-head a,
-  .all-posts {
+  .all-posts,
+  .about-link {
     color: var(--accent);
     font-size: var(--type-label);
     min-height: var(--control-size);
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
+  }
+  .about-link {
+    margin-top: 0.35rem;
   }
   .section-note {
     font-size: var(--type-caption);
@@ -228,17 +236,21 @@ const recentWiki = selectRecentWiki(wiki)
     position: absolute;
     inset: 0;
   }
+  .recommendation h3 a {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0.35rem;
+  }
   .recommendation p {
-    margin: 0.75rem 0 1rem;
+    margin: 0.6rem 0 0;
     font-size: var(--type-body);
     line-height: 1.75;
     color: var(--text-muted);
   }
-  .read-link {
-    margin-top: auto;
+  .read-arrow {
     color: var(--accent);
-    font-size: var(--type-label);
-    font-weight: 600;
+    white-space: nowrap;
   }
   .recommendation:hover h3 a {
     color: var(--accent);

@@ -11,9 +11,19 @@ interface Props {
   readingMinutes?: number
   /** 목록 페이지에서는 한 줄 요약을 같이 보여 준다. 홈처럼 제목만 둘 때는 생략한다. */
   description?: string
+  compact?: boolean
 }
 
-const { href, title, date, updated, category, readingMinutes, description } = Astro.props
+const {
+  href,
+  title,
+  date,
+  updated,
+  category,
+  readingMinutes,
+  description,
+  compact = false,
+} = Astro.props
 const cat = category ? getCategory(category) : undefined
 const titleId = `post-row-${encodeURIComponent(href)}`
 ---
@@ -29,10 +39,10 @@ const titleId = `post-row-${encodeURIComponent(href)}`
     }
     <span class="body">
       <span class="title" id={titleId}>{title}</span>
-      {description && <span class="desc">{description}</span>}
+      {!compact && description && <span class="desc">{description}</span>}
     </span>
     <span class="meta">
-      <ContentDates date={date} updated={updated} stacked />
+      <ContentDates date={date} updated={updated} compact />
       {readingMinutes && <span>{readingMinutes}분</span>}
     </span>
   </a>
@@ -108,6 +118,11 @@ const titleId = `post-row-${encodeURIComponent(href)}`
     .row.no-cat a {
       grid-template-columns: 1fr;
       gap: 3px 0;
+    }
+    .meta {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.15rem 0.75rem;
     }
   }
 </style>

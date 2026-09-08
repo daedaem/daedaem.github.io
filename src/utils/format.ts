@@ -1,3 +1,5 @@
+export { formatCompactDate } from './compact-date.mjs'
+
 export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('ko-KR', {
     year: 'numeric',

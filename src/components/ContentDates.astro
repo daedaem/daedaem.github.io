@@ -1,11 +1,12 @@
 ---
-import { formatDate } from '@/utils/format'
+import { formatDate, formatCompactDate } from '@/utils/format'
 
 interface Props {
   date: Date
   updated?: Date
   original?: boolean
   stacked?: boolean
+  compact?: boolean
   dateLabel?: string
   updatedLabel?: string
 }
@@ -14,17 +15,19 @@ const {
   updated,
   original = false,
   stacked = false,
+  compact = false,
   dateLabel = original ? '원문 작성' : '작성',
   updatedLabel = '수정',
 } = Astro.props
+const displayDate = compact ? formatCompactDate : formatDate
 ---
 
-<span class:list={['content-dates', { stacked }]}>
-  <time datetime={date.toISOString()}>{dateLabel} {formatDate(date)}</time>
+<span class:list={['content-dates', { stacked, compact }]}>
+  <time datetime={date.toISOString()}>{dateLabel} {displayDate(date)}</time>
   {
     updated && updated.getTime() !== date.getTime() && (
       <time datetime={updated.toISOString()}>
-        {updatedLabel} {formatDate(updated)}
+        {updatedLabel} {displayDate(updated)}
       </time>
     )
   }
@@ -44,6 +47,13 @@ const {
   }
   .stacked {
     flex-direction: column;
+  }
+  /* 목록에서는 각 날짜와 읽기 시간이 같은 flex 줄에서 자연스럽게 감긴다. */
+  .compact {
+    display: contents;
+  }
+  .compact time {
+    white-space: normal;
   }
   @media (max-width: 640px) {
     .stacked {
