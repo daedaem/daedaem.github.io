@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 import { readAlgorithmState, writeAlgorithmState } from '../src/utils/algorithm-state.mjs'
 
 const choices = {
@@ -48,4 +49,17 @@ test('clearing filters removes stale keys without creating a new history entry',
     state,
   )
   assert.equal(url.search, '')
+})
+
+test('page selection persists synchronously instead of waiting for the typing debounce', () => {
+  const source = readFileSync(
+    new URL('../src/pages/algorithms/index.astro', import.meta.url),
+    'utf8',
+  )
+  const clickHandler = source
+    .split("g.querySelector('.pager')?.addEventListener('click'")[1]
+    ?.split("g.addEventListener('toggle'")[0]
+  assert.ok(clickHandler)
+  assert.match(clickHandler, /renderGroup\([\s\S]*?persistURL\(\)/)
+  assert.doesNotMatch(clickHandler, /scheduleURL\(\)/)
 })

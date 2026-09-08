@@ -400,7 +400,8 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
         else if (b.classList.contains('next')) page.set(g, cur + 1)
         else page.set(g, Number(b.dataset.page))
         renderGroup(g, !!(q.value.trim() || cls || lang))
-        scheduleURL()
+        // 쪽 선택은 연속 타이핑이 아니다. 바로 새로고침해도 선택한 쪽이 남아야 한다.
+        persistURL()
         // 그룹 머리가 화면 위로 벗어났을 때만 올린다. 보이는 상태에서 쪽만 넘길 때는 시점을 유지한다.
         const head = g.querySelector('summary')!
         if (head.getBoundingClientRect().top < 0) head.scrollIntoView({ block: 'start' })
