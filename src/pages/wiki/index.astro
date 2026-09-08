@@ -472,15 +472,24 @@ const documents = entries.map((entry) => ({
       margin-bottom: 1rem;
     }
     .topic-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      display: flex;
+      flex-wrap: wrap;
       gap: 0.4rem;
     }
     .subjects nav a {
-      gap: 0.25rem;
+      flex: 0 1 auto;
+      min-width: 0;
+      max-width: 100%;
+      gap: 0.5rem;
       font-size: 0.875rem;
-      padding: 0.5rem;
+      padding: 0.5rem 0.65rem;
       border: 1px solid var(--border-strong);
+    }
+    .topic-grid a span:first-child {
+      min-width: 0;
+    }
+    .topic-grid a span:last-child {
+      flex-shrink: 0;
     }
     .nav-label {
       margin-bottom: 0.5rem;
