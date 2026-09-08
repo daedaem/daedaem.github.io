@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
+import Mark from '@/components/Mark.astro'
 import { SITE, getCategory, getWikiTopic } from '@/consts'
 import { readingMinutes, formatDate } from '@/utils/format'
 import { selectHomeContent, selectRecentWiki } from '@/utils/home-content.mjs'
@@ -14,6 +15,8 @@ const wiki = await getCollection('wiki', ({ data }) => !data.draft)
 const algoCount = (await getCollection('solutions')).length
 const { recommended, rest } = selectHomeContent(posts)
 const recentWiki = selectRecentWiki(wiki)
+// 첫 추천 글은 큰 카드에 "원인 한 줄"까지, 나머지는 작은 카드로 둔다
+const [lead, ...more] = recommended
 ---
 
 <BaseLayout title={SITE.title} description={SITE.description} searchIndex={false}>
@@ -25,11 +28,24 @@ const recentWiki = selectRecentWiki(wiki)
         느린 조회와 어긋난 데이터처럼 운영 중 만난 문제를, 화면에서 DB까지 로그와 데이터 흐름을 따라
         추적합니다. 무엇을 확인했고 왜 그 방법을 골랐는지 기록합니다.
       </p>
-      <a class="about-link" href="/about/">소개·경력 <span aria-hidden="true">→</span></a>
+      <div class="entry-paths" aria-label="방문 목적에 맞게 읽기">
+        <a class="primary-path" href="/posts/"
+          >문제 해결 사례 읽기 <span aria-hidden="true">↗</span></a
+        >
+        <a href="/about/">소개·경력 보기 <span aria-hidden="true">→</span></a>
+      </div>
+      <p class="stack-line">
+        <span>Java · Spring · Oracle · MyBatis · C#/.NET · React</span>
+        <span class="links"
+          ><a href="/wiki/">학습 위키</a>
+          <a href={SITE.githubUrl}>GitHub</a>
+          <a href={SITE.linkedinUrl}>LinkedIn</a></span
+        >
+      </p>
     </header>
 
     {
-      recommended.length > 0 && (
+      lead && (
         <section class="reading-section" aria-labelledby="recommended-title">
           <div class="section-head">
             <h2 id="recommended-title">먼저 읽을 글</h2>
@@ -37,25 +53,36 @@ const recentWiki = selectRecentWiki(wiki)
               글 전체 보기 <span aria-hidden="true">→</span>
             </a>
           </div>
-          <ul class="recommendations">
-            {recommended.map((post) => {
+          <ul class="cards">
+            {[lead, ...more].map((post, i) => {
               const cat = getCategory(post.data.category)
-              const titleId = `recommended-${post.id}`
+              const big = i === 0
               return (
-                <li class="recommendation">
-                  <div class="reading-meta">
-                    {cat && <span data-cat={cat.id}>{cat.name}</span>}
-                    <span>{readingMinutes(post.body ?? '')}분</span>
-                  </div>
-                  <h3 id={titleId}>
-                    <a href={`/posts/${post.id}/`}>
-                      <span>{post.data.title}</span>
-                      <span class="read-arrow" aria-hidden="true">
-                        →
-                      </span>
-                    </a>
-                  </h3>
-                  <p>{post.readingNote}</p>
+                <li class:list={['card', { big }]}>
+                  <a href={`/posts/${post.id}/`}>
+                    <span class="card-meta">
+                      {cat && (
+                        <span class="cat" data-cat={cat.id}>
+                          {cat.name}
+                        </span>
+                      )}
+                      <span>{readingMinutes(post.body ?? '')}분</span>
+                    </span>
+                    <h3>{post.data.title}</h3>
+                    <p class="note">{post.readingNote}</p>
+                    {big && post.data.cause && (
+                      <p class="cause">
+                        <span class="cause-label">
+                          <Mark size={14} />
+                          원인 한 줄
+                        </span>
+                        {post.data.cause}
+                      </p>
+                    )}
+                    <span class="read">
+                      판단 과정 읽기 <span aria-hidden="true">→</span>
+                    </span>
+                  </a>
                 </li>
               )
             })}
@@ -64,37 +91,37 @@ const recentWiki = selectRecentWiki(wiki)
       )
     }
 
-    {
-      rest.length > 0 && (
-        <section class="reading-section other-posts" aria-labelledby="other-posts-title">
-          <div class="section-head">
-            <h2 id="other-posts-title">다른 글</h2>
-            <span class="section-note">최근 작성순</span>
-          </div>
-          <ul class="rows">
-            {rest.slice(0, 8).map((post) => (
-              <PostRow
-                compact
-                href={`/posts/${post.id}/`}
-                title={post.data.title}
-                description={post.data.description}
-                date={post.data.date}
-                updated={post.data.updated}
-                category={post.data.category}
-                readingMinutes={readingMinutes(post.body ?? '')}
-              />
-            ))}
-          </ul>
-          <a class="all-posts" href="/posts/">
-            글 전체 보기 <span aria-hidden="true">→</span>
-          </a>
-        </section>
-      )
-    }
-    {posts.length === 0 && <p class="empty muted">아직 발행한 글이 없습니다.</p>}
+    <div class="two-col">
+      {
+        rest.length > 0 && (
+          <section class="reading-section other-posts" aria-labelledby="other-posts-title">
+            <div class="section-head">
+              <h2 id="other-posts-title">다른 글</h2>
+              <span class="section-note">최근 작성순</span>
+            </div>
+            <ul class="rows">
+              {rest.slice(0, 8).map((post) => (
+                <PostRow
+                  compact
+                  href={`/posts/${post.id}/`}
+                  title={post.data.title}
+                  description={post.data.description}
+                  date={post.data.date}
+                  updated={post.data.updated}
+                  category={post.data.category}
+                  readingMinutes={readingMinutes(post.body ?? '')}
+                />
+              ))}
+            </ul>
+            <a class="all-posts" href="/posts/">
+              글 전체 보기 <span aria-hidden="true">→</span>
+            </a>
+          </section>
+        )
+      }
+      {posts.length === 0 && <p class="empty muted">아직 발행한 글이 없습니다.</p>}
 
-    <div class="notebook">
-      <section aria-labelledby="recent-wiki-title">
+      <section class="reading-section" aria-labelledby="recent-wiki-title">
         <div class="section-head">
           <h2 id="recent-wiki-title">최근 정리한 위키</h2>
           <a href="/wiki/">전체 {wiki.length}편 <span aria-hidden="true">→</span></a>
@@ -120,23 +147,37 @@ const recentWiki = selectRecentWiki(wiki)
           )
         }
       </section>
-
-      <section class="archive" aria-labelledby="archive-title">
-        <div class="section-head">
-          <h2 id="archive-title">학습 기록</h2>
-          <a href="/learn/">둘러보기 <span aria-hidden="true">→</span></a>
-        </div>
-        <p>문제를 풀고 개념을 익히던 기록. 당시의 노트와 이후의 바로잡음을 함께 남깁니다.</p>
-        <ul class="archive-links">
-          <li>
-            <a href="/algorithms/"><span>알고리즘</span><span>{algoCount}문제 →</span></a>
-          </li>
-          <li>
-            <a href="/notes/"><span>학습 노트 아카이브</span><span>{notes.length}편 →</span></a>
-          </li>
-        </ul>
-      </section>
     </div>
+
+    <section class="reading-section" aria-labelledby="archive-title">
+      <div class="section-head">
+        <h2 id="archive-title">쌓아 둔 것</h2>
+        <a href="/learn/">학습 기록 둘러보기 <span aria-hidden="true">→</span></a>
+      </div>
+      <ul class="strips">
+        <li>
+          <a class="strip" href="/wiki/">
+            <span class="strip-num"><b>{wiki.length}</b>개 문서</span>
+            <span class="strip-title">위키</span>
+            <span class="strip-desc">일하다 막힌 것을 그때그때 정리해 쌓는 곳.</span>
+          </a>
+        </li>
+        <li>
+          <a class="strip" href="/algorithms/">
+            <span class="strip-num"><b>{algoCount}</b>문제</span>
+            <span class="strip-title">알고리즘</span>
+            <span class="strip-desc">백준·프로그래머스 풀이. 티어·유형·언어별 정리.</span>
+          </a>
+        </li>
+        <li>
+          <a class="strip" href="/notes/">
+            <span class="strip-num"><b>{notes.length}</b>편</span>
+            <span class="strip-title">학습 노트 아카이브</span>
+            <span class="strip-desc">개발자로 전환하던 2022~2023년의 기록.</span>
+          </a>
+        </li>
+      </ul>
+    </section>
   </div>
 </BaseLayout>
 
@@ -144,31 +185,102 @@ const recentWiki = selectRecentWiki(wiki)
   .home {
     padding-bottom: 3.5rem;
   }
+
+  /* ── 첫 화면 ─────────────────────────────────────────── */
   .intro {
-    padding-block: 2rem 1.75rem;
-    border-bottom: 1px solid var(--border-strong);
+    position: relative;
+    isolation: isolate;
+    padding-block: 2.25rem 1.875rem;
+    border-bottom: 1px solid var(--border);
+  }
+  /* 점무늬 + 오른쪽 위 옅은 강조색. 아래로 갈수록 사라져 본문과 섞이지 않는다 */
+  .intro::before {
+    content: '';
+    position: absolute;
+    inset: 0 -24px;
+    z-index: -1;
+    background:
+      radial-gradient(
+        60rem 22rem at 100% 0%,
+        color-mix(in srgb, var(--accent) 9%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(circle, var(--border-strong) 1px, transparent 1.2px) 0 0 / 22px 22px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 40%, transparent);
+    mask-image: linear-gradient(to bottom, #000 40%, transparent);
+    pointer-events: none;
   }
   .who {
     margin: 0 0 0.5rem;
     color: var(--accent);
     font-size: var(--type-label);
     font-weight: 600;
+    letter-spacing: 0.02em;
   }
   h1 {
     margin: 0;
-    font-size: clamp(1.375rem, 3.2vw, 1.625rem);
-    line-height: 1.45;
-    letter-spacing: -0.035em;
+    font-size: var(--type-page-title);
+    line-height: 1.25;
+    letter-spacing: -0.03em;
   }
   .lead {
     margin: 0.75rem 0 0;
-    max-width: 40rem;
+    max-width: 37rem;
     font-size: var(--type-body);
     line-height: 1.8;
     color: var(--text-muted);
   }
+  .entry-paths {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.375rem;
+  }
+  .entry-paths a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 1rem;
+    min-height: var(--control-size);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--control-radius);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    background: var(--bg);
+  }
+  .entry-paths .primary-path {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  .entry-paths a:hover {
+    border-color: var(--text);
+  }
+  .stack-line {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin: 1.375rem 0 0;
+    font-size: var(--type-caption);
+    color: var(--text-muted);
+  }
+  .stack-line .links {
+    display: flex;
+    gap: 0.875rem;
+  }
+  .stack-line .links a {
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .stack-line .links a:hover {
+    color: var(--accent);
+  }
+
+  /* ── 섹션 공통 ───────────────────────────────────────── */
   .reading-section {
-    margin-top: 2rem;
+    margin-top: 2.25rem;
   }
   .section-head {
     display: flex;
@@ -184,8 +296,7 @@ const recentWiki = selectRecentWiki(wiki)
     letter-spacing: -0.025em;
   }
   .section-head a,
-  .all-posts,
-  .about-link {
+  .all-posts {
     color: var(--accent);
     font-size: var(--type-label);
     min-height: var(--control-size);
@@ -193,75 +304,111 @@ const recentWiki = selectRecentWiki(wiki)
     align-items: center;
     gap: 0.35rem;
   }
-  .about-link {
-    margin-top: 0.35rem;
-  }
   .section-note {
     font-size: var(--type-caption);
     color: var(--text-muted);
   }
-  .recommendations {
+
+  /* ── 먼저 읽을 글: 큰 카드 1 + 작은 카드 2 ──────────── */
+  .cards {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
     margin: 0;
     padding: 0;
     list-style: none;
   }
-  .recommendation {
-    position: relative;
+  .card {
+    min-width: 0;
+  }
+  .card.big {
+    grid-column: 1 / -1;
+  }
+  .card a {
     display: flex;
     flex-direction: column;
-    min-width: 0;
-    padding: 1.25rem 0 0.5rem;
-    border-top: 2px solid var(--text);
+    gap: 0.625rem;
+    height: 100%;
+    padding: 1.5rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    transition:
+      border-color 0.15s ease,
+      transform 0.15s ease;
   }
-  .reading-meta {
+  .card a:hover {
+    border-color: var(--text);
+    transform: translateY(-1px);
+  }
+  .card a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .card-meta {
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
     gap: 0.5rem;
-    color: var(--text-muted);
     font-size: var(--type-caption);
+    color: var(--text-muted);
   }
-  .recommendation h3 {
-    margin: 0.85rem 0 0;
-    font-size: 1.25rem;
-    line-height: 1.55;
-    letter-spacing: -0.025em;
+  .cat {
+    display: inline-flex;
+    align-items: center;
+  }
+  .card h3 {
+    margin: 0;
+    font-size: var(--type-article-h3);
+    line-height: 1.4;
+    letter-spacing: -0.02em;
     overflow-wrap: anywhere;
   }
-  .recommendation h3 a::after {
-    content: '';
-    position: absolute;
-    inset: 0;
+  .card.big h3 {
+    font-size: 1.625rem;
+    line-height: 1.3;
   }
-  .recommendation h3 a {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: baseline;
-    gap: 0.35rem;
+  .card a:hover h3 {
+    color: var(--accent);
   }
-  .recommendation p {
-    margin: 0.6rem 0 0;
-    font-size: var(--type-body);
-    line-height: 1.75;
+  .note {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.7;
     color: var(--text-muted);
   }
-  .read-arrow {
+  .cause {
+    margin: 0.25rem 0 0;
+    padding: 0.75rem 1rem 0.8rem;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    background: color-mix(in srgb, var(--accent) 7%, var(--bg-subtle));
+    font-size: 0.96875rem;
+    line-height: 1.75;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .cause-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-right: 0.5rem;
+    font-size: var(--type-caption);
+    font-weight: 700;
     color: var(--accent);
-    white-space: nowrap;
   }
-  .recommendation:hover h3 a {
+  .read {
+    margin-top: auto;
+    padding-top: 0.25rem;
+    font-size: var(--type-label);
+    font-weight: 600;
     color: var(--accent);
   }
-  .recommendation:focus-within {
-    outline: 2px solid var(--accent);
-    outline-offset: 6px;
-    border-radius: 2px;
-  }
-  .recommendation h3 a:focus-visible {
-    outline: none;
+
+  /* ── 다른 글 + 최근 위키 ────────────────────────────── */
+  .two-col {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 2.5rem;
   }
   .rows {
     margin: 0;
@@ -269,22 +416,23 @@ const recentWiki = selectRecentWiki(wiki)
     list-style: none;
     border-bottom: 1px solid var(--border);
   }
-  .other-posts {
-    margin-top: 3rem;
-  }
   .all-posts {
     margin-top: 0.5rem;
   }
-  .notebook {
-    display: grid;
-    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-    gap: 3rem;
-    margin-top: 2.5rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border-strong);
+  /* 좁은 열이라 작성·수정·분을 세로로 쌓지 않고 한 줄에서 감는다. 좁은 화면은 PostRow 규칙을 따른다 */
+  @media (min-width: 761px) {
+    .other-posts :global(.row a) {
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+    }
+    .other-posts :global(.row .meta) {
+      grid-column: 2;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.15rem 0.75rem;
+      margin-top: 0.2rem;
+    }
   }
-  .wiki-entries,
-  .archive-links {
+  .wiki-entries {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -300,7 +448,7 @@ const recentWiki = selectRecentWiki(wiki)
     display: block;
   }
   .wiki-topic,
-  time {
+  .wiki-entries time {
     display: block;
     font-size: var(--type-caption);
     color: var(--text-muted);
@@ -312,48 +460,106 @@ const recentWiki = selectRecentWiki(wiki)
     font-weight: 600;
     line-height: 1.6;
   }
-  .wiki-entries a:hover .wiki-title,
-  .archive-links a:hover {
+  .wiki-entries a:hover .wiki-title {
     color: var(--accent);
   }
-  .archive p {
-    margin: 0 0 1rem;
-    font-size: var(--type-body);
+
+  /* ── 쌓아 둔 것: 숫자 카드 3개 ─────────────────────── */
+  .strips {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .strip {
+    display: block;
+    height: 100%;
+    padding: 1.375rem;
+    border-radius: var(--radius);
+    background: var(--bg-subtle);
+    transition:
+      transform 0.15s ease,
+      background 0.15s ease;
+  }
+  .strip:hover {
+    transform: translateY(-1px);
+    background: var(--bg-card);
+    box-shadow: inset 0 0 0 1px var(--border-strong);
+  }
+  .strip:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .strip-num {
+    display: block;
+    font-size: var(--type-caption);
     color: var(--text-muted);
-    line-height: 1.75;
+    font-variant-numeric: tabular-nums;
   }
-  .archive-links a {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    padding-block: 0.75rem;
-    min-height: var(--control-size);
-    border-top: 1px solid var(--border);
-    font-size: var(--type-label);
+  .strip-num b {
+    font-size: 1.875rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--text);
+    margin-right: 2px;
+    line-height: 1.1;
   }
-  .archive-links a span:last-child {
+  .strip-title {
+    display: block;
+    margin-top: 0.625rem;
+    font-size: var(--type-body);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+  .strip-desc {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: var(--type-caption);
+    line-height: 1.6;
     color: var(--text-muted);
   }
   .empty {
     padding-block: 2rem;
   }
+
   @media (max-width: 760px) {
     .intro {
-      padding-block: 1.5rem;
+      padding-block: 1.75rem 1.5rem;
     }
-    .recommendations,
-    .notebook {
+    .cards,
+    .two-col,
+    .strips {
       grid-template-columns: minmax(0, 1fr);
     }
-    .recommendations {
-      gap: 1.5rem;
+    .two-col {
+      gap: 0;
     }
-    .notebook {
-      gap: 2rem;
+    .card a {
+      padding: 1.125rem;
     }
-    .recommendation h3 {
-      font-size: 1.1875rem;
+    .card.big h3 {
+      font-size: 1.25rem;
+    }
+    .card h3 {
+      font-size: 1.0625rem;
+    }
+    .strips {
+      gap: 0.625rem;
+    }
+    .strip {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0 0.75rem;
+      padding: 1rem 1.125rem;
+    }
+    .strip-title {
+      margin-top: 0;
+    }
+    .strip-desc {
+      flex-basis: 100%;
     }
   }
 </style>
