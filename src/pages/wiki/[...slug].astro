@@ -79,14 +79,16 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
       {
         toc.length > 2 && (
           <nav class="toc" aria-label="목차" data-pagefind-ignore>
-            <p>목차</p>
-            <ul>
-              {toc.map((h) => (
-                <li class={`d${h.depth}`}>
-                  <a href={`#${h.slug}`}>{h.text}</a>
-                </li>
-              ))}
-            </ul>
+            <details open>
+              <summary>이 문서의 목차</summary>
+              <ul>
+                {toc.map((h) => (
+                  <li class={`d${h.depth}`}>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ul>
+            </details>
           </nav>
         )
       }
@@ -114,6 +116,19 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
     </article>
   </div>
 </BaseLayout>
+
+<script>
+  // JS가 없으면 열린 목차를 유지한다. 문서 트리와 같은 좁은 화면 기준을 쓴다.
+  const contents = document.querySelector<HTMLDetailsElement>('.post > .toc details')
+  const narrow = matchMedia('(max-width: 60rem)')
+  if (contents) {
+    const sync = () => {
+      contents.open = !narrow.matches
+    }
+    sync()
+    narrow.addEventListener('change', sync)
+  }
+</script>
 
 <style>
   /* 데스크톱: 왼쪽 트리 + 본문. 본문 폭은 --measure를 넘지 않는다. */
@@ -187,23 +202,26 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
   }
   .toc {
     margin-top: 2.25rem;
-    padding: 1.1rem 1.3rem;
+    padding: 0 1.3rem;
     background: var(--bg-subtle);
     border-radius: var(--radius);
     font-size: 0.875rem;
   }
-  .toc p {
-    margin: 0 0 0.5rem;
+  .toc summary {
+    padding-block: 0.65rem;
+    min-height: var(--control-size);
     font-weight: 700;
-    font-size: 0.75rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    cursor: pointer;
     color: var(--text-muted);
+  }
+  .toc :is(summary, a):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
   }
   .toc ul {
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 0 0 1rem;
   }
   .toc li {
     margin-block: 0.2rem;
