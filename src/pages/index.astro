@@ -29,9 +29,7 @@ const [lead, ...more] = recommended
         추적합니다. 무엇을 확인했고 왜 그 방법을 골랐는지 기록합니다.
       </p>
       <div class="entry-paths" aria-label="방문 목적에 맞게 읽기">
-        <a class="primary-path" href="/posts/"
-          >문제 해결 사례 <span aria-hidden="true">→</span></a
-        >
+        <a class="primary-path" href="/posts/">문제 해결 사례 <span aria-hidden="true">→</span></a>
         <a href="/about/">소개·경력 <span aria-hidden="true">→</span></a>
       </div>
       <p class="stack-line">
@@ -219,7 +217,7 @@ const [lead, ...more] = recommended
   }
   h1 {
     margin: 0;
-    font-size: var(--type-page-title);
+    font-size: clamp(1.875rem, 3.5vw, 2.5rem);
     line-height: 1.25;
     letter-spacing: -0.03em;
   }
@@ -228,7 +226,7 @@ const [lead, ...more] = recommended
     max-width: 37rem;
     font-size: var(--type-body);
     line-height: 1.8;
-    color: var(--text-muted);
+    color: var(--text-secondary);
   }
   .entry-paths {
     display: flex;
@@ -374,14 +372,12 @@ const [lead, ...more] = recommended
     margin: 0;
     font-size: 0.9375rem;
     line-height: 1.7;
-    color: var(--text-muted);
+    color: var(--text-secondary);
   }
   .cause {
     margin: 0.25rem 0 0;
-    padding: 0.75rem 1rem 0.8rem;
+    padding: 0.125rem 0 0.125rem 0.875rem;
     border-left: 3px solid var(--accent);
-    border-radius: 0 8px 8px 0;
-    background: color-mix(in srgb, var(--accent) 7%, var(--bg-subtle));
     font-size: 0.96875rem;
     line-height: 1.75;
     font-weight: 500;
@@ -518,7 +514,7 @@ const [lead, ...more] = recommended
     margin-top: 0.25rem;
     font-size: var(--type-caption);
     line-height: 1.6;
-    color: var(--text-muted);
+    color: var(--text-secondary);
   }
   .empty {
     padding-block: 2rem;

@@ -10,6 +10,7 @@
   --border-strong: #dfe3e8;
 
   --text: #191f28;
+  --text-secondary: #384452;
   /* 칩·탭처럼 --bg-subtle 위에 놓이는 13px 텍스트도 4.5:1을 넘겨야 한다 */
   --text-muted: #5c6774;
   --text-dim: #5c6774;
@@ -139,6 +140,7 @@
     --border-strong: #363b44;
 
     --text: #e9ecef;
+    --text-secondary: #c1c8d1;
     --text-muted: #9aa3ad;
     --text-dim: #8a929c;
 
@@ -165,6 +167,7 @@
   --border-strong: #363b44;
 
   --text: #e9ecef;
+  --text-secondary: #c1c8d1;
   --text-muted: #9aa3ad;
   --text-dim: #8a929c;
 

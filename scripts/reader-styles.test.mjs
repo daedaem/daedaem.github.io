@@ -17,7 +17,7 @@ test('small metadata retains 4.5:1 contrast on actual light and dark surfaces', 
     const tokens = Object.fromEntries(
       [...block.matchAll(/--([\w-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2]]),
     )
-    for (const foreground of ['text-muted', 'text-dim'])
+    for (const foreground of ['text-secondary', 'text-muted', 'text-dim'])
       for (const background of ['bg', 'bg-subtle', 'bg-card']) {
         const values = [
           luminance(tokens[foreground].slice(1)),

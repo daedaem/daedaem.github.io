@@ -201,7 +201,7 @@ import { SITE } from '@/consts'
     margin: 1rem 0 0;
     font-size: 1.0625rem;
     line-height: 1.75;
-    color: var(--text-muted);
+    color: var(--text-secondary);
   }
   .lead a {
     color: var(--text);
@@ -216,7 +216,7 @@ import { SITE } from '@/consts'
     margin-top: 3rem;
   }
   h2 {
-    font-size: 1.125rem;
+    font-size: var(--type-section);
     margin: 0 0 1rem;
     padding-bottom: 0.4rem;
     border-bottom: 1px solid var(--border);
@@ -250,11 +250,14 @@ import { SITE } from '@/consts'
     padding: 0;
   }
   .work li {
-    padding: 0.7rem 0;
     border-top: 1px solid var(--border);
-    font-size: 0.9375rem;
   }
   .work a {
+    display: block;
+    padding: 0.875rem 0;
+    min-height: var(--control-size);
+    font-size: var(--type-body);
+    font-weight: 500;
     color: var(--text);
   }
   .work a:hover {
