@@ -91,14 +91,8 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
       <div class="meta" data-pagefind-ignore>
         <ContentDates date={date} updated={updated} original={archived} />
         {readingMinutes && <span>{readingMinutes}분</span>}
+        {happened && <span class="happened">사례 시점: {happened}</span>}
       </div>
-      {
-        happened && (
-          <p class="happened" data-pagefind-ignore>
-            사례 시점: {happened}
-          </p>
-        )
-      }
       {
         cause ? (
           <p class="cause">
@@ -272,7 +266,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 
 <style>
   .post {
-    padding-top: 3rem;
+    padding-top: var(--page-inset);
   }
 
   .meta,
@@ -375,8 +369,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
   }
 
   .happened {
-    margin: 0.5rem 0 0;
-    font-size: 0.8125rem;
+    font-size: var(--type-caption);
     color: var(--text-muted);
   }
 
@@ -404,7 +397,18 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
   }
 
   .body {
-    margin-top: 2.5rem;
+    margin-top: 1.75rem;
+  }
+
+  /* 첫 공개 범위 안내는 지우거나 접지 않고, 본문과 구분되는 짧은 주석으로 읽힌다. */
+  .post:not(:has(.archived)) .body > :global(blockquote:first-child) {
+    margin: 0 0 1.5rem;
+    padding-block: 0;
+    font-size: var(--type-label);
+    line-height: 1.65;
+  }
+  .post:not(:has(.archived)) .body > :global(blockquote:first-child p) {
+    margin: 0;
   }
 
   .body :global(h2) {
@@ -468,8 +472,8 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
   }
 
   .toc {
-    margin-top: 2.25rem;
-    padding: 1.1rem 1.3rem;
+    margin-top: 1.5rem;
+    padding: 0.5rem 1rem;
     background: var(--bg-subtle);
     border-radius: var(--radius);
     font-size: 0.875rem;

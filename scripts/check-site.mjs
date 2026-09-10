@@ -2,6 +2,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { resolve, relative, join, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import yaml from 'js-yaml'
+import { checkRenderedCodeContrast } from './code-contrast.mjs'
 
 const walk = (dir) =>
   readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
@@ -34,10 +35,15 @@ export function checkSite(root, site) {
   const errors = []
   let references = 0
   const pages = walk(root).filter((file) => file.endsWith('.html'))
+  const readerCss = readFileSync(new URL('../src/styles/global.css', import.meta.url), 'utf8')
+  const lightCodeBackground = readerCss.match(/--code-bg:\s*(#[\da-f]{6})/i)?.[1]
   for (const file of pages) {
     const name = relative(root, file).split(sep).join('/')
     const base = new URL(name.replace(/index\.html$/, ''), site)
     const html = readFileSync(file, 'utf8')
+    errors.push(
+      ...checkRenderedCodeContrast(html, lightCodeBackground).map((error) => `${name}: ${error}`),
+    )
     const ids = [...html.matchAll(/\sid=(["'])(.*?)\1/g)].map((match) => match[2])
     for (const tag of html.matchAll(/<a\b[^>]*>/gi)) {
       const labels = tag[0].match(/\baria-labelledby=(["'])(.*?)\1/)?.[2]

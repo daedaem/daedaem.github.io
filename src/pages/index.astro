@@ -30,9 +30,9 @@ const [lead, ...more] = recommended
       </p>
       <div class="entry-paths" aria-label="방문 목적에 맞게 읽기">
         <a class="primary-path" href="/posts/"
-          >문제 해결 사례 읽기 <span aria-hidden="true">↗</span></a
+          >문제 해결 사례 <span aria-hidden="true">→</span></a
         >
-        <a href="/about/">소개·경력 보기 <span aria-hidden="true">→</span></a>
+        <a href="/about/">소개·경력 <span aria-hidden="true">→</span></a>
       </div>
       <p class="stack-line">
         <span>Java · Spring · Oracle · MyBatis · C#/.NET · React</span>
@@ -59,7 +59,7 @@ const [lead, ...more] = recommended
               const big = i === 0
               return (
                 <li class:list={['card', { big }]}>
-                  <a href={`/posts/${post.id}/`}>
+                  <a href={`/posts/${post.id}/`} aria-labelledby={`pick-${post.id}`}>
                     <span class="card-meta">
                       {cat && (
                         <span class="cat" data-cat={cat.id}>
@@ -68,7 +68,7 @@ const [lead, ...more] = recommended
                       )}
                       <span>{readingMinutes(post.body ?? '')}분</span>
                     </span>
-                    <h3>{post.data.title}</h3>
+                    <h3 id={`pick-${post.id}`}>{post.data.title}</h3>
                     <p class="note">{post.readingNote}</p>
                     {big && post.data.cause && (
                       <p class="cause">
@@ -76,7 +76,7 @@ const [lead, ...more] = recommended
                           <Mark size={14} />
                           원인 한 줄
                         </span>
-                        {post.data.cause}
+                        {post.causeSummary ?? post.data.cause}
                       </p>
                     )}
                     <span class="read">
@@ -156,23 +156,23 @@ const [lead, ...more] = recommended
       </div>
       <ul class="strips">
         <li>
-          <a class="strip" href="/wiki/">
+          <a class="strip" href="/wiki/" aria-labelledby="archive-wiki">
             <span class="strip-num"><b>{wiki.length}</b>개 문서</span>
-            <span class="strip-title">위키</span>
+            <h3 class="strip-title" id="archive-wiki">위키</h3>
             <span class="strip-desc">일하다 막힌 것을 그때그때 정리해 쌓는 곳.</span>
           </a>
         </li>
         <li>
-          <a class="strip" href="/algorithms/">
+          <a class="strip" href="/algorithms/" aria-labelledby="archive-algorithms">
             <span class="strip-num"><b>{algoCount}</b>문제</span>
-            <span class="strip-title">알고리즘</span>
+            <h3 class="strip-title" id="archive-algorithms">알고리즘</h3>
             <span class="strip-desc">백준·프로그래머스 풀이. 티어·유형·언어별 정리.</span>
           </a>
         </li>
         <li>
-          <a class="strip" href="/notes/">
+          <a class="strip" href="/notes/" aria-labelledby="archive-notes">
             <span class="strip-num"><b>{notes.length}</b>편</span>
-            <span class="strip-title">학습 노트 아카이브</span>
+            <h3 class="strip-title" id="archive-notes">학습 노트 아카이브</h3>
             <span class="strip-desc">개발자로 전환하던 2022~2023년의 기록.</span>
           </a>
         </li>
@@ -508,7 +508,7 @@ const [lead, ...more] = recommended
   }
   .strip-title {
     display: block;
-    margin-top: 0.625rem;
+    margin: 0.625rem 0 0;
     font-size: var(--type-body);
     font-weight: 700;
     letter-spacing: -0.025em;
@@ -522,6 +522,13 @@ const [lead, ...more] = recommended
   }
   .empty {
     padding-block: 2rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card a:hover,
+    .strip:hover {
+      transform: none;
+    }
   }
 
   @media (max-width: 760px) {

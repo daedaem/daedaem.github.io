@@ -4,6 +4,8 @@ export const HOME_READING_PICKS = [
     id: 'null-and-empty-string-sync-failure',
     readingNote:
       'Java와 SQL의 변경 판정, 항목별 데이터 소유권. 같은 증상으로 보이던 두 원인을 분리한 과정.',
+    causeSummary:
+      'Java와 SQL의 NULL 비교 기준이 달랐고, 상대가 관리하는 항목까지 변경 감지에 포함돼 있었다.',
   },
   {
     id: 'address-search-9s-to-100ms',
@@ -26,7 +28,7 @@ export function selectHomeContent(posts) {
   const byId = new Map(published.map((post) => [post.id, post]))
   const recommended = HOME_READING_PICKS.flatMap((pick) => {
     const post = byId.get(pick.id)
-    return post ? [{ ...post, readingNote: pick.readingNote }] : []
+    return post ? [{ ...post, readingNote: pick.readingNote, causeSummary: pick.causeSummary }] : []
   })
   const ids = new Set(recommended.map((post) => post.id))
   return { recommended, rest: published.filter((post) => !ids.has(post.id)) }

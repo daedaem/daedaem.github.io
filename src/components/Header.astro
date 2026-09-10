@@ -58,6 +58,7 @@ const active = activeNavigation(path)
   .brand {
     display: inline-flex;
     align-items: center;
+    min-height: var(--control-size);
     gap: 8px;
     font-size: 17px;
     font-weight: 700;
@@ -84,7 +85,7 @@ const active = activeNavigation(path)
   nav ul {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px 22px;
+    gap: 6px 8px;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -92,6 +93,12 @@ const active = activeNavigation(path)
   }
 
   nav a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--control-size);
+    min-width: var(--control-size);
+    padding-inline: 6px;
     color: var(--text-muted);
     white-space: nowrap;
   }
@@ -134,8 +141,7 @@ const active = activeNavigation(path)
     }
     nav ul {
       flex-wrap: nowrap;
-      gap: 20px;
-      padding-block: 4px;
+      gap: 8px;
     }
   }
 </style>

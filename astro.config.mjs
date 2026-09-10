@@ -5,6 +5,7 @@ import { unified } from '@astrojs/markdown-remark'
 import { SITE } from './src/consts.ts'
 import remarkNoteHeadings from './src/plugins/remark-note-headings.mjs'
 import rehypeContentFixups from './src/plugins/rehype-content-fixups.mjs'
+import readableCodeColors from './src/plugins/shiki-readable-colors.mjs'
 
 export default defineConfig({
   site: SITE.url,
@@ -53,6 +54,7 @@ export default defineConfig({
     }),
     shikiConfig: {
       themes: { light: 'github-light', dark: 'github-dark' },
+      transformers: [readableCodeColors()],
       wrap: true,
     },
   },
