@@ -70,17 +70,20 @@ test('home summaries are separate from the actual article cause and reading orde
   assert.equal(recommended[0].data.cause, '원문 원인')
   assert.ok(recommended[0].causeSummary.length < 80)
   assert.match(recommended[0].causeSummary, /Java와 SQL/)
+  assert.match(recommended[0].causeSummary, /NULL과 빈 문자열/)
   assert.match(recommended[0].causeSummary, /상대가 관리/)
 })
 
-test('home recommendation and archive links name their headings instead of the whole cards', () => {
+test('card and row links contain only titles while CSS preserves the whole click and focus target', () => {
   const home = source('src/pages/index.astro')
-  assert.match(home, /aria-labelledby=\{`pick-\$\{post\.id\}`\}/)
-  assert.match(home, /<h3 id=\{`pick-\$\{post\.id\}`\}/)
-  for (const id of ['archive-wiki', 'archive-algorithms', 'archive-notes']) {
-    assert.match(home, new RegExp(`aria-labelledby="${id}"`))
-    assert.match(home, new RegExp(`<h3 class="strip-title" id="${id}"`))
-  }
+  assert.match(home, /<h3>\s*<a href=\{`\/posts\/\$\{post\.id\}\/`\}>\{post\.data\.title\}<\/a>\s*<\/h3>/)
+  assert.equal((home.match(/<h3 class="strip-title"><a href=/g) ?? []).length, 3)
+  assert.match(home, /\.card a:focus-visible::after/)
+  assert.match(home, /\.strip a:focus-visible::after/)
+  const row = source('src/components/PostRow.astro')
+  assert.match(row, /<a class="title" href=\{href\}>\{title\}<\/a>/)
+  assert.doesNotMatch(row, /aria-labelledby/)
+  assert.match(row, /\.title:focus-visible::after/)
   assert.match(home, /post\.causeSummary \?\? post\.data\.cause/)
 })
 

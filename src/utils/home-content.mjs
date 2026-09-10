@@ -5,7 +5,7 @@ export const HOME_READING_PICKS = [
     readingNote:
       'Java와 SQL의 변경 판정, 항목별 데이터 소유권. 같은 증상으로 보이던 두 원인을 분리한 과정.',
     causeSummary:
-      'Java와 SQL의 NULL 비교 기준이 달랐고, 상대가 관리하는 항목까지 변경 감지에 포함돼 있었다.',
+      'Java와 SQL이 NULL과 빈 문자열을 다르게 판정했고, 상대가 관리하는 항목까지 변경 감지에 들어가 있었다.',
   },
   {
     id: 'address-search-9s-to-100ms',

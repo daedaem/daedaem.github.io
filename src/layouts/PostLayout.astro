@@ -284,6 +284,15 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
     gap: 0.4rem 0.8rem;
   }
 
+  .breadcrumbs a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--control-size);
+    min-width: var(--control-size);
+    padding-inline: 0.375rem;
+  }
+
   .cat {
     color: var(--text-muted);
     font-weight: 600;

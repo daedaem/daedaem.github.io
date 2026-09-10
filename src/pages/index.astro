@@ -57,30 +57,30 @@ const [lead, ...more] = recommended
               const big = i === 0
               return (
                 <li class:list={['card', { big }]}>
-                  <a href={`/posts/${post.id}/`} aria-labelledby={`pick-${post.id}`}>
-                    <span class="card-meta">
-                      {cat && (
-                        <span class="cat" data-cat={cat.id}>
-                          {cat.name}
-                        </span>
-                      )}
-                      <span>{readingMinutes(post.body ?? '')}분</span>
-                    </span>
-                    <h3 id={`pick-${post.id}`}>{post.data.title}</h3>
-                    <p class="note">{post.readingNote}</p>
-                    {big && post.data.cause && (
-                      <p class="cause">
-                        <span class="cause-label">
-                          <Mark size={14} />
-                          원인 한 줄
-                        </span>
-                        {post.causeSummary ?? post.data.cause}
-                      </p>
+                  <span class="card-meta">
+                    {cat && (
+                      <span class="cat" data-cat={cat.id}>
+                        {cat.name}
+                      </span>
                     )}
-                    <span class="read">
-                      판단 과정 읽기 <span aria-hidden="true">→</span>
-                    </span>
-                  </a>
+                    <span>{readingMinutes(post.body ?? '')}분</span>
+                  </span>
+                  <h3>
+                    <a href={`/posts/${post.id}/`}>{post.data.title}</a>
+                  </h3>
+                  <p class="note">{post.readingNote}</p>
+                  {big && post.data.cause && (
+                    <p class="cause">
+                      <span class="cause-label">
+                        <Mark size={14} />
+                        원인 한 줄
+                      </span>
+                      {post.causeSummary ?? post.data.cause}
+                    </p>
+                  )}
+                  <span class="read">
+                    판단 과정 읽기 <span aria-hidden="true">→</span>
+                  </span>
                 </li>
               )
             })}
@@ -153,26 +153,20 @@ const [lead, ...more] = recommended
         <a href="/learn/">학습 기록 둘러보기 <span aria-hidden="true">→</span></a>
       </div>
       <ul class="strips">
-        <li>
-          <a class="strip" href="/wiki/" aria-labelledby="archive-wiki">
-            <span class="strip-num"><b>{wiki.length}</b>개 문서</span>
-            <h3 class="strip-title" id="archive-wiki">위키</h3>
-            <span class="strip-desc">일하다 막힌 것을 그때그때 정리해 쌓는 곳.</span>
-          </a>
+        <li class="strip">
+          <span class="strip-num"><b>{wiki.length}</b>개 문서</span>
+          <h3 class="strip-title"><a href="/wiki/">위키</a></h3>
+          <span class="strip-desc">일하다 막힌 것을 그때그때 정리해 쌓는 곳.</span>
         </li>
-        <li>
-          <a class="strip" href="/algorithms/" aria-labelledby="archive-algorithms">
-            <span class="strip-num"><b>{algoCount}</b>문제</span>
-            <h3 class="strip-title" id="archive-algorithms">알고리즘</h3>
-            <span class="strip-desc">백준·프로그래머스 풀이. 티어·유형·언어별 정리.</span>
-          </a>
+        <li class="strip">
+          <span class="strip-num"><b>{algoCount}</b>문제</span>
+          <h3 class="strip-title"><a href="/algorithms/">알고리즘</a></h3>
+          <span class="strip-desc">백준·프로그래머스 풀이. 티어·유형·언어별 정리.</span>
         </li>
-        <li>
-          <a class="strip" href="/notes/" aria-labelledby="archive-notes">
-            <span class="strip-num"><b>{notes.length}</b>편</span>
-            <h3 class="strip-title" id="archive-notes">학습 노트 아카이브</h3>
-            <span class="strip-desc">개발자로 전환하던 2022~2023년의 기록.</span>
-          </a>
+        <li class="strip">
+          <span class="strip-num"><b>{notes.length}</b>편</span>
+          <h3 class="strip-title"><a href="/notes/">학습 노트 아카이브</a></h3>
+          <span class="strip-desc">개발자로 전환하던 2022~2023년의 기록.</span>
         </li>
       </ul>
     </section>
@@ -318,11 +312,7 @@ const [lead, ...more] = recommended
   }
   .card {
     min-width: 0;
-  }
-  .card.big {
-    grid-column: 1 / -1;
-  }
-  .card a {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.625rem;
@@ -335,11 +325,27 @@ const [lead, ...more] = recommended
       border-color 0.15s ease,
       transform 0.15s ease;
   }
-  .card a:hover {
+  .card.big {
+    grid-column: 1 / -1;
+  }
+  .card:hover {
     border-color: var(--text);
     transform: translateY(-1px);
   }
-  .card a:focus-visible {
+  /* 실제 링크는 제목만 포함하고 클릭 영역과 키보드 초점 테두리는 카드 전체로 넓힌다. */
+  .card a::after,
+  .strip a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+  }
+  .card a:focus-visible,
+  .strip a:focus-visible {
+    outline: none;
+  }
+  .card a:focus-visible::after,
+  .strip a:focus-visible::after {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
   }
@@ -365,7 +371,7 @@ const [lead, ...more] = recommended
     font-size: 1.625rem;
     line-height: 1.3;
   }
-  .card a:hover h3 {
+  .card:hover h3 {
     color: var(--accent);
   }
   .note {
@@ -417,7 +423,7 @@ const [lead, ...more] = recommended
   }
   /* 좁은 열이라 작성·수정·분을 세로로 쌓지 않고 한 줄에서 감는다. 좁은 화면은 PostRow 규칙을 따른다 */
   @media (min-width: 761px) {
-    .other-posts :global(.row a) {
+    .other-posts :global(.row-content) {
       grid-template-columns: 6.5rem minmax(0, 1fr);
     }
     .other-posts :global(.row .meta) {
@@ -470,6 +476,7 @@ const [lead, ...more] = recommended
     list-style: none;
   }
   .strip {
+    position: relative;
     display: block;
     height: 100%;
     padding: 1.375rem;
@@ -483,10 +490,6 @@ const [lead, ...more] = recommended
     transform: translateY(-1px);
     background: var(--bg-card);
     box-shadow: inset 0 0 0 1px var(--border-strong);
-  }
-  .strip:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
   }
   .strip-num {
     display: block;
@@ -521,7 +524,7 @@ const [lead, ...more] = recommended
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .card a:hover,
+    .card:hover,
     .strip:hover {
       transform: none;
     }
@@ -539,7 +542,7 @@ const [lead, ...more] = recommended
     .two-col {
       gap: 0;
     }
-    .card a {
+    .card {
       padding: 1.125rem;
     }
     .card.big h3 {

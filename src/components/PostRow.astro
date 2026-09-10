@@ -25,11 +25,10 @@ const {
   compact = false,
 } = Astro.props
 const cat = category ? getCategory(category) : undefined
-const titleId = `post-row-${encodeURIComponent(href)}`
 ---
 
 <li class:list={['row', { 'no-cat': !cat }]}>
-  <a href={href} aria-labelledby={titleId}>
+  <div class="row-content">
     {
       cat && (
         <span class="cat" data-cat={cat.id}>
@@ -38,22 +37,23 @@ const titleId = `post-row-${encodeURIComponent(href)}`
       )
     }
     <span class="body">
-      <span class="title" id={titleId}>{title}</span>
+      <a class="title" href={href}>{title}</a>
       {!compact && description && <span class="desc">{description}</span>}
     </span>
     <span class="meta">
       <ContentDates date={date} updated={updated} compact />
       {readingMinutes && <span>{readingMinutes}분</span>}
     </span>
-  </a>
+  </div>
 </li>
 
 <style>
   .row {
+    position: relative;
     border-top: 1px solid var(--border);
   }
 
-  .row a {
+  .row-content {
     display: grid;
     grid-template-columns: 6.5rem minmax(0, 1fr) auto;
     align-items: baseline;
@@ -62,11 +62,20 @@ const titleId = `post-row-${encodeURIComponent(href)}`
   }
 
   /* 카테고리 페이지처럼 라벨이 없는 곳에서는 첫 열을 비워 두지 않는다 */
-  .row.no-cat a {
+  .row.no-cat .row-content {
     grid-template-columns: minmax(0, 1fr) auto;
   }
 
-  .row a:focus-visible {
+  .title::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 4px;
+  }
+  .title:focus-visible {
+    outline: none;
+  }
+  .title:focus-visible::after {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
     border-radius: 4px;
@@ -92,7 +101,7 @@ const titleId = `post-row-${encodeURIComponent(href)}`
     letter-spacing: -0.02em;
   }
 
-  .row a:hover .title {
+  .row:hover .title {
     color: var(--accent);
   }
 
@@ -114,8 +123,8 @@ const titleId = `post-row-${encodeURIComponent(href)}`
   }
 
   @media (max-width: 640px) {
-    .row a,
-    .row.no-cat a {
+    .row-content,
+    .row.no-cat .row-content {
       grid-template-columns: 1fr;
       gap: 3px 0;
     }
