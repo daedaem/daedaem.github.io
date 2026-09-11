@@ -7,7 +7,7 @@ import { renderOgCard, wrapOgTitle } from '../src/utils/og-card.mjs'
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const identityTitle = '조해성의 기술 블로그'
-const motto = '문제가 시작된 곳을 찾습니다.'
+const motto = '증상이 아니라 원인을 고칩니다'
 const content = { title: identityTitle, kicker: '대댐 로그', siteTitle: '대댐 로그', identityTitle, subtitle: motto }
 
 test('home identity and social preview share one short title and one motto', () => {
@@ -20,10 +20,10 @@ test('home identity and social preview share one short title and one motto', () 
   assert.equal([...home.matchAll(/<h1(?:\s|>)/g)].length, 1)
   assert.match(home, /<h2 id="recommended-title">먼저 읽을 글<\/h2>/)
   assert.match(home, /<h3 class="card-title">/)
-  assert.match(home, /\.byline h1\s*\{[^}]*font-size:\s*1\.875rem;[^}]*font-weight:\s*700;/)
+  assert.match(home, /\.byline h1\s*\{[^}]*font-size:\s*0\.9375rem;[^}]*font-weight:\s*600;/)
   assert.match(
     home.split('@media (max-width: 640px)')[1],
-    /\.byline h1\s*\{[^}]*font-size:\s*1\.625rem;/,
+    /\.byline h1\s*\{[^}]*font-size:\s*0\.875rem;/,
   )
   assert.match(og, /title: SITE\.identityTitle/)
   assert.match(og, /identityTitle: SITE\.identityTitle/)
@@ -41,7 +41,7 @@ test('OG renderer reuses the approved mark and current light palette', () => {
   }
   assert.doesNotMatch(svg, /#1f5fd0|M4 6h9M4 12h7M4 18h5/)
   assert.match(svg, /<tspan x="80" dy="0">조해성의 기술 블로그<\/tspan>/)
-  assert.match(svg, /문제가 시작된 곳을 찾습니다\./)
+  assert.match(svg, /증상이 아니라 원인을 고칩니다/)
   const png = new Resvg(svg, { font: { loadSystemFonts: false } }).render().asPng()
   assert.equal(png.toString('hex', 0, 8), '89504e470d0a1a0a')
   assert.equal(png.readUInt32BE(16), 1200)
