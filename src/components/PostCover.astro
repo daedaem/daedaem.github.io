@@ -6,8 +6,9 @@ interface Props {
   src?: string
   lead?: boolean
   thumbnail?: boolean
+  sizes?: string
 }
-const { kind, src, lead = false, thumbnail = false } = Astro.props
+const { kind, src, lead = false, thumbnail = false, sizes } = Astro.props
 const imageAttributes =
   kind === 'image' && src ? getCoverImageAttributes(src, thumbnail) : undefined
 ---
@@ -27,6 +28,7 @@ const imageAttributes =
         src={src}
         alt=""
         {...imageAttributes}
+        sizes={sizes ?? imageAttributes?.sizes}
         loading={lead ? 'eager' : 'lazy'}
         fetchpriority={lead ? 'high' : undefined}
         decoding="async"

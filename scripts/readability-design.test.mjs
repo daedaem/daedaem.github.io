@@ -76,7 +76,7 @@ test('reading comparison uses existing responsive thumbnails and retains full 3:
   assert.doesNotMatch(desktop, /width:\s*min\(100%, 18rem\)/)
   assert.match(
     mobile,
-    /\.editorial-card\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\) 4\.5rem;/,
+    /\.editorial-card\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\) 5\.5rem;/,
   )
   assert.match(home, /<PostCover[\s\S]*?thumbnail[\s\S]*?lead=\{index === 0\}/)
   assert.doesNotMatch(mobile, /order:\s*-1;/)

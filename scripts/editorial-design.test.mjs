@@ -178,7 +178,7 @@ test('reading comparison keeps the title before a secondary thumbnail on mobile'
   const mobile = home.split('@media (max-width: 640px)')[1]
   assert.ok(mobile)
   assert.match(home, /grid-template-areas:\s*'copy cover' 'note note';/)
-  assert.match(mobile, /grid-template-columns:\s*minmax\(0, 1fr\) 4\.5rem;/)
+  assert.match(mobile, /grid-template-columns:\s*minmax\(0, 1fr\) 5\.5rem;/)
   assert.ok(home.indexOf('<h3 class="card-title">') < home.indexOf('<div class="card-cover">'))
   assert.doesNotMatch(home, /order:\s*-1/)
 })

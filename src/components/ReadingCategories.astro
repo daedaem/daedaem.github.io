@@ -9,8 +9,8 @@ const { counts, total, active } = Astro.props
 const current = CATEGORIES.find((category) => category.id === active)?.name ?? '전체 글'
 ---
 
-<details class="reading-categories" data-reading-categories open>
-  <summary>주제 <strong>{current}</strong></summary>
+<details class="reading-categories" data-reading-categories>
+  <summary>주제 고르기 <strong>현재: {current}</strong></summary>
   <nav aria-label="카테고리">
     <a href="/posts/" aria-current={!active ? 'page' : undefined}
       ><span>전체 글</span><span>{total}</span></a
@@ -30,16 +30,19 @@ const current = CATEGORIES.find((category) => category.id === active)?.name ?? '
     }
   </nav>
 </details>
-<script>
-  const categoryDetails = document.querySelector<HTMLDetailsElement>('[data-reading-categories]')
-  const desktop = matchMedia('(min-width: 901px)')
-  if (categoryDetails) {
-    const sync = () => {
-      categoryDetails.open = desktop.matches
+<script is:inline>
+  ;(() => {
+    const categoryDetails = document.querySelector('[data-reading-categories]')
+    const desktop = matchMedia('(min-width: 901px)')
+    if (categoryDetails instanceof HTMLDetailsElement) {
+      const sync = () => {
+        categoryDetails.open = desktop.matches
+        categoryDetails.dataset.enhanced = 'true'
+      }
+      sync()
+      desktop.addEventListener('change', sync)
     }
-    sync()
-    desktop.addEventListener('change', sync)
-  }
+  })()
 </script>
 <style>
   .reading-categories {
@@ -91,7 +94,7 @@ const current = CATEGORIES.find((category) => category.id === active)?.name ?? '
       top: var(--header-clearance);
       align-self: start;
     }
-    summary {
+    .reading-categories[data-enhanced] summary {
       display: none;
     }
     nav {

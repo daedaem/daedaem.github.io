@@ -79,6 +79,11 @@ for (const post of posts) counts.set(post.data.category, (counts.get(post.data.c
                             src={cover.src}
                             thumbnail
                             lead={index === 0}
+                            sizes={
+                              index === 0
+                                ? '(max-width: 640px) calc((100vw - 40px) * 0.4), (max-width: 900px) 40vw, 290px'
+                                : undefined
+                            }
                           />
                         </div>
                       )}
@@ -257,7 +262,7 @@ for (const post of posts) counts.set(post.data.category, (counts.get(post.data.c
   .editorial-card {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 8rem;
+    grid-template-columns: minmax(0, 1fr) 9rem;
     grid-template-areas: 'copy cover' 'note note';
     gap: 0.65rem 1.5rem;
     align-items: center;
@@ -267,6 +272,18 @@ for (const post of posts) counts.set(post.data.category, (counts.get(post.data.c
   .card-copy {
     grid-area: copy;
     min-width: 0;
+  }
+  .lead-card:not(.without-cover) {
+    grid-template-columns: minmax(0, 1fr) 40%;
+    align-items: start;
+  }
+  .lead-card .subtitle {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--accent);
+    font-size: 0.8em;
+    line-height: 1.6;
+    font-weight: 550;
   }
   .editorial-card.without-cover {
     grid-template-columns: 1fr;
@@ -474,7 +491,7 @@ for (const post of posts) counts.set(post.data.category, (counts.get(post.data.c
       padding-top: 1.25rem;
     }
     .editorial-card {
-      grid-template-columns: minmax(0, 1fr) 4.5rem;
+      grid-template-columns: minmax(0, 1fr) 5.5rem;
       gap: 0.65rem 1rem;
       padding-block: 1.25rem;
     }
