@@ -100,3 +100,25 @@ test('anchor landings and sticky article/wiki navigation share the taller header
     assert.match(source(path), /top: var\(--header-clearance\)/)
   }
 })
+
+test('mobile selected articles consistently place the decorative cover before the text', () => {
+  const home = source('src/pages/index.astro')
+  const mobile = home.split('@media (max-width: 640px)')[1]
+  assert.ok(mobile)
+  assert.match(home, /\.card-cover\s*\{[^}]*order:\s*-1;/)
+  assert.match(mobile, /\.lead-card\s*\{[^}]*display:\s*flex;/)
+  assert.match(mobile, /\.lead-card \.card-cover\s*\{[^}]*order:\s*-1;/)
+})
+
+test('article separators distinguish rows without expanding the link into the gap', () => {
+  const home = source('src/pages/index.astro')
+  assert.match(home, /--article-gap:\s*3rem;/)
+  assert.match(
+    home,
+    /\.editorial-card::before\s*\{[^}]*bottom:\s*calc\(var\(--article-gap\) \/ -2\);[^}]*border-bottom:\s*1px solid var\(--border-strong\);[^}]*pointer-events:\s*none;/,
+  )
+  assert.match(home, /\.lead-card:not\(:last-child\)::before\s*\{\s*content:\s*'';/)
+  const mobile = home.split('@media (max-width: 640px)')[1]
+  assert.match(mobile, /\.editorial-card:not\(:last-child\)::before\s*\{\s*content:\s*'';/)
+  assert.match(home, /\.editorial-card a::after\s*\{[^}]*inset:\s*0;/)
+})

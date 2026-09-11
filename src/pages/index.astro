@@ -199,9 +199,10 @@ const recentWiki = selectRecentWiki(wiki, 2)
     letter-spacing: 0.1em;
   }
   .editorial-grid {
+    --article-gap: 3rem;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2.375rem 1.875rem;
+    gap: var(--article-gap) 1.875rem;
     list-style: none;
     padding: 0 0 2.875rem;
     margin: 0;
@@ -213,6 +214,17 @@ const recentWiki = selectRecentWiki(wiki, 2)
     flex-direction: column;
     gap: 1.25rem;
     min-width: 0;
+  }
+  /* Keep the separator in the non-clickable space between article groups. */
+  .editorial-card::before {
+    position: absolute;
+    inset-inline: 0;
+    bottom: calc(var(--article-gap) / -2);
+    border-bottom: 1px solid var(--border-strong);
+    pointer-events: none;
+  }
+  .lead-card:not(:last-child)::before {
+    content: '';
   }
   .card-cover {
     order: -1;
@@ -488,8 +500,11 @@ const recentWiki = selectRecentWiki(wiki, 2)
     }
     .editorial-grid {
       grid-template-columns: minmax(0, 1fr);
-      gap: 2rem;
+      gap: var(--article-gap);
       padding-bottom: 2rem;
+    }
+    .editorial-card:not(:last-child)::before {
+      content: '';
     }
     .lead-card {
       display: flex;
@@ -497,7 +512,7 @@ const recentWiki = selectRecentWiki(wiki, 2)
       align-items: stretch;
     }
     .lead-card .card-cover {
-      order: 0;
+      order: -1;
     }
     .lead-card h2 {
       font-size: 30px;
