@@ -65,11 +65,23 @@ title: '...'
 description: '한 문장 요약'
 date: 2026-01-01
 happened: '2025년 5월' # 일이 실제로 있었던 시기(선택). 발행일과 따로 보여 준다
-featured: false # true면 홈 히어로에 고정(선택). 없으면 최신 글이 올라간다
+featured: false # 이전 홈 구성의 호환 필드. 현재 홈 추천을 바꾸지는 않는다
 category: 'performance' # data-integrity | performance | operations | legacy | auth-security
 tags: []
 draft: true
 ```
+
+### 글 표지
+
+표지는 홈의 카드 번호나 글 URL이 아니라 각 글의 프론트매터에서 관리합니다. 홈 추천 글을 바꾸거나 목록 순서가 달라져도 같은 글에는 같은 표지가 붙습니다. 현재 홈 추천 3편과 순서는 `src/utils/home-content.mjs`의 `HOME_READING_PICKS`에서 별도로 관리하며, 표지가 있는 글을 자동 추천하지는 않습니다.
+
+- 기존 디자인: `cover: 'null'`(NULL 비교), `cover: 'query'`(주소 조회), `cover: 'legacy'`(Flash 연동 전환). 실제 글 주제에 맞을 때만 지정합니다. `'null'`은 YAML의 빈 값과 구분하도록 따옴표를 유지합니다.
+- 직접 만든 표지: 공개 가능한 JPG·PNG·WebP·AVIF를 `public/uploads/`에 두고 `coverImage: '/uploads/my-cover.webp'`로 지정합니다. CMS의 ‘직접 올린 표지’에서도 선택할 수 있도록 [이미지 필드](https://pagescms.org/docs/configuration/fields/image/)를 설정했습니다. CMS 실제 로그인·저장 왕복은 별도 확인이 필요합니다.
+- 두 값이 모두 있으면 `coverImage`가 우선합니다. 둘 다 없거나 비어 있으면 빈 이미지 칸 없이 텍스트로 표시합니다. 외부 URL이나 `../` 경로는 받지 않으며, 없는 파일은 배포 전 내부 참조 검사에서 걸러집니다.
+- 홈에는 큰 표지, 글·카테고리 목록에는 작은 썸네일을 씁니다. 작은 표지에서는 장식용 세부 문구를 생략하며, 제목·요약·날짜는 그대로 읽을 수 있습니다. 상세 본문에 큰 표지를 반복하지 않습니다.
+- 이미지는 약 3:2 가로 비율로 준비하고, 중요한 내용은 가장자리를 피합니다. 표지는 장식용이므로 독자가 알아야 할 정보는 제목·설명·본문에도 적습니다. 회사 자료나 비공개 원본 이미지를 업로드하지 않습니다.
+
+### 위키 문서
 
 위키(wiki) 프론트매터:
 

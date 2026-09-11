@@ -5,6 +5,7 @@ import PostRow from '@/components/PostRow.astro'
 import CategoryNav from '@/components/CategoryNav.astro'
 import PageHead from '@/components/PageHead.astro'
 import { readingMinutes } from '@/utils/format'
+import { resolvePostCover } from '@/utils/editorial.mjs'
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
@@ -42,7 +43,9 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
               date={p.data.date}
               updated={p.data.updated}
               category={p.data.category}
+              cover={resolvePostCover(p.data)}
               readingMinutes={readingMinutes(p.body ?? '')}
+              editorial
             />
           ))}
         </ul>

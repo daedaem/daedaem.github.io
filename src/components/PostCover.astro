@@ -1,9 +1,10 @@
 ---
 interface Props {
   kind: string
+  src?: string
   lead?: boolean
 }
-const { kind, lead = false } = Astro.props
+const { kind, src, lead = false } = Astro.props
 ---
 
 <!-- 장식용 표지. 링크의 접근 가능한 이름은 카드의 실제 글 제목만 사용한다. -->
@@ -13,12 +14,24 @@ const { kind, lead = false } = Astro.props
   data-pagefind-ignore
 >
   {
+    kind === 'image' && src && (
+      <img
+        src={src}
+        alt=""
+        width="1480"
+        height="1000"
+        loading={lead ? 'eager' : 'lazy'}
+        decoding="async"
+      />
+    )
+  }
+  {
     kind === 'null' && (
       <>
         <div class="cover-top">
           <>
             <span>DATA INTEGRITY</span>
-            <span>01 / FIELD NOTES</span>
+            <span>FIELD NOTES</span>
           </>
         </div>
         <div class="specimen specimen-before">
@@ -54,7 +67,7 @@ const { kind, lead = false } = Astro.props
         <div class="cover-top">
           <>
             <span>QUERY &amp; OWNERSHIP</span>
-            <span>02 / FIELD NOTES</span>
+            <span>FIELD NOTES</span>
           </>
         </div>
         <div class="query-lines">
@@ -86,7 +99,7 @@ const { kind, lead = false } = Astro.props
         <div class="cover-top">
           <>
             <span>LEGACY &amp; INTEGRATION</span>
-            <span>03 / FIELD NOTES</span>
+            <span>FIELD NOTES</span>
           </>
         </div>
         <div class="old-module">
@@ -131,6 +144,15 @@ const { kind, lead = false } = Astro.props
   }
   .cover-lead {
     aspect-ratio: 1.26;
+  }
+  .cover-image {
+    background: var(--bg-subtle);
+  }
+  .cover-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .cover-top {
     position: absolute;
@@ -330,6 +352,59 @@ const { kind, lead = false } = Astro.props
   }
   @container (max-width: 380px) {
     .cover-top span:last-child {
+      display: none;
+    }
+  }
+  /* Small thumbnails keep the recognizable motifs, not unreadable captions. */
+  @container (max-width: 220px) {
+    .cover-top,
+    .comparison,
+    .null-caption,
+    .query-caption,
+    .legacy-caption,
+    .specimen > span,
+    .query-card > span,
+    .query-card code,
+    .old-module > span,
+    .new-route > span {
+      display: none;
+    }
+    .specimen {
+      top: 20%;
+      height: 62%;
+      justify-content: center;
+    }
+    .specimen-after {
+      top: 24%;
+    }
+    .specimen strong {
+      font-size: 20cqi;
+      letter-spacing: -0.06em;
+    }
+    .query-card {
+      justify-content: center;
+      border-top-width: 3px;
+    }
+    .query-card strong {
+      font-size: 33cqi;
+      letter-spacing: -0.06em;
+    }
+    .query-lines {
+      font-size: 12cqi;
+      letter-spacing: -0.04em;
+    }
+    .old-module {
+      justify-content: center;
+    }
+    .old-module strong {
+      font-size: 13cqi;
+    }
+    .new-route > div {
+      justify-content: center;
+      font-size: 20cqi;
+      margin: 0;
+    }
+    .new-route > div > span:not(:nth-child(2)) {
       display: none;
     }
   }

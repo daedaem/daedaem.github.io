@@ -1,28 +1,96 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { EDITORIAL_COVERS, editorialCover, splitEditorialTitle } from '../src/utils/editorial.mjs'
+import { load } from 'js-yaml'
+import {
+  COVER_PRESETS,
+  isLocalCoverImage,
+  resolvePostCover,
+  splitEditorialTitle,
+} from '../src/utils/editorial.mjs'
 import { MONOGRAM_PATH } from '../src/utils/brand.mjs'
 import { HOME_READING_PICKS } from '../src/utils/home-content.mjs'
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
-test('approved covers follow the real selected articles and never label an unknown one', () => {
+test('approved articles own their covers rather than borrowing a home position', () => {
   assert.deepEqual(
-    Object.keys(EDITORIAL_COVERS),
-    HOME_READING_PICKS.map(({ id }) => id),
-  )
-  assert.deepEqual(
-    HOME_READING_PICKS.map(({ id }) => editorialCover(id)),
+    HOME_READING_PICKS.map(({ id }) => {
+      const raw = source(`src/content/posts/${id}.md`)
+      const data = load(raw.match(/^---\n([\s\S]*?)\n---/)[1])
+      return resolvePostCover(data)?.kind
+    }),
     ['null', 'query', 'legacy'],
   )
-  for (const id of ['new-article', 'toString', '__proto__', '', undefined]) {
-    assert.equal(editorialCover(id), undefined)
+  for (const cover of ['new-article', 'toString', '__proto__', '', undefined, null]) {
+    assert.equal(resolvePostCover({ cover }), undefined)
   }
+  assert.deepEqual(resolvePostCover({ cover: 'query' }), { kind: 'query' })
+  assert.doesNotMatch(
+    source('src/utils/editorial.mjs'),
+    /HOME_READING_PICKS|null-and-empty-string-sync-failure|address-search-9s-to-100ms/,
+  )
   const home = source('src/pages/index.astro')
   assert.match(home, /selectHomeContent\(posts\)/)
-  assert.match(home, /editorialCover\(post\.id\)/)
+  assert.match(home, /resolvePostCover\(post\.data\)/)
   assert.match(home, /'without-cover': !cover/)
+})
+
+test('custom local covers override presets while empty values stay optional', () => {
+  for (const path of ['/uploads/cover.webp', '/uploads/posts/cover.PNG', '/uploads/표지.avif']) {
+    assert.ok(isLocalCoverImage(path))
+    assert.deepEqual(resolvePostCover({ cover: 'query', coverImage: path }), {
+      kind: 'image',
+      src: path,
+    })
+  }
+  assert.equal(resolvePostCover(), undefined)
+  assert.equal(resolvePostCover({ cover: '', coverImage: null }), undefined)
+  assert.deepEqual(resolvePostCover({ cover: 'null', coverImage: '' }), { kind: 'null' })
+})
+
+test('cover sources reject remote URLs, traversal, non-images and encoded paths', () => {
+  for (const path of [
+    undefined,
+    null,
+    '',
+    {},
+    'https://example.com/a.png',
+    '//example.com/a.png',
+    'data:image/png;base64,a',
+    '/private/a.png',
+    '/uploads/../a.png',
+    '/uploads//a.png',
+    '/uploads/%2e%2e/a.png',
+    '/uploads/a.png?track=1',
+    '/uploads/a.png#x',
+    '/uploads/a.svg',
+    '/uploads/a.html',
+    '/uploads/a\\b.png',
+    '/uploads/a\nb.png',
+  ]) {
+    assert.equal(isLocalCoverImage(path), false, String(path))
+    assert.equal(resolvePostCover({ coverImage: path }), undefined, String(path))
+  }
+})
+
+test('home, all-post and category lists share cover resolution without changing reading pages', () => {
+  for (const path of [
+    'src/pages/index.astro',
+    'src/pages/posts/index.astro',
+    'src/pages/categories/[category].astro',
+  ]) {
+    assert.match(source(path), /cover=\{resolvePostCover\((?:post|p)\.data\)\}/)
+  }
+  const row = source('src/components/PostRow.astro')
+  assert.match(row, /'with-cover': !!cover/)
+  assert.match(row, /<PostCover kind=\{cover\.kind\} src=\{cover\.src\}/)
+  const cover = source('src/components/PostCover.astro')
+  assert.match(cover, /@container \(max-width: 220px\)/)
+  assert.match(cover, /alt=""/)
+  assert.doesNotMatch(cover, /0[123] \/ FIELD NOTES/)
+  assert.doesNotMatch(source('src/layouts/PostLayout.astro'), /<PostCover/)
+  assert.deepEqual(Object.keys(COVER_PRESETS), ['null', 'query', 'legacy'])
 })
 
 test('title styling preserves every character and only splits the first colon-space', () => {

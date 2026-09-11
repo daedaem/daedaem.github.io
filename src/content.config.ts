@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content'
 import { z } from 'astro/zod'
 import { glob } from 'astro/loaders'
+import { isLocalCoverImage } from './utils/editorial.mjs'
 
 // 웹 편집기의 비어 있는 선택 날짜도 '미입력'으로 처리한다.
 const optionalDate = z.preprocess(
@@ -22,6 +23,19 @@ const posts = defineCollection({
      * 증상이 아니라 원인을 한두 문장으로. 없으면 description이 그 자리에 나옵니다.
      */
     cause: z.string().optional(),
+    /** 홈·글 목록에서 함께 쓰는 선택 표지. 빈 값은 표지 없는 글이다. */
+    cover: z.preprocess(
+      (value) => (value === '' || value === null ? undefined : value),
+      z.enum(['null', 'query', 'legacy']).optional(),
+    ),
+    /** 업로드한 표지가 있으면 기존 디자인보다 우선한다. */
+    coverImage: z.preprocess(
+      (value) => (value === '' || value === null ? undefined : value),
+      z
+        .string()
+        .refine(isLocalCoverImage, '표지는 /uploads/ 아래 JPG·PNG·WebP·AVIF 파일로 지정합니다.')
+        .optional(),
+    ),
     date: z.coerce.date(),
     updated: optionalDate,
     /**
@@ -29,7 +43,7 @@ const posts = defineCollection({
      * '2025년 5월', '2025년 11월 – 2026년 6월'처럼 월 단위 문자열로 쓴다.
      */
     happened: z.string().optional(),
-    /** true인 글 하나를 홈 히어로에 고정한다. 없으면 최신 글이 올라간다. 여러 개면 가장 최근 것. */
+    /** 이전 홈 구성의 호환 필드. 현재 추천 순서는 HOME_READING_PICKS에서 관리한다. */
     featured: z.boolean().default(false),
     category: z.enum(['data-integrity', 'performance', 'operations', 'legacy', 'auth-security']),
     tags: z.array(z.string()).default([]),

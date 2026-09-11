@@ -6,6 +6,7 @@ import CategoryNav from '@/components/CategoryNav.astro'
 import PageHead from '@/components/PageHead.astro'
 import { CATEGORIES } from '@/consts'
 import { readingMinutes } from '@/utils/format'
+import { resolvePostCover } from '@/utils/editorial.mjs'
 
 export const getStaticPaths = async () => {
   const posts = await getCollection('posts', ({ data }) => !data.draft)
@@ -48,7 +49,9 @@ const { category, posts, counts, total } = Astro.props
               description={p.data.description}
               date={p.data.date}
               updated={p.data.updated}
+              cover={resolvePostCover(p.data)}
               readingMinutes={readingMinutes(p.body ?? '')}
+              editorial
             />
           ))}
         </ul>

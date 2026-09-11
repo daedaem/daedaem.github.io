@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync, readdirSync } from 'node:fs'
 import { load } from 'js-yaml'
 import { CATEGORIES, WIKI_TOPICS } from '../src/consts.ts'
+import { COVER_PRESETS, COVER_IMAGE_EXTENSIONS } from '../src/utils/editorial.mjs'
 
 const config = load(readFileSync('.pages.yml', 'utf8'))
 test('CMS scopes content to approved collections and public images', () => {
@@ -63,4 +64,21 @@ test('CMS topic and category choices match site navigation', () => {
       .options.values.map((v) => v.name)
     assert.deepEqual([...values].sort(), choices.map((c) => c.id).sort())
   }
+})
+
+test('post cover fields are optional and match the shared preset and upload choices', () => {
+  const fields = config.content.find((c) => c.name === 'posts').fields
+  const preset = fields.find((f) => f.name === 'cover')
+  const image = fields.find((f) => f.name === 'coverImage')
+  assert.equal(preset.type, 'select')
+  assert.notEqual(preset.required, true)
+  assert.equal(preset.default, undefined)
+  assert.deepEqual(
+    preset.options.values.map((v) => v.name),
+    Object.keys(COVER_PRESETS),
+  )
+  assert.equal(image.type, 'image')
+  assert.notEqual(image.required, true)
+  assert.deepEqual(image.options.extensions, COVER_IMAGE_EXTENSIONS)
+  assert.equal(image.options.rename, 'safe')
 })
