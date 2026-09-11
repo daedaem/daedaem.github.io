@@ -34,6 +34,7 @@ export const GET: APIRoute = ({ props }) => {
     kicker: props.kicker as string,
     siteTitle: SITE.title,
     identityTitle: SITE.identityTitle,
+    subtitle: SITE.motto,
   })
   const png = new Resvg(svg, {
     fitTo: { mode: 'width', value: 1200 },

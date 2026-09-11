@@ -6,14 +6,17 @@ import { MONOGRAM_PATH } from '../src/utils/brand.mjs'
 import { renderOgCard, wrapOgTitle } from '../src/utils/og-card.mjs'
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
-const identityTitle = '백엔드 개발자 조해성의 기술 블로그'
-const content = { title: identityTitle, kicker: '대댐 로그', siteTitle: '대댐 로그', identityTitle }
+const identityTitle = '조해성의 기술 블로그'
+const motto = '문제가 시작된 곳을 찾습니다.'
+const content = { title: identityTitle, kicker: '대댐 로그', siteTitle: '대댐 로그', identityTitle, subtitle: motto }
 
-test('home identity and social preview use one factual title instead of a separate slogan', () => {
+test('home identity and social preview share one short title and one motto', () => {
   const home = source('src/pages/index.astro')
   const og = source('src/pages/og/[...slug].png.ts')
   assert.match(source('src/consts.ts'), new RegExp(`identityTitle: '${identityTitle}'`))
+  assert.match(source('src/consts.ts'), new RegExp(`motto: '${motto}'`))
   assert.match(home, /<h1>\{SITE\.identityTitle\}<\/h1>/)
+  assert.match(home, /<p class="identity-context">\{SITE\.motto\}<\/p>/)
   assert.equal([...home.matchAll(/<h1(?:\s|>)/g)].length, 1)
   assert.match(home, /<h2 id="recommended-title">먼저 읽을 글<\/h2>/)
   assert.match(home, /<h3 class="card-title">/)
@@ -24,6 +27,7 @@ test('home identity and social preview use one factual title instead of a separa
   )
   assert.match(og, /title: SITE\.identityTitle/)
   assert.match(og, /identityTitle: SITE\.identityTitle/)
+  assert.match(og, /subtitle: SITE\.motto/)
   assert.doesNotMatch(home + og, /SITE\.tagline/)
 })
 
@@ -36,7 +40,8 @@ test('OG renderer reuses the approved mark and current light palette', () => {
     assert.ok(svg.includes(`"${value}"`), `${name} missing from shared preview`)
   }
   assert.doesNotMatch(svg, /#1f5fd0|M4 6h9M4 12h7M4 18h5/)
-  assert.match(svg, /<tspan x="80" dy="0">백엔드 개발자 조해성의 기술 블로그<\/tspan>/)
+  assert.match(svg, /<tspan x="80" dy="0">조해성의 기술 블로그<\/tspan>/)
+  assert.match(svg, /문제가 시작된 곳을 찾습니다\./)
   const png = new Resvg(svg, { font: { loadSystemFonts: false } }).render().asPng()
   assert.equal(png.toString('hex', 0, 8), '89504e470d0a1a0a')
   assert.equal(png.readUInt32BE(16), 1200)

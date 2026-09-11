@@ -11,8 +11,8 @@ const links = (html) => [...html.matchAll(/href="\/posts\/([^/]+)\/"/g)].map((m)
 test('home keeps factual identity and replaces duplicate topic keywords with a short context', () => {
   const home = read('src/pages/index.astro')
   assert.match(home, /<h1>\{SITE\.identityTitle\}<\/h1>/)
-  assert.match(home, /레거시 시스템을 개발·운영하며 남긴 기록입니다\./)
-  assert.doesNotMatch(home, /백엔드 · 레거시 시스템 · 문제 해결/)
+  assert.match(home, /<p class="identity-context">\{SITE\.motto\}<\/p>/)
+  assert.doesNotMatch(home, /백엔드 · 레거시 시스템 · 문제 해결|남긴 기록입니다/)
 })
 
 test('about emphasizes three supported cases and retains four other unique public links', () => {

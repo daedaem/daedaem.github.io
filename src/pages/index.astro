@@ -21,9 +21,7 @@ for (const post of posts) counts.set(post.data.category, (counts.get(post.data.c
   <div class="wrap-wide home">
     <header class="byline">
       <div class="identity">
-        <h1>{SITE.identityTitle}</h1><p class="identity-context">
-          레거시 시스템을 개발·운영하며 남긴 기록입니다.
-        </p>
+        <h1>{SITE.identityTitle}</h1><p class="identity-context">{SITE.motto}</p>
       </div>
       <a href="/about/">소개·경력 <span aria-hidden="true">→</span></a>
     </header>
@@ -212,8 +210,9 @@ for (const post of posts) counts.set(post.data.category, (counts.get(post.data.c
   }
   .identity-context {
     margin: 0.25rem 0 0;
-    color: var(--text-muted);
-    font-size: var(--type-label);
+    color: var(--text-secondary);
+    font-size: var(--type-body);
+    line-height: 1.6;
   }
   .byline > a,
   .section-head a,

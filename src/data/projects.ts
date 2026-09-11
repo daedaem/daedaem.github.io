@@ -64,6 +64,8 @@ export type TeamProject = {
   repo: string
   /** 팀장을 맡은 프로젝트 */
   lead?: boolean
+  /** 2023년 포트폴리오에 쓰던 당시 화면 캡처. 원본 비율 유지, 개인정보·워터마크 영역은 잘라냈다. */
+  image?: { src: string; width: number; height: number; alt: string }
 }
 
 export const TEAM_PROJECTS: TeamProject[] = [
@@ -79,6 +81,12 @@ export const TEAM_PROJECTS: TeamProject[] = [
     ],
     stack: 'JavaScript, Vue 3, Scss, Bootstrap, Naver Map API, Figma',
     repo: 'https://github.com/daedaem/Pairplay',
+    image: {
+      src: '/uploads/project-covers/pairplay-main-2022.webp',
+      width: 851,
+      height: 898,
+      alt: 'Pairplay 메인 화면. 운동 장소 검색 배너와 축구·풋살·농구 등 운동 카테고리 그리드',
+    },
   },
   {
     name: 'Unique',
@@ -94,6 +102,12 @@ export const TEAM_PROJECTS: TeamProject[] = [
     ],
     stack: 'JavaScript, Vue 2, Scss, Solidity, truffle, ganache, web3.js',
     repo: 'https://github.com/daedaem/Unique-NFT_MarketExhibition',
+    image: {
+      src: '/uploads/project-covers/unique-main-2022.webp',
+      width: 600,
+      height: 269,
+      alt: 'Unique 메인 화면. NFT 탐색·생성 배너와 상단 Exhibition·Market 메뉴',
+    },
   },
   {
     name: 'Campus',
@@ -108,6 +122,12 @@ export const TEAM_PROJECTS: TeamProject[] = [
     ],
     stack: 'JavaScript, Vue 2, Bootstrap',
     repo: 'https://github.com/daedaem/Campus',
+    image: {
+      src: '/uploads/project-covers/campus-main-2022.webp',
+      width: 1600,
+      height: 784,
+      alt: 'Campus 메인 화면. 설산 앞 텐트 사진 위에 "당신의 캠핑 메이트를 만나 보세요" 문구',
+    },
   },
   {
     name: 'Moving',
@@ -120,5 +140,11 @@ export const TEAM_PROJECTS: TeamProject[] = [
     ],
     stack: 'Python, Django, DRF, JavaScript, Vue 2, SQLite',
     repo: 'https://github.com/daedaem/Moving_SSAFY-1th-Project',
+    image: {
+      src: '/uploads/project-covers/moving-main-2022.webp',
+      width: 943,
+      height: 444,
+      alt: 'Moving 메인 화면. 영화 검색창과 포스터 그리드',
+    },
   },
 ]

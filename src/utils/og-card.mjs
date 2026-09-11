@@ -36,8 +36,8 @@ export function wrapOgTitle(text, max = 17, lines = 3) {
 const esc = (text) =>
   text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
-/** @param {{title: string, kicker: string, siteTitle: string, identityTitle: string}} content */
-export function renderOgCard({ title, kicker, siteTitle, identityTitle }) {
+/** @param {{title: string, kicker: string, siteTitle: string, identityTitle: string, subtitle: string}} content */
+export function renderOgCard({ title, kicker, siteTitle, identityTitle, subtitle }) {
   // 짧은 사이트 정체성은 한 줄, 긴 글 제목은 기존 어절 단위 세 줄로 표시한다.
   const lines = wrapOgTitle(title, title === identityTitle ? 22 : 17)
   const rows = lines
@@ -53,6 +53,6 @@ export function renderOgCard({ title, kicker, siteTitle, identityTitle }) {
     <path d="${MONOGRAM_PATH}" fill="none" stroke="#fcfaf5" stroke-width="2.8" stroke-linejoin="round"/>
   </g>
   <text x="170" y="550" font-family="Pretendard" font-size="28" font-weight="600" fill="#191f28">${esc(siteTitle)}</text>
-  <text x="170" y="589" font-family="Pretendard" font-size="22" fill="#384452">${esc(identityTitle)}</text>
+  <text x="170" y="589" font-family="Pretendard" font-size="22" fill="#384452">${esc(subtitle)}</text>
 </svg>`
 }
