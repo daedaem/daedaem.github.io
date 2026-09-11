@@ -8,6 +8,7 @@
 
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { formatCompactDate } from '../src/utils/compact-date.mjs'
 
 const [kind, slug, title, extra] = process.argv.slice(2)
 
@@ -27,7 +28,7 @@ if (!slug || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug))
   fail('slug는 ASCII 소문자·숫자·하이픈만 씁니다. 예: oracle-empty-string-is-null')
 if (!title) fail('제목이 없습니다. 따옴표로 감싸서 넘기세요.')
 
-const today = new Date().toISOString().slice(0, 10)
+const today = formatCompactDate(new Date()).replaceAll('.', '-')
 const quote = (s) => `'${s.replace(/'/g, "''")}'`
 
 let dir, body

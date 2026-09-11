@@ -5,7 +5,7 @@ description: '세션은 서버가 가진 사물함이고 세션 쿠키는 브라
 topic: 'web'
 tags: ['세션', '쿠키', '인증', 'HTTP', 'Servlet']
 created: 2026-08-21
-updated: 2026-09-05
+updated: 2026-09-12
 status: 'stable'
 ---
 
@@ -111,7 +111,7 @@ HTTPS는 로그인 요청 한 번만이 아니라 이후의 모든 요청과 응
 
 | 속성 | 효과 | 없으면 |
 |---|---|---|
-| `Secure` | HTTPS 요청에만 쿠키를 싣는다 | HTTPS 사이트라도 이미지 하나를 `http://`로 불러오면 그 요청에 쿠키가 딸려 나간다 |
+| `Secure` | HTTPS 요청에만 쿠키를 싣는다 | 쿠키의 도메인·경로 등에 맞는 HTTP 요청이 실제로 전송되면 쿠키가 평문으로 전송될 수 있다 |
 | `HttpOnly` | JS가 쿠키를 직접 읽지 못한다. XSS 코드의 인증 요청까지 막는 속성은 아니다 | XSS가 세션 ID를 직접 빼내기 쉬워진다 |
 | `SameSite` | 다른 사이트에서 시작된 요청에 쿠키 전송을 제한한다 | CSRF 가능성이 커진다. 구버전 WAS는 미지원일 수 있다 |
 
@@ -127,6 +127,8 @@ HTTPS는 로그인 요청 한 번만이 아니라 이후의 모든 요청과 응
 ```
 
 실제 기본값은 서블릿·WAS 버전과 설정에 따라 다르므로 응답의 `Set-Cookie` 헤더에서 확인한다. `SameSite`는 Servlet API 버전에 따라 WAS 설정이나 응답 헤더에서 별도로 지정해야 할 수 있다. 중요한 요청에는 `SameSite`만 믿지 말고 CSRF 토큰 같은 방어도 함께 둔다.
+
+HTTPS 문서 안의 HTTP 리소스는 현대 브라우저에서 HTTPS로 자동 전환되거나 차단될 수 있다. 따라서 HTTP 이미지 하나가 항상 평문 쿠키 전송을 일으키는 것은 아니다. 이 보호에 기대어 `Secure`를 생략해서도 안 된다. 최상위 HTTP 주소로의 이동 등은 혼합 콘텐츠 차단과 별개다. [MDN 혼합 콘텐츠](https://developer.mozilla.org/en-US/docs/Web/Security/Defenses/Mixed_content)
 
 ## 적용 순서 — 반대로 하면 장애
 
@@ -160,4 +162,4 @@ HTTPS는 로그인 요청 한 번만이 아니라 이후의 모든 요청과 응
 
 ## 더 볼 것
 
-- 세션 안에 무엇을 언제 넣을 것인가: [인증을 단계로 나누고, 되돌릴 수 없는 비밀번호를 옮기기](/posts/staged-auth-and-password-migration/)
+- 상태와 허용할 전이를 코드로 표현하기: [Java enum으로 상태 전이를 모델링하기](/wiki/java-enum-state-transitions/)

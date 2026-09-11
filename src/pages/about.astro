@@ -27,8 +27,8 @@ import { SITE } from '@/consts'
     <section>
       <h2>지금 하는 일</h2>
       <p>
-        그룹 IT 계열사에서 대형 제조 고객사의 사내 시스템을 개발하고 운영합니다. 공사계약, 업무지원,
-        법무, 고객품질관리 등 여섯 개 도메인을 맡고 있습니다.
+        Java·Spring·Oracle 기반의 업무 시스템을 주로 다루고, C#/.NET 기반 시스템도 함께 맡고
+        있습니다. 신규 기능 개발과 기존 기능의 유지보수, 운영 중 발생한 문제의 원인 분석을 합니다.
       </p>
       <p>
         화면의 요청이 서버와 DB를 거쳐 처리되는 흐름을 따라가며, 로그와 데이터가 어긋나는 지점을
@@ -88,11 +88,6 @@ import { SITE } from '@/consts'
         <li>
           <a href="/posts/phantom-batch-after-was-migration/"
             >WAS 전환 중 내린 서버에서 돌던 배치의 출처를 트리거로 특정</a
-          >
-        </li>
-        <li>
-          <a href="/posts/staged-auth-and-password-migration/"
-            >로그인 인증을 단계로 재설계하고 비밀번호 저장 방식을 이행</a
           >
         </li>
       </ul>
@@ -291,7 +286,7 @@ import { SITE } from '@/consts'
   }
   .work-highlights p {
     margin: 0.25rem 0 0;
-    font-size: 0.9375rem;
+    font-size: var(--type-body);
     line-height: 1.8;
     color: var(--text-secondary);
   }

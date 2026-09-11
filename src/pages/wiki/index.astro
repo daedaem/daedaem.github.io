@@ -160,6 +160,7 @@ const documents = entries.map((entry) => ({
 </BaseLayout>
 <script>
   import { selectDocuments } from '@/utils/wiki-library.mjs'
+  import { persistURL } from '@/utils/url-state.mjs'
   const docs = JSON.parse(document.getElementById('wiki-data')!.textContent!)
   const list = document.getElementById('wiki-documents')!
   const rows = new Map(
@@ -174,18 +175,6 @@ const documents = entries.map((entry) => ({
   const next = document.getElementById('wiki-next') as HTMLButtonElement
   let topic = '',
     page = 1
-  let urlTimer: ReturnType<typeof setTimeout> | undefined
-  function syncURL(url: URL) {
-    clearTimeout(urlTimer)
-    urlTimer = setTimeout(() => {
-      // 브라우저의 history 호출 제한이 문서 탐색을 중단시키지 않게 한다.
-      try {
-        history.replaceState(null, '', url)
-      } catch {
-        // URL 저장에 실패해도 필터 결과는 계속 사용할 수 있다.
-      }
-    }, 250)
-  }
   function show(sync = true) {
     const result = selectDocuments(docs, {
       query: query.value,
@@ -237,11 +226,10 @@ const documents = entries.map((entry) => ({
         page: page > 1 ? String(page) : '',
       }))
         if (value) url.searchParams.set(key, value)
-      syncURL(url)
+      persistURL(url)
     }
   }
   function readURL() {
-    clearTimeout(urlTimer)
     const params = new URLSearchParams(location.search)
     query.value = params.get('q') ?? ''
     status.value = params.get('status') ?? ''

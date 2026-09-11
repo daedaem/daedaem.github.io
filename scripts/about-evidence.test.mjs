@@ -15,7 +15,7 @@ test('home keeps factual identity and replaces duplicate topic keywords with a s
   assert.doesNotMatch(home, /백엔드 · 레거시 시스템 · 문제 해결|남긴 기록입니다/)
 })
 
-test('about emphasizes three supported cases and retains four other unique public links', () => {
+test('about emphasizes three supported cases and links only to currently public cases', () => {
   assert.ok(highlights)
   assert.ok(rest)
   assert.deepEqual(links(highlights), [
@@ -23,9 +23,9 @@ test('about emphasizes three supported cases and retains four other unique publi
     'address-search-9s-to-100ms',
     'retire-flash-module-by-integration',
   ])
-  assert.equal(links(rest).length, 4)
+  assert.equal(links(rest).length, 3)
   const all = [...links(highlights), ...links(rest)]
-  assert.equal(new Set(all).size, 7)
+  assert.equal(new Set(all).size, 6)
   for (const id of all) assert.match(read(`src/content/posts/${id}.md`), /draft: false/)
   assert.equal((highlights.match(/<h3>/g) ?? []).length, 3)
   assert.equal((highlights.match(/<p>/g) ?? []).length, 3)

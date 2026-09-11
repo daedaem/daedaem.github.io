@@ -177,6 +177,7 @@ const tabs = [
     }
     for (const t of tabs) {
       t.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
         e.preventDefault()
         const id = t.dataset.series ?? ''
         history.replaceState(null, '', id ? `#${id}` : location.pathname)

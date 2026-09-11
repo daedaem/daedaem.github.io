@@ -123,18 +123,18 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
 
 <style>
   .page {
-    padding-block: 3.5rem 5rem;
+    padding-block: var(--page-inset) 5rem;
   }
   .head h1 {
     margin: 0;
-    font-size: 30px;
+    font-size: var(--type-page-title);
     letter-spacing: -0.035em;
   }
   .lead {
     margin: 14px 0 0;
     max-width: 38rem;
     color: var(--text-muted);
-    font-size: 15.5px;
+    font-size: var(--type-body);
     line-height: 1.8;
   }
   .lead strong {
@@ -172,13 +172,13 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
 
   .tagline {
     margin: 8px 0 0;
-    font-size: 15px;
+    font-size: var(--type-body);
     color: var(--accent);
     font-weight: 500;
   }
   .what {
     margin: 12px 0 0;
-    font-size: 15px;
+    font-size: var(--type-body);
     line-height: 1.8;
     color: var(--text-muted);
     max-width: 44rem;
@@ -197,11 +197,11 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
   }
   .points strong {
     display: block;
-    font-size: 15px;
+    font-size: var(--type-body);
     margin-bottom: 4px;
   }
   .points span {
-    font-size: 14.5px;
+    font-size: var(--type-body);
     line-height: 1.8;
     color: var(--text-muted);
   }
@@ -235,6 +235,9 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
     color: var(--text-muted);
   }
   .repo {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-size);
     font-size: 14px;
     font-weight: 500;
     color: var(--accent);
@@ -248,17 +251,17 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
   }
   .team h2 {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--type-section);
     letter-spacing: -0.03em;
   }
   .team-lead {
     margin: 8px 0 0;
-    font-size: 14.5px;
+    font-size: var(--type-body);
     color: var(--text-muted);
   }
   .status {
     margin: 8px 0 0;
-    font-size: 13px;
+    font-size: var(--type-label);
     color: var(--text-dim);
   }
   .repo.private {
@@ -281,7 +284,7 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
     gap: 8px;
   }
   .badge {
-    font-size: 11.5px;
+    font-size: var(--type-caption);
     font-weight: 500;
     color: var(--accent);
     border: 1px solid var(--accent);
@@ -290,7 +293,7 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
   }
   .team-desc {
     margin: 8px 0 0;
-    font-size: 14.5px;
+    font-size: var(--type-body);
     color: var(--text-muted);
   }
   .shot {
@@ -331,7 +334,7 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
   }
   .meta dd {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--type-body);
     line-height: 1.75;
     color: var(--text-muted);
   }
@@ -343,7 +346,7 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
     margin-block: 2px;
   }
   .team-project .repo {
-    display: inline-block;
+    display: inline-flex;
     margin-top: 16px;
   }
   @media (max-width: 30rem) {

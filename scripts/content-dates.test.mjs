@@ -39,7 +39,6 @@ test('publication dates and SCSA original record are not replaced by revision da
     'null-and-empty-string-sync-failure': '2026-08-12',
     'phantom-batch-after-was-migration': '2026-08-12',
     'integer-overflow-negative-amount': '2026-08-12',
-    'staged-auth-and-password-migration': '2026-08-23',
     'disk-99-percent-check-before-expanding': '2026-09-03',
     'retire-flash-module-by-integration': '2026-09-05',
   }

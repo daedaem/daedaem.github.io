@@ -40,6 +40,7 @@ const { searchIndex = true } = Astro.props
     </main>
     <Footer />
     <script>
+      import { createCodeCopy } from '@/utils/code-copy.mjs'
       // 코드 블록마다 복사 버튼을 붙인다. 클립보드 API가 없는 환경에서는 붙이지 않는다.
       if (navigator.clipboard) {
         const check =
@@ -47,25 +48,33 @@ const { searchIndex = true } = Astro.props
         const copy =
           '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'
         for (const pre of document.querySelectorAll('pre.astro-code')) {
+          const code = pre.querySelector('code')
+          if (!code) continue
           const btn = document.createElement('button')
           btn.type = 'button'
           btn.className = 'copy-code'
           btn.setAttribute('aria-label', '코드 복사')
           btn.innerHTML = copy
-          btn.addEventListener('click', async () => {
-            const code = pre.querySelector('code')?.textContent ?? pre.textContent ?? ''
-            try {
-              await navigator.clipboard.writeText(code)
-              btn.innerHTML = check
-              btn.setAttribute('data-copied', '')
-              btn.setAttribute('aria-label', '복사됨')
-              setTimeout(() => {
-                btn.innerHTML = copy
-                btn.removeAttribute('data-copied')
-                btn.setAttribute('aria-label', '코드 복사')
-              }, 1500)
-            } catch {}
-          })
+          const feedback = document.createElement('p')
+          feedback.className = 'visually-hidden'
+          feedback.setAttribute('role', 'status')
+          feedback.setAttribute('aria-atomic', 'true')
+          feedback.setAttribute('data-pagefind-ignore', 'all')
+          pre.insertAdjacentElement('afterend', feedback)
+          const copyCode = createCodeCopy(
+            (text: string) => navigator.clipboard.writeText(text),
+            (state: string) => {
+              btn.disabled = state === 'copying'
+              btn.innerHTML = state === 'success' ? check : copy
+              btn.toggleAttribute('data-copied', state === 'success')
+              btn.setAttribute('aria-label', state === 'success' ? '복사됨' : '코드 복사')
+              feedback.className = state === 'error' ? 'code-copy-error' : 'visually-hidden'
+              feedback.textContent = state === 'error'
+                ? '복사하지 못했습니다. 코드를 직접 선택해 복사하거나 다시 시도해 주세요.'
+                : state === 'success' ? '코드를 복사했습니다.' : ''
+            },
+          )
+          btn.addEventListener('click', () => copyCode(code.textContent ?? ''))
           pre.appendChild(btn)
         }
       }

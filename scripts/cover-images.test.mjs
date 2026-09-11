@@ -15,7 +15,7 @@ test('ordinary uploads do not get invented responsive image URLs', () => {
 })
 
 test('generated article covers retain their own subject, three local sizes and bounded weight', () => {
-  assert.equal(Object.keys(assets).length, 7)
+  assert.equal(Object.keys(assets).length, 6)
   const fullHashes = new Set()
   for (const [src, asset] of Object.entries(assets)) {
     assert.match(src, /^\/uploads\/post-covers\/[a-z0-9-]+-v[1-9]\d*\.webp$/)
@@ -58,7 +58,7 @@ test('generated article covers retain their own subject, three local sizes and b
     assert.equal(thumbnail.sizes, '(max-width: 640px) 88px, 144px')
     assert.match(card.sizes, /500px$/)
   }
-  assert.equal(fullHashes.size, 7, 'each article needs its own artwork')
+  assert.equal(fullHashes.size, 6, 'each public article needs its own artwork')
 })
 
 test('cover loading preserves a prioritized hero and lazy decorative thumbnails', () => {

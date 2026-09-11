@@ -69,8 +69,8 @@ test('home summaries are separate from the actual article cause and reading orde
   assert.equal(recommended[0].data, data)
   assert.equal(recommended[0].data.cause, '원문 원인')
   assert.ok(recommended[0].causeSummary.length < 80)
-  assert.match(recommended[0].causeSummary, /Java와 SQL/)
-  assert.match(recommended[0].causeSummary, /NULL과 빈 문자열/)
+  assert.match(recommended[0].causeSummary, /SQL/)
+  assert.match(recommended[0].causeSummary, /NULL과 실제 값/)
   assert.match(recommended[0].causeSummary, /상대가 관리/)
 })
 
