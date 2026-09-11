@@ -3,20 +3,23 @@
 :root {
   color-scheme: light;
 
-  --bg: #ffffff;
-  --bg-subtle: #f2f4f6;
-  --bg-card: #fafbfc;
-  --border: #eef0f3;
-  --border-strong: #dfe3e8;
+  --bg: #fcfbf8;
+  --bg-subtle: #edf1f6;
+  --bg-card: #f5f6f7;
+  --border: #dce1e7;
+  --border-strong: #c6ced9;
 
-  --text: #191f28;
-  --text-secondary: #384452;
+  --text: #202d3d;
+  --text-secondary: #465363;
   /* 칩·탭처럼 --bg-subtle 위에 놓이는 13px 텍스트도 4.5:1을 넘겨야 한다 */
-  --text-muted: #5c6774;
-  --text-dim: #5c6774;
+  --text-muted: #5e6877;
+  --text-dim: #626e7f;
 
-  --accent: #1f5fd0;
-  --accent-hover: #1749a3;
+  --accent: #294970;
+  --accent-hover: #173859;
+  --mark-bg: #223e60;
+  --mark-ink: #fcfaf5;
+  --cover-navy: #324e6e;
 
   --code-bg: #f7f8fa;
 
@@ -37,8 +40,8 @@
   --measure: 44rem;
   /* 홈·글 목록처럼 단일 열 목록을 두는 페이지의 폭 */
   --measure-list: 52rem;
-  --measure-wide: 64rem;
-  --radius: 12px;
+  --measure-wide: 68.75rem;
+  --radius: 6px;
 
   /* 같은 역할의 UI만 공유한다. 홈 문구와 글 제목은 별도의 위계를 유지한다. */
   --type-caption: 0.8125rem;
@@ -51,12 +54,14 @@
   --page-inset: 2rem;
   --control-size: 2.75rem;
   --control-radius: 0.5rem;
+  --header-clearance: 7rem;
 }
 
 @media (max-width: 640px) {
   :root {
     --page-inset: 1.5rem;
     --type-page-title: 1.75rem;
+    --header-clearance: 7.5rem;
   }
 }
 
@@ -133,19 +138,22 @@
   :root:not([data-theme='light']) {
     color-scheme: dark;
 
-    --bg: #16181c;
-    --bg-subtle: #1d2025;
-    --bg-card: #1a1d21;
-    --border: #2a2e35;
-    --border-strong: #363b44;
+    --bg: #161c24;
+    --bg-subtle: #222e3e;
+    --bg-card: #1c2633;
+    --border: #354151;
+    --border-strong: #47566b;
 
-    --text: #e9ecef;
-    --text-secondary: #c1c8d1;
-    --text-muted: #9aa3ad;
-    --text-dim: #8a929c;
+    --text: #eff3f8;
+    --text-secondary: #ced7e4;
+    --text-muted: #b6c0d0;
+    --text-dim: #a5b1c3;
 
-    --accent: #6ea3f5;
-    --accent-hover: #8fbaff;
+    --accent: #abc5e8;
+    --accent-hover: #d2e4fc;
+    --mark-bg: #a8c1e2;
+    --mark-ink: #192b43;
+    --cover-navy: #2b415e;
 
     --code-bg: #1d2025;
 
@@ -160,19 +168,22 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bg: #16181c;
-  --bg-subtle: #1d2025;
-  --bg-card: #1a1d21;
-  --border: #2a2e35;
-  --border-strong: #363b44;
+  --bg: #161c24;
+  --bg-subtle: #222e3e;
+  --bg-card: #1c2633;
+  --border: #354151;
+  --border-strong: #47566b;
 
-  --text: #e9ecef;
-  --text-secondary: #c1c8d1;
-  --text-muted: #9aa3ad;
-  --text-dim: #8a929c;
+  --text: #eff3f8;
+  --text-secondary: #ced7e4;
+  --text-muted: #b6c0d0;
+  --text-dim: #a5b1c3;
 
-  --accent: #6ea3f5;
-  --accent-hover: #8fbaff;
+  --accent: #abc5e8;
+  --accent-hover: #d2e4fc;
+  --mark-bg: #a8c1e2;
+  --mark-ink: #192b43;
+  --cover-navy: #2b415e;
 
   --code-bg: #1d2025;
 
@@ -222,14 +233,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   /* 목차와 검색 결과의 앵커가 고정 헤더 뒤로 들어가지 않게 한다. */
-  scroll-padding-top: 6rem;
-}
-
-@media (max-width: 640px) {
-  html {
-    /* 모바일 헤더는 로고·도구와 메뉴의 두 줄이다. */
-    scroll-padding-top: 7.5rem;
-  }
+  scroll-padding-top: var(--header-clearance);
 }
 
 /* 목록의 grid/flex 스타일이 페이지네이션·필터의 숨김 상태를 덮어쓰지 않게 한다. */
@@ -451,7 +455,13 @@ th {
 .wrap-wide {
   max-width: var(--measure-wide);
   margin-inline: auto;
-  padding-inline: 32px;
+  padding-inline: 40px;
+}
+
+@media (max-width: 640px) {
+  .wrap-wide {
+    padding-inline: 20px;
+  }
 }
 
 .muted {

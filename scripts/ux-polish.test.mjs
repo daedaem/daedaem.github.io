@@ -76,15 +76,18 @@ test('home summaries are separate from the actual article cause and reading orde
 
 test('card and row links contain only titles while CSS preserves the whole click and focus target', () => {
   const home = source('src/pages/index.astro')
-  assert.match(home, /<h3>\s*<a href=\{`\/posts\/\$\{post\.id\}\/`\}>\{post\.data\.title\}<\/a>\s*<\/h3>/)
-  assert.equal((home.match(/<h3 class="strip-title"><a href=/g) ?? []).length, 3)
-  assert.match(home, /\.card a:focus-visible::after/)
-  assert.match(home, /\.strip a:focus-visible::after/)
+  assert.match(home, /<h2>\s*<a href=\{`\/posts\/\$\{post\.id\}\/`\}>/)
+  assert.match(home, /heading\.main \+ heading\.separator/)
+  assert.match(home, /heading\.subtitle && <span class="subtitle">\{heading\.subtitle\}<\/span>/)
+  assert.match(home, /\.editorial-card a:focus-visible::after/)
+  assert.match(home, /\.wiki-list a:focus-visible::after/)
+  assert.match(home, /<nav class="archive-links" aria-label="학습 기록">/)
   const row = source('src/components/PostRow.astro')
   assert.match(row, /<a class="title" href=\{href\}>\{title\}<\/a>/)
   assert.doesNotMatch(row, /aria-labelledby/)
   assert.match(row, /\.title:focus-visible::after/)
-  assert.match(home, /post\.causeSummary \?\? post\.data\.cause/)
+  assert.doesNotMatch(home, /post\.(causeSummary|data\.cause)/)
+  assert.match(source('src/components/PostCover.astro'), /aria-hidden="true"/)
 })
 
 test('global motion preference and header targets remain explicit', () => {

@@ -1,16 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <style>
-    .m { stroke: #191f28; fill: none; }
-    .d { fill: #1f5fd0; }
-    @media (prefers-color-scheme: dark) {
-      .m { stroke: #e9ecef; }
-      .d { fill: #6ea3f5; }
-    }
-  </style>
-  <rect width="32" height="32" rx="7" fill="#ffffff" fill-opacity="0"/>
-  <g class="m" stroke-width="3" stroke-linecap="round">
-    <path d="M6 9h12M6 16h9M6 23h6"/>
-    <path d="M24 5v18"/>
-  </g>
-  <circle class="d" cx="24" cy="26.6" r="2.6"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 34 34">
+  <rect width="34" height="34" rx="9" fill="#223e60" />
+  <path d="M14.7 8v12.8a4.7 4.7 0 1 1-4.7-4.7h4.7M27 8v12.8a4.7 4.7 0 1 1-4.7-4.7H27" fill="none" stroke="#fcfaf5" stroke-width="2.8" stroke-linejoin="round" />
 </svg>

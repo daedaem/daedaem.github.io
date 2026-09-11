@@ -1,0 +1,353 @@
+---
+interface Props {
+  kind: string
+  lead?: boolean
+}
+const { kind, lead = false } = Astro.props
+---
+
+<!-- 장식용 표지. 링크의 접근 가능한 이름은 카드의 실제 글 제목만 사용한다. -->
+<div
+  class:list={['cover', `cover-${kind}`, { 'cover-lead': lead }]}
+  aria-hidden="true"
+  data-pagefind-ignore
+>
+  {
+    kind === 'null' && (
+      <>
+        <div class="cover-top">
+          <>
+            <span>DATA INTEGRITY</span>
+            <span>01 / FIELD NOTES</span>
+          </>
+        </div>
+        <div class="specimen specimen-before">
+          <>
+            <span>INPUT / BEFORE</span>
+            <strong>null</strong>
+          </>
+        </div>
+        <div class="specimen specimen-after">
+          <>
+            <span>INPUT / AFTER</span>
+            <strong>“A”</strong>
+          </>
+        </div>
+        <div class="comparison">
+          <>
+            <div>
+              TRUE<small>Java · 변경 감지</small>
+            </div>
+            <span class="versus">/</span>
+            <div>
+              UNKNOWN<small>SQL · 비교 결과</small>
+            </div>
+          </>
+        </div>
+        <p class="null-caption">같은 입력, 다른 판정.</p>
+      </>
+    )
+  }
+  {
+    kind === 'query' && (
+      <>
+        <div class="cover-top">
+          <>
+            <span>QUERY &amp; OWNERSHIP</span>
+            <span>02 / FIELD NOTES</span>
+          </>
+        </div>
+        <div class="query-lines">
+          <>
+            <span>address</span>
+            <span>address</span>
+            <span>address</span>
+            <span>address</span>
+          </>
+        </div>
+        <div class="query-card">
+          <>
+            <span>SEARCH CONDITION</span>
+            <strong>%</strong>
+            <code>LIKE '%keyword%'</code>
+          </>
+        </div>
+        <p class="query-caption">
+          쿼리를 고친 뒤,
+          <br />
+          다시 선택한 조회 방식.
+        </p>
+      </>
+    )
+  }
+  {
+    kind === 'legacy' && (
+      <>
+        <div class="cover-top">
+          <>
+            <span>LEGACY &amp; INTEGRATION</span>
+            <span>03 / FIELD NOTES</span>
+          </>
+        </div>
+        <div class="old-module">
+          <>
+            <span>REBUILD?</span>
+            <strong>Flash</strong>
+            <span>END OF SUPPORT</span>
+          </>
+        </div>
+        <div class="new-route">
+          <>
+            <span>RECONNECT.</span>
+            <div>
+              <>
+                <span>요청</span>
+                <span>⟶</span>
+                <span>연동</span>
+              </>
+            </div>
+          </>
+        </div>
+        <p class="legacy-caption">
+          다시 만드는 대신,
+          <>
+            <br />
+            <strong>덜어내는 선택.</strong>
+          </>
+        </p>
+      </>
+    )
+  }
+</div>
+
+<style>
+  .cover {
+    position: relative;
+    aspect-ratio: 1.48;
+    overflow: hidden;
+    border-radius: 4px;
+    container-type: inline-size;
+    font-family: var(--font-cover, var(--font-sans));
+  }
+  .cover-lead {
+    aspect-ratio: 1.26;
+  }
+  .cover-top {
+    position: absolute;
+    z-index: 2;
+    top: 6.5%;
+    inset-inline: 6.5%;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .cover-null {
+    background: var(--cover-navy);
+    color: #fcfaf5;
+  }
+  .specimen {
+    position: absolute;
+    height: 42%;
+    padding: 4%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 12px 30px #122d4833;
+    color: #233d5a;
+  }
+  .specimen-before {
+    top: 22%;
+    left: 6%;
+    width: 46%;
+    background: #dce6f1;
+    transform: rotate(-6deg);
+  }
+  .specimen-after {
+    top: 25%;
+    left: 50%;
+    width: 44%;
+    background: #fef8e9;
+    transform: rotate(6deg);
+  }
+  .specimen > span {
+    font-size: 11px;
+  }
+  .specimen strong {
+    font-size: 16cqi;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -3px;
+  }
+  .comparison {
+    position: absolute;
+    bottom: 11%;
+    inset-inline: 9%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    font-size: 5cqi;
+    line-height: 1.15;
+    letter-spacing: -0.4px;
+  }
+  .comparison small {
+    display: block;
+    margin-top: 5px;
+    font: 500 11px/1.5 var(--font-sans);
+    letter-spacing: 0;
+  }
+  .versus {
+    opacity: 0.55;
+    font-size: 26px;
+  }
+  .null-caption {
+    position: absolute;
+    bottom: 3%;
+    left: 9%;
+    margin: 0;
+    font: clamp(11px, 2.7cqi, 13px)/1.5 var(--font-sans);
+  }
+  .cover-query {
+    background: #f2c9a8;
+    color: #543329;
+  }
+  .query-lines {
+    position: absolute;
+    top: 18%;
+    left: 9%;
+    transform: rotate(-6deg);
+    color: #b0694966;
+    font-size: 10cqi;
+    letter-spacing: -3px;
+    line-height: 1.05;
+    display: flex;
+    flex-direction: column;
+  }
+  .query-card {
+    position: absolute;
+    top: 20%;
+    left: 32%;
+    width: 52%;
+    height: 66%;
+    padding: 5%;
+    transform: rotate(8deg);
+    background: #fff7e7;
+    color: #753c2f;
+    border-top: 7px solid #c06b49;
+    box-shadow: 0 10px 20px #ab67312b;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+  .query-card > span {
+    font-size: 11px;
+  }
+  .query-card strong {
+    font-size: 21cqi;
+    line-height: 0.85;
+    font-weight: 500;
+    letter-spacing: -4px;
+  }
+  .query-card code {
+    font-size: clamp(11px, 3cqi, 14px);
+    background: none;
+    color: inherit;
+    padding: 0;
+    white-space: nowrap;
+  }
+  .query-caption {
+    position: absolute;
+    bottom: 7%;
+    left: 6.5%;
+    margin: 0;
+    font: 650 clamp(12px, 3.4cqi, 17px)/1.5 var(--font-sans);
+    letter-spacing: -0.5px;
+  }
+  .cover-legacy {
+    background: #30343d;
+    color: #f3f0dc;
+  }
+  .old-module {
+    position: absolute;
+    top: 20%;
+    left: 8%;
+    width: 43%;
+    height: 43%;
+    transform: rotate(-7deg);
+    border: 1px solid #9a9b9277;
+    background: #3a3f49;
+    padding: 4%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #c0c0b9;
+  }
+  .old-module > span {
+    font-size: 11px;
+  }
+  .old-module strong {
+    font-size: 10cqi;
+    line-height: 1;
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+    font-weight: 400;
+  }
+  .new-route {
+    position: absolute;
+    top: 38%;
+    left: 39%;
+    width: 53%;
+    height: 34%;
+    transform: rotate(6deg);
+    background: #e4e8b9;
+    color: #373d22;
+    padding: 4%;
+    box-shadow: 0 12px 20px #080d2426;
+  }
+  .new-route > span {
+    font-size: 11px;
+  }
+  .new-route > div {
+    display: flex;
+    align-items: center;
+    gap: 8%;
+    margin-top: 9%;
+    font: 600 5cqi/1.2 var(--font-sans);
+  }
+  .legacy-caption {
+    position: absolute;
+    bottom: 6%;
+    left: 6.5%;
+    margin: 0;
+    font: 400 clamp(12px, 3.4cqi, 17px)/1.5 var(--font-sans);
+  }
+  .legacy-caption strong {
+    color: #e4e8b9;
+    font-weight: 650;
+  }
+  @container (max-width: 380px) {
+    .cover-top span:last-child {
+      display: none;
+    }
+  }
+  @media (max-width: 640px) {
+    .cover-lead {
+      aspect-ratio: 1.45;
+    }
+    .specimen strong {
+      font-size: 17cqi;
+    }
+  }
+  @media (forced-colors: active) {
+    .cover,
+    .specimen,
+    .query-card,
+    .old-module,
+    .new-route {
+      border: 1px solid CanvasText;
+    }
+  }
+</style>

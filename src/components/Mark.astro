@@ -1,9 +1,6 @@
 ---
-/**
- * 사이트 마크. 겹겹이 쌓인 층(화면·서비스·DB)을 왼쪽에 두고, 오른쪽의 선이
- * 그 층들을 지나 바닥의 점에 닿는다. "증상에서 원인까지 내려간다"는 뜻이다.
- * 헤더 로고, 파비콘(public/favicon.svg), 글의 "원인 한 줄" 블록에서 같은 형태로 반복된다.
- */
+import { MONOGRAM_PATH } from '@/utils/brand.mjs'
+/** 사용자 승인 네이비 시안의 dd 모노그램. 이름·별명은 그대로 유지한다. */
 interface Props {
   size?: number
   class?: string
@@ -15,14 +12,12 @@ const { size = 18, class: cls } = Astro.props
   class={cls}
   width={size}
   height={size}
-  viewBox="0 0 24 24"
+  viewBox="0 0 34 34"
   fill="none"
-  stroke="currentColor"
-  stroke-width="2.4"
-  stroke-linecap="round"
   aria-hidden="true"
+  focusable="false"
 >
-  <path d="M4 6h9M4 12h7M4 18h5"></path>
-  <path d="M18 3v14"></path>
-  <circle cx="18" cy="20.2" r="1.9" fill="currentColor" stroke="none"></circle>
+  <rect width="34" height="34" rx="9" fill="var(--mark-bg)"></rect>
+  <path d={MONOGRAM_PATH} stroke="var(--mark-ink)" stroke-width="2.8" stroke-linejoin="round"
+  ></path>
 </svg>

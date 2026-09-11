@@ -12,7 +12,7 @@ const active = activeNavigation(path)
 <header>
   <div class="wrap-wide bar">
     <a href="/" class="brand">
-      <Mark size={22} class="brand-mark" />
+      <Mark size={34} class="brand-mark" />
       {SITE.title}
     </a>
     <div class="right">
@@ -50,8 +50,8 @@ const active = activeNavigation(path)
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px 24px;
-    min-height: 64px;
+    gap: 12px 28px;
+    min-height: 94px;
     flex-wrap: wrap;
   }
 
@@ -59,10 +59,10 @@ const active = activeNavigation(path)
     display: inline-flex;
     align-items: center;
     min-height: var(--control-size);
-    gap: 8px;
-    font-size: 17px;
-    font-weight: 700;
-    letter-spacing: -0.03em;
+    gap: 10px;
+    font-size: 1.4375rem;
+    font-weight: 800;
+    letter-spacing: -0.05em;
     white-space: nowrap;
   }
   .brand :global(.brand-mark) {
@@ -72,20 +72,20 @@ const active = activeNavigation(path)
   .right {
     display: flex;
     align-items: center;
-    gap: 22px;
+    gap: 24px;
     flex-wrap: wrap;
   }
 
   .tools {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 0;
   }
 
   nav ul {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px 8px;
+    gap: 6px 18px;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -93,13 +93,14 @@ const active = activeNavigation(path)
   }
 
   nav a {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-height: var(--control-size);
     min-width: var(--control-size);
     padding-inline: 6px;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     white-space: nowrap;
   }
 
@@ -109,7 +110,26 @@ const active = activeNavigation(path)
 
   nav a[aria-current='page'] {
     color: var(--text);
-    font-weight: 500;
+    font-weight: 600;
+  }
+  nav a[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    bottom: 1px;
+    inset-inline: 6px;
+    height: 2px;
+    background: var(--accent);
+  }
+  .tools :global(#search-open),
+  .tools :global(#theme-toggle) {
+    background: transparent;
+    border-color: transparent;
+    width: var(--control-size);
+    padding-inline: 0;
+  }
+  .tools :global(#search-open span),
+  .tools :global(#search-open kbd) {
+    display: none;
   }
 
   /* 좁은 화면: 첫 줄에 로고와 검색·테마 버튼, 둘째 줄에 가로로 넘기는 메뉴. 두 줄로 끝낸다. */
@@ -119,7 +139,7 @@ const active = activeNavigation(path)
       grid-template-columns: 1fr auto;
       row-gap: 4px;
       min-height: 0;
-      padding-block: 10px 8px;
+      padding-block: 14px 4px;
     }
     .right {
       display: contents;
@@ -133,14 +153,15 @@ const active = activeNavigation(path)
       grid-row: 2;
       overflow-x: auto;
       scrollbar-width: none;
-      margin-inline: -24px;
-      padding-inline: 24px;
+      margin-inline: 0;
+      padding-inline: 0;
     }
     nav::-webkit-scrollbar {
       display: none;
     }
     nav ul {
       flex-wrap: nowrap;
+      justify-content: space-between;
       gap: 8px;
     }
   }
