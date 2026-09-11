@@ -6,6 +6,7 @@ updated: 2026-09-05
 happened: '2024년 하반기'
 cause: '내렸다고 알고 있던 옛 WAS 프로세스가 정상 종료되지 않은 채 살아서 배치를 계속 돌리고 있었다. 종료 명령과 실제 종료는 별개였다.'
 category: 'operations'
+coverImage: '/uploads/post-covers/phantom-batch-after-was-migration-v1.webp'
 tags: ['WAS', '배치', 'Oracle', '트리거', '장애대응']
 draft: false
 ---

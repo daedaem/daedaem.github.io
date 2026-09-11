@@ -6,6 +6,7 @@ updated: 2026-09-05
 happened: '2026년 3월'
 cause: 'Oracle 데이터파일은 크기를 미리 잡아 두고 안을 채워 나가는 구조라, OS가 보는 사용률과 DB가 실제로 쓰는 양이 다르다. 알람은 전자를 보고 울린다.'
 category: 'operations'
+coverImage: '/uploads/post-covers/disk-99-percent-check-before-expanding-v1.webp'
 tags: ['Oracle', '테이블스페이스', '운영', '모니터링']
 draft: false
 ---

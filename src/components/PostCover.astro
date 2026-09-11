@@ -1,15 +1,23 @@
 ---
+import { getCoverImageAttributes } from '@/utils/cover-images.mjs'
+
 interface Props {
   kind: string
   src?: string
   lead?: boolean
+  thumbnail?: boolean
 }
-const { kind, src, lead = false } = Astro.props
+const { kind, src, lead = false, thumbnail = false } = Astro.props
+const imageAttributes =
+  kind === 'image' && src ? getCoverImageAttributes(src, thumbnail) : undefined
 ---
 
 <!-- 장식용 표지. 링크의 접근 가능한 이름은 카드의 실제 글 제목만 사용한다. -->
 <div
   class:list={['cover', `cover-${kind}`, { 'cover-lead': lead }]}
+  style={imageAttributes
+    ? `aspect-ratio: ${imageAttributes.width} / ${imageAttributes.height}`
+    : undefined}
   aria-hidden="true"
   data-pagefind-ignore
 >
@@ -18,9 +26,9 @@ const { kind, src, lead = false } = Astro.props
       <img
         src={src}
         alt=""
-        width="1480"
-        height="1000"
+        {...imageAttributes}
         loading={lead ? 'eager' : 'lazy'}
+        fetchpriority={lead ? 'high' : undefined}
         decoding="async"
       />
     )

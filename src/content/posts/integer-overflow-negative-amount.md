@@ -6,6 +6,7 @@ updated: 2026-09-05
 happened: '2025년 7월 – 10월'
 cause: 'DB 값은 정상이었지만 VO의 int 필드에는 음수가 있었고, 타입을 넓히자 정상화됐다. JDBC 변환과 매핑 이후 연산 중 정확한 발생 지점은 확정하지 않았다.'
 category: 'legacy'
+coverImage: '/uploads/post-covers/integer-overflow-negative-amount-v1.webp'
 tags: ['Java', 'MyBatis', 'VO', '오버플로', 'BigDecimal', '마이그레이션']
 draft: false
 ---

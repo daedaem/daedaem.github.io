@@ -18,7 +18,11 @@ test('approved articles own their covers rather than borrowing a home position',
     HOME_READING_PICKS.map(({ id }) => {
       const raw = source(`src/content/posts/${id}.md`)
       const data = load(raw.match(/^---\n([\s\S]*?)\n---/)[1])
-      return resolvePostCover(data)?.kind
+      assert.deepEqual(
+        resolvePostCover(data),
+        data.coverImage ? { kind: 'image', src: data.coverImage } : { kind: data.cover },
+      )
+      return data.cover
     }),
     ['null', 'query', 'legacy'],
   )

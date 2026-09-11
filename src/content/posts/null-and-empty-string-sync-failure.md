@@ -6,6 +6,7 @@ updated: 2026-09-06
 happened: '2025년 1월 – 3월'
 cause: '변경 여부를 판정하는 비교가 Java와 SQL 두 곳에 있었고, null과 빈 문자열이 끼면 둘이 다른 답을 냈다. 그와 별개로, 상대 시스템이 주인인 항목까지 우리 쪽 변경 감지에 들어가 있어 값이 계속 다르게 비교되는 경로가 하나 더 있었다.'
 category: 'data-integrity'
+coverImage: '/uploads/post-covers/null-and-empty-string-sync-failure-v1.webp'
 cover: 'null'
 tags: ['Oracle', 'NULL', 'Java', '인터페이스', '디버깅']
 draft: false

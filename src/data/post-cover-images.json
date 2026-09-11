@@ -1,0 +1,149 @@
+{
+  "/uploads/post-covers/null-and-empty-string-sync-failure-v1.webp": {
+    "width": 1440,
+    "height": 960,
+    "variants": [
+      {
+        "src": "/uploads/post-covers/null-and-empty-string-sync-failure-v1-320.webp",
+        "width": 320,
+        "height": 213
+      },
+      {
+        "src": "/uploads/post-covers/null-and-empty-string-sync-failure-v1-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/uploads/post-covers/null-and-empty-string-sync-failure-v1.webp",
+        "width": 1440,
+        "height": 960
+      }
+    ]
+  },
+  "/uploads/post-covers/address-search-9s-to-100ms-v1.webp": {
+    "width": 1440,
+    "height": 960,
+    "variants": [
+      {
+        "src": "/uploads/post-covers/address-search-9s-to-100ms-v1-320.webp",
+        "width": 320,
+        "height": 213
+      },
+      {
+        "src": "/uploads/post-covers/address-search-9s-to-100ms-v1-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/uploads/post-covers/address-search-9s-to-100ms-v1.webp",
+        "width": 1440,
+        "height": 960
+      }
+    ]
+  },
+  "/uploads/post-covers/retire-flash-module-by-integration-v1.webp": {
+    "width": 1440,
+    "height": 960,
+    "variants": [
+      {
+        "src": "/uploads/post-covers/retire-flash-module-by-integration-v1-320.webp",
+        "width": 320,
+        "height": 213
+      },
+      {
+        "src": "/uploads/post-covers/retire-flash-module-by-integration-v1-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/uploads/post-covers/retire-flash-module-by-integration-v1.webp",
+        "width": 1440,
+        "height": 960
+      }
+    ]
+  },
+  "/uploads/post-covers/disk-99-percent-check-before-expanding-v1.webp": {
+    "width": 1440,
+    "height": 960,
+    "variants": [
+      {
+        "src": "/uploads/post-covers/disk-99-percent-check-before-expanding-v1-320.webp",
+        "width": 320,
+        "height": 213
+      },
+      {
+        "src": "/uploads/post-covers/disk-99-percent-check-before-expanding-v1-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/uploads/post-covers/disk-99-percent-check-before-expanding-v1.webp",
+        "width": 1440,
+        "height": 960
+      }
+    ]
+  },
+  "/uploads/post-covers/staged-auth-and-password-migration-v1.webp": {
+    "width": 1440,
+    "height": 960,
+    "variants": [
+      {
+        "src": "/uploads/post-covers/staged-auth-and-password-migration-v1-320.webp",
+        "width": 320,
+        "height": 213
+      },
+      {
+        "src": "/uploads/post-covers/staged-auth-and-password-migration-v1-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/uploads/post-covers/staged-auth-and-password-migration-v1.webp",
+        "width": 1440,
+        "height": 960
+      }
+    ]
+  },
+  "/uploads/post-covers/integer-overflow-negative-amount-v1.webp": {
+    "width": 1440,
+    "height": 960,
+    "variants": [
+      {
+        "src": "/uploads/post-covers/integer-overflow-negative-amount-v1-320.webp",
+        "width": 320,
+        "height": 213
+      },
+      {
+        "src": "/uploads/post-covers/integer-overflow-negative-amount-v1-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/uploads/post-covers/integer-overflow-negative-amount-v1.webp",
+        "width": 1440,
+        "height": 960
+      }
+    ]
+  },
+  "/uploads/post-covers/phantom-batch-after-was-migration-v1.webp": {
+    "width": 1440,
+    "height": 960,
+    "variants": [
+      {
+        "src": "/uploads/post-covers/phantom-batch-after-was-migration-v1-320.webp",
+        "width": 320,
+        "height": 213
+      },
+      {
+        "src": "/uploads/post-covers/phantom-batch-after-was-migration-v1-768.webp",
+        "width": 768,
+        "height": 512
+      },
+      {
+        "src": "/uploads/post-covers/phantom-batch-after-was-migration-v1.webp",
+        "width": 1440,
+        "height": 960
+      }
+    ]
+  }
+}

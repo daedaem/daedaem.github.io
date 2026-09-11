@@ -6,6 +6,7 @@ updated: 2026-09-06
 happened: '2026년 6월 – 8월'
 cause: 'ID와 비밀번호만 맞으면 세션에 권한까지 실리는 구조여서, 여기에 2차 인증을 화면 흐름으로만 끼워 넣으면 URL을 직접 쳐서 건너뛸 수 있다. 서버 상태로 막아야 했다.'
 category: 'auth-security'
+coverImage: '/uploads/post-covers/staged-auth-and-password-migration-v1.webp'
 tags: ['인증', '비밀번호', 'salt', '해시', '마이그레이션']
 draft: false
 featured: true
