@@ -1,6 +1,6 @@
 # 사례 글 표지 이미지 제작 기록
 
-2026-09-11. 사용자의 이미지 생성 요청으로 공개 사례 7편의 주제를 읽고 만든 개념 표지다. 내장 이미지 생성 도구(`image_gen`)를 사용했으며, 이미지별 한 번씩 총 7회 생성했다. 재생성·변형 후보·외부 이미지 검색은 사용하지 않았다.
+2026-09-11. 사용자의 이미지 생성 요청으로 공개 사례 7편의 주제를 읽고 만든 초기 v1 개념 표지 기록이다. 내장 이미지 생성 도구(`image_gen`)를 사용했으며, 최초 작업에서는 이미지별 한 번씩 총 7회 생성했다. 그 후 사용자 검토를 거쳐 NULL·주소·배치 세 표지를 보완했다. 현재 사용하는 v2 파일·의미·편집 프롬프트는 [후속 제작 기록](./post-cover-art-v2.md)을 먼저 확인한다. 아래 v1 파일과 프롬프트는 제작 이력으로 보존한다.
 
 ## 사용 범위
 
@@ -23,7 +23,7 @@
 - [값의 범위에 맞춰 int에서 long으로 확대](../public/uploads/post-covers/integer-overflow-negative-amount-v1.webp) — `public/uploads/post-covers/integer-overflow-negative-amount-v1.webp`
 - [갱신 흔적에서 살아 있는 프로세스를 추적](../public/uploads/post-covers/phantom-batch-after-was-migration-v1.webp) — `public/uploads/post-covers/phantom-batch-after-was-migration-v1.webp`
 
-## 최종 프롬프트 전문
+## 초기 v1 프롬프트 전문
 
 아래는 각 생성 요청에 실제로 사용한 문구다. 이미지의 구성과 안전 여백은 출력 후 별도로 검토했으며, 프롬프트에 적힌 모든 세부 조건의 달성을 보장하는 기록은 아니다. 원본을 시각적으로 확인하고 생성 표지는 원본 비율로 유지했다. 실제 브라우저의 88px 렌더링 검수는 이번 생성 기록에 포함하지 않는다.
 

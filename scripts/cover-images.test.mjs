@@ -18,17 +18,22 @@ test('generated article covers retain their own subject, three local sizes and b
   assert.equal(Object.keys(assets).length, 7)
   const fullHashes = new Set()
   for (const [src, asset] of Object.entries(assets)) {
-    assert.match(src, /^\/uploads\/post-covers\/[a-z0-9-]+-v1\.webp$/)
+    assert.match(src, /^\/uploads\/post-covers\/[a-z0-9-]+-v[1-9]\d*\.webp$/)
     const slug = src
       .split('/')
       .at(-1)
-      .replace(/-v1\.webp$/, '')
+      .replace(/-v[1-9]\d*\.webp$/, '')
     const post = load(source(`src/content/posts/${slug}.md`).match(/^---\n([\s\S]*?)\n---/)[1])
     assert.equal(post.draft, false)
     assert.equal(post.coverImage, src)
     assert.deepEqual(
       asset.variants.map((v) => v.width),
       [320, 768, 1440],
+    )
+    assert.deepEqual(
+      asset.variants.map((v) => v.src),
+      [src.replace(/\.webp$/, '-320.webp'), src.replace(/\.webp$/, '-768.webp'), src],
+      'all sizes must use the same article and artwork revision',
     )
     assert.equal(asset.width, 1440)
     assert.ok(asset.height >= 900 && asset.height <= 1024)

@@ -6,7 +6,7 @@ updated: 2026-09-06
 happened: '2026년 5월 – 6월'
 cause: '선행 와일드카드 때문에 일반적인 B-tree 인덱스의 범위 스캔을 활용하기 어려웠다. 그와 별개로, 관리할 이유가 없는 주소 데이터를 직접 들고 있어 데이터가 낡는 문제가 남아 있었다.'
 category: 'performance'
-coverImage: '/uploads/post-covers/address-search-9s-to-100ms-v1.webp'
+coverImage: '/uploads/post-covers/address-search-9s-to-100ms-v2.webp'
 cover: 'query'
 featured: true
 tags: ['Oracle', '인덱스', '실행계획', 'API', '폴백']

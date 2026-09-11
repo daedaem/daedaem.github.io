@@ -1,41 +1,41 @@
 {
-  "/uploads/post-covers/null-and-empty-string-sync-failure-v1.webp": {
+  "/uploads/post-covers/null-and-empty-string-sync-failure-v2.webp": {
     "width": 1440,
     "height": 960,
     "variants": [
       {
-        "src": "/uploads/post-covers/null-and-empty-string-sync-failure-v1-320.webp",
+        "src": "/uploads/post-covers/null-and-empty-string-sync-failure-v2-320.webp",
         "width": 320,
         "height": 213
       },
       {
-        "src": "/uploads/post-covers/null-and-empty-string-sync-failure-v1-768.webp",
+        "src": "/uploads/post-covers/null-and-empty-string-sync-failure-v2-768.webp",
         "width": 768,
         "height": 512
       },
       {
-        "src": "/uploads/post-covers/null-and-empty-string-sync-failure-v1.webp",
+        "src": "/uploads/post-covers/null-and-empty-string-sync-failure-v2.webp",
         "width": 1440,
         "height": 960
       }
     ]
   },
-  "/uploads/post-covers/address-search-9s-to-100ms-v1.webp": {
+  "/uploads/post-covers/address-search-9s-to-100ms-v2.webp": {
     "width": 1440,
     "height": 960,
     "variants": [
       {
-        "src": "/uploads/post-covers/address-search-9s-to-100ms-v1-320.webp",
+        "src": "/uploads/post-covers/address-search-9s-to-100ms-v2-320.webp",
         "width": 320,
         "height": 213
       },
       {
-        "src": "/uploads/post-covers/address-search-9s-to-100ms-v1-768.webp",
+        "src": "/uploads/post-covers/address-search-9s-to-100ms-v2-768.webp",
         "width": 768,
         "height": 512
       },
       {
-        "src": "/uploads/post-covers/address-search-9s-to-100ms-v1.webp",
+        "src": "/uploads/post-covers/address-search-9s-to-100ms-v2.webp",
         "width": 1440,
         "height": 960
       }
@@ -125,22 +125,22 @@
       }
     ]
   },
-  "/uploads/post-covers/phantom-batch-after-was-migration-v1.webp": {
+  "/uploads/post-covers/phantom-batch-after-was-migration-v2.webp": {
     "width": 1440,
     "height": 960,
     "variants": [
       {
-        "src": "/uploads/post-covers/phantom-batch-after-was-migration-v1-320.webp",
+        "src": "/uploads/post-covers/phantom-batch-after-was-migration-v2-320.webp",
         "width": 320,
         "height": 213
       },
       {
-        "src": "/uploads/post-covers/phantom-batch-after-was-migration-v1-768.webp",
+        "src": "/uploads/post-covers/phantom-batch-after-was-migration-v2-768.webp",
         "width": 768,
         "height": 512
       },
       {
-        "src": "/uploads/post-covers/phantom-batch-after-was-migration-v1.webp",
+        "src": "/uploads/post-covers/phantom-batch-after-was-migration-v2.webp",
         "width": 1440,
         "height": 960
       }
