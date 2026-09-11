@@ -11,9 +11,6 @@ export default defineConfig({
   site: SITE.url,
   // 기존 본문의 인라인 공백과 remark/rehype 보정 규칙을 유지한다.
   compressHTML: true,
-  // First-time readers should not wait for several small layout CSS requests.
-  // Font binaries stay external and cacheable; declarations are inlined in BaseHead.
-  build: { inlineStylesheets: 'always' },
   integrations: [
     mdx(),
     sitemap({ filter: (page) => !new URL(page).pathname.startsWith('/admin/') }),
