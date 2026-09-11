@@ -41,7 +41,7 @@ test('category enhancement opens desktop, preserves mobile native disclosure and
 
 test('enlarged home illustration is explicit while ordinary reading thumbnails retain established sizes', () => {
   const home = source('src/pages/index.astro')
-  assert.match(home, /\.lead-card:not\(\.without-cover\)\s*\{[^}]*40%/)
+  assert.match(home, /\.lead-card:not\(\.without-cover\)\s*\{[^}]*50%/)
   assert.match(home, /sizes=\{\s*index === 0/)
   const row = source('src/components/PostRow.astro')
   assert.match(row, /\.reading\.with-cover \.row-content\s*\{[^}]*9rem;/)

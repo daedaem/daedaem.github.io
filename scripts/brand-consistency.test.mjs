@@ -20,10 +20,10 @@ test('home identity and social preview share one short title and one motto', () 
   assert.equal([...home.matchAll(/<h1(?:\s|>)/g)].length, 1)
   assert.match(home, /<h2 id="recommended-title">먼저 읽을 글<\/h2>/)
   assert.match(home, /<h3 class="card-title">/)
-  assert.match(home, /\.byline h1\s*\{[^}]*font-size:\s*1\.5rem;[^}]*font-weight:\s*700;/)
+  assert.match(home, /\.byline h1\s*\{[^}]*font-size:\s*1\.875rem;[^}]*font-weight:\s*700;/)
   assert.match(
     home.split('@media (max-width: 640px)')[1],
-    /\.byline h1\s*\{[^}]*font-size:\s*1\.375rem;/,
+    /\.byline h1\s*\{[^}]*font-size:\s*1\.625rem;/,
   )
   assert.match(og, /title: SITE\.identityTitle/)
   assert.match(og, /identityTitle: SITE\.identityTitle/)
