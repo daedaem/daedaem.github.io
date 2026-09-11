@@ -13,8 +13,23 @@ export function contrastRatio(first, second) {
   return (values[0] + 0.05) / (values[1] + 0.05)
 }
 
+// Only the plain :root is the light palette; a dark fallback must not hide its removal.
+export function lightCodeBackground(css) {
+  const root = css.match(/:root\s*\{([^{}]*)\}/)?.[1]
+  const background = root?.match(/--code-bg:\s*(#[\da-f]{6}|#[\da-f]{3})(?=\s*;)/i)?.[1]
+  if (!background) throw new Error('Missing a valid light --code-bg token in :root')
+  return background
+}
+
 export function checkRenderedCodeContrast(html, lightBackground) {
   const errors = new Set()
+  if (typeof lightBackground !== 'string' || !/^#(?:[\da-f]{6}|[\da-f]{3})$/i.test(lightBackground))
+    return ['Missing a valid light code background; contrast checks cannot be skipped']
+
+  // Generated reading pages contain one article. The shared .post class is also
+  // used by wiki pages, so only the explicit attribute can select forced dark.
+  const article = html.match(/<article\b[^>]*>/i)?.[0] ?? ''
+  const darkOnly = /\sdata-code-theme=(['"])dark\1/i.test(article)
   const color = (style, property) =>
     style.match(
       new RegExp(`(?:^|;)\\s*${property}:\\s*(#[\\da-f]{6}|#[\\da-f]{3})(?=;|$)`, 'i'),
@@ -24,11 +39,16 @@ export function checkRenderedCodeContrast(html, lightBackground) {
   )) {
     const styles = [...block[0].matchAll(/\bstyle="([^"]*)"/g)].map((m) => m[1])
     const darkBackground = color(styles[0] ?? '', '--shiki-dark-bg')
+    if (darkOnly && (!darkBackground || !color(styles[0] ?? '', '--shiki-dark'))) {
+      errors.add('Forced-dark code is missing --shiki-dark or --shiki-dark-bg on pre')
+      continue
+    }
     for (const style of styles) {
       for (const [theme, foreground, background] of [
         ['light', color(style, 'color'), color(style, 'background-color') ?? lightBackground],
         ['dark', color(style, '--shiki-dark'), color(style, '--shiki-dark-bg') ?? darkBackground],
       ]) {
+        if (darkOnly && theme === 'light') continue
         // pre의 라이트 배경만 전역 --code-bg가 Shiki의 인라인 색을 덮어쓴다.
         const surface = theme === 'light' && style === styles[0] ? lightBackground : background
         if (!foreground || !surface) continue

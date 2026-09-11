@@ -68,7 +68,10 @@ const heading = splitEditorialTitle(title)
   updatedAt={updated}
   ogSlug={ogSlug}
 >
-  <article class:list={['wrap', 'post', { 'with-toc': toc.length > 2, 'is-archived': archived }]}>
+  <article
+    class:list={['wrap', 'post', { 'with-toc': toc.length > 2, 'is-archived': archived }]}
+    data-code-theme={archived ? 'auto' : 'dark'}
+  >
     <header>
       {
         !archived && (
@@ -609,23 +612,23 @@ const heading = splitEditorialTitle(title)
   }
 
   /* 사례 글은 시안의 짙은 코드 면을 사용한다. Shiki의 검증된 다크 토큰을 그대로 재사용한다. */
-  .post:not(.is-archived) .body :global(pre.astro-code),
-  .post:not(.is-archived) .body :global(pre.astro-code span) {
+  .post[data-code-theme='dark'] .body :global(pre.astro-code),
+  .post[data-code-theme='dark'] .body :global(pre.astro-code span) {
     color: var(--shiki-dark) !important;
     background-color: var(--shiki-dark-bg) !important;
   }
-  .post:not(.is-archived) .body :global(pre.astro-code) {
+  .post[data-code-theme='dark'] .body :global(pre.astro-code) {
     padding: 3.25rem 1.25rem 1.25rem;
     border-color: #454e5c;
     border-radius: 4px;
   }
-  .post:not(.is-archived) .body :global(pre.astro-code::before) {
+  .post[data-code-theme='dark'] .body :global(pre.astro-code::before) {
     top: 16px;
     left: 1.25rem;
     right: auto;
     color: #b6c0d0;
   }
-  .post:not(.is-archived) .body :global(.copy-code) {
+  .post[data-code-theme='dark'] .body :global(.copy-code) {
     width: var(--control-size);
     height: var(--control-size);
     top: 3px;
@@ -635,8 +638,8 @@ const heading = splitEditorialTitle(title)
     color: #ced7e4;
     opacity: 1;
   }
-  .post:not(.is-archived) .body :global(.copy-code:hover),
-  .post:not(.is-archived) .body :global(.copy-code[data-copied]) {
+  .post[data-code-theme='dark'] .body :global(.copy-code:hover),
+  .post[data-code-theme='dark'] .body :global(.copy-code[data-copied]) {
     color: #d2e4fc;
     border-color: #abc5e8;
   }
@@ -650,7 +653,7 @@ const heading = splitEditorialTitle(title)
     .subtitle {
       font-size: 0.75em;
     }
-    .post:not(.is-archived) .body :global(pre.astro-code) {
+    .post[data-code-theme='dark'] .body :global(pre.astro-code) {
       padding-inline: 1rem;
     }
   }

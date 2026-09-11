@@ -51,7 +51,7 @@ const active = activeNavigation(path)
     align-items: center;
     justify-content: space-between;
     gap: 12px 28px;
-    min-height: 94px;
+    min-height: 80px;
     flex-wrap: wrap;
   }
 
@@ -130,6 +130,23 @@ const active = activeNavigation(path)
   .tools :global(#search-open span),
   .tools :global(#search-open kbd) {
     display: none;
+  }
+
+  @media (min-width: 1024px) and (hover: hover) {
+    .tools :global(#search-open) {
+      width: auto;
+      min-width: var(--control-size);
+      padding-inline: 0.625rem;
+      font-size: var(--type-label);
+    }
+    .tools :global(#search-open span),
+    .tools :global(#search-open kbd) {
+      display: inline;
+    }
+    .tools :global(#search-open kbd) {
+      font-size: 0.75rem;
+      opacity: 1;
+    }
   }
 
   /* 좁은 화면: 첫 줄에 로고와 검색·테마 버튼, 둘째 줄에 가로로 넘기는 메뉴. 두 줄로 끝낸다. */

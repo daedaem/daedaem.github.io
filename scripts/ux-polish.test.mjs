@@ -76,7 +76,7 @@ test('home summaries are separate from the actual article cause and reading orde
 
 test('card and row links contain only titles while CSS preserves the whole click and focus target', () => {
   const home = source('src/pages/index.astro')
-  assert.match(home, /<h2>\s*<a href=\{`\/posts\/\$\{post\.id\}\/`\}>/)
+  assert.match(home, /<h3 class="card-title">\s*<a href=\{`\/posts\/\$\{post\.id\}\/`\}>/)
   assert.match(home, /heading\.main \+ heading\.separator/)
   assert.match(home, /heading\.subtitle && <span class="subtitle">\{heading\.subtitle\}<\/span>/)
   assert.match(home, /\.editorial-card a:focus-visible::after/)

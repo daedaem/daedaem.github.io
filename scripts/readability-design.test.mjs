@@ -74,7 +74,10 @@ test('article cause stays body-size and medium-weight on mobile without rewritin
 test('only mobile home covers are capped, with matching sizes and the full 3:2 artwork', () => {
   const [desktop, mobile] = home.split('@media (max-width: 640px)')
   assert.doesNotMatch(desktop, /width:\s*min\(100%, 18rem\)/)
-  assert.match(mobile, /\.card-cover\s*\{\s*width:\s*min\(100%, 18rem\);\s*\}/)
+  assert.match(
+    mobile,
+    /\.card-cover\s*\{\s*width:\s*min\(100%, 18rem\);\s*margin-inline:\s*auto;\s*\}/,
+  )
   assert.match(mobile, /\.lead-card \.card-cover\s*\{[^}]*order:\s*-1;/)
   assert.match(css, /@media \(max-width: 640px\)\s*\{\s*\.wrap-wide\s*\{\s*padding-inline:\s*20px;/)
   for (const src of Object.keys(assets)) {
