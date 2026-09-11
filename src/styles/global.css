@@ -3,14 +3,14 @@
 :root {
   color-scheme: light;
 
-  --bg: #fcfbf8;
+  --bg: #ffffff;
   --bg-subtle: #edf1f6;
   --bg-card: #f5f6f7;
   --border: #dce1e7;
   --border-strong: #c6ced9;
 
-  --text: #202d3d;
-  --text-secondary: #465363;
+  --text: #191f28;
+  --text-secondary: #384452;
   /* 칩·탭처럼 --bg-subtle 위에 놓이는 13px 텍스트도 4.5:1을 넘겨야 한다 */
   --text-muted: #5e6877;
   --text-dim: #626e7f;

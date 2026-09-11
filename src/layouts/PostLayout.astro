@@ -407,7 +407,7 @@ const heading = splitEditorialTitle(title)
 
   .lead {
     margin: 0.9rem 0 0;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     font-size: 16.5px;
     line-height: 1.85;
   }
@@ -419,10 +419,10 @@ const heading = splitEditorialTitle(title)
     border-left: 3px solid var(--accent);
     border-radius: 0 4px 4px 0;
     background: var(--bg-subtle);
-    font-size: 16px;
+    font-size: var(--type-body);
     line-height: 1.85;
-    font-weight: 400;
-    color: var(--text-secondary);
+    font-weight: 500;
+    color: var(--text);
   }
   .cause-label {
     display: block;
@@ -643,7 +643,6 @@ const heading = splitEditorialTitle(title)
   @media (max-width: 640px) {
     .cause {
       padding: 1.25rem 1.125rem;
-      font-size: 15px;
     }
     .post > header {
       padding-bottom: 1.75rem;

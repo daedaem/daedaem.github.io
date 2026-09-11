@@ -302,16 +302,15 @@ const recentWiki = selectRecentWiki(wiki, 2)
   }
   .reading-note {
     margin: 0.75rem 0 0;
-    font-size: 14px;
+    font-size: var(--type-body);
     line-height: 1.8;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     word-break: keep-all;
     overflow-wrap: anywhere;
   }
   .lead-card .reading-note {
     max-width: 24rem;
     margin-top: 1rem;
-    font-size: 15px;
   }
   .read {
     display: inline-flex;
@@ -382,7 +381,7 @@ const recentWiki = selectRecentWiki(wiki, 2)
     margin: 0 0 1rem;
   }
   .notebook-description {
-    font-size: 14px;
+    font-size: var(--type-body);
     color: var(--text-secondary);
     line-height: 1.8;
     margin: 0 0 1.375rem;
@@ -403,7 +402,7 @@ const recentWiki = selectRecentWiki(wiki, 2)
     color: var(--text-muted);
   }
   .wiki-list h3 {
-    font-size: 14px;
+    font-size: var(--type-body);
     font-weight: 550;
     line-height: 1.6;
     margin: 0.375rem 0;
@@ -507,6 +506,10 @@ const recentWiki = selectRecentWiki(wiki, 2)
     .editorial-card:not(:last-child)::before {
       content: '';
     }
+    /* Keep the complete artwork, but give the title more room on small screens. */
+    .card-cover {
+      width: min(100%, 18rem);
+    }
     .lead-card {
       display: flex;
       gap: 1.25rem;
@@ -525,8 +528,6 @@ const recentWiki = selectRecentWiki(wiki, 2)
     }
     .lead-card .reading-note {
       max-width: none;
-      font-size: 14px;
-      line-height: 1.7;
     }
     .lead-card .read {
       margin-top: 0.625rem;

@@ -19,6 +19,6 @@ export function getCoverImageAttributes(src, thumbnail = false) {
     srcset: asset.variants.map((variant) => `${variant.src} ${variant.width}w`).join(', '),
     sizes: thumbnail
       ? '(max-width: 640px) 88px, 144px'
-      : '(max-width: 640px) calc(100vw - 3rem), (max-width: 1100px) 46vw, 500px',
+      : '(max-width: 640px) min(calc(100vw - 40px), 18rem), (max-width: 1100px) 46vw, 500px',
   }
 }
