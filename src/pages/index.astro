@@ -3,174 +3,201 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
 import PostCover from '@/components/PostCover.astro'
-import { SITE, getCategory, getWikiTopic } from '@/consts'
+import { SITE, CATEGORIES, getCategory, getWikiTopic } from '@/consts'
 import { readingMinutes, formatCompactDate } from '@/utils/format'
 import { selectHomeContent, selectRecentWiki } from '@/utils/home-content.mjs'
 import { resolvePostCover, splitEditorialTitle } from '@/utils/editorial.mjs'
-
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 )
 const wiki = await getCollection('wiki', ({ data }) => !data.draft)
 const { recommended, rest } = selectHomeContent(posts)
 const recentWiki = selectRecentWiki(wiki, 2)
+const counts = new Map<string, number>()
+for (const post of posts) counts.set(post.data.category, (counts.get(post.data.category) ?? 0) + 1)
 ---
 
 <BaseLayout title={SITE.title} description={SITE.description} searchIndex={false}>
   <div class="wrap-wide home">
     <header class="byline">
       <div class="identity">
-        <h1>{SITE.identityTitle}</h1>
-        <span class="identity-context">백엔드 · 레거시 시스템 · 문제 해결</span>
+        <h1>{SITE.identityTitle}</h1><p class="identity-context">
+          백엔드 · 레거시 시스템 · 문제 해결
+        </p>
       </div>
       <a href="/about/">소개·경력 <span aria-hidden="true">→</span></a>
     </header>
-
-    {
-      recommended.length > 0 && (
-        <section class="reading-section" aria-labelledby="recommended-title">
-          <div class="section-label">
-            <h2 id="recommended-title">먼저 읽을 글</h2>
-            <span aria-hidden="true">SELECTED WRITING</span>
-          </div>
-          <ul class="editorial-grid">
-            {recommended.map((post, index) => {
-              const lead = index === 0
-              const cat = getCategory(post.data.category)
-              const cover = resolvePostCover(post.data)
-              const heading = splitEditorialTitle(post.data.title)
-              return (
-                <li class:list={['editorial-card', { 'lead-card': lead, 'without-cover': !cover }]}>
-                  <div class="card-copy">
-                    <p class="card-meta">
-                      {cat && <span class="category">{cat.name}</span>}
-                      <span>{readingMinutes(post.body ?? '')}분 읽기</span>
-                    </p>
-                    <h3 class="card-title">
-                      <a href={`/posts/${post.id}/`}>
-                        {lead ? (
-                          <>
-                            {heading.main + heading.separator}
-                            {heading.subtitle && <span class="subtitle">{heading.subtitle}</span>}
-                          </>
-                        ) : (
-                          post.data.title
-                        )}
-                      </a>
-                    </h3>
-                    <p class="reading-note">{post.readingNote}</p>
-                    {lead && (
-                      <span class="read" aria-hidden="true">
-                        판단 과정 읽기 <span>→</span>
-                      </span>
-                    )}
-                  </div>
-                  {cover && (
-                    <div class="card-cover">
-                      <PostCover kind={cover.kind} src={cover.src} lead={lead} />
-                    </div>
-                  )}
-                </li>
-              )
-            })}
-          </ul>
-        </section>
-      )
-    }
-
-    <div class="two-col">
-      <section class="other-posts" aria-labelledby="other-posts-title">
-        <div class="section-head">
-          <h2 id="other-posts-title">다른 글</h2>
-          <a href="/posts/">전체 보기 <span aria-hidden="true">→</span></a>
-        </div>
+    <div class="reading-desk">
+      <div class="reading-main">
         {
-          rest.length > 0 ? (
-            <ul class="rows">
-              {rest.slice(0, 8).map((post) => (
-                <PostRow
-                  href={`/posts/${post.id}/`}
-                  title={post.data.title}
-                  date={post.data.date}
-                  updated={post.data.updated}
-                  category={post.data.category}
-                  cover={resolvePostCover(post.data)}
-                  readingMinutes={readingMinutes(post.body ?? '')}
-                  compact
-                  editorial
-                />
-              ))}
-            </ul>
-          ) : (
-            <p class="empty">새로운 문제 해결 기록을 준비하고 있습니다.</p>
+          recommended.length > 0 && (
+            <section class="reading-section" aria-labelledby="recommended-title">
+              <div class="section-head">
+                <>
+                  <h2 id="recommended-title">먼저 읽을 글</h2>
+                  <a href="/posts/">
+                    전체 보기 <span aria-hidden="true">→</span>
+                  </a>
+                </>
+              </div>
+              <ul class="reading-list">
+                {recommended.map((post, index) => {
+                  const cat = getCategory(post.data.category)
+                  const cover = resolvePostCover(post.data)
+                  const heading = splitEditorialTitle(post.data.title)
+                  return (
+                    <li
+                      class:list={[
+                        'editorial-card',
+                        { 'lead-card': index === 0, 'without-cover': !cover },
+                      ]}
+                    >
+                      <div class="card-copy">
+                        <p class="card-meta">
+                          {cat && <span class="category">{cat.name}</span>}
+                          <span>{readingMinutes(post.body ?? '')}분 읽기</span>
+                        </p>
+                        <h3 class="card-title">
+                          <a href={`/posts/${post.id}/`}>
+                            {index === 0 ? (
+                              <>
+                                {heading.main + heading.separator}
+                                {heading.subtitle && (
+                                  <span class="subtitle">{heading.subtitle}</span>
+                                )}
+                              </>
+                            ) : (
+                              post.data.title
+                            )}
+                          </a>
+                        </h3>
+                      </div>
+                      {cover && (
+                        <div class="card-cover">
+                          <PostCover
+                            kind={cover.kind}
+                            src={cover.src}
+                            thumbnail
+                            lead={index === 0}
+                          />
+                        </div>
+                      )}
+                      <p class="reading-note">{post.readingNote}</p>
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
           )
         }
-      </section>
-
-      <aside class="notebook" aria-labelledby="notebook-title">
-        <p class="notebook-kicker">항상 갱신 중</p>
-        <h2 id="notebook-title">배운 것을<br /> 쌓아 두는 곳.</h2>
-        <p class="notebook-description">
-          일하다 막힌 것, 공부하다 남긴 질문.<br />완성되지 않은 기록도 남깁니다.
-        </p>
-        <ul class="wiki-list">
+        <section class="other-posts" aria-labelledby="other-posts-title">
+          <div class="section-head"><h2 id="other-posts-title">다른 글</h2></div>
           {
-            recentWiki.map((doc) => (
-              <li>
-                <span class="wiki-topic">{getWikiTopic(doc.data.topic)?.name}</span>
-                <h3>
-                  <a href={`/wiki/${doc.id}/`}>{doc.data.title}</a>
-                </h3>
-                <p class="wiki-date">
-                  <time datetime={(doc.data.updated ?? doc.data.created).toISOString()}>
-                    {formatCompactDate(doc.data.updated ?? doc.data.created)}
-                  </time>{' '}
-                  {doc.data.updated ? '갱신' : '작성'}
-                </p>
-              </li>
-            ))
+            rest.length > 0 ? (
+              <ul class="rows">
+                {rest.slice(0, 8).map((post) => (
+                  <PostRow
+                    href={`/posts/${post.id}/`}
+                    title={post.data.title}
+                    date={post.data.date}
+                    updated={post.data.updated}
+                    category={post.data.category}
+                    cover={resolvePostCover(post.data)}
+                    readingMinutes={readingMinutes(post.body ?? '')}
+                    compact
+                    editorial
+                    reading
+                  />
+                ))}
+              </ul>
+            ) : (
+              <p class="empty">새로운 문제 해결 기록을 준비하고 있습니다.</p>
+            )
           }
-        </ul>
-        <a class="notebook-link" href="/wiki/"
-          >학습 위키 둘러보기 <span aria-hidden="true">→</span></a
-        >
+        </section>
+      </div>
+      <aside class="reading-rail">
+        <nav class="topics" aria-labelledby="topic-title">
+          <h2 id="topic-title">주제별 글</h2>
+          <ul>
+            {
+              CATEGORIES.filter((category) => (counts.get(category.id) ?? 0) > 0).map(
+                (category) => (
+                  <li>
+                    <a href={`/categories/${category.id}/`}>
+                      <>
+                        <span>{category.name}</span>
+                        <span class="count">{counts.get(category.id)}</span>
+                      </>
+                    </a>
+                  </li>
+                ),
+              )
+            }
+          </ul>
+        </nav>
+        <section class="notebook" aria-labelledby="notebook-title">
+          <p class="notebook-kicker">항상 갱신 중</p><h2 id="notebook-title">
+            배운 것을 쌓아 두는 곳.
+          </h2>
+          <p class="notebook-description">
+            일하다 막힌 것, 공부하다 남긴 질문. 완성되지 않은 기록도 남깁니다.
+          </p>
+          <ul class="wiki-list">
+            {
+              recentWiki.map((doc) => (
+                <li>
+                  <>
+                    <span class="wiki-topic">{getWikiTopic(doc.data.topic)?.name}</span>
+                    <h3>
+                      <a href={`/wiki/${doc.id}/`}>{doc.data.title}</a>
+                    </h3>
+                    <p class="wiki-date">
+                      <time datetime={(doc.data.updated ?? doc.data.created).toISOString()}>
+                        {formatCompactDate(doc.data.updated ?? doc.data.created)}
+                      </time>{' '}
+                      {doc.data.updated ? '갱신' : '작성'}
+                    </p>
+                  </>
+                </li>
+              ))
+            }
+          </ul>
+          <a class="notebook-link" href="/wiki/"
+            >학습 위키 둘러보기 <span aria-hidden="true">→</span></a
+          >
+        </section>
+        <nav class="archive-links" aria-label="학습 기록">
+          <a href="/algorithms/"
+            ><span>알고리즘</span><small>백준 · 프로그래머스 풀이</small><span aria-hidden="true"
+              >→</span
+            ></a
+          >
+          <a href="/notes/"
+            ><span>학습 노트</span><small>2022–2023년 기록</small><span aria-hidden="true">→</span
+            ></a
+          >
+        </nav>
       </aside>
     </div>
-
-    <nav class="archive-links" aria-label="학습 기록">
-      <a href="/algorithms/"
-        ><span>알고리즘</span><small>백준 · 프로그래머스 풀이</small><span
-          class="arrow"
-          aria-hidden="true">→</span
-        ></a
-      >
-      <a href="/notes/"
-        ><span>학습 노트</span><small>2022–2023년 기록</small><span class="arrow" aria-hidden="true"
-          >→</span
-        ></a
-      >
-    </nav>
   </div>
 </BaseLayout>
-
 <style>
   .home {
-    padding-bottom: 1rem;
+    padding-bottom: 3rem;
   }
   .byline {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 20px;
-    padding: 1.4rem 0 1.75rem;
-    font-size: 13px;
-    color: var(--text-muted);
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border-strong);
   }
   .identity {
     min-width: 0;
   }
   .byline h1 {
-    display: inline;
     margin: 0;
     color: var(--text);
     font-size: 1.5rem;
@@ -179,393 +206,294 @@ const recentWiki = selectRecentWiki(wiki, 2)
     letter-spacing: -0.02em;
   }
   .identity-context {
-    margin-left: 20px;
+    margin: 0.25rem 0 0;
+    color: var(--text-muted);
     font-size: var(--type-label);
   }
-  .byline a {
+  .byline > a,
+  .section-head a,
+  .notebook-link {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 0.5rem;
     min-height: var(--control-size);
-    color: var(--text);
+    color: var(--accent);
+    font-size: var(--type-label);
     white-space: nowrap;
   }
-  .section-label {
+  .reading-desk {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 16rem;
+    gap: 4rem;
+    padding-top: 2rem;
+  }
+  .reading-main,
+  .reading-rail {
+    min-width: 0;
+  }
+  .section-head {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding-bottom: 1.375rem;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: var(--control-size);
+    margin-bottom: 0.25rem;
   }
-  .section-label h2 {
+  .section-head h2,
+  .topics h2 {
     margin: 0;
-    font-size: 14px;
-    font-weight: 650;
+    font-size: var(--type-section);
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
-  .section-label > span {
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.1em;
-  }
-  .editorial-grid {
-    --article-gap: 3rem;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--article-gap) 1.875rem;
+  .reading-list,
+  .rows,
+  .topics ul,
+  .wiki-list {
+    margin: 0;
+    padding: 0;
     list-style: none;
-    padding: 0 0 2.875rem;
-    margin: 0;
-    border-bottom: 1px solid var(--border);
   }
   .editorial-card {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    min-width: 0;
-  }
-  /* Keep the separator in the non-clickable space between article groups. */
-  .editorial-card::before {
-    position: absolute;
-    inset-inline: 0;
-    bottom: calc(var(--article-gap) / -2);
-    border-bottom: 1px solid var(--border-strong);
-    pointer-events: none;
-  }
-  .lead-card:not(:last-child)::before {
-    content: '';
-  }
-  .card-cover {
-    order: -1;
-    min-width: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 8rem;
+    grid-template-areas: 'copy cover' 'note note';
+    gap: 0.65rem 1.5rem;
+    align-items: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border);
   }
   .card-copy {
+    grid-area: copy;
     min-width: 0;
   }
-  .lead-card {
-    grid-column: 1 / -1;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr);
-    gap: 2.125rem;
-    align-items: center;
-  }
-  .lead-card .card-cover {
-    order: 0;
-  }
-  .lead-card.without-cover {
-    grid-template-columns: minmax(0, 1fr);
+  .editorial-card.without-cover {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'copy' 'note';
   }
   .card-meta {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 12px;
-    margin: 0 0 0.75rem;
-    font-size: 13px;
+    gap: 0.5rem 1rem;
+    margin: 0 0 0.45rem;
     color: var(--text-muted);
+    font-size: var(--type-caption);
   }
   .category {
     color: var(--accent);
-    font-weight: 650;
+    font-weight: 600;
   }
   .card-title {
     margin: 0;
-    font-size: 22px;
+    color: var(--text);
+    font-size: 1.375rem;
     font-weight: 700;
     line-height: 1.5;
     letter-spacing: -0.025em;
     word-break: keep-all;
     overflow-wrap: anywhere;
   }
-  .lead-card .card-title {
-    font-size: clamp(30px, 3.3vw, 40px);
-    line-height: 1.32;
-    font-weight: 760;
-    letter-spacing: -0.035em;
-  }
-  .subtitle {
-    display: block;
-    margin-top: 0.65rem;
-    font-size: 0.65em;
-    line-height: 1.5;
-    font-weight: 550;
-    letter-spacing: -0.025em;
-  }
   .editorial-card a::after {
     content: '';
     position: absolute;
     inset: 0;
-    z-index: 1;
-    border-radius: 4px;
   }
   .editorial-card a:focus-visible {
     outline: none;
   }
   .editorial-card a:focus-visible::after {
     outline: 2px solid var(--accent);
-    outline-offset: 6px;
+    outline-offset: 4px;
   }
   .editorial-card:hover .card-title {
     color: var(--accent);
   }
+  .card-cover {
+    grid-area: cover;
+    min-width: 0;
+    pointer-events: none;
+  }
   .reading-note {
-    margin: 0.75rem 0 0;
-    font-size: var(--type-body);
-    line-height: 1.8;
-    color: var(--text-secondary);
-    word-break: keep-all;
-    overflow-wrap: anywhere;
-  }
-  .lead-card .reading-note {
-    max-width: 24rem;
-    margin-top: 1rem;
-  }
-  .read {
-    display: inline-flex;
-    align-items: center;
-    gap: 24px;
-    min-height: var(--control-size);
-    margin-top: 1.375rem;
-    font-size: 13px;
-    font-weight: 650;
-    color: var(--accent);
-  }
-  .read > span {
-    font-size: 20px;
-  }
-  .two-col {
-    display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-    align-items: start;
-    gap: 2.75rem;
-    padding: 2.75rem 0;
-  }
-  .section-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 0.5rem;
-  }
-  .section-head h2 {
-    font-size: 20px;
-    font-weight: 650;
+    grid-area: note;
     margin: 0;
-    letter-spacing: -0.03em;
+    font-size: var(--type-body);
+    line-height: 1.75;
+    color: var(--text-secondary);
   }
-  .section-head > a {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    min-height: var(--control-size);
-    color: var(--text-muted);
-    font-size: 13px;
+  .other-posts {
+    margin-top: 2.5rem;
   }
   .rows {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    border-bottom: 1px solid var(--border);
   }
-  .empty {
-    font-size: 14px;
+  .reading-rail {
+    border-left: 1px solid var(--border);
+    padding-left: 1.5rem;
+  }
+  .topics h2 {
+    font-size: 1rem;
+    min-height: var(--control-size);
+    align-content: center;
+  }
+  .topics li a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: var(--control-size);
+    gap: 1rem;
+    color: var(--text-secondary);
+    font-size: var(--type-label);
+  }
+  .topics li a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  .count {
     color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
   }
   .notebook {
-    background: var(--bg-subtle);
-    border-top: 3px solid var(--accent);
-    border-radius: 4px;
-    padding: 1.625rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
   }
   .notebook-kicker {
-    font-size: 12px;
+    margin: 0 0 0.5rem;
+    font-size: var(--type-caption);
     color: var(--text-muted);
-    margin: 0 0 1.25rem;
   }
   .notebook h2 {
-    font-size: 28px;
-    font-weight: 650;
-    line-height: 1.4;
-    letter-spacing: -0.04em;
-    margin: 0 0 1rem;
+    margin: 0;
+    font-size: var(--type-section);
+    line-height: 1.5;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
   .notebook-description {
+    margin: 0.75rem 0 1rem;
     font-size: var(--type-body);
+    line-height: 1.75;
     color: var(--text-secondary);
-    line-height: 1.8;
-    margin: 0 0 1.375rem;
-  }
-  .wiki-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
   }
   .wiki-list li {
     position: relative;
     padding: 1rem 0;
-    border-top: 1px solid var(--border-strong);
+    border-top: 1px solid var(--border);
   }
   .wiki-topic,
   .wiki-date {
-    font-size: 13px;
     color: var(--text-muted);
+    font-size: var(--type-caption);
   }
   .wiki-list h3 {
-    font-size: var(--type-body);
-    font-weight: 550;
-    line-height: 1.6;
     margin: 0.375rem 0;
+    font-size: var(--type-body);
+    line-height: 1.65;
+    font-weight: 600;
     word-break: keep-all;
-    overflow-wrap: anywhere;
+  }
+  .wiki-list h3 a:hover {
+    color: var(--accent);
   }
   .wiki-list a::after {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 4px;
   }
   .wiki-list a:focus-visible {
     outline: none;
   }
   .wiki-list a:focus-visible::after {
     outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-  .wiki-list a:hover {
-    color: var(--accent);
+    outline-offset: 3px;
   }
   .wiki-date {
-    margin: 0;
-    font-variant-numeric: tabular-nums;
-  }
-  .notebook-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    min-height: var(--control-size);
-    font-size: 13px;
-    font-weight: 600;
-    margin-top: 1rem;
+    margin: 0.4rem 0 0;
   }
   .archive-links {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    border-block: 1px solid var(--border);
+    gap: 0.75rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
   }
   .archive-links a {
-    display: flex;
-    align-items: center;
-    gap: 14px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 0.5rem;
     min-height: var(--control-size);
-    padding: 1.625rem 1.5rem 1.625rem 0;
-    font-size: 15px;
-  }
-  .archive-links a + a {
-    border-left: 1px solid var(--border);
-    padding-left: 1.5rem;
+    font-size: var(--type-body);
   }
   .archive-links small {
-    font-size: 12px;
+    grid-column: 1;
+    font-size: var(--type-caption);
     color: var(--text-muted);
   }
-  .archive-links .arrow {
-    margin-left: auto;
-    color: var(--text-muted);
+  .archive-links [aria-hidden] {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: center;
+    color: var(--accent);
   }
-  @media (max-width: 800px) {
-    .identity-context {
-      display: block;
-      margin: 0.375rem 0 0;
+  @media (max-width: 900px) {
+    .reading-desk {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
     }
-    .lead-card {
-      gap: 1.5rem;
+    .reading-rail {
+      border-left: 0;
+      padding-left: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
     }
-    .lead-card .card-title {
-      font-size: 30px;
+    .notebook {
+      border-top: 0;
+      margin-top: 0;
+      padding-top: 0;
     }
-    .two-col {
-      gap: 1.625rem;
-    }
-    .archive-links small {
-      display: none;
+    .archive-links {
+      grid-column: 1 / -1;
+      grid-template-columns: 1fr 1fr;
+      margin-top: 0;
     }
   }
   @media (max-width: 640px) {
     .byline {
-      align-items: flex-start;
-      gap: 8px;
-      padding: 1.2rem 0 1.625rem;
+      display: block;
+      padding-block: 1.25rem;
     }
     .byline h1 {
       font-size: 1.375rem;
     }
-    .identity-context {
-      line-height: 1.6;
-    }
-    .byline a {
-      font-size: 12px;
-    }
-    .section-label {
-      gap: 10px;
-      padding-bottom: 1.0625rem;
-    }
-    .editorial-grid {
-      grid-template-columns: minmax(0, 1fr);
-      gap: var(--article-gap);
-      padding-bottom: 2rem;
-    }
-    .editorial-card:not(:last-child)::before {
-      content: '';
-    }
-    /* Keep the complete artwork, but give the title more room on small screens. */
-    .card-cover {
-      width: min(100%, 18rem);
-      margin-inline: auto;
-    }
-    .lead-card {
-      display: flex;
-      gap: 1.25rem;
-      align-items: stretch;
-    }
-    .lead-card .card-cover {
-      order: -1;
-    }
-    .lead-card .card-title {
-      font-size: 30px;
-      line-height: 1.28;
-    }
-    .subtitle {
-      font-size: 20px;
+    .byline > a {
       margin-top: 0.5rem;
     }
-    .lead-card .reading-note {
-      max-width: none;
+    .reading-desk {
+      padding-top: 1.25rem;
     }
-    .lead-card .read {
-      margin-top: 0.625rem;
-      gap: 14px;
+    .editorial-card {
+      grid-template-columns: minmax(0, 1fr) 4.5rem;
+      gap: 0.65rem 1rem;
+      padding-block: 1.25rem;
     }
     .card-title {
-      font-size: 21px;
+      font-size: 1.25rem;
     }
-    .lead-card .card-title {
-      font-size: 30px;
+    .card-meta {
+      gap: 0.25rem 0.75rem;
     }
-    .two-col {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 2rem;
-      padding-block: 2rem;
+    .reading-rail {
+      grid-template-columns: 1fr;
     }
     .notebook {
-      padding: 1.5625rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
     }
-    .notebook h2 br {
-      display: none;
-    }
-    .archive-links a {
-      font-size: 14px;
-      padding: 1.4375rem 0.9375rem 1.4375rem 0;
-    }
-    .archive-links a + a {
-      padding-left: 1.125rem;
+    .archive-links {
+      grid-column: auto;
+      grid-template-columns: 1fr;
     }
   }
 </style>

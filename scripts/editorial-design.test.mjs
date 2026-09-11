@@ -173,24 +173,22 @@ test('anchor landings and sticky article/wiki navigation share the taller header
   }
 })
 
-test('mobile selected articles consistently place the decorative cover before the text', () => {
+test('reading comparison keeps the title before a secondary thumbnail on mobile', () => {
   const home = source('src/pages/index.astro')
   const mobile = home.split('@media (max-width: 640px)')[1]
   assert.ok(mobile)
-  assert.match(home, /\.card-cover\s*\{[^}]*order:\s*-1;/)
-  assert.match(mobile, /\.lead-card\s*\{[^}]*display:\s*flex;/)
-  assert.match(mobile, /\.lead-card \.card-cover\s*\{[^}]*order:\s*-1;/)
+  assert.match(home, /grid-template-areas:\s*'copy cover' 'note note';/)
+  assert.match(mobile, /grid-template-columns:\s*minmax\(0, 1fr\) 4\.5rem;/)
+  assert.ok(home.indexOf('<h3 class="card-title">') < home.indexOf('<div class="card-cover">'))
+  assert.doesNotMatch(home, /order:\s*-1/)
 })
 
 test('article separators distinguish rows without expanding the link into the gap', () => {
   const home = source('src/pages/index.astro')
-  assert.match(home, /--article-gap:\s*3rem;/)
   assert.match(
     home,
-    /\.editorial-card::before\s*\{[^}]*bottom:\s*calc\(var\(--article-gap\) \/ -2\);[^}]*border-bottom:\s*1px solid var\(--border-strong\);[^}]*pointer-events:\s*none;/,
+    /\.editorial-card\s*\{[^}]*padding:\s*1\.5rem 0;[^}]*border-bottom:\s*1px solid var\(--border\);/,
   )
-  assert.match(home, /\.lead-card:not\(:last-child\)::before\s*\{\s*content:\s*'';/)
-  const mobile = home.split('@media (max-width: 640px)')[1]
-  assert.match(mobile, /\.editorial-card:not\(:last-child\)::before\s*\{\s*content:\s*'';/)
+  assert.doesNotMatch(home, /\.editorial-card::before/)
   assert.match(home, /\.editorial-card a::after\s*\{[^}]*inset:\s*0;/)
 })

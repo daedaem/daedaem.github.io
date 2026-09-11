@@ -1,0 +1,117 @@
+---
+import { CATEGORIES } from '@/consts'
+interface Props {
+  counts: Map<string, number>
+  total: number
+  active?: string
+}
+const { counts, total, active } = Astro.props
+const current = CATEGORIES.find((category) => category.id === active)?.name ?? '전체 글'
+---
+
+<details class="reading-categories" data-reading-categories open>
+  <summary>주제 <strong>{current}</strong></summary>
+  <nav aria-label="카테고리">
+    <a href="/posts/" aria-current={!active ? 'page' : undefined}
+      ><span>전체 글</span><span>{total}</span></a
+    >
+    {
+      CATEGORIES.filter((category) => (counts.get(category.id) ?? 0) > 0).map((category) => (
+        <a
+          href={`/categories/${category.id}/`}
+          aria-current={active === category.id ? 'page' : undefined}
+        >
+          <>
+            <span>{category.name}</span>
+            <span>{counts.get(category.id)}</span>
+          </>
+        </a>
+      ))
+    }
+  </nav>
+</details>
+<script>
+  const categoryDetails = document.querySelector<HTMLDetailsElement>('[data-reading-categories]')
+  const desktop = matchMedia('(min-width: 901px)')
+  if (categoryDetails) {
+    const sync = () => {
+      categoryDetails.open = desktop.matches
+    }
+    sync()
+    desktop.addEventListener('change', sync)
+  }
+</script>
+<style>
+  .reading-categories {
+    min-width: 0;
+  }
+  summary {
+    min-height: var(--control-size);
+    align-content: center;
+    font-size: var(--type-label);
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  summary strong {
+    margin-left: 0.6rem;
+    color: var(--text);
+    font-weight: 650;
+  }
+  nav {
+    display: grid;
+    gap: 0.25rem;
+    padding-block: 0.75rem;
+  }
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: var(--control-size);
+    padding: 0.4rem 0.75rem;
+    border-left: 3px solid transparent;
+    color: var(--text-secondary);
+    font-size: var(--type-label);
+  }
+  a[aria-current] {
+    border-left-color: var(--accent);
+    background: var(--bg-subtle);
+    color: var(--accent);
+    font-weight: 650;
+  }
+  a:hover {
+    background: var(--bg-subtle);
+  }
+  a > span:last-child {
+    font-variant-numeric: tabular-nums;
+  }
+  @media (min-width: 901px) {
+    .reading-categories {
+      position: sticky;
+      top: var(--header-clearance);
+      align-self: start;
+    }
+    summary {
+      display: none;
+    }
+    nav {
+      padding-top: 0;
+    }
+  }
+  @media (max-width: 900px) {
+    .reading-categories {
+      border-block: 1px solid var(--border);
+    }
+    summary {
+      padding: 0.4rem 0.75rem;
+    }
+    nav {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 380px) {
+    nav {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

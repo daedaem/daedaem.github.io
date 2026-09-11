@@ -44,7 +44,7 @@ test('home and list summaries keep body-size text instead of mobile-only shrinki
   assert.match(css, /--type-body:\s*1rem;/)
   assert.match(
     home,
-    /\.reading-note\s*\{[^}]*font-size:\s*var\(--type-body\);[^}]*line-height:\s*1\.8;[^}]*color:\s*var\(--text-secondary\);/,
+    /\.reading-note\s*\{[^}]*font-size:\s*var\(--type-body\);[^}]*line-height:\s*1\.75;[^}]*color:\s*var\(--text-secondary\);/,
   )
   for (const match of home.matchAll(/\.lead-card \.reading-note\s*\{([^}]+)\}/g)) {
     assert.doesNotMatch(match[1], /font-size:|line-height:|color:/)
@@ -71,14 +71,15 @@ test('article cause stays body-size and medium-weight on mobile without rewritin
   assert.match(layout, /<slot\s*\/>/)
 })
 
-test('only mobile home covers are capped, with matching sizes and the full 3:2 artwork', () => {
+test('reading comparison uses existing responsive thumbnails and retains full 3:2 assets', () => {
   const [desktop, mobile] = home.split('@media (max-width: 640px)')
   assert.doesNotMatch(desktop, /width:\s*min\(100%, 18rem\)/)
   assert.match(
     mobile,
-    /\.card-cover\s*\{\s*width:\s*min\(100%, 18rem\);\s*margin-inline:\s*auto;\s*\}/,
+    /\.editorial-card\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\) 4\.5rem;/,
   )
-  assert.match(mobile, /\.lead-card \.card-cover\s*\{[^}]*order:\s*-1;/)
+  assert.match(home, /<PostCover[\s\S]*?thumbnail[\s\S]*?lead=\{index === 0\}/)
+  assert.doesNotMatch(mobile, /order:\s*-1;/)
   assert.match(css, /@media \(max-width: 640px\)\s*\{\s*\.wrap-wide\s*\{\s*padding-inline:\s*20px;/)
   for (const src of Object.keys(assets)) {
     const card = getCoverImageAttributes(src)

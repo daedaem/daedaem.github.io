@@ -15,6 +15,7 @@ interface Props {
   description?: string
   compact?: boolean
   editorial?: boolean
+  reading?: boolean
   cover?: PostCoverData
 }
 
@@ -28,12 +29,13 @@ const {
   description,
   compact = false,
   editorial = false,
+  reading = false,
   cover,
 } = Astro.props
 const cat = category ? getCategory(category) : undefined
 ---
 
-<li class:list={['row', { 'no-cat': !cat, editorial, 'with-cover': !!cover }]}>
+<li class:list={['row', { 'no-cat': !cat, editorial, reading, 'with-cover': !!cover }]}>
   <div class="row-content">
     {
       cat && (
@@ -207,6 +209,29 @@ const cat = category ? getCategory(category) : undefined
     .row.with-cover .row-content {
       grid-template-columns: minmax(0, 1fr) 5.5rem;
       column-gap: 1rem;
+    }
+  }
+  .reading.with-cover .row-content {
+    grid-template-columns: minmax(0, 1fr) 8rem;
+    padding-block: 1.5rem;
+  }
+  .reading .title {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    font-weight: 650;
+  }
+  .reading .cat {
+    font-size: var(--type-caption);
+    color: var(--accent);
+  }
+  .reading .desc {
+    font-size: var(--type-body);
+    line-height: 1.75;
+  }
+  @media (max-width: 640px) {
+    .reading.with-cover .row-content {
+      grid-template-columns: minmax(0, 1fr) 4.5rem;
+      padding-block: 1.25rem;
     }
   }
 </style>

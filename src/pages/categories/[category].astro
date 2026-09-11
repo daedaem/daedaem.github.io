@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
-import CategoryNav from '@/components/CategoryNav.astro'
+import ReadingCatalog from '@/components/ReadingCatalog.astro'
 import PageHead from '@/components/PageHead.astro'
 import { CATEGORIES } from '@/consts'
 import { readingMinutes } from '@/utils/format'
@@ -30,12 +30,10 @@ const { category, posts, counts, total } = Astro.props
 ---
 
 <BaseLayout title={category.name} description={category.description} searchIndex={false}>
-  <div class="wrap-list">
-    <PageHead title={category.name} category={category.id}>
+  <ReadingCatalog counts={counts} total={total} active={category.id}>
+    <PageHead title={category.name} category={category.id} slot="header">
       <p>{category.description}</p>
     </PageHead>
-
-    <CategoryNav counts={counts} total={total} active={category.id} />
 
     {
       posts.length === 0 ? (
@@ -52,18 +50,19 @@ const { category, posts, counts, total } = Astro.props
               cover={resolvePostCover(p.data)}
               readingMinutes={readingMinutes(p.body ?? '')}
               editorial
+              reading
             />
           ))}
         </ul>
       )
     }
-  </div>
+  </ReadingCatalog>
 </BaseLayout>
 
 <style>
   .rows {
     list-style: none;
-    margin: 28px 0 72px;
+    margin: 0;
     padding: 0;
     border-bottom: 1px solid var(--border);
   }

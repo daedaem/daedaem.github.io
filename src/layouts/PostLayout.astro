@@ -698,4 +698,53 @@ const heading = splitEditorialTitle(title)
       text-align: left;
     }
   }
+  /* 비교 B: 본문 진입과 읽기 리듬을 우선한다. 아카이브의 당시 표현은 유지한다. */
+  .post[data-code-theme='dark'] {
+    padding-top: 1.25rem;
+  }
+  .post[data-code-theme='dark'] > header {
+    padding-bottom: 1.5rem;
+  }
+  .post[data-code-theme='dark'] h1 {
+    font-size: clamp(1.75rem, 3.1vw, 2.5rem);
+    line-height: 1.45;
+    letter-spacing: -0.025em;
+  }
+  .post[data-code-theme='dark'] .subtitle {
+    display: inline;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    margin: 0;
+  }
+  .post[data-code-theme='dark'] .author-line {
+    margin-top: 0.75rem;
+  }
+  .post[data-code-theme='dark'] .cause {
+    padding: 0.5rem 0 0.5rem 1.25rem;
+    background: transparent;
+    border-radius: 0;
+  }
+  .post[data-code-theme='dark'] .cause-label {
+    font-size: var(--type-label);
+    margin-bottom: 0.4rem;
+  }
+  .post[data-code-theme='dark'] .body {
+    font-size: 1.0625rem;
+    line-height: 1.9;
+  }
+  .post[data-code-theme='dark'] .toc {
+    background: transparent;
+    border-block: 1px solid var(--border);
+    border-radius: 0;
+    padding-inline: 0;
+  }
+  @media (min-width: 1200px) {
+    .post[data-code-theme='dark'].with-toc > .toc {
+      grid-row: 1 / span 8;
+      padding-left: 1.25rem;
+      border-block: 0;
+    }
+  }
 </style>

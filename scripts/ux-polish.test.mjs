@@ -78,7 +78,10 @@ test('card and row links contain only titles while CSS preserves the whole click
   const home = source('src/pages/index.astro')
   assert.match(home, /<h3 class="card-title">\s*<a href=\{`\/posts\/\$\{post\.id\}\/`\}>/)
   assert.match(home, /heading\.main \+ heading\.separator/)
-  assert.match(home, /heading\.subtitle && <span class="subtitle">\{heading\.subtitle\}<\/span>/)
+  assert.match(
+    home,
+    /heading\.subtitle &&\s*\(?\s*<span class="subtitle">\{heading\.subtitle\}<\/span>/,
+  )
   assert.match(home, /\.editorial-card a:focus-visible::after/)
   assert.match(home, /\.wiki-list a:focus-visible::after/)
   assert.match(home, /<nav class="archive-links" aria-label="학습 기록">/)

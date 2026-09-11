@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
-import CategoryNav from '@/components/CategoryNav.astro'
+import ReadingCatalog from '@/components/ReadingCatalog.astro'
 import PageHead from '@/components/PageHead.astro'
 import { readingMinutes } from '@/utils/format'
 import { resolvePostCover } from '@/utils/editorial.mjs'
@@ -19,16 +19,18 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
   description="레거시 시스템 개발·운영 과정에서 데이터 정합성, 조회 성능, 시스템 연동을 개선한 기록. 원인과 선택의 근거를 씁니다."
   searchIndex={false}
 >
-  <div class="wrap-list">
-    <PageHead title="글">
-      <p>
-        실제로 맡아 고친 문제를 남깁니다. 무엇이 원인이었는지, 왜 그 방법을 골랐는지, 고르지 않은
-        선택지는 무엇이었는지까지 씁니다. 글마다 붙은 사건 시기가 실제로 겪은 때이고, 작성일은 그
-        일을 블로그에 글로 정리한 날입니다.
-      </p>
+  <ReadingCatalog counts={counts} total={posts.length}>
+    <PageHead title="글" slot="header">
+      <p>실제로 맡아 고친 문제를 남깁니다.</p>
+      <details class="criteria">
+        <summary>기록·날짜 안내</summary>
+        <p>
+          무엇이 원인이었는지, 왜 그 방법을 골랐는지, 고르지 않은 선택지는 무엇이었는지까지 씁니다.
+          글마다 붙은 사건 시기가 실제로 겪은 때이고, 작성일은 그 일을 블로그에 글로 정리한
+          날입니다.
+        </p>
+      </details>
     </PageHead>
-
-    <CategoryNav counts={counts} total={posts.length} />
 
     {
       posts.length === 0 ? (
@@ -46,22 +48,34 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
               cover={resolvePostCover(p.data)}
               readingMinutes={readingMinutes(p.body ?? '')}
               editorial
+              reading
             />
           ))}
         </ul>
       )
     }
-  </div>
+  </ReadingCatalog>
 </BaseLayout>
 
 <style>
   .rows {
     list-style: none;
-    margin: 28px 0 72px;
+    margin: 0;
     padding: 0;
     border-bottom: 1px solid var(--border);
   }
   .empty {
     padding: 40px 0 72px;
+  }
+  .criteria {
+    margin-top: 0.5rem;
+    max-width: 44rem;
+    color: var(--text-secondary);
+  }
+  .criteria summary {
+    min-height: var(--control-size);
+    align-content: center;
+    cursor: pointer;
+    font-size: var(--type-label);
   }
 </style>

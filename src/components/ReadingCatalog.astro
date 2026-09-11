@@ -1,0 +1,38 @@
+---
+import ReadingCategories from './ReadingCategories.astro'
+interface Props {
+  counts: Map<string, number>
+  total: number
+  active?: string
+}
+const { counts, total, active } = Astro.props
+---
+
+<div class="wrap-wide reading-catalog">
+  <slot name="header" />
+  <div class="catalog-grid">
+    <ReadingCategories counts={counts} total={total} active={active} />
+    <div class="catalog-results"><slot /></div>
+  </div>
+</div>
+<style>
+  .reading-catalog {
+    padding-bottom: 4rem;
+  }
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    gap: 3rem;
+    margin-top: 1rem;
+  }
+  .catalog-results {
+    min-width: 0;
+  }
+  @media (max-width: 900px) {
+    .catalog-grid {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      margin-top: 0;
+    }
+  }
+</style>
