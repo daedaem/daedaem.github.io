@@ -2,6 +2,8 @@
 import { SITE } from '@/consts'
 import '@/styles/global.css'
 import jetbrainsCss from '../../public/fonts/jetbrains-mono.css?raw'
+import pretendardCss from '../../public/fonts/pretendard/pretendardvariable-dynamic-subset.min.css?raw'
+import { inlineFontCSS } from '@/utils/font-css.mjs'
 
 interface Props {
   title: string
@@ -94,7 +96,8 @@ const jsonLd =
     />
   ))
 }
-<link rel="stylesheet" href="/fonts/pretendard/pretendardvariable-dynamic-subset.min.css" />
+{/* 글꼴 선언의 추가 왕복을 없애고, 실제 WOFF2 서브셋은 기존 URL로 캐시한다. */}
+<style is:inline set:html={inlineFontCSS(pretendardCss)}></style>
 <style is:inline set:html={jetbrainsCss}></style>
 <meta name="description" content={description} />
 <meta name="author" content={SITE.author} />
