@@ -63,7 +63,6 @@ test('about summaries retain the external dependency limit and do not claim an A
   assert.doesNotMatch(highlights.replace(/<[^>]*>/g, ''), /100밀리|100ms|폴백|무중단/)
   const lead = about.match(/<p class="lead">([\s\S]*?)<\/p>/)?.[1]
   assert.doesNotMatch(lead, /화면의 요청|서버와 DB/)
-  assert.match(about, /화면의 요청이 서버와 DB를 거쳐/)
 })
 
 test('author background uses the stated research motivation without implying AI work or employment', () => {
@@ -73,8 +72,42 @@ test('author background uses the stated research motivation without implying AI 
   assert.match(aboutText, /최종 입사로 이어지지는 않았습니다/)
   assert.doesNotMatch(about, /늦게 시작한 만큼|남들이 그냥 지나가는|최종 SW 역량테스트는 넘지/)
   assert.match(about, /개발 환경의 WAS 전환 중 잔존 배치 프로세스/)
-  assert.match(about, /교육 과정의 팀 프로젝트에서 화면과 API 연동을 맡았던 경험/)
+  const training = aboutText.match(/<h3 id="training">([\s\S]*?)<\/li>/)?.[1]
+  assert.match(training, /SSAFY[\s\S]*팀 프로젝트[\s\S]*화면 구현과 API 연동/)
   assert.doesNotMatch(about, /JEUS|WebtoB|WebLogic|AIX|HP-UX|Windows Server/)
+})
+
+test('case summaries expose supported implementation and collaboration without inventing outcomes', () => {
+  const summary = highlights.replace(/\s+/g, ' ')
+  assert.match(summary, /변경 판정을 한곳으로 모으고 인터페이스·프로시저를 수정/)
+  assert.match(summary, /상대 담당자와 항목별 소유권을 합의/)
+  assert.match(summary, /계약 요청 흐름과 상태 동기화 배치/)
+  assert.match(summary, /옛 계약 조회를 보존하면서 Flash 모듈 운영을 종료/)
+  assert.doesNotMatch(summary, /재발 0|100%|단독|총괄|무중단|비용 \d+%/)
+})
+
+test('address summary distinguishes the choice from measured DB results and later popup integration', () => {
+  const item = highlights.split('<li>')[2]
+  const fields = [...item.matchAll(/<dt>([^<]+)<\/dt>\s*<dd>([\s\S]*?)<\/dd>/g)]
+  const summary = Object.fromEntries(
+    fields.map(([, label, value]) => [label, value.replace(/\s+/g, ' ')]),
+  )
+  assert.match(summary['판단'], /주소 갱신 문제가 남아, 외부 주소 검색을 선택/)
+  assert.doesNotMatch(summary['판단'], /9초|1초대/)
+  assert.match(summary['변경·결과'], /DB 조회를 9초에서 1초대로 줄인 뒤/)
+  assert.match(summary['변경·결과'], /외부 검색 팝업과 콜백을 연동해 수기 적재를 없앴습니다/)
+  assert.match(summary['변경·결과'], /외부 서비스 의존은 남았습니다/)
+})
+
+test('work approach stays concise and unconfirmed new-build technologies remain withheld', () => {
+  const approach = aboutText.match(/<h2 id="approach"[^>]*>[\s\S]*?<p>([\s\S]*?)<\/p>/)?.[1]
+  assert.ok(approach)
+  assert.ok(approach.trim().length < 100)
+  assert.match(approach, /영향 범위를 확인[\s\S]*고친 뒤에는/)
+  assert.doesNotMatch(approach, /교육 과정|팀 프로젝트|API 연동/)
+  const stack = aboutText.match(/<h2 id="stack"[^>]*>([\s\S]*?)<\/section>/)?.[1]
+  assert.ok(stack)
+  assert.doesNotMatch(stack, /신규 구축|Spring Boot|JPA|React/)
 })
 
 test('background stages and contact navigation remain readable and keyboard accessible', () => {
