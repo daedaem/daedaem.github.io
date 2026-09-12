@@ -244,6 +244,7 @@ const heading = splitEditorialTitle(title)
 </BaseLayout>
 
 <script>
+  import { initCurrentHeading } from '@/utils/current-heading.mjs'
   // 좁은 화면에서는 접힌 목차로 시작한다. JS가 없어도 목차는 그대로 읽을 수 있다.
   const contents = document.querySelector<HTMLDetailsElement>('.post > .toc details')
   const wide = matchMedia('(min-width: 1200px)')
@@ -255,39 +256,7 @@ const heading = splitEditorialTitle(title)
     wide.addEventListener('change', sync)
   }
 
-  const entries = [...document.querySelectorAll<HTMLAnchorElement>('.post > .toc a[href^="#"]')]
-    .map((link) => ({
-      link,
-      heading: document.getElementById(decodeURIComponent(link.hash.slice(1))),
-    }))
-    .filter((entry) => entry.heading)
-  if (entries.length) {
-    const updateCurrent = () => {
-      const marker = Math.max(128, innerHeight * 0.2)
-      const atBottom = scrollY + innerHeight >= document.documentElement.scrollHeight - 2
-      const current = atBottom
-        ? entries.at(-1)
-        : entries.filter(({ heading }) => heading!.getBoundingClientRect().top <= marker).at(-1)
-      for (const entry of entries) {
-        if (entry === current) entry.link.setAttribute('aria-current', 'location')
-        else entry.link.removeAttribute('aria-current')
-      }
-    }
-    // Scrolling across a tall section or jumping several headings must also update the marker.
-    let scheduled = false
-    const schedule = () => {
-      if (scheduled) return
-      scheduled = true
-      requestAnimationFrame(() => {
-        updateCurrent()
-        scheduled = false
-      })
-    }
-    addEventListener('scroll', schedule, { passive: true })
-    addEventListener('resize', schedule)
-    addEventListener('hashchange', schedule)
-    updateCurrent()
-  }
+  initCurrentHeading()
 </script>
 
 <style>
@@ -558,6 +527,7 @@ const heading = splitEditorialTitle(title)
   }
   .toc a {
     display: block;
+    min-height: 2rem;
     padding-block: 0.25rem;
     line-height: 1.65;
   }
@@ -609,6 +579,13 @@ const heading = splitEditorialTitle(title)
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 0.25em;
+  }
+  @media (max-width: 1199px), (pointer: coarse) {
+    .toc a {
+      display: flex;
+      align-items: center;
+      min-height: var(--control-size);
+    }
   }
 
   /* 사례 글은 시안의 짙은 코드 면을 사용한다. Shiki의 검증된 다크 토큰을 그대로 재사용한다. */

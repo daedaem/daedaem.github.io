@@ -52,9 +52,15 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 
     <article class="post">
       <header>
-        <div class="meta">
+        <nav class="breadcrumbs" aria-label="문서 위치" data-pagefind-ignore>
           <a class="crumb" href="/wiki/">위키</a>
-          {topic && <span class="sep">›</span>}
+          {
+            topic && (
+              <span class="sep" aria-hidden="true">
+                ›
+              </span>
+            )
+          }
           {
             topic && (
               <a class="topic" href={`/wiki/#${topic.id}`} style={`--wt: ${topic.hue}`}>
@@ -63,17 +69,20 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
               </a>
             )
           }
+        </nav>
+        <h1>{entry.data.title}</h1>
+        <div class="meta" data-pagefind-ignore>
           <ContentDates
             date={entry.data.created}
             updated={entry.data.updated}
             dateLabel="처음 작성"
             updatedLabel="마지막 수정"
+            compact
           />
-          <span>· {readingMinutes(entry.body ?? '')}분</span>
+          <span>{readingMinutes(entry.body ?? '')}분 읽기</span>
         </div>
-        <h1>{entry.data.title}</h1>
         <p class="lead">{entry.data.description}</p>
-        <p class="status muted">{STATUS_LABEL[entry.data.status]}</p>
+        <p class="status muted" data-pagefind-ignore>{STATUS_LABEL[entry.data.status]}</p>
       </header>
 
       {
@@ -118,6 +127,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 </BaseLayout>
 
 <script>
+  import { initCurrentHeading } from '@/utils/current-heading.mjs'
   // JS가 없으면 열린 목차를 유지한다. 문서 트리와 같은 좁은 화면 기준을 쓴다.
   const contents = document.querySelector<HTMLDetailsElement>('.post > .toc details')
   const narrow = matchMedia('(max-width: 60rem)')
@@ -128,6 +138,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
     sync()
     narrow.addEventListener('change', sync)
   }
+  initCurrentHeading()
 </script>
 
 <style>
@@ -136,7 +147,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
     display: grid;
     grid-template-columns: 15rem minmax(0, var(--measure));
     gap: 3rem;
-    padding-top: 3rem;
+    padding-top: var(--page-inset);
     align-items: start;
   }
   .side {
@@ -153,13 +164,29 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
     min-width: 0;
   }
 
-  .meta {
+  .meta,
+  .breadcrumbs {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem;
     font-size: 0.8125rem;
     color: var(--text-muted);
+  }
+  .meta {
+    margin-top: 0.75rem;
+    gap: 0.4rem 0.8rem;
+  }
+  .breadcrumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-size);
+    min-width: var(--control-size);
+    padding-inline: 0.375rem;
+  }
+  .breadcrumbs a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
   .topic,
   .crumb {
@@ -192,16 +219,16 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
   }
   .lead {
     margin: 0.75rem 0 0;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     font-size: 1.0625rem;
     line-height: 1.7;
   }
   .status {
     margin: 0.5rem 0 0;
-    font-size: 0.8125rem;
+    font-size: var(--type-label);
   }
   .toc {
-    margin-top: 2.25rem;
+    margin-top: 1.5rem;
     padding: 0 1.3rem;
     background: var(--bg-subtle);
     border-radius: var(--radius);
@@ -230,14 +257,23 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
     padding-left: 1rem;
   }
   .toc a {
+    display: flex;
+    align-items: center;
+    min-height: 2rem;
     text-decoration: none;
     color: var(--text-muted);
   }
   .toc a:hover {
     color: var(--text);
   }
+  .toc a[aria-current='location'] {
+    color: var(--accent);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
   .body {
-    margin-top: 2.5rem;
+    margin-top: 1.75rem;
   }
   .body :global(h2) {
     margin-top: 3.25rem;
@@ -304,6 +340,12 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
       font-size: 0.875rem;
       font-weight: 600;
       cursor: pointer;
+      min-height: var(--control-size);
+    }
+  }
+  @media (max-width: 60rem), (pointer: coarse) {
+    .toc a {
+      min-height: var(--control-size);
     }
   }
 </style>

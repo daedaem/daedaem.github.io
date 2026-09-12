@@ -74,10 +74,12 @@ const related = candidates
     padding: 0;
   }
   li {
-    display: flex;
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
     align-items: baseline;
     gap: 0.75rem;
-    margin-block: 0.7rem;
+    margin: 0;
+    border-bottom: 1px solid var(--border);
   }
   li span {
     font-size: 0.8125rem;
@@ -85,9 +87,18 @@ const related = candidates
     white-space: nowrap;
   }
   a {
-    font-size: 0.9375rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-size);
+    padding-block: 0.5rem;
+    font-size: var(--type-body);
+    line-height: 1.65;
   }
   a:hover {
     color: var(--accent);
+  }
+  a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 </style>
