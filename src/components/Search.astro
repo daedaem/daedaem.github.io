@@ -44,6 +44,7 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
 </dialog>
 
 <script>
+  import { dismissSearchForAnchor } from '@/utils/search-navigation.mjs'
   const openBtn = document.getElementById('search-open') as HTMLButtonElement | null
   const dialog = document.getElementById('search-dialog') as HTMLDialogElement | null
   const mount = document.getElementById('search-mount')
@@ -134,6 +135,9 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
 
   openBtn?.addEventListener('click', open)
   closeBtn?.addEventListener('click', () => dialog?.close())
+  mount?.addEventListener('click', (event) => {
+    dismissSearchForAnchor(event, dialog, location.href)
+  })
 
   document.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {

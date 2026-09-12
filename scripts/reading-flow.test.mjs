@@ -79,7 +79,7 @@ test('about shortcuts have focusable heading targets and are excluded from artic
   const nav = source.match(/<nav class="about-nav"[^>]*data-pagefind-ignore>([\s\S]*?)<\/nav>/)?.[1]
   assert.ok(nav)
   const targets = [...nav.matchAll(/href="#([^"]+)"/g)].map((m) => m[1])
-  assert.equal(targets.length, 4)
+  assert.deepEqual(targets, ['work', 'stack', 'background', 'projects', 'contact'])
   for (const target of targets)
     assert.match(source, new RegExp(`<h2 id="${target}" tabindex="-1">`))
 })
