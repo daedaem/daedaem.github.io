@@ -46,28 +46,28 @@ const imageAttributes =
         </div>
         <div class="specimen specimen-before">
           <>
-            <span>INPUT / BEFORE</span>
-            <strong>null</strong>
+            <span>값 비교</span>
+            <strong>NULL</strong>
           </>
         </div>
         <div class="specimen specimen-after">
           <>
-            <span>INPUT / AFTER</span>
-            <strong>“A”</strong>
+            <span>수신 규약</span>
+            <strong>I/F</strong>
           </>
         </div>
         <div class="comparison">
           <>
             <div>
-              TRUE<small>Java · 변경 감지</small>
+              COMPARE<small>NULL · 빈 문자열</small>
             </div>
             <span class="versus">/</span>
             <div>
-              UNKNOWN<small>SQL · 비교 결과</small>
+              APPLY<small>처리 구분값</small>
             </div>
           </>
         </div>
-        <p class="null-caption">같은 입력, 다른 판정.</p>
+        <p class="null-caption">같은 증상, 서로 다른 원인.</p>
       </>
     )
   }
@@ -179,6 +179,10 @@ const imageAttributes =
     background: var(--cover-navy);
     color: #fcfaf5;
   }
+  .cover-null,
+  .cover-null.cover-lead {
+    aspect-ratio: 3 / 2;
+  }
   .specimen {
     position: absolute;
     height: 42%;
@@ -211,6 +215,11 @@ const imageAttributes =
     font-weight: 500;
     line-height: 1;
     letter-spacing: -3px;
+  }
+  .cover-null .specimen strong {
+    font-size: 14cqi;
+    letter-spacing: -0.05em;
+    white-space: nowrap;
   }
   .comparison {
     position: absolute;

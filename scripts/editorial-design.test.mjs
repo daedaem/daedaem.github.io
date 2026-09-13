@@ -99,7 +99,7 @@ test('home, all-post and category lists share cover resolution without changing 
 
 test('title styling preserves every character and only splits the first colon-space', () => {
   const titles = [
-    '바꾼 적 없는데 결재가 또 올라온다: NULL과 항목의 주인',
+    '바꾼 적 없는데 결재가 또 올라온다: 빈 값 비교와 인터페이스 규약',
     '첫째: 둘째: 셋째',
     'https://example.com',
     '제목',

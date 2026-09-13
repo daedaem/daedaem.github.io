@@ -15,7 +15,7 @@ test('ordinary uploads do not get invented responsive image URLs', () => {
 })
 
 test('generated article covers retain their own subject, three local sizes and bounded weight', () => {
-  assert.equal(Object.keys(assets).length, 6)
+  assert.equal(Object.keys(assets).length, 5)
   const fullHashes = new Set()
   for (const [src, asset] of Object.entries(assets)) {
     assert.match(src, /^\/uploads\/post-covers\/[a-z0-9-]+-v[1-9]\d*\.webp$/)
@@ -58,7 +58,27 @@ test('generated article covers retain their own subject, three local sizes and b
     assert.equal(thumbnail.sizes, '(max-width: 640px) 88px, 144px')
     assert.match(card.sizes, /500px$/)
   }
-  assert.equal(fullHashes.size, 6, 'each public article needs its own artwork')
+  assert.equal(fullHashes.size, 5, 'each active raster cover needs its own artwork')
+})
+
+test('the corrected synchronization case uses a two-cause cover, not the retired one-check illustration', () => {
+  const post = load(
+    source('src/content/posts/null-and-empty-string-sync-failure.md').match(
+      /^---\n([\s\S]*?)\n---/,
+    )[1],
+  )
+  assert.equal(post.cover, 'null')
+  assert.equal(post.coverImage, undefined)
+  assert.ok(
+    Object.keys(assets).every((path) => !path.includes('null-and-empty-string-sync-failure')),
+  )
+  const cover = source('src/components/PostCover.astro')
+  const branch = cover.split("kind === 'null' && (")[1].split("kind === 'query' && (")[0]
+  assert.match(branch, /값 비교/)
+  assert.match(branch, /수신 규약/)
+  assert.match(branch, /처리 구분값/)
+  assert.match(cover, /\.cover-null \.specimen strong \{[^}]*white-space: nowrap/)
+  assert.doesNotMatch(branch, /ONE CHECK|UNKNOWN|INPUT \/ (BEFORE|AFTER)|Java · 변경 감지/)
 })
 
 test('cover loading preserves a prioritized hero and lazy decorative thumbnails', () => {

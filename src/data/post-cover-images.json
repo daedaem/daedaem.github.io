@@ -1,25 +1,4 @@
 {
-  "/uploads/post-covers/null-and-empty-string-sync-failure-v2.webp": {
-    "width": 1440,
-    "height": 960,
-    "variants": [
-      {
-        "src": "/uploads/post-covers/null-and-empty-string-sync-failure-v2-320.webp",
-        "width": 320,
-        "height": 213
-      },
-      {
-        "src": "/uploads/post-covers/null-and-empty-string-sync-failure-v2-768.webp",
-        "width": 768,
-        "height": 512
-      },
-      {
-        "src": "/uploads/post-covers/null-and-empty-string-sync-failure-v2.webp",
-        "width": 1440,
-        "height": 960
-      }
-    ]
-  },
   "/uploads/post-covers/address-search-9s-to-100ms-v2.webp": {
     "width": 1440,
     "height": 960,

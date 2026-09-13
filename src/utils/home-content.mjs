@@ -1,11 +1,10 @@
-// 처음 읽을 글의 순서와 읽을거리 안내. 글의 사실·공개 여부는 원문이 결정한다.
+// 처음 읽을 글의 순서와 읽을거리 안내. 경험의 근거는 작성자가 확인한 사실이며, 원문도 정정 대상이다.
 export const HOME_READING_PICKS = [
   {
     id: 'null-and-empty-string-sync-failure',
     readingNote:
-      'Java와 SQL의 변경 판정, 항목별 데이터 소유권. 같은 증상으로 보이던 두 원인을 분리한 과정.',
-    causeSummary:
-      'SQL이 NULL과 실제 값 사이의 변경을 놓쳤고, 상대가 관리하는 항목까지 변경 감지에 들어가 있었다.',
+      'NULL·빈 문자열 비교와 인터페이스 처리 구분값. 반복 결재를 만들던 두 오류를 각각 수정한 과정.',
+    causeSummary: '빈 값 비교와 처리 구분값의 규약이 맞지 않아 수신값이 정상 반영되지 않았다.',
   },
   {
     id: 'address-search-9s-to-100ms',
@@ -14,7 +13,7 @@ export const HOME_READING_PICKS = [
   },
   {
     id: 'retire-flash-module-by-integration',
-    readingNote: '재개발 대신 기존 연동을 선택하며, 계약 상태와 실패 시 되돌림을 설계한 과정.',
+    readingNote: '기존 API 연동에 맞춘 업무 로직 개발과 계약 상태 동기화, 적재 실패 복구 과정.',
   },
 ]
 

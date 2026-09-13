@@ -79,10 +79,15 @@ test('author background uses the stated research motivation without implying AI 
 
 test('case summaries expose supported implementation and collaboration without inventing outcomes', () => {
   const summary = highlights.replace(/\s+/g, ' ')
-  assert.match(summary, /변경 판정을 한곳으로 모으고 인터페이스·프로시저를 수정/)
-  assert.match(summary, /상대 담당자와 항목별 소유권을 합의/)
-  assert.match(summary, /계약 요청 흐름과 상태 동기화 배치/)
-  assert.match(summary, /옛 계약 조회를 보존하면서 Flash 모듈 운영을 종료/)
+  assert.match(summary, /NULL·빈 문자열 비교 오류/)
+  assert.match(summary, /처리 구분값의 규약 불일치/)
+  assert.match(summary, /송수신 규약을 맞추고 비교·반영 로직을 수정/)
+  assert.match(summary, /해당 오류로 월 34건 반복되던 불필요한 결재를 없앴습니다/)
+  assert.match(summary, /회의에서 제안된 기존 계약 시스템 API 활용 방안의 구현/)
+  assert.match(summary, /연동 전후 업무 로직을 새로 개발/)
+  assert.match(summary, /상태 동기화·적재 실패 복구/)
+  assert.match(summary, /Flash 기반 계약 모듈을 대체/)
+  assert.doesNotMatch(summary, /소유권|대표값|판정을 한곳|옛 계약 조회/)
   assert.doesNotMatch(summary, /재발 0|100%|단독|총괄|무중단|비용 \d+%/)
 })
 
@@ -99,7 +104,7 @@ test('address summary distinguishes the choice from measured DB results and late
   assert.match(summary['변경·결과'], /외부 서비스 의존은 남았습니다/)
 })
 
-test('work approach stays concise and unconfirmed new-build technologies remain withheld', () => {
+test('work approach stays concise and private ongoing company projects remain withheld', () => {
   const approach = aboutText.match(/<h2 id="approach"[^>]*>[\s\S]*?<p>([\s\S]*?)<\/p>/)?.[1]
   assert.ok(approach)
   assert.ok(approach.trim().length < 100)
