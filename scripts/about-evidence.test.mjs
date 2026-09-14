@@ -16,6 +16,18 @@ test('home keeps factual identity and replaces duplicate topic keywords with a s
   assert.doesNotMatch(home, /백엔드 · 레거시 시스템 · 문제 해결|남긴 기록입니다/)
 })
 
+test('AI disclosure distinguishes author records from editing help without claiming full verification', () => {
+  const source = about.replace(/\s+/g, ' ')
+  assert.match(
+    source,
+    /사례 글은 직접 작성한 업무 기록을 바탕으로, AI의 도움을 받아 재구성하고 문장을 다듬었습니다/,
+  )
+  assert.match(source, /학습 내용을 정리하는 데에도 AI를 활용합니다/)
+  assert.doesNotMatch(source, /모든 (?:글|내용).*검증(?:했습니다|을 마쳤습니다)|오탈자 교정에만 AI/)
+  const section = about.split('id="writing"')[1].split('</section>')[0]
+  assert.match(section, /AI의 도움/)
+})
+
 test('about emphasizes three supported cases and links only to currently public cases', () => {
   assert.ok(highlights)
   assert.ok(rest)
