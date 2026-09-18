@@ -41,6 +41,11 @@ const { searchIndex = true } = Astro.props
     <Footer />
     <script>
       import { createCodeCopy } from '@/utils/code-copy.mjs'
+      import { markScrollableCode } from '@/utils/code-scroll.mjs'
+      // 옆으로 넘길 수 있는 코드 블록에만 오른쪽 가장자리 페이드를 켠다.
+      for (const pre of document.querySelectorAll<HTMLElement>('pre.astro-code')) {
+        markScrollableCode(pre)
+      }
       // 코드 블록마다 복사 버튼을 붙인다. 클립보드 API가 없는 환경에서는 붙이지 않는다.
       if (navigator.clipboard) {
         const check =
