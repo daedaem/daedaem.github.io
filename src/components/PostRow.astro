@@ -11,8 +11,6 @@ interface Props {
   updated?: Date
   category?: string
   readingMinutes?: number
-  /** 사례 시점이 있으면 홈처럼 작성·수정일 대신 그 시점만 보여 준다. */
-  happened?: string
   /** 목록 페이지에서는 한 줄 요약을 같이 보여 준다. 홈처럼 제목만 둘 때는 생략한다. */
   description?: string
   compact?: boolean
@@ -28,7 +26,6 @@ const {
   updated,
   category,
   readingMinutes,
-  happened,
   description,
   compact = false,
   editorial = false,
@@ -52,16 +49,8 @@ const cat = category ? getCategory(category) : undefined
       {!compact && description && <span class="desc">{description}</span>}
     </span>
     <span class="meta">
-      {
-        happened ? (
-          <span>사례 시점 {happened}</span>
-        ) : (
-          <>
-            <ContentDates date={date} updated={updated} compact />
-            {readingMinutes && <span>{readingMinutes}분</span>}
-          </>
-        )
-      }
+      <ContentDates date={date} updated={updated} compact />
+      {readingMinutes && <span>{readingMinutes}분</span>}
     </span>
     {
       cover && (

@@ -49,11 +49,10 @@ test('the fade keeps the label strip visible and is wired to the same attributes
   assert.match(layout, /markScrollableCode\(pre\)/)
 })
 
-test('home rows show the case period instead of authoring dates when it exists', () => {
+test('home rows keep authoring dates and topic counts stay hidden below three posts', () => {
   const home = readFileSync(new URL('../src/pages/index.astro', import.meta.url), 'utf8')
-  assert.match(home, /happened=\{post\.data\.happened\}/)
-  assert.match(home, /사례 시점 \{post\.data\.happened\}/)
+  assert.doesNotMatch(home, /사례 시점/)
   assert.match(home, /\(counts\.get\(category\.id\) \?\? 0\) >= 3 &&/)
   const row = readFileSync(new URL('../src/components/PostRow.astro', import.meta.url), 'utf8')
-  assert.match(row, /happened \? \(\s*<span>사례 시점 \{happened\}<\/span>/)
+  assert.match(row, /<ContentDates date=\{date\} updated=\{updated\} compact \/>/)
 })
