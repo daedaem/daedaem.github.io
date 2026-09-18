@@ -401,19 +401,26 @@ pre:hover .copy-code,
 }
 
 /*
- * 옆으로 넘길 수 있는 코드 블록은 오른쪽 가장자리를 흐려 내용이 더 있음을 알린다.
- * 위쪽 띠(라벨·복사 버튼)는 마스크에서 제외하고, 끝까지 넘기면 페이드를 끈다.
- * 마스크는 보이는 상자 기준이라 내용이 스크롤되어도 가장자리에 머문다.
+ * 가로 스크롤은 pre가 아니라 안쪽 code가 맡는다. 그래야 pre에 붙는 언어 라벨과 복사 버튼이
+ * 내용과 함께 밀리지 않는다. Shiki가 pre에 인라인한 overflow-x는 !important로 덮는다.
  */
-pre.astro-code[data-scrollable]:not([data-scroll-end]) {
-  -webkit-mask-image:
-    linear-gradient(90deg, #000 calc(100% - 3rem), transparent),
-    linear-gradient(#000 3rem, transparent 3rem);
-  -webkit-mask-composite: source-over;
-  mask-image:
-    linear-gradient(90deg, #000 calc(100% - 3rem), transparent),
-    linear-gradient(#000 3rem, transparent 3rem);
-  mask-composite: add;
+pre.astro-code {
+  overflow: visible !important;
+}
+pre.astro-code > code {
+  display: block;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: inherit;
+}
+
+/*
+ * 옆으로 넘길 수 있는 코드 블록은 오른쪽 가장자리를 흐려 내용이 더 있음을 알린다.
+ * 끝까지 넘기면 페이드를 끈다. 마스크는 보이는 상자 기준이라 내용이 스크롤되어도 가장자리에 머문다.
+ */
+pre.astro-code[data-scrollable]:not([data-scroll-end]) > code {
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent);
 }
 
 /* Shiki가 인라인한 흰 배경 대신 --code-bg를 쓴다. 다크 규칙이 더 구체적이라 다크에서는 아래가 이긴다 */
