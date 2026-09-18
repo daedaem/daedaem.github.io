@@ -8,7 +8,6 @@ interface Props {
   href: string
   title: string
   date: Date
-  updated?: Date
   category?: string
   readingMinutes?: number
   /** 목록 페이지에서는 한 줄 요약을 같이 보여 준다. 홈처럼 제목만 둘 때는 생략한다. */
@@ -23,7 +22,6 @@ const {
   href,
   title,
   date,
-  updated,
   category,
   readingMinutes,
   description,
@@ -49,7 +47,7 @@ const cat = category ? getCategory(category) : undefined
       {!compact && description && <span class="desc">{description}</span>}
     </span>
     <span class="meta">
-      <ContentDates date={date} updated={updated} compact />
+      <ContentDates date={date} compact />
       {readingMinutes && <span>{readingMinutes}분</span>}
     </span>
     {

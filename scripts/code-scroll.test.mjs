@@ -69,10 +69,14 @@ test('the inner code scrolls so the label and copy button stay put, and the fade
   assert.match(layout, /markScrollableCode\(pre\)/)
 })
 
-test('home rows keep authoring dates and topic counts stay hidden below three posts', () => {
+test('list rows show only the authoring date and topic counts stay hidden below three posts', () => {
   const home = readFileSync(new URL('../src/pages/index.astro', import.meta.url), 'utf8')
   assert.doesNotMatch(home, /사례 시점/)
   assert.match(home, /\(counts\.get\(category\.id\) \?\? 0\) >= 3 &&/)
   const row = readFileSync(new URL('../src/components/PostRow.astro', import.meta.url), 'utf8')
-  assert.match(row, /<ContentDates date=\{date\} updated=\{updated\} compact \/>/)
+  assert.match(row, /<ContentDates date=\{date\} compact \/>/)
+  assert.doesNotMatch(row, /updated/)
+  for (const path of ['src/pages/notes/index.astro', 'src/pages/tags/[tag].astro']) {
+    assert.doesNotMatch(readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'), /<ContentDates[^>]*updated=/)
+  }
 })

@@ -104,7 +104,6 @@ for (const post of posts) counts.set(post.data.category, (counts.get(post.data.c
                     href={`/posts/${post.id}/`}
                     title={post.data.title}
                     date={post.data.date}
-                    updated={post.data.updated}
                     category={post.data.category}
                     cover={resolvePostCover(post.data)}
                     readingMinutes={readingMinutes(post.body ?? '')}

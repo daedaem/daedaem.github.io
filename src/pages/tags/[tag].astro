@@ -82,7 +82,7 @@ const { tag, list } = Astro.props
               {it.kind === 'wiki' && <span class="kind">[위키]</span>}
               {it.title}
             </a>
-            <ContentDates date={it.date} updated={it.updated} stacked />
+            <ContentDates date={it.date} stacked />
           </li>
         ))
       }

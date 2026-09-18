@@ -126,7 +126,7 @@ const tabs = [
                 {g.items.map((n) => (
                   <li>
                     <a href={`/notes/${n.id}/`}>{n.data.title.trim()}</a>
-                    <ContentDates date={n.data.date} updated={n.data.updated} original />
+                    <ContentDates date={n.data.date} original />
                   </li>
                 ))}
               </ol>
@@ -148,7 +148,7 @@ const tabs = [
             {others.map((n) => (
               <li>
                 <a href={`/notes/${n.id}/`}>{n.data.title.trim()}</a>
-                <ContentDates date={n.data.date} updated={n.data.updated} original />
+                <ContentDates date={n.data.date} original />
               </li>
             ))}
           </ol>

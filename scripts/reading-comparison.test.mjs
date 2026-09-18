@@ -60,7 +60,7 @@ test('both catalog routes use the same reading rows and real category navigation
     const text = source(path)
     assert.match(text, /<ReadingCatalog counts=\{counts\}/)
     assert.match(text, /<PostRow[\s\S]*?editorial\s+reading/)
-    assert.match(text, /updated=\{p\.data\.updated\}/)
+    assert.doesNotMatch(text, /updated=\{p\.data\.updated\}/)
   }
   const nav = source('src/components/ReadingCategories.astro')
   assert.match(nav, /<details[^>]*data-reading-categories>/)

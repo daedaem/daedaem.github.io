@@ -46,7 +46,6 @@ const { category, posts, counts, total } = Astro.props
               title={p.data.title}
               description={p.data.description}
               date={p.data.date}
-              updated={p.data.updated}
               cover={resolvePostCover(p.data)}
               readingMinutes={readingMinutes(p.body ?? '')}
               editorial
