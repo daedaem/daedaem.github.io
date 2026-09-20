@@ -1,11 +1,11 @@
 ---
 draft: false
 title: '@Transactional 안에서 예외를 catch해 문자열을 돌려주면 롤백이 안 된다'
-description: '서비스가 업무 결과를 문자열로 반환하는 구조에서 checked 예외를 catch해 "SERVER_ERROR"를 돌려주면 프록시는 정상 종료로 보고 commit한다. 업무 결과와 시스템 오류를 갈라 롤백을 살리는 방법, 그리고 self-invocation 함정.'
+description: '트랜잭션이 rollback-only로 표시되지 않은 상태에서 checked 예외를 catch해 "SERVER_ERROR"를 돌려주면 프록시는 정상 종료로 보고 commit한다. 업무 결과와 시스템 오류를 갈라 롤백을 살리는 방법, 그리고 self-invocation 함정.'
 topic: 'spring'
 tags: ['Spring', '트랜잭션', '예외', '롤백', 'AOP']
 created: 2026-08-26
-updated: 2026-09-06
+updated: 2026-09-20
 status: 'stable'
 ---
 

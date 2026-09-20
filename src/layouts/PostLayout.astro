@@ -172,6 +172,15 @@ const heading = splitEditorialTitle(title)
               ))}
             </ul>
           </details>
+          <script is:inline>
+            {
+              // 본문을 배치하기 전에 초기 상태를 정한다. JS가 없으면 열린 목차를 유지한다.
+              const contents = document.currentScript.previousElementSibling
+              if (contents instanceof HTMLDetailsElement) {
+                contents.open = matchMedia('(min-width: 1200px)').matches
+              }
+            }
+          </script>
         </nav>
       )
     }
@@ -244,14 +253,13 @@ const heading = splitEditorialTitle(title)
 
 <script>
   import { initCurrentHeading } from '@/utils/current-heading.mjs'
-  // 좁은 화면에서는 접힌 목차로 시작한다. JS가 없어도 목차는 그대로 읽을 수 있다.
+  // 초기 상태는 목차 직후의 동기 스크립트가 정한다. 늦은 모듈 실행으로 수동 조작을 덮지 않는다.
   const contents = document.querySelector<HTMLDetailsElement>('.post > .toc details')
   const wide = matchMedia('(min-width: 1200px)')
   if (contents) {
     const sync = () => {
       contents.open = wide.matches
     }
-    sync()
     wide.addEventListener('change', sync)
   }
 

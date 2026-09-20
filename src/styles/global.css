@@ -305,8 +305,8 @@ code {
 
 pre {
   position: relative;
-  /* 줄바꿈이 켜져 있어 오른쪽 위 라벨·버튼 자리를 비워 둔다 */
-  padding: 1.15rem 3.25rem 1.15rem 1.25rem;
+  /* 언어 라벨과 44px 복사 버튼은 본문 코드와 겹치지 않는 상단 띠에 둔다. */
+  padding: 3.25rem 1.25rem 1.25rem;
   border-radius: 8px;
   border: 1px solid var(--border);
   overflow-x: auto;
@@ -319,12 +319,13 @@ pre code {
   font-size: inherit;
 }
 
-/* 코드 블록 우상단: 언어 라벨과 복사 버튼. 버튼은 BaseLayout의 스크립트가 붙인다. */
+/* 코드 위의 띠: 왼쪽 언어 라벨, 오른쪽 복사 버튼. */
 pre[data-language]:not([data-language='plaintext'])::before {
   content: attr(data-language);
   position: absolute;
-  top: 8px;
-  right: 44px;
+  top: 16px;
+  left: 1.25rem;
+  right: auto;
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.04em;
@@ -340,10 +341,10 @@ pre[data-language]:not([data-language='plaintext'])::before {
 }
 .copy-code {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 30px;
-  height: 30px;
+  top: 3px;
+  right: 5px;
+  width: var(--control-size);
+  height: var(--control-size);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -387,16 +388,11 @@ pre:hover .copy-code,
 @media (max-width: 640px) {
   pre.astro-code {
     white-space: pre !important;
-    padding: 2.5rem 1rem 1rem;
+    padding: 3.25rem 1rem 1rem;
   }
   pre[data-language]:not([data-language='plaintext'])::before {
-    top: 10px;
     right: auto;
     left: 1rem;
-  }
-  .copy-code {
-    top: 6px;
-    right: 6px;
   }
 }
 

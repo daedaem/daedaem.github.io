@@ -98,6 +98,15 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
                 ))}
               </ul>
             </details>
+            <script is:inline>
+              {
+                // PC 목차는 본문 흐름 안에 있으므로 나중에 펼치거나 접지 않는다.
+                const contents = document.currentScript.previousElementSibling
+                if (contents instanceof HTMLDetailsElement) {
+                  contents.open = !matchMedia('(max-width: 60rem)').matches
+                }
+              }
+            </script>
           </nav>
         )
       }
@@ -128,14 +137,13 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 
 <script>
   import { initCurrentHeading } from '@/utils/current-heading.mjs'
-  // JS가 없으면 열린 목차를 유지한다. 문서 트리와 같은 좁은 화면 기준을 쓴다.
+  // 초기 상태는 동기 스크립트에서 정하고, 모듈은 화면 분기 변경에만 반응한다.
   const contents = document.querySelector<HTMLDetailsElement>('.post > .toc details')
   const narrow = matchMedia('(max-width: 60rem)')
   if (contents) {
     const sync = () => {
       contents.open = !narrow.matches
     }
-    sync()
     narrow.addEventListener('change', sync)
   }
   initCurrentHeading()

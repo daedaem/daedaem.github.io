@@ -5,7 +5,7 @@ description: 'Code-Behind 구조로 도는 레거시 .NET 화면을 읽기 위�
 topic: 'dotnet'
 tags: ['ASP.NET', 'C#', 'WebForms', 'ViewState', '레거시']
 created: 2025-12-29
-updated: 2026-09-06
+updated: 2026-09-20
 status: 'growing'
 ---
 
@@ -162,7 +162,7 @@ cmd.Parameters.Add("@ApplicantName", SqlDbType.NVarChar, 100)
 
 ## Spring에서 오면 헷갈리는 것
 
-| | Spring MVC | Web Forms |
+| 비교 항목 | Spring MVC | Web Forms |
 |---|---|---|
 | 요청 단위 | URL → 컨트롤러 메서드 | **페이지를 대상으로 폼 값·상태 전송 후 이벤트 처리** |
 | 상태 유지 | 세션 또는 무상태 | **ViewState가 클라이언트를 왕복** |

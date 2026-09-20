@@ -34,7 +34,7 @@ Oracle은 길이가 0인 문자열을 `NULL`로 취급한다. 여기서 빈 문�
 ```sql
 SELECT CASE WHEN '' IS NULL THEN 'NULL' ELSE 'VALUE' END AS empty_value
   FROM dual;
--- 결과: NULL
+-- 결과: 'NULL' (NULL 값이 아니라 문자열)
 ```
 
 빈 값의 저장·비교 원리는 [Oracle 빈 문자열과 NULL](/wiki/oracle-empty-string-is-null/)에 따로 정리했다. 일반적인 처리 방법과 이번에 실제 수행한 수정은 구분해서 읽어야 한다.
