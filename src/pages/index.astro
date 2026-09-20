@@ -60,9 +60,11 @@ for (const post of posts) counts.set(post.data.category, (counts.get(post.data.c
                           <a href={`/posts/${post.id}/`}>
                             {index === 0 ? (
                               <>
-                                {/* 부제가 줄을 바꿔 이어지므로 구분자는 읽기 순서에만 남긴다 */}
-                                {heading.main}
-                                <span class="visually-hidden">{heading.separator}</span>
+                                {/* 부제가 줄을 바꿔 이어지므로 구분자는 읽기 순서에만 남긴다. 배열로 붙여 제목과 구분자 사이에 공백이 끼지 않게 한다 */}
+                                {[
+                                  heading.main,
+                                  <span class="visually-hidden">{heading.separator}</span>,
+                                ]}
                                 {heading.subtitle && (
                                   <span class="subtitle">{heading.subtitle}</span>
                                 )}

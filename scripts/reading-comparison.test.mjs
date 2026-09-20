@@ -81,7 +81,7 @@ test('mobile lead title keeps full width with an 88px supporting cover beside th
   assert.match(home, /\(max-width: 640px\) 5\.5rem, \(max-width: 900px\) 50vw, 360px/)
   assert.match(home, /\.editorial-card\.without-cover\s*\{[^}]*grid-template-areas: 'copy' 'note';/)
   assert.match(mobile, /\.lead-card \.card-title\s*\{\s*font-size: 1\.5rem;/)
-  assert.match(home, /\{heading\.main\}/)
+  assert.match(home, /\{\s*\[\s*heading\.main,/)
   // 구분자는 화면에서만 숨기고 링크의 읽기 순서에는 남긴다
   assert.match(home, /<span class="visually-hidden">\{heading\.separator\}<\/span>/)
   assert.match(home, /<span class="subtitle">\{heading\.subtitle\}<\/span>/)
