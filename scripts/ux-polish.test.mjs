@@ -77,7 +77,9 @@ test('home summaries are separate from the actual article cause and reading orde
 test('card and row links contain only titles while CSS preserves the whole click and focus target', () => {
   const home = source('src/pages/index.astro')
   assert.match(home, /<h3 class="card-title">\s*<a href=\{`\/posts\/\$\{post\.id\}\/`\}>/)
-  assert.match(home, /heading\.main \+ heading\.separator/)
+  assert.match(home, /\{heading\.main\}/)
+  // 구분자는 화면에서만 숨기고 링크의 읽기 순서에는 남긴다
+  assert.match(home, /<span class="visually-hidden">\{heading\.separator\}<\/span>/)
   assert.match(
     home,
     /heading\.subtitle &&\s*\(?\s*<span class="subtitle">\{heading\.subtitle\}<\/span>/,

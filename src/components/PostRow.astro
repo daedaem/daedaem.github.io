@@ -31,9 +31,15 @@ const {
   cover,
 } = Astro.props
 const cat = category ? getCategory(category) : undefined
+const showDesc = !compact && !!description
 ---
 
-<li class:list={['row', { 'no-cat': !cat, editorial, reading, 'with-cover': !!cover }]}>
+<li
+  class:list={[
+    'row',
+    { 'no-cat': !cat, editorial, reading, 'with-cover': !!cover, 'no-desc': !showDesc },
+  ]}
+>
   <div class="row-content">
     {
       cat && (
@@ -44,7 +50,7 @@ const cat = category ? getCategory(category) : undefined
     }
     <span class="body">
       <a class="title" href={href}>{title}</a>
-      {!compact && description && <span class="desc">{description}</span>}
+      {showDesc && <span class="desc">{description}</span>}
     </span>
     <span class="meta">
       <ContentDates date={date} compact />
@@ -186,6 +192,17 @@ const cat = category ? getCategory(category) : undefined
     grid-area: meta;
     flex-direction: row;
     flex-wrap: wrap;
+  }
+  /* 요약이 없는 넓은 화면의 행은 날짜를 제목 바로 아래에 붙이고, 표지가 그 옆 전체에 걸친다 */
+  @media (min-width: 641px) {
+    .row.with-cover.no-desc .row-content {
+      grid-template-areas: 'cat cover' 'title cover' 'meta cover';
+      grid-template-rows: min-content min-content 1fr;
+    }
+    .row.with-cover.no-desc.no-cat .row-content {
+      grid-template-areas: 'title cover' 'meta cover';
+      grid-template-rows: min-content 1fr;
+    }
   }
   .row-cover {
     grid-area: cover;
