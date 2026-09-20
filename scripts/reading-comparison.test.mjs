@@ -74,6 +74,17 @@ test('both catalog routes use the same reading rows and real category navigation
   assert.match(nav, /aria-current=/)
 })
 
+test('mobile lead title keeps full width with an 88px supporting cover beside the summary', () => {
+  const home = source('src/pages/index.astro')
+  const mobile = home.slice(home.indexOf('@media (max-width: 640px)'))
+  assert.match(mobile, /\.lead-card:not\(\.without-cover\)\s*\{\s*grid-template-columns: minmax\(0, 1fr\) 5\.5rem;\s*grid-template-areas: 'copy copy' 'note cover';/)
+  assert.match(home, /\(max-width: 640px\) 5\.5rem, \(max-width: 900px\) 50vw, 360px/)
+  assert.match(home, /\.editorial-card\.without-cover\s*\{[^}]*grid-template-areas: 'copy' 'note';/)
+  assert.match(mobile, /\.lead-card \.card-title\s*\{\s*font-size: 1\.5rem;/)
+  assert.match(home, /heading\.main \+ heading\.separator/)
+  assert.match(home, /<span class="subtitle">\{heading\.subtitle\}<\/span>/)
+})
+
 test('catalog explanations are disclosed, not deleted, and original date meaning is retained', () => {
   const posts = source('src/pages/posts/index.astro')
   assert.match(posts, /실제로 맡아 고친 문제를 남깁니다\./)

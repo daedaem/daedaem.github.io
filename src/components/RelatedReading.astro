@@ -1,28 +1,18 @@
 ---
 import { getCollection } from 'astro:content'
+import { selectWikiReading } from '@/utils/wiki-reading.mjs'
 interface Props {
   current: string
-  tags: string[]
 }
-const { current, tags } = Astro.props
+const { current } = Astro.props
 const pool = [
   ...(await getCollection('wiki', ({ data }) => !data.draft)),
   ...(await getCollection('posts', ({ data }) => !data.draft)),
 ]
-const currentURL = '/wiki/' + current + '/'
-const candidates = pool.filter((e) => !(e.collection === 'wiki' && e.id === current))
-const references = candidates.filter((e) => e.body?.includes(currentURL))
-const related = candidates
-  .filter((e) => !references.includes(e))
-  .map((entry) => ({
-    entry,
-    score: entry.data.tags.filter((tag) => tags.some((t) => t.toLowerCase() === tag.toLowerCase()))
-      .length,
-  }))
-  .filter((e) => e.score > 0)
-  .sort((a, b) => b.score - a.score || a.entry.data.title.localeCompare(b.entry.data.title, 'ko'))
-  .slice(0, 3)
-  .map((e) => e.entry)
+const currentEntry = pool.find((entry) => entry.collection === 'wiki' && entry.id === current)
+const { references, related } = currentEntry
+  ? selectWikiReading(pool, currentEntry)
+  : { references: [], related: [] }
 ---
 
 {
