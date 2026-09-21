@@ -53,7 +53,7 @@ test('about identifies the author and shows evidence before general work philoso
   assert.match(about, /<span>백엔드 개발자<\/span>/)
   assert.match(about, /<dl class="at-a-glance">/)
   assert.ok(about.indexOf('class="work-highlights"') < about.indexOf('id="approach"'))
-  assert.match(aboutText, /역량테스트를 통과하지 못해 입사로 이어지지 않았습니다/)
+  assert.match(aboutText, /최종 입사는 불발되었습니다/)
   assert.match(about, /AI로 생성한 개념 일러스트/)
 })
 
@@ -80,10 +80,10 @@ test('about summaries retain the external dependency limit and do not claim an A
 test('author background uses the stated research motivation without implying AI work or employment', () => {
   assert.match(aboutText, /운동이 정신건강에 이로운 이유를 기전으로 설명하고 싶어/)
   assert.match(aboutText, /IBM Watson AI 플랫폼을 간단히 체험/)
-  assert.match(aboutText, /채용연계형 교육 과정인 SCSA에 선발되어 6개월간\s*교육을 받았습니다/)
-  assert.match(aboutText, /교육 수료와 SW 역량테스트 통과를 조건으로 입사가 확정되는 과정/)
-  assert.match(aboutText, /역량테스트를 통과하지 못해 입사로 이어지지 않았습니다/)
-  assert.doesNotMatch(aboutText, /공채 전형에 합격/)
+  assert.match(aboutText, /채용연계형 교육 과정인 SCSA에 선발되어 6개월간\s*SW 교육을 받았습니다/)
+  assert.match(aboutText, /최종 입사는 불발되었습니다/)
+  // 결과만 적고 원인은 학습 노트에 둔다. 소개에서 공채 합격이나 시험 결과를 말하지 않는다
+  assert.doesNotMatch(aboutText, /공채 전형에 합격|역량테스트/)
   assert.doesNotMatch(about, /늦게 시작한 만큼|남들이 그냥 지나가는|최종 SW 역량테스트는 넘지/)
   assert.match(about, /개발 환경의 WAS 전환 중 잔존 배치 프로세스/)
   const training = aboutText.match(/<h3 id="training">([\s\S]*?)<\/li>/)?.[1]
