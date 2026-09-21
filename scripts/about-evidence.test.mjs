@@ -80,6 +80,8 @@ test('about summaries retain the external dependency limit and do not claim an A
 test('author background uses the stated research motivation without implying AI work or employment', () => {
   assert.match(aboutText, /운동이 정신건강에 이로운 이유를 기전으로 설명하고 싶어/)
   assert.match(aboutText, /IBM Watson AI 플랫폼을 간단히 체험/)
+  assert.match(aboutText, /바이오인포매틱스를 하려면 프로그래밍이 먼저였기에/)
+  assert.match(aboutText, /소프트웨어를 만들어 문제를 해결하는 일이 더 맞았고/)
   assert.match(aboutText, /채용연계형 교육 과정인 SCSA에 선발되어 6개월간\s*SW 교육을 받았습니다/)
   assert.match(aboutText, /최종 입사는 불발되었습니다/)
   // 결과만 적고 원인은 학습 노트에 둔다. 소개에서 공채 합격이나 시험 결과를 말하지 않는다
