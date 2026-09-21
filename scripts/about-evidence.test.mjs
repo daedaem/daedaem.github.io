@@ -53,7 +53,6 @@ test('about identifies the author and shows evidence before general work philoso
   assert.match(about, /<span>백엔드 개발자<\/span>/)
   assert.match(about, /<dl class="at-a-glance">/)
   assert.ok(about.indexOf('class="work-highlights"') < about.indexOf('id="approach"'))
-  assert.match(aboutText, /최종 입사는 불발되었습니다/)
   assert.match(about, /AI로 생성한 개념 일러스트/)
 })
 
@@ -80,17 +79,18 @@ test('about summaries retain the external dependency limit and do not claim an A
 test('author background uses the stated research motivation without implying AI work or employment', () => {
   assert.match(aboutText, /운동이 정신건강에 이로운 이유를 기전으로 설명하고 싶어/)
   assert.match(aboutText, /IBM Watson AI 플랫폼을 간단히 체험/)
-  assert.match(aboutText, /바이오인포매틱스를 배우려면 프로그래밍이 먼저였고/)
-  assert.match(aboutText, /프로그래밍은 SSAFY에서 처음 배웠습니다/)
-  assert.match(aboutText, /소프트웨어를 만드는 일에 더 흥미가 생겼고/)
-  assert.match(aboutText, /채용연계형 교육 과정인 SCSA에 선발되어 6개월간\s*SW 교육을 받았습니다/)
-  assert.match(aboutText, /최종 입사는 불발되었습니다/)
-  // 결과만 적고 원인은 학습 노트에 둔다. 소개에서 공채 합격이나 시험 결과를 말하지 않는다
-  assert.doesNotMatch(aboutText, /공채 전형에 합격|역량테스트/)
+  // 교육 문단이 보호할 사실: SSAFY가 첫 프로그래밍 학습, SCSA는 채용연계형 교육 과정, 삼성전자 입사 사실 없음.
+  // 정확한 문구는 고정하지 않는다. 문장 사이의 모순은 편집 검토로 본다.
+  const training = aboutText.match(/<h3 id="training">([\s\S]*?)<\/li>/)?.[1]
+  assert.match(training, /SSAFY[\s\S]*프로그래밍[\s\S]*처음/)
+  assert.match(training, /SSAFY[\s\S]*팀 프로젝트[\s\S]*화면 구현과 API 연동/)
+  assert.match(training, /채용연계형[\s\S]*SCSA[\s\S]*6개월/)
+  assert.match(training, /최종 입사(하지는 못했|는 불발|로 이어지지)/)
+  assert.match(training, /href="\/notes\/scsa\/"/)
+  // 삼성전자 공채 합격이나 근무 경력처럼 읽히는 표현은 금지한다
+  assert.doesNotMatch(training, /공채 전형에 합격|합격해|삼성전자에서 근무|삼성전자 입사|신입사원으로/)
   assert.doesNotMatch(about, /늦게 시작한 만큼|남들이 그냥 지나가는|최종 SW 역량테스트는 넘지/)
   assert.match(about, /개발 환경의 WAS 전환 중 잔존 배치 프로세스/)
-  const training = aboutText.match(/<h3 id="training">([\s\S]*?)<\/li>/)?.[1]
-  assert.match(training, /SSAFY[\s\S]*팀 프로젝트[\s\S]*화면 구현과 API 연동/)
   assert.doesNotMatch(about, /JEUS|WebtoB|WebLogic|AIX|HP-UX|Windows Server/)
 })
 
