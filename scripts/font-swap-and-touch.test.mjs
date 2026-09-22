@@ -85,3 +85,16 @@ test('태그와 검색 결과 링크는 손가락으로 누를 수 있는 크기
   const margin = link.match(/margin-block:\s*-([\d.]+)rem/)?.[1]
   assert.equal(pad, margin, '여백과 음수 바깥 여백이 같아야 한다')
 })
+
+test('사례 글은 수정일을 화면에 적지 않고, 갱신이 핵심인 위키 문서에서만 보여 준다', () => {
+  const post = source('src/layouts/PostLayout.astro')
+  const wiki = source('src/pages/wiki/[...slug].astro')
+  // 사례 글·노트 상세: 화면에는 작성일과 사례 시점만 남는다
+  const dates = post.match(/<ContentDates[^/]*\/>/)?.[0]
+  assert.ok(dates, 'PostLayout에 ContentDates가 있어야 한다')
+  assert.doesNotMatch(dates, /updated=/)
+  // 검색엔진에 알리는 수정 시각은 유지한다
+  assert.match(post, /updatedAt=\{updated\}/)
+  // 위키 문서는 '마지막 수정'이 정렬 기준이자 읽는 사람이 보는 정보다
+  assert.match(wiki, /<ContentDates[\s\S]{0,200}updated=\{entry\.data\.updated\}/)
+})

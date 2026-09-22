@@ -52,7 +52,9 @@ test('publication dates and SCSA original record are not replaced by revision da
   assert.equal(data.slug, 'scsa')
   assert.equal(data.legacyPath, '/SCSA/')
   // 제목은 사용자가 정한 문구. 합격이 앞에 오고 결과가 뒤에 오는 형태만 검사한다
-  assert.match(data.title, /^삼성전자 공채 전형\(DX SCSA 19기\) 합격/)
+  assert.match(data.title, /^삼성전자 DX SCSA 19기 합격/)
+  // 교육 과정 선발을 최종 채용 합격으로 읽히게 쓰지 않는다
+  assert.doesNotMatch(data.title, /공채/)
   assert.match(data.title, /최종 탈락$/)
   assert.match(data.summary, /역량테스트를 통과하지 못해/)
   assert.match(body, /세 번째 시험까지 치렀지만/)

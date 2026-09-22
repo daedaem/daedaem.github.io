@@ -118,7 +118,10 @@ const heading = splitEditorialTitle(title)
         )
       }
       <div class="meta" data-pagefind-ignore>
-        <ContentDates date={date} updated={updated} original={archived} compact={!archived} />
+        {/* 사례 글의 시간축은 '사례 시점'이 맡는다. 수정일은 검색엔진용 메타로만 남기고
+            화면에는 적지 않는다. 실제 정정은 글 안의 날짜 박힌 정정 문단이 알린다.
+            계속 고쳐 쓰는 위키 문서에서는 '마지막 수정'을 그대로 보여 준다. */}
+        <ContentDates date={date} original={archived} compact={!archived} />
         {archived && readingMinutes && <span>{readingMinutes}분</span>}
         {happened && <span class="happened">사례 시점: {happened}</span>}
       </div>
