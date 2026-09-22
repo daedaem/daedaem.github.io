@@ -79,6 +79,10 @@ test('about summaries retain the external dependency limit and do not claim an A
 test('author background uses the stated research motivation without implying AI work or employment', () => {
   assert.match(aboutText, /운동이 정신건강에 이로운 이유를 기전으로 설명하고 싶어/)
   assert.match(aboutText, /IBM Watson AI 플랫폼을 간단히 체험/)
+  // 단축된 발굴 기간은 본인이 아니라 동료가 낸 결과다. 주체를 지운 채로 쓰지 않는다
+  const interest = aboutText.match(/<h3 id="interest">([\s\S]*?)<\/li>/)?.[1]
+  assert.match(interest, /동료가[\s\S]*줄이는 것을 보고/)
+  assert.doesNotMatch(interest, /제가[\s\S]*줄였|단축했습니다/)
   // 교육 문단이 보호할 사실: SSAFY가 첫 프로그래밍 학습, SCSA는 채용연계형 교육 과정, 삼성전자 입사 사실 없음.
   // 정확한 문구는 고정하지 않는다. 문장 사이의 모순은 편집 검토로 본다.
   const training = aboutText.match(/<h3 id="training">([\s\S]*?)<\/li>/)?.[1]
