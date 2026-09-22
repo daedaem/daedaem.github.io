@@ -80,14 +80,16 @@ test('author background uses the stated research motivation without implying AI 
   assert.match(aboutText, /운동이 정신건강에 이로운 이유를 기전으로 설명하고 싶어/)
   // 전환 계기 문단이 보호할 사실 세 가지.
   const interest = aboutText.match(/<h3 id="interest">([\s\S]*?)<\/li>/)?.[1]
-  // 1. 발굴 기간을 줄인 것은 동료다. 주체를 지우거나 본인 성과로 옮기지 않는다
-  assert.match(interest, /동료가[\s\S]*(줄이는|단축하는) 것을 (봤|보았)/)
+  // 1. 발굴 기간을 줄인 것은 본인이 아니라 연구실의 다른 사람이다. 주체를 지우지 않는다
+  assert.match(interest, /(선배|동료)가[\s\S]*(줄이는|단축하는) 것을 (봤|보았)/)
   assert.doesNotMatch(interest, /제가[\s\S]*(줄였|단축했)/)
   // 2. 본인이 직접 다룬 범위는 제한적이었다는 단서를 남긴다
   assert.match(interest, /Python[\s\S]*(잠깐|간단히|조금)/)
   assert.doesNotMatch(interest, /IBM Watson[^.]*체험했습니다/)
   // 3. 바이오인포매틱스를 배웠거나 연구한 것처럼 쓰지 않는다
   assert.doesNotMatch(interest, /바이오인포매틱스를 (배웠|연구|공부했)/)
+  // 4. 그때 느낀 것은 흥미까지다. 진로를 정한 시점은 뒤의 교육 문단이 말한다
+  assert.doesNotMatch(interest, /(익히기로|배우기로|진로를 정|결심)/)
   // 교육 문단이 보호할 사실: SSAFY가 첫 프로그래밍 학습, SCSA는 채용연계형 교육 과정, 삼성전자 입사 사실 없음.
   // 정확한 문구는 고정하지 않는다. 문장 사이의 모순은 편집 검토로 본다.
   const training = aboutText.match(/<h3 id="training">([\s\S]*?)<\/li>/)?.[1]
