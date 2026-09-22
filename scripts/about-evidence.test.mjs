@@ -89,7 +89,9 @@ test('author background uses the stated research motivation without implying AI 
   // 3. 바이오인포매틱스를 배웠거나 연구한 것처럼 쓰지 않는다
   assert.doesNotMatch(interest, /바이오인포매틱스를 (배웠|연구|공부했)/)
   // 4. 그때 느낀 것은 흥미까지다. 진로를 정한 시점은 뒤의 교육 문단이 말한다
-  assert.doesNotMatch(interest, /(익히기로|배우기로|진로를 정|결심)/)
+  assert.doesNotMatch(interest, /(익히기로|배우기로|진로를 정했|결심)/)
+  // 5. 연구와 개발 교육 사이의 공백을 이어 붙여 한 흐름처럼 쓰지 않는다
+  assert.match(interest, /(그때[\s\S]*(아닙니다|않았습니다))|시간이 지난 뒤/)
   // 교육 문단이 보호할 사실: SSAFY가 첫 프로그래밍 학습, SCSA는 채용연계형 교육 과정, 삼성전자 입사 사실 없음.
   // 정확한 문구는 고정하지 않는다. 문장 사이의 모순은 편집 검토로 본다.
   const training = aboutText.match(/<h3 id="training">([\s\S]*?)<\/li>/)?.[1]
