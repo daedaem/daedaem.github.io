@@ -1,5 +1,28 @@
 /* Pretendard — 한국어 웹폰트의 사실상 표준. 자모 간격과 숫자 폭이 본문에 가장 안정적이다. */
 
+/*
+ * 웹폰트가 도착하기 전까지 쓰이는 대체 글꼴의 메트릭을 Pretendard에 맞춘다.
+ * Pretendard의 한글 글자폭은 0.864em(1770/2048)으로 시스템 한국어 글꼴(1.0em)보다 좁다.
+ * 보정하지 않으면 글꼴이 바뀌는 순간 제목과 메타의 줄 수가 달라지고, 그 아래 본문이 통째로
+ * 위로 끌려 올라간다(측정: 412px 글 상세에서 CLS 0.146, 제목 41px·본문 70px 이동).
+ * 값의 출처는 PretendardVariable 서브셋 폰트의 head·hhea 테이블이다.
+ * upm 2048, 한글 advance 1770, ascent 1950, descent 494, lineGap 0.
+ * size-adjust는 1770/2048, 상하 메트릭은 size-adjust로 다시 나눈 값이다.
+ * 한글을 가진 글꼴만 적는다. 한국어 글꼴이 없는 환경에서는 이 지정이 통째로 무시되고
+ * 아래 스택으로 넘어가므로, 라틴만 작아지는 일은 생기지 않는다.
+ */
+@font-face {
+  font-family: 'Pretendard Fallback';
+  src:
+    local('Apple SD Gothic Neo'), local('AppleSDGothicNeo-Regular'), local('Malgun Gothic'),
+    local('맑은 고딕'), local('Noto Sans KR'), local('Noto Sans CJK KR'),
+    local('Source Han Sans KR'), local('NanumGothic'), local('나눔고딕'), local('WenQuanYi Zen Hei');
+  size-adjust: 86.4%;
+  ascent-override: 110.2%;
+  descent-override: 27.9%;
+  line-gap-override: 0%;
+}
+
 :root {
   color-scheme: light;
 
@@ -31,8 +54,8 @@
   --cat-auth-security: #0c8599;
 
   --font-sans:
-    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
-    system-ui, sans-serif;
+    'Pretendard Variable', Pretendard, 'Pretendard Fallback', -apple-system, BlinkMacSystemFont,
+    'Apple SD Gothic Neo', system-ui, sans-serif;
   --font-mono:
     'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
