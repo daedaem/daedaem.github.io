@@ -128,7 +128,9 @@ const documents = entries.map((entry) => ({
                   </>
                 </div>
                 <h3>
-                  <a href={'/wiki/' + entry.id + '/'}>{entry.data.title}</a>
+                  <a class="stretched-link" href={'/wiki/' + entry.id + '/'}>
+                    {entry.data.title}
+                  </a>
                 </h3>
                 <p>{entry.data.description}</p>
                 <div class="doc-foot">
@@ -419,6 +421,7 @@ const documents = entries.map((entry) => ({
   .documents li {
     padding: 1.1rem 0;
     border-bottom: 1px solid var(--border);
+    position: relative;
   }
   .doc-meta {
     display: flex;

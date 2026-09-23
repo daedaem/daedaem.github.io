@@ -573,6 +573,25 @@ th {
   border-radius: 2px;
 }
 
+/*
+ * 목록 행 전체를 누를 수 있게 하는 링크. 행(부모)에 position: relative를 주고 링크에 이 클래스를
+ * 붙이면 ::after가 행 전체를 덮는다. 초점 테두리도 글자가 아니라 행 전체에 그린다.
+ * 행 안에 다른 조작 요소가 없을 때만 쓴다.
+ */
+.stretched-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+}
+.stretched-link:focus-visible {
+  outline: none;
+}
+.stretched-link:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* 키보드로 포커스하면 스킵 링크를 드러낸다 */
 .skip-link:focus-visible {
   position: fixed;

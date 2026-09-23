@@ -74,7 +74,9 @@ const description =
           <div>
             <dt>문제</dt>
             <dd>
-              <a href={d.problemUrl}>원문 →</a>
+              <a class="source-link" href={d.problemUrl}>
+                원문 →
+              </a>
             </dd>
           </div>
         )
@@ -129,7 +131,9 @@ const description =
             {related.map((r) => (
               <li>
                 <span class="rtier">{tierLabel(r.data.tier)}</span>
-                <a href={`/algorithms/${r.id}/`}>{r.data.title}</a>
+                <a class="stretched-link" href={`/algorithms/${r.id}/`}>
+                  {r.data.title}
+                </a>
                 <span class="rcat">{r.data.categories.slice(0, 2).join(' · ')}</span>
               </li>
             ))}
@@ -205,6 +209,13 @@ const description =
   }
   .crumb a {
     color: var(--text-muted);
+  }
+  /* 한 줄짜리 보조 링크도 손가락으로 누를 수 있는 높이를 준다 */
+  .crumb a,
+  .source-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-size);
   }
   .meta {
     display: flex;
@@ -311,6 +322,12 @@ const description =
     padding: 8px 0;
     border-top: 1px solid var(--border);
     font-size: 14px;
+    position: relative;
+  }
+  @media (max-width: 760px), (pointer: coarse) {
+    .related li {
+      min-height: var(--control-size);
+    }
   }
   .rtier,
   .rcat {

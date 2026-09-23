@@ -171,7 +171,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
                 hidden={idx >= PAGE}
               >
                 <span class="tier">{i.tier}</span>
-                <a class="name" href={i.href}>
+                <a class="name stretched-link" href={i.href}>
                   {i.title}
                   {i.needsReview && <span class="review-label"> · 확인 필요</span>}
                 </a>
@@ -223,7 +223,7 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
                 hidden={idx >= PAGE}
               >
                 <span class="tier">{g.name.replace('Level ', 'Lv')}</span>
-                <a class="name" href={i.href}>
+                <a class="name stretched-link" href={i.href}>
                   {i.title}
                   {i.needsReview && <span class="review-label"> · 확인 필요</span>}
                 </a>
@@ -648,6 +648,13 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     padding: 7px 0 7px 1.2em;
     font-size: 14px;
     border-top: 1px solid var(--border);
+    position: relative;
+  }
+  /* 넓은 화면의 목록 밀도는 유지하고, 손가락으로 누르는 화면에서만 행 높이를 44px로 맞춘다 */
+  @media (max-width: 760px), (pointer: coarse) {
+    .list li {
+      min-height: var(--control-size);
+    }
   }
   .tier {
     font-size: var(--type-caption);

@@ -9,7 +9,7 @@ export const getStaticPaths = async () => {
 }
 
 const { note } = Astro.props
-const { Content } = await render(note)
+const { Content, headings } = await render(note)
 ---
 
 <PostLayout
@@ -19,6 +19,7 @@ const { Content } = await render(note)
   updated={note.data.updated}
   tags={note.data.categories}
   readingMinutes={readingMinutes(note.body ?? '')}
+  headings={headings}
   archived
   archiveKind={note.data.categories.includes('내 이야기') ? 'personal' : 'learning'}
 >

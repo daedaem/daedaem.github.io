@@ -97,3 +97,41 @@ test('표지 img에 sizes가 한 번만 나간다', () => {
   assert.match(cover, /\{\.\.\.spreadAttributes\}/)
   assert.doesNotMatch(cover, /\{\.\.\.imageAttributes\}/)
 })
+
+test('노트 상세도 사례 글·위키와 같은 목차를 받는다', () => {
+  const note = source('src/pages/notes/[...slug].astro')
+  assert.match(note, /const \{ Content, headings \} = await render\(note\)/)
+  assert.match(note, /headings=\{headings\}/)
+})
+
+test('넓은 화면 글 목록은 표지가 요약 옆까지 걸쳐 제목과 요약 사이가 비지 않는다', () => {
+  const row = source('src/components/PostRow.astro')
+  assert.match(
+    row,
+    /@media \(min-width: 768px\)[\s\S]*\.row\.with-cover:not\(\.no-desc\) \.row-content \{[^}]*'desc cover'/,
+  )
+})
+
+test('찾는 목록은 행 전체를 누를 수 있다', () => {
+  assert.match(source('src/styles/global.css'), /\.stretched-link::after \{[^}]*inset: 0;/)
+  for (const [path, row] of [
+    ['src/pages/notes/index.astro', /\n  li \{[^}]*position: relative;/],
+    ['src/pages/algorithms/index.astro', /\.list li \{[^}]*position: relative;/],
+    ['src/pages/tags/[tag].astro', /\.list li \{[^}]*position: relative;/],
+    ['src/pages/algorithms/[...slug].astro', /\.related li \{[^}]*position: relative;/],
+    ['src/pages/wiki/index.astro', /\.documents li \{[^}]*position: relative;/],
+  ]) {
+    const text = source(path)
+    assert.match(text, /class="(name )?stretched-link"/, `${path}의 목록 링크`)
+    assert.match(text, row, `${path}의 행이 링크의 기준 상자가 된다`)
+  }
+  // 한 줄짜리 보조 링크도 44px
+  assert.match(
+    source('src/pages/algorithms/[...slug].astro'),
+    /\.crumb a,\s*\.source-link \{[^}]*min-height: var\(--control-size\)/,
+  )
+  assert.match(
+    source('src/layouts/PostLayout.astro'),
+    /\.others-head a \{[^}]*min-height: var\(--control-size\)/,
+  )
+})

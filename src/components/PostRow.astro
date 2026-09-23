@@ -204,6 +204,21 @@ const showDesc = !compact && !!description
       grid-template-rows: min-content 1fr;
     }
   }
+  /*
+   * 요약이 있는 행도 넓은 화면에서는 표지가 요약·날짜 옆까지 걸친다. 그렇지 않으면 제목 행이
+   * 표지 높이를 그대로 가져 제목과 요약 사이가 43–74px 빈다. 641–767px은 요약 폭이 너무 좁아져
+   * 행이 오히려 길어지므로 768px부터 적용한다.
+   */
+  @media (min-width: 768px) {
+    .row.with-cover:not(.no-desc) .row-content {
+      grid-template-areas: 'cat cover' 'title cover' 'desc cover' 'meta cover';
+      grid-template-rows: min-content min-content min-content 1fr;
+    }
+    .row.with-cover.no-cat:not(.no-desc) .row-content {
+      grid-template-areas: 'title cover' 'desc cover' 'meta cover';
+      grid-template-rows: min-content min-content 1fr;
+    }
+  }
   .row-cover {
     grid-area: cover;
     min-width: 0;

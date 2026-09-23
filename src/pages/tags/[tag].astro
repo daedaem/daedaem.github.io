@@ -79,7 +79,7 @@ const { tag, list } = Astro.props
       {
         list.map((it) => (
           <li>
-            <a href={it.href}>
+            <a class="stretched-link" href={it.href}>
               {it.kind === 'wiki' && <span class="kind">[위키]</span>}
               {it.title}
             </a>
@@ -117,6 +117,7 @@ const { tag, list } = Astro.props
     padding: 0.7rem 0;
     border-top: 1px solid var(--border);
     font-size: 0.9375rem;
+    position: relative;
   }
   .list a:hover {
     text-decoration: underline;

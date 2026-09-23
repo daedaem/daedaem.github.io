@@ -125,7 +125,9 @@ const tabs = [
               <ol>
                 {g.items.map((n) => (
                   <li>
-                    <a href={`/notes/${n.id}/`}>{n.data.title.trim()}</a>
+                    <a class="stretched-link" href={`/notes/${n.id}/`}>
+                      {n.data.title.trim()}
+                    </a>
                     <ContentDates date={n.data.date} original />
                   </li>
                 ))}
@@ -147,7 +149,9 @@ const tabs = [
           <ol>
             {others.map((n) => (
               <li>
-                <a href={`/notes/${n.id}/`}>{n.data.title.trim()}</a>
+                <a class="stretched-link" href={`/notes/${n.id}/`}>
+                  {n.data.title.trim()}
+                </a>
                 <ContentDates date={n.data.date} original />
               </li>
             ))}
@@ -245,6 +249,7 @@ const tabs = [
     gap: 0.25rem 1rem;
     padding-block: 0.6rem;
     border-bottom: 1px solid var(--border);
+    position: relative;
   }
 
   li a {

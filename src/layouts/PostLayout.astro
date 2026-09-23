@@ -324,7 +324,7 @@ const heading = splitEditorialTitle(title)
   }
   .others-head {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     margin-bottom: 6px;
   }
@@ -336,6 +336,9 @@ const heading = splitEditorialTitle(title)
     color: var(--text-muted);
   }
   .others-head a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-size);
     font-size: 0.8125rem;
     color: var(--accent);
   }
