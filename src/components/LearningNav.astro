@@ -10,7 +10,10 @@ const links = [
 <nav class="wrap-wide learning-nav" aria-label="학습 기록 탐색" data-pagefind-ignore>
   {
     links.map((link) => (
-      <a href={link.href} aria-current={path.startsWith(link.href) ? 'page' : undefined}>
+      <a href={link.href} aria-current={
+          // 목록 페이지에서만 '현재 페이지'이고, 그 아래 상세 페이지에서는 '현재 구역'이다
+          path === link.href ? 'page' : path.startsWith(link.href) ? 'true' : undefined
+        }>
         {link.label}
       </a>
     ))

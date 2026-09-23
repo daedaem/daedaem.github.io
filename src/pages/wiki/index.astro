@@ -12,7 +12,14 @@ const groups = WIKI_TOPICS.map((topic) => ({
   ...topic,
   count: entries.filter((e) => e.data.topic === topic.id).length,
 })).filter((g) => g.count)
-const statuses = { seed: '메모', growing: '보완 중', stable: '정리됨' }
+const STATUS_LABELS = { seed: '메모', growing: '보완 중', stable: '정리됨' }
+const STATUS_NOTES = { seed: '짧은 기록', growing: '설명 추가 중', stable: '한 차례 정리' }
+// 문서가 없는 상태를 옵션에 두면 고르는 순간 빈 목록만 나오므로, 실제로 있는 상태만 보인다
+const statuses = Object.fromEntries(
+  Object.entries(STATUS_LABELS).filter(([value]) =>
+    entries.some((entry) => entry.data.status === value),
+  ),
+) as Partial<typeof STATUS_LABELS>
 const documents = entries.map((entry) => ({
   id: entry.id,
   title: entry.data.title,
@@ -87,11 +94,20 @@ const documents = entries.map((entry) => ({
               >
               <button type="reset" class="control-button">초기화</button>
             </div>
-            <p class="legend">메모: 짧은 기록 · 보완 중: 설명 추가 중 · 정리됨: 한 차례 정리</p>
+            <p class="legend">
+              {
+                Object.entries(statuses)
+                  .map(
+                    ([value, label]) =>
+                      `${label}: ${STATUS_NOTES[value as keyof typeof STATUS_NOTES]}`,
+                  )
+                  .join(' · ')
+              }
+            </p>
           </details>
         </form>
         <div class="result-head">
-          <h2 id="wiki-heading">최근 갱신한 문서</h2><p
+          <h2 id="wiki-heading" tabindex="-1">최근 갱신한 문서</h2><p
             id="wiki-count"
             role="status"
             aria-live="polite"
@@ -106,7 +122,9 @@ const documents = entries.map((entry) => ({
                 <div class="doc-meta">
                   <>
                     <span>{getWikiTopic(entry.data.topic)?.name}</span>
-                    <span class={'state ' + entry.data.status}>{statuses[entry.data.status]}</span>
+                    <span class={'state ' + entry.data.status}>
+                      {STATUS_LABELS[entry.data.status]}
+                    </span>
                   </>
                 </div>
                 <h3>
@@ -276,16 +294,17 @@ const documents = entries.map((entry) => ({
       page = 1
       show()
     })
-  previous.addEventListener('click', () => {
-    page--
+  // 쪽을 넘기면 화면은 목록 위로 가는데 초점은 아래 버튼에 남거나, 마지막 쪽에서 버튼이
+  // 비활성화되며 사라진다. 초점을 목록 제목으로 옮겨 키보드 사용자도 새 쪽의 처음부터 읽게 한다.
+  const heading = document.getElementById('wiki-heading')!
+  function turnPage(delta: number) {
+    page += delta
     show()
+    heading.focus({ preventScroll: true })
     form.scrollIntoView({ block: 'start' })
-  })
-  next.addEventListener('click', () => {
-    page++
-    show()
-    form.scrollIntoView({ block: 'start' })
-  })
+  }
+  previous.addEventListener('click', () => turnPage(-1))
+  next.addEventListener('click', () => turnPage(1))
   addEventListener('popstate', readURL)
   addEventListener('hashchange', readURL)
   readURL()

@@ -40,6 +40,10 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
       {SEARCH_SCOPES.map((scope) => <option value={scope}>{scope}</option>)}
     </select>
   </label>
+  <p id="search-status" class="visually-hidden" role="status" aria-atomic="true"></p>
+  <p id="search-partial" class="search-partial" hidden>
+    입력한 낱말과 똑같이 일치하는 곳이 없어, 앞부분이 같은 낱말로 찾은 결과입니다.
+  </p>
   <div id="search-mount"></div>
 </dialog>
 
@@ -132,6 +136,33 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
     await loading
     if (dialog.open) dialog.querySelector<HTMLInputElement>('input')?.focus()
   }
+
+  /*
+   * Pagefind UI는 결과 수와 '결과 없음'을 스크린리더에 알리지 않는다. 결과가 다 그려진 뒤
+   * 문구를 상태 영역에 옮겨 한 번만 읽히게 한다. 같은 문구는 다시 넣지 않는다.
+   * 또 색인에 없는 낱말은 앞 글자만 같은 낱말로 채워지므로(kafka → k), 첫 쪽 강조 중
+   * 검색어 전체를 담은 것이 없으면 그 사실을 화면에 적는다.
+   */
+  const status = document.getElementById('search-status')
+  const partial = document.getElementById('search-partial')
+  let settle: number | undefined
+  function describeResults() {
+    if (!mount || !status || !partial) return
+    const message = mount.querySelector('.pagefind-ui__message')?.textContent?.trim() ?? ''
+    const query = mount.querySelector<HTMLInputElement>('input')?.value.trim().toLowerCase() ?? ''
+    const marks = [...mount.querySelectorAll('mark')].map((m) => m.textContent?.toLowerCase() ?? '')
+    const terms = query.split(/\s+/).filter(Boolean)
+    const isPartial =
+      marks.length > 0 && terms.some((term) => !marks.some((mark) => mark.includes(term)))
+    partial.hidden = !isPartial
+    const text = message && isPartial ? `${message}. ${partial.textContent?.trim()}` : message
+    if (status.textContent !== text) status.textContent = text
+  }
+  if (mount)
+    new MutationObserver(() => {
+      clearTimeout(settle)
+      settle = window.setTimeout(describeResults, 400)
+    }).observe(mount, { childList: true, subtree: true, characterData: true })
 
   openBtn?.addEventListener('click', open)
   closeBtn?.addEventListener('click', () => dialog?.close())
@@ -234,6 +265,15 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
     max-height: min(72vh, calc(100vh - 14vh - 2rem));
     overflow-y: auto;
     overscroll-behavior: contain;
+    /* 결과를 거꾸로 훑을 때 초점 받은 링크가 위에 붙은 제목 띠 밑으로 숨지 않게 한다 */
+    scroll-padding-top: 4.5rem;
+  }
+  .search-partial {
+    margin: 0 0 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-left: 2px solid var(--border-strong);
+    color: var(--text-muted);
+    font-size: 0.8125rem;
   }
   #search-dialog::backdrop {
     background: rgb(0 0 0 / 0.45);

@@ -69,14 +69,16 @@ const { searchIndex = true } = Astro.props
           const copyCode = createCodeCopy(
             (text: string) => navigator.clipboard.writeText(text),
             (state: string) => {
-              btn.disabled = state === 'copying'
               btn.innerHTML = state === 'success' ? check : copy
               btn.toggleAttribute('data-copied', state === 'success')
               btn.setAttribute('aria-label', state === 'success' ? '복사됨' : '코드 복사')
               feedback.className = state === 'error' ? 'code-copy-error' : 'visually-hidden'
-              feedback.textContent = state === 'error'
-                ? '복사하지 못했습니다. 코드를 직접 선택해 복사하거나 다시 시도해 주세요.'
-                : state === 'success' ? '코드를 복사했습니다.' : ''
+              feedback.textContent =
+                state === 'error'
+                  ? '복사하지 못했습니다. 코드를 직접 선택해 복사하거나 다시 시도해 주세요.'
+                  : state === 'success'
+                    ? '코드를 복사했습니다.'
+                    : ''
             },
           )
           btn.addEventListener('click', () => copyCode(code.textContent ?? ''))

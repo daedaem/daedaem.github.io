@@ -21,7 +21,9 @@ const active = activeNavigation(path)
           {
             PRIMARY_NAV.map((item) => (
               <li>
-                <a href={item.href} aria-current={active === item.href ? 'page' : undefined}>
+                <a href={item.href} aria-current={
+                    active !== item.href ? undefined : path === item.href ? 'page' : 'true'
+                  }>
                   {item.label}
                 </a>
               </li>
@@ -108,11 +110,11 @@ const active = activeNavigation(path)
     color: var(--text);
   }
 
-  nav a[aria-current='page'] {
+  nav a[aria-current] {
     color: var(--text);
     font-weight: 600;
   }
-  nav a[aria-current='page']::after {
+  nav a[aria-current]::after {
     content: '';
     position: absolute;
     bottom: 1px;
