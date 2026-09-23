@@ -11,6 +11,9 @@ interface Props {
 const { kind, src, lead = false, thumbnail = false, sizes } = Astro.props
 const imageAttributes =
   kind === 'image' && src ? getCoverImageAttributes(src, thumbnail) : undefined
+// sizes는 아래에서 한 번만 쓴다. 펼친 속성에 남아 있으면 img에 sizes가 두 번 나가고
+// 첫 값(기본값)이 이겨서 카드마다 넘긴 sizes가 무시된다.
+const { sizes: _defaultSizes, ...spreadAttributes } = imageAttributes ?? {}
 ---
 
 <!-- 장식용 표지. 링크의 접근 가능한 이름은 카드의 실제 글 제목만 사용한다. -->
@@ -27,7 +30,7 @@ const imageAttributes =
       <img
         src={src}
         alt=""
-        {...imageAttributes}
+        {...spreadAttributes}
         sizes={sizes ?? imageAttributes?.sizes}
         loading={lead ? 'eager' : 'lazy'}
         fetchpriority={lead ? 'high' : undefined}

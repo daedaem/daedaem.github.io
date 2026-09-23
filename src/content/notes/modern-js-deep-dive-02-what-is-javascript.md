@@ -33,7 +33,7 @@ legacyPath: "/230314_모던 JS Deep Dive - 2.자바스크립트란/"
 
 ## 2.3.1 Ajax
 
-- 자바스크립트를 이용해 서버와 브라우저가 **비동기(asynchronous)** 방식으로 데이터를 교환할 수 있는 통신 기능인 **Ajax(Asynchronous JavaScript and XML)**가 **XMLHttpRequest**라는 이름으로 등장
+- 자바스크립트를 이용해 서버와 브라우저가 **비동기(asynchronous)** 방식으로 데이터를 교환할 수 있는 통신 기능인 <strong>Ajax(Asynchronous JavaScript and XML)</strong>가 **XMLHttpRequest**라는 이름으로 등장
 - Ajax 이전에는 HTML 코드를 서버로 전송받아 전체를 렌더링하는 방식. 화면 전환되면 서버로부터 새로운 HTML 전송받아 처음부터 다시 렌더링
   - 불필요한 데이터 통신 발생, 변경 필요 없는 부분까지 다시 렌더링
   - 성능 이슈, 화면 전환으로 인한 순간적 깜빡이는 현상

@@ -20,7 +20,7 @@ const { references, related } = currentEntry
     <aside class="related" data-pagefind-ignore aria-label="연결된 문서">
       {references.length > 0 && (
         <section>
-          <h2>이 문서를 참고한 글</h2>
+          <h2>이 문서를 참고한 글·문서</h2>
           <ul>
             {references.map((e) => (
               <li>
@@ -33,7 +33,7 @@ const { references, related } = currentEntry
       )}
       {related.length > 0 && (
         <section>
-          <h2>같은 주제로 이어 읽기</h2>
+          <h2>이어 읽기</h2>
           <ul>
             {related.map((e) => (
               <li>

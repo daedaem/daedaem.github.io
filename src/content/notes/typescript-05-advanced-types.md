@@ -241,7 +241,7 @@ if (userInputElement) {
     type PersonKeys = keyof Person; // "name" | "age"
     ```
 
-3. **인덱스 접근 (Indexed Access):** 타입스크립트에서는 인덱스 접근 연산자 **`[]`**를 사용하여 객체의 프로퍼티 값을 가져올 수 있다. 예를 들어, 다음과 같이 사용할 수 있다.
+3. **인덱스 접근 (Indexed Access):** 타입스크립트에서는 인덱스 접근 연산자 <strong><code>[]</code></strong>를 사용하여 객체의 프로퍼티 값을 가져올 수 있다. 예를 들어, 다음과 같이 사용할 수 있다.
 
 - **`NameType`** 은 **`Person`** 객체의 **`name`** 프로퍼티의 타입 (string)을 나타내며, **`AgeType`** 은 **`age`** 프로퍼티의 타입 (number)을 나타낸다.
 

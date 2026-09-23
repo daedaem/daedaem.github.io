@@ -32,7 +32,8 @@ export const getStaticPaths = async () => {
       href: `/wiki/${w.id}/`,
       date: w.data.created,
       updated: w.data.updated,
-      sortDate: w.data.updated ?? w.data.created,
+      // 화면에는 작성일만 보이므로 순서도 작성일을 따른다(수정일로 정렬하면 날짜가 뒤섞여 보인다)
+      sortDate: w.data.created,
       tags: w.data.tags ?? [],
     })),
   ]

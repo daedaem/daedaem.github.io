@@ -26,18 +26,27 @@ const LANG: Record<string, string> = {
   sql: 'SQL',
 }
 const langLabel = d.langs.map((l) => LANG[l] ?? l).join(', ')
+/** 프로그래머스 레벨은 데이터에 'lv2'로 저장돼 있다. 화면에는 목록과 같은 'Level 2'로 보인다 */
+const tierLabel = (tier: string) => tier.replace(/^lv(\d)$/, 'Level $1')
+const tier = tierLabel(d.tier)
+// 유형이 없는 풀이(프로그래머스)는 설명에 빈 조각 '. .'이 남지 않게 뺀다
+const description =
+  [
+    `${d.site} ${tier} ${d.title}${d.num ? ` ${d.num}번` : ''} 풀이 코드`,
+    d.categories.join(', '),
+    langLabel,
+  ]
+    .filter(Boolean)
+    .join('. ') + '.'
 ---
 
-<BaseLayout
-  title={`${d.title} — ${d.site} ${d.tier}`}
-  description={`${d.site} ${d.tier} ${d.title}${d.num ? ` ${d.num}번` : ''} 풀이 코드. ${d.categories.join(', ')}. ${langLabel}.`}
->
+<BaseLayout title={`${d.title} — ${d.site} ${tier}`} description={description}>
   <article class="wrap solution">
     <nav class="crumb"><a href="/algorithms/">← 알고리즘</a></nav>
 
     <header>
       <div class="meta">
-        <span class="tier">{d.site} {d.tier}</span>
+        <span class="tier">{d.site} {tier}</span>
         {d.num && <span class="num">#{d.num}</span>}
       </div>
       <h1>{d.title}</h1>
@@ -119,7 +128,7 @@ const langLabel = d.langs.map((l) => LANG[l] ?? l).join(', ')
           <ul>
             {related.map((r) => (
               <li>
-                <span class="rtier">{r.data.tier}</span>
+                <span class="rtier">{tierLabel(r.data.tier)}</span>
                 <a href={`/algorithms/${r.id}/`}>{r.data.title}</a>
                 <span class="rcat">{r.data.categories.slice(0, 2).join(' · ')}</span>
               </li>
