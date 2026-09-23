@@ -90,8 +90,10 @@ test('author background uses the stated research motivation without implying AI 
   assert.doesNotMatch(interest, /바이오인포매틱스를 (배웠|연구|공부했)/)
   // 4. 그때 느낀 것은 흥미까지다. 진로를 정한 시점은 뒤의 교육 문단이 말한다
   assert.doesNotMatch(interest, /(익히기로|배우기로|진로를 정했|결심)/)
-  // 5. 연구와 개발 교육 사이의 공백을 이어 붙여 한 흐름처럼 쓰지 않는다
-  assert.match(interest, /(그때[\s\S]*(아닙니다|않았습니다))|시간이 지난 뒤/)
+  // 5. 흥미가 생긴 순간 진로를 바꾼 것처럼 쓰지 않는다. 공백 기간을 따로 설명하는 문장은
+  //    어색하다는 사용자 판단에 따라 넣지 않는다
+  assert.match(interest, /(바로|그때)[^.]*(아닙니다|않았습니다)/)
+  assert.doesNotMatch(interest, /시간이 지난 뒤/)
   // 교육 문단이 보호할 사실: SSAFY가 첫 프로그래밍 학습, SCSA는 채용연계형 교육 과정, 삼성전자 입사 사실 없음.
   // 정확한 문구는 고정하지 않는다. 문장 사이의 모순은 편집 검토로 본다.
   const training = aboutText.match(/<h3 id="training">([\s\S]*?)<\/li>/)?.[1]
@@ -101,7 +103,10 @@ test('author background uses the stated research motivation without implying AI 
   assert.match(training, /최종 입사(하지는 못했|는 불발|로 이어지지)/)
   assert.match(training, /href="\/notes\/scsa\/"/)
   // 삼성전자 공채 합격이나 근무 경력처럼 읽히는 표현은 금지한다
-  assert.doesNotMatch(training, /공채 전형에 합격|합격해|삼성전자에서 근무|삼성전자 입사|신입사원으로/)
+  assert.doesNotMatch(
+    training,
+    /공채 전형에 합격|합격해|삼성전자에서 근무|삼성전자 입사|신입사원으로/,
+  )
   assert.doesNotMatch(about, /늦게 시작한 만큼|남들이 그냥 지나가는|최종 SW 역량테스트는 넘지/)
   assert.match(about, /개발 환경의 WAS 전환 중 잔존 배치 프로세스/)
   assert.doesNotMatch(about, /JEUS|WebtoB|WebLogic|AIX|HP-UX|Windows Server/)
