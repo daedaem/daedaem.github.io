@@ -137,6 +137,19 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       </p>
     </details>
 
+    {
+      /*
+      필터·쪽 상태가 담긴 주소로 들어오면 모듈 스크립트가 첫 그리기 뒤에 목록을 다시 거른다.
+      그 사이 기본 목록이 보였다가 통째로 바뀌지 않도록, 파싱 중에 목록을 숨겨 두고
+      복원이 끝나면 드러낸다. 모듈이 실패해도 3초 뒤에는 반드시 드러낸다.
+    */
+    }
+    <script is:inline>
+      if (/[?&](q|type|lang|open|page\.[^=&]+)=/.test(location.search)) {
+        document.documentElement.classList.add('algo-restoring')
+        setTimeout(() => document.documentElement.classList.remove('algo-restoring'), 3000)
+      }
+    </script>
     <h2 class="site-title">백준</h2>
     {
       bojGroups.map((g) => (
@@ -437,10 +450,16 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     addEventListener('pagehide', persistURL)
     addEventListener('popstate', readURL)
     readURL()
+    document.documentElement.classList.remove('algo-restoring')
   </script>
 </BaseLayout>
 
 <style>
+  :global(html.algo-restoring) .site-title,
+  :global(html.algo-restoring) .group,
+  :global(html.algo-restoring) #empty {
+    visibility: hidden;
+  }
   .page {
     padding-bottom: 5rem;
   }

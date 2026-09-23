@@ -8,8 +8,9 @@
  * 값의 출처는 PretendardVariable 서브셋 폰트의 head·hhea 테이블이다.
  * upm 2048, 한글 advance 1770, ascent 1950, descent 494, lineGap 0.
  * size-adjust는 1770/2048, 상하 메트릭은 size-adjust로 다시 나눈 값이다.
- * 한글을 가진 글꼴만 적는다. 한국어 글꼴이 없는 환경에서는 이 지정이 통째로 무시되고
- * 아래 스택으로 넘어가므로, 라틴만 작아지는 일은 생기지 않는다.
+ * 이 보정은 한글에만 맞는 값이라 unicode-range로 한글·CJK 문장부호·전각·원문자만 맡긴다.
+ * 범위를 두지 않으면 영문·숫자까지 86.4%로 줄어, 영문이 섞인 줄(알고리즘 통계, 위키 목록)이
+ * 웹폰트 도착 순간 한 줄 늘어난다(측정: /algorithms/ 390px CLS 0.161, /wiki/ 430px 0.179).
  */
 @font-face {
   font-family: 'Pretendard Fallback';
@@ -21,6 +22,21 @@
   ascent-override: 110.2%;
   descent-override: 27.9%;
   line-gap-override: 0%;
+  unicode-range:
+    U+1100-11FF, U+2460-24FF, U+3000-303F, U+3130-318F, U+3200-32FF, U+A960-A97F, U+AC00-D7A3,
+    U+D7B0-D7FF, U+FF00-FFEF;
+}
+
+/*
+ * 영문·숫자는 Arial 계열에 맡긴다. Arial·Helvetica·Liberation Sans는 글자 폭이 같고,
+ * 같은 표본 문자열에서 Pretendard보다 1.6% 넓어 98.4%로 맞춘다.
+ * 상하 메트릭은 줄 높이를 숫자로 고정해 두어 따로 보정하지 않는다.
+ */
+@font-face {
+  font-family: 'Pretendard Fallback';
+  src: local('Arial'), local('ArialMT'), local('Helvetica'), local('Liberation Sans');
+  size-adjust: 98.4%;
+  unicode-range: U+0000-00FF, U+2000-206F, U+2122, U+2190-2193, U+2212;
 }
 
 :root {
@@ -442,6 +458,14 @@ pre.astro-code[data-scrollable]:not([data-scroll-end]) > code {
   mask-image: linear-gradient(90deg, #000 calc(100% - 3rem), transparent);
 }
 
+/* 키보드로 코드에 들어오면 페이드를 걷어 초점 테두리가 오른쪽에서 지워지지 않게 한다 */
+pre.astro-code[data-scrollable] > code:focus-visible {
+  -webkit-mask-image: none;
+  mask-image: none;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* Shiki가 인라인한 흰 배경 대신 --code-bg를 쓴다. 다크 규칙이 더 구체적이라 다크에서는 아래가 이긴다 */
 pre.astro-code {
   background-color: var(--code-bg) !important;
@@ -481,6 +505,11 @@ td {
   border: 1px solid var(--border);
   padding: 0.55rem 0.75rem;
   text-align: left;
+  /*
+   * body의 overflow-wrap: anywhere가 상속되면 자동 표 레이아웃이 열 최소 폭을 한 글자로 잡아
+   * '상황' 같은 낱말도 중간에서 끊긴다. 표 칸은 낱말 단위로 줄바꿈하고, 넘치면 .table-scroll이 받는다.
+   */
+  overflow-wrap: normal;
 }
 
 th {
@@ -523,6 +552,25 @@ th {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/*
+ * 문단 속 링크. 전역 a는 색과 밑줄을 물려받아 글자와 구분되지 않으므로,
+ * 안내 문장 안의 링크에만 이 클래스를 붙여 밑줄로 링크임을 보인다(색만으로 구분하지 않는다).
+ */
+.text-link {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-color: var(--border-strong);
+}
+.text-link:hover {
+  text-decoration-color: var(--accent);
+}
+.text-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* 키보드로 포커스하면 스킵 링크를 드러낸다 */

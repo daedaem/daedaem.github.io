@@ -49,6 +49,23 @@ test('대체 글꼴의 메트릭이 Pretendard에 맞춰져 있어 글꼴 교체
     assert.ok(face.includes(`local('${family}')`), `${family}를 대체 후보에 둔다`)
   }
 
+  // 한글 폭에 맞춘 축소가 영문·숫자에 번지지 않도록 한글 face는 한글 범위만 맡는다
+  const range = face.match(/unicode-range:\s*([^;]+);/)?.[1]
+  assert.ok(range, '한글 face에 unicode-range가 있어야 한다')
+  assert.match(range, /U\+AC00-D7A3/)
+  assert.doesNotMatch(range, /U\+0000/, '라틴 기본 범위는 한글 face가 맡지 않는다')
+
+  // 영문·숫자는 별도 face가 Pretendard 폭에 맞춰 맡는다
+  const faces = css.match(/@font-face\s*\{[^}]*'Pretendard Fallback'[^}]*\}/g) ?? []
+  const latin = faces.find((f) => /U\+0000-00FF/.test(f))
+  assert.ok(latin, '영문·숫자를 맡는 대체 face가 있어야 한다')
+  assert.match(latin, /local\('Arial'\)/)
+  const latinAdjust = Number(latin.match(/size-adjust:\s*([\d.]+)%/)?.[1])
+  assert.ok(
+    Math.abs(latinAdjust - 98.4) < 1,
+    `라틴 size-adjust ${latinAdjust}%는 98% 근처여야 한다`,
+  )
+
   // 웹폰트 바로 다음, 시스템 글꼴보다 앞에 있어야 교체 전 화면에 쓰인다
   const stack = css.match(/--font-sans:\s*([^;]+);/)?.[1].replace(/\s+/g, ' ')
   assert.ok(stack, '--font-sans가 필요하다')
