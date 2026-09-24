@@ -44,6 +44,10 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
   <p id="search-partial" class="search-partial" hidden>
     입력한 낱말과 똑같이 일치하는 곳이 없어, 앞부분이 같은 낱말로 찾은 결과입니다.
   </p>
+  <p id="search-weak" class="search-partial" hidden>
+    <strong id="search-weak-term"></strong>에 맞는 결과가 없습니다. 낱말을 줄이거나 다른 말로 찾아
+    보세요.
+  </p>
   <div id="search-mount"></div>
 </dialog>
 
@@ -56,7 +60,12 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
   const shortcut = document.getElementById('search-shortcut')
   const scope = document.getElementById('search-scope') as HTMLSelectElement
   const scopeLabel = document.getElementById('search-scope-label')!
-  let searchUI: { triggerFilters: (filters: Record<string, string[]>) => void } | undefined
+  let searchUI:
+    | {
+        triggerFilters: (filters: Record<string, string[]>) => void
+        triggerSearch: (term: string) => void
+      }
+    | undefined
   scope.addEventListener('change', () => {
     searchUI?.triggerFilters({ 구분: scope.value ? [scope.value] : [] })
   })
@@ -105,6 +114,9 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
       showSubResults: true,
       showImages: false,
       pageSize: 8,
+      // 기본값(0.75)은 긴 글을 크게 깎아, 주제를 깊게 다룬 사례 글이 스치듯 언급한 짧은 문서보다
+      // 뒤로 밀린다('주소' → 브라우저 렌더링 위키가 1위). 0.3이면 사례 글이 앞선다.
+      ranking: { pageLength: 0.3 },
       translations: {
         placeholder: '검색어를 입력하세요',
         clear_search: '지우기',
@@ -145,24 +157,79 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
    */
   const status = document.getElementById('search-status')
   const partial = document.getElementById('search-partial')
+  const weak = document.getElementById('search-weak')
+  const weakTerm = document.getElementById('search-weak-term')
   let settle: number | undefined
   function describeResults() {
-    if (!mount || !status || !partial) return
+    if (!mount || !status || !partial || !weak || !weakTerm) return
     const message = mount.querySelector('.pagefind-ui__message')?.textContent?.trim() ?? ''
-    const query = mount.querySelector<HTMLInputElement>('input')?.value.trim().toLowerCase() ?? ''
+    const raw = mount.querySelector<HTMLInputElement>('input')?.value.trim() ?? ''
     const marks = [...mount.querySelectorAll('mark')].map((m) => m.textContent?.toLowerCase() ?? '')
-    const terms = query.split(/\s+/).filter(Boolean)
-    const isPartial =
-      marks.length > 0 && terms.some((term) => !marks.some((mark) => mark.includes(term)))
-    partial.hidden = !isPartial
-    const text = message && isPartial ? `${message}. ${partial.textContent?.trim()}` : message
+    const terms = raw.toLowerCase().split(/\s+/).filter(Boolean)
+    const missing = terms.filter((term) => !marks.some((mark) => mark.includes(term)))
+    const isPartial = marks.length > 0 && missing.length > 0
+    // 'qwxzv'가 'q' 한 글자로 채워지듯, 맞은 앞부분이 낱말의 절반에 못 미치면 결과가 없는 것과 같다.
+    const isWeak =
+      isPartial && missing.every((term) => weakestPrefix(term, marks) < Math.ceil(term.length / 2))
+    mount.classList.toggle('is-weak', isWeak)
+    weak.hidden = !isWeak
+    weakTerm.textContent = `"${raw}"`
+    partial.hidden = !isPartial || isWeak
+    const text = isWeak
+      ? weak.textContent!.replace(/\s+/g, ' ').trim()
+      : message && isPartial
+        ? `${message}. ${partial.textContent?.trim()}`
+        : message
     if (status.textContent !== text) status.textContent = text
+  }
+  /** 강조된 낱말 가운데 검색어와 앞부분이 가장 길게 같은 글자 수 */
+  function weakestPrefix(term: string, marks: string[]) {
+    let best = 0
+    for (const mark of marks) {
+      const word = mark.replace(/[^\p{L}\p{N}]/gu, '')
+      let n = 0
+      while (n < word.length && n < term.length && word[n] === term[n]) n++
+      best = Math.max(best, n)
+    }
+    return best
   }
   if (mount)
     new MutationObserver(() => {
       clearTimeout(settle)
       settle = window.setTimeout(describeResults, 400)
     }).observe(mount, { childList: true, subtree: true, characterData: true })
+
+  /*
+   * 키보드로 결과를 고른다. 입력창에서 ↓는 첫 결과로, 결과에서 ↑↓는 이웃 결과로 옮긴다.
+   * 입력창에서 Enter는 첫 결과를 연다(한글 조합 중인 Enter는 건드리지 않는다).
+   */
+  const links = () =>
+    mount?.classList.contains('is-weak')
+      ? []
+      : [...(mount?.querySelectorAll<HTMLAnchorElement>('a.pagefind-ui__result-link') ?? [])]
+  mount?.addEventListener('keydown', (event) => {
+    if (event.isComposing) return
+    const input = mount.querySelector<HTMLInputElement>('input')
+    const all = links()
+    const at = all.indexOf(document.activeElement as HTMLAnchorElement)
+    if (event.key === 'ArrowDown' && all.length) {
+      event.preventDefault()
+      all[Math.min(at + 1, all.length - 1)].focus()
+    } else if (event.key === 'ArrowUp' && at >= 0) {
+      event.preventDefault()
+      ;(at === 0 ? input : all[at - 1])?.focus()
+    } else if (event.key === 'Enter' && event.target === input && all.length) {
+      event.preventDefault()
+      all[0].click()
+    }
+  })
+
+  // 다른 화면(위키 빈 결과, 404)에서 검색어를 넘겨 검색창을 연다.
+  addEventListener('site-search', async (event) => {
+    await open()
+    const term = (event as CustomEvent<string>).detail
+    if (term && searchUI) searchUI.triggerSearch(term)
+  })
 
   openBtn?.addEventListener('click', open)
   closeBtn?.addEventListener('click', () => dialog?.close())
@@ -225,6 +292,9 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
   #search-mount .pagefind-ui__search-input::placeholder {
     color: var(--text-muted);
     opacity: 1;
+  }
+  #search-mount.is-weak .pagefind-ui__drawer {
+    display: none;
   }
   #search-mount .pagefind-ui__result-link:focus-visible {
     outline: 2px solid var(--accent);
