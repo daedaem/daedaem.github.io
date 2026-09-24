@@ -51,6 +51,9 @@ export default defineConfig({
   },
   markdown: {
     processor: unified({
+      // 따옴표·대시 자동 변환을 끈다. 글쓴이가 친 "…"·'…'를 둥근 따옴표로 바꾸면 빈 문자열 ''이나
+      // 인라인 코드 옆의 따옴표처럼 의미가 있는 기호가 깨진다. 표기는 보고만 하는 린트에 맡긴다.
+      smartypants: false,
       remarkPlugins: [remarkNoteHeadings],
       // 사례 글의 절 번호·첫머리 고지는 파일 경로(src/content/posts)로 범위를 정한다.
       rehypePlugins: [rehypeContentFixups, rehypeSectionNumbers, rehypeLeadingNotice],

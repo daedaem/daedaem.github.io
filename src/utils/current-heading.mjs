@@ -23,6 +23,19 @@ export function initCurrentHeading(root = document, view = window) {
   const entries = [...byHash.values()]
   if (!entries.length) return
 
+  // 차례·레일의 링크를 누르면 기본 앵커 이동은 그대로 두고, 초점만 그 제목으로 옮긴다
+  // (목차 시트와 같은 동작). 새 탭으로 여는 조합키 클릭은 건드리지 않는다.
+  root.addEventListener?.('click', (event) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button) return
+    const link = event.target?.closest?.('details.toc a[href^="#"], nav.rail a[href^="#"]')
+    const entry = link && byHash.get(decodeURIComponent(link.hash.slice(1)))
+    if (!entry) return
+    view.requestAnimationFrame(() => {
+      if (!entry.heading.hasAttribute('tabindex')) entry.heading.setAttribute('tabindex', '-1')
+      entry.heading.focus({ preventScroll: true })
+    })
+  })
+
   const update = () => {
     const current = currentHeadingIndex(
       entries.map(({ heading }) => heading.getBoundingClientRect().top),

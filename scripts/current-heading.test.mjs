@@ -62,6 +62,58 @@ test('scroll, anchor and history updates share one scheduled update and one curr
   assert.deepEqual(current(), [undefined, undefined, undefined])
 })
 
+test('a table-of-contents link keeps native anchor navigation and then focuses its heading', () => {
+  const focused = []
+  const heading = {
+    attrs: new Map(),
+    hasAttribute(key) {
+      return this.attrs.has(key)
+    },
+    setAttribute(key, value) {
+      this.attrs.set(key, value)
+    },
+    getBoundingClientRect: () => ({ top: 400 }),
+    focus: (options) => focused.push(options),
+  }
+  const link = {
+    hash: '#%EC%A0%88-1',
+    setAttribute() {},
+    removeAttribute() {},
+    closest: (selector) => (selector.includes('details.toc a') ? link : null),
+  }
+  const clicks = []
+  const frames = []
+  const root = {
+    querySelectorAll: () => [link],
+    querySelector: () => null,
+    getElementById: (id) => (id === '절-1' ? heading : null),
+    addEventListener: (name, handler) => clicks.push([name, handler]),
+    documentElement: { scrollHeight: 4000 },
+  }
+  const view = {
+    scrollY: 0,
+    innerHeight: 900,
+    addEventListener() {},
+    requestAnimationFrame: (handler) => frames.push(handler),
+  }
+  initCurrentHeading(root, view)
+  const click = clicks.find(([name]) => name === 'click')[1]
+  let prevented = 0
+  const event = { target: link, preventDefault: () => prevented++ }
+  // 새 탭으로 여는 조합키 클릭은 초점을 옮기지 않는다
+  click({ ...event, ctrlKey: true })
+  assert.equal(frames.length, 0)
+  click(event)
+  assert.equal(frames.length, 1)
+  frames.pop()()
+  assert.equal(prevented, 0)
+  assert.equal(heading.attrs.get('tabindex'), '-1')
+  assert.deepEqual(focused, [{ preventScroll: true }])
+  // 차례 밖의 클릭은 무시한다
+  click({ target: { closest: () => null } })
+  assert.equal(focused.length, 1)
+})
+
 test('documents without a usable outline install no scroll handlers', () => {
   let listeners = 0
   initCurrentHeading({ querySelectorAll: () => [] }, { addEventListener: () => listeners++ })

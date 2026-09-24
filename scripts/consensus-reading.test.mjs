@@ -88,7 +88,8 @@ test('code blocks keep a separate top band with a language label and an always-v
   const css = read('src/styles/global.css')
   const button = css.match(/\.copy-code \{([^}]+)\}/)[1]
   assert.match(css, /--control-size: 2\.75rem;/)
-  assert.match(css, /--code-band: 40px;/)
+  // 띠 높이 44px = 복사 버튼의 조작 크기
+  assert.match(css, /--code-band: 44px;/)
   assert.match(button, /top: 0;/)
   assert.match(button, /min-height: var\(--code-band\);/)
   assert.doesNotMatch(button, /opacity: 0/)

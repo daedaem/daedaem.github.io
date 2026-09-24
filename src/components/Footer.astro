@@ -40,10 +40,13 @@ const year = new Date().getFullYear()
     flex-wrap: wrap;
     gap: 0 1rem;
   }
+  /* 짧은 낱말('글')도 누를 수 있게 좌우 여백을 두고, 같은 크기의 음수 바깥 여백으로 글자 간격은 유지한다 */
   a {
     display: inline-flex;
     align-items: center;
     min-height: var(--control-size);
+    padding: 0 0.5rem;
+    margin: 0 -0.5rem;
     color: var(--fg2);
     text-decoration: none;
   }

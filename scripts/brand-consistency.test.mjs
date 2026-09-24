@@ -78,13 +78,13 @@ test('cover disclosure belongs with reader-facing writing principles, not the ed
   assert.doesNotMatch(source('src/pages/admin/index.astro'), /글 표지는 AI로 생성/)
 })
 
-test('the one-row header stays within 64px on desktop and two rows (52 + 40) on mobile', () => {
+test('the one-row header stays within 64px on desktop and two rows (48 + 44) on mobile', () => {
   const header = source('src/components/Header.astro')
-  // 위 3px 로고색 선, 로고 마크 + 이름, 메뉴, 검색·테마
+  // 위 3px 로고색 선, 로고 마크 + 이름, 메뉴, 검색·테마. 모바일 메뉴줄은 링크가 44px 조작 크기를 갖는다
   assert.match(header, /border-top: 3px solid var\(--mark-bg\);/)
   assert.match(header, /<Mark size=\{22\} class="brand-mark" \/>/)
-  assert.match(header, /\.brand\s*\{[^}]*min-height:\s*52px;/)
-  assert.match(header, /\.nav\s*\{[^}]*height:\s*40px;/)
+  assert.match(header, /\.brand\s*\{[^}]*min-height:\s*48px;/)
+  assert.match(header, /\.nav\s*\{[^}]*height:\s*44px;/)
   assert.match(header, /grid-template-areas:\s*'brand tools'\s*'nav nav';/)
   const desktop = header.split('@media (min-width: 46em)')[1]
   assert.match(desktop, /\.top-in\s*\{[^}]*min-height:\s*57px;/)

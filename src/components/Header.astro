@@ -70,7 +70,7 @@ const active = activeNavigation(path)
 </script>
 
 <style>
-  /* 위 3px 남색 선 위에 한 줄. 모바일은 로고줄 52 + 메뉴줄 40, 데스크톱은 57 */
+  /* 위 3px 남색 선 위에 한 줄. 모바일은 로고줄 48 + 메뉴줄 44(메뉴 링크가 44px 조작 크기), 데스크톱은 57 */
   header {
     position: sticky;
     top: 0;
@@ -106,7 +106,7 @@ const active = activeNavigation(path)
     display: inline-flex;
     align-items: center;
     gap: 0.55rem;
-    min-height: 52px;
+    min-height: 48px;
     font-size: 1rem;
     font-weight: 650;
     letter-spacing: -0.01em;
@@ -120,7 +120,7 @@ const active = activeNavigation(path)
   /* 모바일 둘째 줄: 가로로 넘기는 메뉴 */
   .nav {
     grid-area: nav;
-    height: 40px;
+    height: 44px;
     margin: 0 -1rem;
     padding: 0 0.5rem;
     border-top: 1px solid var(--line);
@@ -141,7 +141,7 @@ const active = activeNavigation(path)
     display: inline-flex;
     align-items: center;
     height: 100%;
-    min-height: 40px;
+    min-height: var(--control-size);
     min-width: var(--control-size);
     padding: 0 0.55rem;
     font-size: 0.9375rem;

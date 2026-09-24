@@ -100,10 +100,10 @@
   --page-inset: 2rem;
   --control-size: 2.75rem;
   --control-radius: var(--radius);
-  /* 코드 블록 위 띠(언어 라벨·복사 버튼) 높이 */
-  --code-band: 40px;
+  /* 코드 블록 위 띠(언어 라벨·복사 버튼) 높이. 복사 버튼이 44px 조작 크기를 갖는다 */
+  --code-band: 44px;
   /*
-   * 머리줄 높이(위 3px 선 + 내용 + 아래 1px 선). 데스크톱 57 + 4, 모바일 로고줄 52 + 메뉴줄 40 + 4.
+   * 머리줄 높이(위 3px 선 + 내용 + 아래 1px 선). 데스크톱 57 + 4, 모바일 로고줄 48 + 메뉴줄 44 + 4.
    * 앵커 착지·따라오는 목차는 여기에 1rem을 더한 만큼 내려 머리줄 뒤로 들어가지 않는다.
    */
   --header-h: 61px;
@@ -832,9 +832,10 @@ code {
 .sec-h .k {
   color: var(--fg);
 }
+/* 절 머리의 '더 보기'는 44px 높이를 갖되, 위아래 음수 여백으로 절 머리 줄 높이는 그대로 둔다 */
 .sec-h .more {
-  min-height: 32px;
-  margin: -0.25rem 0;
+  min-height: var(--control-size);
+  margin: -0.75rem 0;
   font-size: 0.875rem;
 }
 
@@ -1345,9 +1346,9 @@ nav.rail {
     font-weight: 600;
   }
   .totop {
-    margin-top: 0.75rem;
+    margin-top: 0.25rem;
     padding: 0;
-    min-height: 32px;
+    min-height: var(--control-size);
     border: 0;
     background: none;
     font-size: 0.8125rem;

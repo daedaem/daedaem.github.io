@@ -489,8 +489,10 @@ const defaultOpen = (name: string) => ['Platinum', 'Gold', 'Level 4', 'Level 3']
   .count p:empty {
     display: none;
   }
+  /* 44px 높이를 갖되 위아래 음수 여백으로 건수 줄 높이는 그대로 둔다 */
   #clear {
-    min-height: 2rem;
+    margin: -0.6rem 0;
+    min-height: var(--control-size);
     padding: 0 0.6rem;
     font-size: 0.8125rem;
     letter-spacing: 0;

@@ -120,32 +120,35 @@ const description =
         hidden>코드 전체 펼치기</button
       >
 
-      <aside class="notice" data-pagefind-ignore>
-        <p>
-          문제 지문과 예제 입출력은 {d.site}의 저작물이라 싣지 않았습니다.
-          {d.problemUrl && <a href={d.problemUrl}>원문</a>}에서 확인하세요. 과거 학습 코드를 보관한
-          기록이며, 확인된 오류와 출처 확인이 필요한 부분은 별도로 표시합니다.
-        </p>
-      </aside>
+      {/* 글 끝: 글·위키와 같은 2px 선 아래 고지와 이어 볼 문제 */}
+      <footer class="art-end">
+        <aside class="notice" data-pagefind-ignore>
+          <p>
+            문제 지문과 예제 입출력은 {d.site}의 저작물이라 싣지 않았습니다.
+            {d.problemUrl && <a href={d.problemUrl}>원문</a>}에서 확인하세요. 과거 학습 코드를
+            보관한 기록이며, 확인된 오류와 출처 확인이 필요한 부분은 별도로 표시합니다.
+          </p>
+        </aside>
 
-      {
-        related.length > 0 && (
-          <section class="back related" aria-label="같은 유형의 다른 문제" data-pagefind-ignore>
-            <h2 class="k">같은 유형의 다른 문제</h2>
-            <ul>
-              {related.map((r) => (
-                <li>
-                  <span class="k-in rtier">{tierLabel(r.data.tier)}</span>
-                  <a class="stretched-link" href={`/algorithms/${r.id}/`}>
-                    {r.data.title}
-                  </a>
-                  <span class="rcat">{r.data.categories.slice(0, 2).join(' · ')}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )
-      }
+        {
+          related.length > 0 && (
+            <section class="back related" aria-label="같은 유형의 다른 문제" data-pagefind-ignore>
+              <h2 class="k">같은 유형의 다른 문제</h2>
+              <ul>
+                {related.map((r) => (
+                  <li>
+                    <span class="k-in rtier">{tierLabel(r.data.tier)}</span>
+                    <a class="stretched-link" href={`/algorithms/${r.id}/`}>
+                      {r.data.title}
+                    </a>
+                    <span class="rcat">{r.data.categories.slice(0, 2).join(' · ')}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+      </footer>
     </article>
   </div>
 </BaseLayout>

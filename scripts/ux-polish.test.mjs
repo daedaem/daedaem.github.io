@@ -94,9 +94,9 @@ test('the whole row is one link whose name is the label line, title and summary 
 test('global motion preference and header targets remain explicit', () => {
   assert.match(source('src/styles/global.css'), /@media \(prefers-reduced-motion: reduce\)/)
   const header = source('src/components/Header.astro')
-  // 모바일 메뉴줄은 40px, 넓은 화면의 메뉴 링크는 44px
+  // 모바일·넓은 화면 모두 메뉴 링크는 44px 조작 크기
   const mobile = header.match(/\.nav a \{([^}]+)\}/)?.[1]
-  assert.match(mobile, /min-height: 40px/)
+  assert.match(mobile, /min-height: var\(--control-size\)/)
   assert.match(mobile, /min-width: var\(--control-size\)/)
   const desktop = header.split('@media (min-width: 46em)')[1].match(/\.nav a \{([^}]+)\}/)?.[1]
   assert.match(desktop, /min-height: var\(--control-size\)/)

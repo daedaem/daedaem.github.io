@@ -22,7 +22,13 @@ export function internalReadingLinks(body = '') {
   ]
 }
 
-/** 본문에서 현재 문서를 가리키는 글·문서. 입력 순서를 그대로 둔다. */
+/**
+ * 본문에서 현재 문서를 가리키는 글·문서. 입력 순서를 그대로 둔다.
+ * @template {{collection: string, id: string, body?: string, data: {draft?: boolean}}} T
+ * @param {T[]} pool
+ * @param {T} current
+ * @returns {T[]}
+ */
 function referencesOf(pool, current) {
   const currentURL = pathOf(current)
   return pool.filter(
@@ -42,6 +48,7 @@ const dateOf = (entry) => {
  * @template {{collection: string, id: string, body?: string, data: {title: string, draft?: boolean, date?: Date, created?: Date, updated?: Date}}} T
  * @param {T[]} pool
  * @param {T} current
+ * @returns {T[]}
  */
 export function selectWikiReferences(pool, current) {
   return referencesOf(pool, current).sort(
