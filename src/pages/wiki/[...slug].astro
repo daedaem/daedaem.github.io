@@ -41,11 +41,11 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
   ogSlug={`wiki/${entry.id}`}
 >
   <div class="wrap-wide layout">
-    <aside class="side">
+    <aside class="side" data-pagefind-ignore>
       <WikiTree docs={docs} current={entry.id} />
     </aside>
 
-    <details class="side-mobile">
+    <details class="side-mobile" data-pagefind-ignore>
       <summary>위키 문서 목록</summary>
       <WikiTree docs={docs} current={entry.id} />
     </details>

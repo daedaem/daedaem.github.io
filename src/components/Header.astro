@@ -21,9 +21,12 @@ const active = activeNavigation(path)
           {
             PRIMARY_NAV.map((item) => (
               <li>
-                <a href={item.href} aria-current={
+                <a
+                  href={item.href}
+                  aria-current={
                     active !== item.href ? undefined : path === item.href ? 'page' : 'true'
-                  }>
+                  }
+                >
                   {item.label}
                 </a>
               </li>
@@ -163,7 +166,9 @@ const active = activeNavigation(path)
   .tools :global(#search-open) {
     width: auto;
     gap: 0.375rem;
-    padding-inline: 0.5rem;
+    padding-inline: 0.625rem;
+    /* 글자처럼 보이지 않게 테두리를 남긴다 */
+    border-color: var(--border);
   }
   .tools :global(#search-open kbd) {
     display: none;

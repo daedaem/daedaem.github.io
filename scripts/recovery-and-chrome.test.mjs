@@ -38,3 +38,29 @@ test('focus rings share one 2px style and search keeps its text label on small s
   const search = source('src/components/Search.astro')
   assert.doesNotMatch(search, /#search-open span,\s*#search-open kbd \{\s*display: none;/)
 })
+
+test('the dark home panel is a sunken navy instead of the bright logo tile', () => {
+  const css = source('src/styles/global.css')
+  assert.match(css, /--hero-bg: #223e60;/)
+  assert.equal(css.match(/--hero-bg: #1f3148;/g)?.length, 2)
+  assert.match(
+    source('src/pages/index.astro'),
+    /background: var\(--hero-bg\);\s*color: var\(--hero-ink\);/,
+  )
+})
+
+test('recommended posts show their writing date like every other list', () => {
+  assert.match(
+    source('src/pages/index.astro'),
+    /<time datetime=\{post\.data\.date\.toISOString\(\)\}>\s*작성 \{formatCompactDate\(post\.data\.date\)\}/,
+  )
+})
+
+test('search labels each result with its kind and keeps wiki navigation out of excerpts', () => {
+  const search = source('src/components/Search.astro')
+  assert.match(search, /processResult:/)
+  assert.match(search, /result\.meta\.title = `\$\{kind\} · \$\{result\.meta\.title\}`/)
+  assert.match(search, /id="search-help"/)
+  const wiki = source('src/pages/wiki/[...slug].astro')
+  assert.match(wiki, /<aside class="side" data-pagefind-ignore>/)
+})

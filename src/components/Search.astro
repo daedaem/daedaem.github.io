@@ -48,6 +48,13 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
     <strong id="search-weak-term"></strong>에 맞는 결과가 없습니다. 낱말을 줄이거나 다른 말로 찾아
     보세요.
   </p>
+  <nav id="search-help" class="search-help" aria-label="목록에서 찾기" hidden>
+    목록에서 찾기:
+    <a href="/posts/">글</a>
+    <a href="/wiki/">위키</a>
+    <a href="/notes/">학습 노트</a>
+    <a href="/algorithms/">알고리즘</a>
+  </nav>
   <div id="search-mount"></div>
 </dialog>
 
@@ -117,6 +124,12 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
       // 기본값(0.75)은 긴 글을 크게 깎아, 주제를 깊게 다룬 사례 글이 스치듯 언급한 짧은 문서보다
       // 뒤로 밀린다('주소' → 브라우저 렌더링 위키가 1위). 0.3이면 사례 글이 앞선다.
       ranking: { pageLength: 0.3 },
+      // 결과가 글인지 위키인지 학습 노트인지 제목 앞에 붙인다(범위 필터와 같은 이름).
+      processResult: (result: { filters?: Record<string, string[]>; meta: { title?: string } }) => {
+        const kind = result.filters?.['구분']?.[0]
+        if (kind && result.meta.title) result.meta.title = `${kind} · ${result.meta.title}`
+        return result
+      },
       translations: {
         placeholder: '검색어를 입력하세요',
         clear_search: '지우기',
@@ -172,6 +185,9 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
     const isWeak =
       isPartial && missing.every((term) => weakestPrefix(term, marks) < Math.ceil(term.length / 2))
     mount.classList.toggle('is-weak', isWeak)
+    // 결과가 없거나 사실상 없을 때는 목록으로 가는 길을 함께 보인다.
+    const zero = !!raw && !isWeak && !mount.querySelector('.pagefind-ui__result')
+    document.getElementById('search-help')!.hidden = !(isWeak || (zero && message))
     weak.hidden = !isWeak
     weakTerm.textContent = `"${raw}"`
     partial.hidden = !isPartial || isWeak
@@ -292,6 +308,44 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
   #search-mount .pagefind-ui__search-input::placeholder {
     color: var(--text-muted);
     opacity: 1;
+  }
+  .search-help {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 0.75rem;
+    margin: 0 0 0.75rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+  }
+  .search-help a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-size);
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  /* 원색 노랑 대신 사이트 강조색을 옅게 깐다 */
+  #search-mount mark {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    color: inherit;
+    border-radius: 2px;
+  }
+  /* 좁은 화면에서는 결과 하나가 화면을 다 차지하지 않게 여백과 하위 결과를 줄인다 */
+  @media (max-width: 40rem) {
+    #search-mount .pagefind-ui__result {
+      padding-block: 0.75rem;
+    }
+    #search-mount .pagefind-ui__result-nested {
+      padding-left: 0.75rem;
+    }
+    #search-mount .pagefind-ui__result-nested .pagefind-ui__result-excerpt {
+      display: none;
+    }
+    .search-scope {
+      margin-bottom: 0.5rem;
+    }
   }
   #search-mount.is-weak .pagefind-ui__drawer {
     display: none;

@@ -71,7 +71,7 @@ test('wiki contents progressively enhance open native details without changing t
   assert.match(source, /<nav class="toc"[^>]*data-pagefind-ignore>\s*<details open>\s*<summary>/)
   assert.match(source, /querySelector<HTMLDetailsElement>\('\.post > \.toc details'\)/)
   assert.match(source, /contents\.open = !narrow\.matches/)
-  assert.match(source, /<details class="side-mobile">/)
+  assert.match(source, /<details class="side-mobile" data-pagefind-ignore>/)
 })
 
 test('about shortcuts have focusable heading targets and are excluded from article search', () => {
