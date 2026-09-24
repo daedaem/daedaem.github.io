@@ -1,0 +1,11 @@
+/*
+Copyright (c) 2021 Kil Hyung-jin, with Reserved Font Name Pretendard.
+https://github.com/orioncactus/pretendard
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+http://scripts.sil.org/OFL
+*/
+
+Pretendard (https://github.com/orioncactus/pretendard), SIL Open Font License 1.1.
+fonts/pre-final.woff2 is a character subset of PretendardVariable.woff2 1.3.9. Full license text: see LICENSE-JetBrainsMono.txt (same OFL 1.1 text) or https://openfontlicense.org

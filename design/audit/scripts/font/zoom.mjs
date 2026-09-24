@@ -1,0 +1,5 @@
+import { chromium } from './../../pw/node_modules/playwright-core/index.mjs'
+import { readFileSync, writeFileSync } from 'fs'
+const [n, X, Y, W, H] = process.argv.slice(2); const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' }); const p = await b.newPage()
+const img = await p.evaluate(async ([a, c, x, y, w, h]) => { const load = (s) => new Promise((r) => { const i = new Image(); i.onload = () => r(i); i.src = 'data:image/png;base64,' + s }); const [i1, i2] = await Promise.all([load(a), load(c)]); const o = document.createElement('canvas'); o.width = w * 4; o.height = h * 8 + 8; const g = o.getContext('2d'); g.imageSmoothingEnabled = false; g.drawImage(i1, x, y, w, h, 0, 0, w * 4, h * 4); g.drawImage(i2, x, y, w, h, 0, h * 4 + 8, w * 4, h * 4); return o.toDataURL() }, [readFileSync(`old${n}.png`).toString('base64'), readFileSync(`new${n}.png`).toString('base64'), +X, +Y, +W, +H])
+writeFileSync('zoom.png', Buffer.from(img.split(',')[1], 'base64')); await b.close()

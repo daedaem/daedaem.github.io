@@ -1,0 +1,16 @@
+import { chromium } from '/tmp/claude-0/-home-user-daedaem-github-io/8d13e338-9c80-5048-8800-bff18af5dcf7/scratchpad/pw/node_modules/playwright-core/index.mjs'
+const b = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium' })
+const p = await b.newPage({ viewport: { width: 390, height: 844 } })
+await p.goto('http://127.0.0.1:8817/#home', { waitUntil: 'networkidle' })
+console.log(await p.evaluate(() => { const a = [...document.querySelectorAll('#p-home a')].find(a => a.textContent.trim() === '보기'); return a.outerHTML.slice(0, 300) + ' || parent: ' + a.parentElement.outerHTML.replace(/<svg.*?<\/svg>/g,'').slice(0, 500) }))
+const snap = await p.accessibility?.snapshot?.().catch(()=>null)
+await p.goto('http://127.0.0.1:8817/#wiki', { waitUntil: 'networkidle' })
+console.log(await p.evaluate(() => { const a = document.querySelector('#wlist a'); return a.outerHTML.replace(/<svg.*?<\/svg>/g,'').slice(0, 600) }))
+await p.goto('http://127.0.0.1:8817/#home', { waitUntil: 'networkidle' })
+// scroll down and see dock
+await p.evaluate(() => window.scrollTo(0, 1200)); await p.waitForTimeout(200); await p.mouse.wheel(0, 300); await p.waitForTimeout(600)
+console.log('dock after scroll down', await p.evaluate(() => document.querySelector('.dock').className + ' top ' + Math.round(document.querySelector('.dock').getBoundingClientRect().top)))
+await p.mouse.wheel(0, -100); await p.waitForTimeout(600)
+console.log('dock after scroll up', await p.evaluate(() => document.querySelector('.dock').className + ' top ' + Math.round(document.querySelector('.dock').getBoundingClientRect().top)))
+await p.screenshot({ path: 'shots/NEW-home-scrollup-390.png' })
+await b.close()

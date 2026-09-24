@@ -1,0 +1,11 @@
+import { chromium } from '../../pw/node_modules/playwright-core/index.mjs';
+const b = await chromium.launch({executablePath:'/opt/pw-browsers/chromium'});
+const p=await b.newPage({viewport:{width:390,height:844}});
+await p.goto('http://127.0.0.1:8831/wiki/?q=kubernetes&topic=dotnet&status=stable',{waitUntil:'networkidle'}); await p.waitForTimeout(500);
+console.log('cur empty msg', await p.evaluate(()=>{const h=[...document.querySelectorAll('h3')].find(e=>/조건에 맞는/.test(e.textContent));const r=h.getBoundingClientRect();return {y:Math.round(r.y),vh:innerHeight, next:h.parentElement.innerText.slice(0,200)}}));
+await p.evaluate(()=>scrollTo(0,400)); await p.screenshot({path:'t4c-cur-m-empty.png'});
+const q=await b.newPage({viewport:{width:1280,height:900}});
+await q.goto('http://127.0.0.1:8817/#wiki',{waitUntil:'networkidle'});
+console.log('new groups', await q.evaluate(()=>[...document.querySelectorAll('[role=group],[role=toolbar],fieldset,[role=radiogroup]')].filter(e=>e.getBoundingClientRect().height>0).map(e=>e.tagName+' role='+e.getAttribute('role')+' label='+(e.getAttribute('aria-label')||e.getAttribute('aria-labelledby'))+' : '+e.innerText.replace(/\s+/g,' ').slice(0,60))));
+console.log('cur groups', await p.evaluate(()=>[...document.querySelectorAll('nav[aria-label], [role=group], fieldset')].map(e=>e.tagName+' '+e.getAttribute('aria-label'))));
+await b.close();

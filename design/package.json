@@ -1,0 +1,13 @@
+{
+  "name": "daedaem-design-prototype",
+  "private": true,
+  "type": "module",
+  "description": "대댐 로그 새 디자인 시안(1안 개정)을 만드는 스크립트. 실제 사이트 소스와 별개다.",
+  "scripts": {
+    "chars": "node final.mjs",
+    "build": "node final.mjs build"
+  },
+  "dependencies": {
+    "marked": "14.1.4"
+  }
+}

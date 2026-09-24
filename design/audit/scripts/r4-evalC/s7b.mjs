@@ -1,0 +1,13 @@
+import { chromium } from '/tmp/claude-0/-home-user-daedaem-github-io/8d13e338-9c80-5048-8800-bff18af5dcf7/scratchpad/pw/node_modules/playwright-core/index.mjs';
+const b = await chromium.launch({executablePath:'/opt/pw-browsers/chromium'});
+const p = await b.newPage({viewport:{width:1280,height:900}});
+await p.goto('http://127.0.0.1:8831/wiki/',{waitUntil:'networkidle'}); await p.waitForTimeout(400);
+const chips = await p.evaluate(()=>[...document.querySelectorAll('a,button,label')].filter(e=>/^데이터베이스/.test(e.innerText.trim())&&e.getBoundingClientRect().height>0).map(e=>e.outerHTML.slice(0,200)));
+console.log(chips);
+await p.evaluate(()=>{const e=[...document.querySelectorAll('a,button,label')].find(e=>/^데이터베이스\s*\n?\s*8/.test(e.innerText.trim())&&e.getBoundingClientRect().height>0); e.click();});
+await p.waitForTimeout(1000);
+console.log('url', p.url(), await p.evaluate(()=>[...document.querySelectorAll('h2,h3')].filter(h=>h.getBoundingClientRect().height>0).map(h=>h.innerText.trim()).join(' || ')));
+await p.fill('#wiki-query','oracle'); await p.waitForTimeout(1000);
+console.log('after oracle', p.url(), await p.evaluate(()=>[...document.querySelectorAll('h2,h3')].filter(h=>h.getBoundingClientRect().height>0).map(h=>h.innerText.trim()).join(' || ')), await p.evaluate(()=>[...document.querySelectorAll('[aria-live],[role=status]')].map(e=>e.innerText.trim()).filter(Boolean)));
+await p.screenshot({path:'cur-wiki-filter.png'});
+await b.close();
