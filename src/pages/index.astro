@@ -54,6 +54,9 @@ for (const post of posts) counts.set(post.data.category, (counts.get(post.data.c
                       <div class="card-copy">
                         <p class="card-meta">
                           {cat && <span class="category">{cat.name}</span>}
+                          <time datetime={post.data.date.toISOString()}>
+                            작성 {formatCompactDate(post.data.date)}
+                          </time>
                           <span>{readingMinutes(post.body ?? '')}분 읽기</span>
                         </p>
                         <h3 class="card-title">
@@ -203,8 +206,8 @@ for (const post of posts) counts.set(post.data.category, (counts.get(post.data.c
     gap: 1.5rem;
     margin-top: 1.5rem;
     padding: 2.25rem 2.25rem;
-    background: var(--mark-bg);
-    color: var(--mark-ink);
+    background: var(--hero-bg);
+    color: var(--hero-ink);
     border-radius: 12px;
   }
   .identity {
