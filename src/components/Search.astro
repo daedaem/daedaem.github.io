@@ -221,6 +221,11 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
     padding-block: 0.375rem;
     margin-block: -0.375rem;
   }
+  /* Pagefind 기본값은 안내 글자를 opacity 0.2로 흐리게 해 배경 대비가 1.5:1까지 떨어진다 */
+  #search-mount .pagefind-ui__search-input::placeholder {
+    color: var(--text-muted);
+    opacity: 1;
+  }
   #search-mount .pagefind-ui__result-link:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
