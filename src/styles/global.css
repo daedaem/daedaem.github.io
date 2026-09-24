@@ -465,6 +465,10 @@ pre.astro-code[data-scrollable] > code:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+/* 사례 글은 라이트 모드에서도 짙은 코드 면을 쓴다. 짙은 파랑 테두리는 그 면에서 1.6:1이라 밝은 파랑으로 바꾼다 */
+.post[data-code-theme='dark'] pre.astro-code[data-scrollable] > code:focus-visible {
+  outline-color: #abc5e8;
+}
 
 /* Shiki가 인라인한 흰 배경 대신 --code-bg를 쓴다. 다크 규칙이 더 구체적이라 다크에서는 아래가 이긴다 */
 pre.astro-code {
