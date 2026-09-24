@@ -1,29 +1,29 @@
 /**
- * 목차가 본문 위에만 있는 화면(1200px 미만 전부, 넓은 화면의 위키 문서)에서는 글 중간에서
- * 다른 절로 가려면 목차까지 한참 되돌아가야 한다. 본문의 목차가 화면 위로 지나가면
- * 오른쪽 아래에 '목차' 버튼을 띄우고,
- * 누르면 같은 목록을 대화상자로 연다. 목록의 링크는 본문 목차와 같은 #앵커라서 주소와
- * 방문 기록이 그대로 남는다. JS가 없으면 본문의 목차만 쓴다.
+ * 오른쪽 레일이 없는 폭(75em 미만)에서는 차례가 본문 위에만 있어, 글 중간에서 다른 절로 가려면
+ * 차례까지 한참 되돌아가야 한다. 본문 위의 차례(details.toc)가 화면 위로 지나가면 오른쪽 아래에
+ * '차례' 버튼(.fab)을 띄우고, 누르면 같은 목록을 아래에서 올라오는 시트로 연다. 목록의 링크는
+ * 본문 차례와 같은 #앵커라서 주소와 방문 기록이 그대로 남는다. JS가 없으면 본문의 차례만 쓴다.
  */
 export function initTocSheet(root = document, view = window) {
-  const nav = root.querySelector('.post > .toc')
-  const list = nav?.querySelector('ul')
+  const nav = root.querySelector('details.toc')
+  const list = nav?.querySelector('ol')
   if (!nav || !list) return
 
   const button = root.createElement('button')
   button.type = 'button'
-  button.className = 'toc-fab'
+  button.className = 'fab toc-fab'
   button.hidden = true
   button.setAttribute('aria-haspopup', 'dialog')
-  button.textContent = '목차'
+  button.textContent = '차례'
 
   const dialog = root.createElement('dialog')
-  dialog.className = 'toc-sheet'
-  dialog.setAttribute('aria-label', '목차')
+  dialog.className = 'sheet toc-sheet'
+  dialog.setAttribute('aria-label', '차례')
   const head = root.createElement('div')
-  head.className = 'toc-sheet-head'
+  head.className = 'sheet-h toc-sheet-head'
   const title = root.createElement('p')
-  title.textContent = '목차'
+  title.className = 'k'
+  title.textContent = '차례'
   const close = root.createElement('button')
   close.type = 'button'
   close.className = 'toc-sheet-close'
@@ -37,7 +37,7 @@ export function initTocSheet(root = document, view = window) {
   const sheetLinks = [...copy.querySelectorAll('a')]
 
   button.addEventListener('click', () => {
-    // 지금 읽는 절(본문 목차의 aria-current)을 표시하고 그 항목에 초점을 둔다.
+    // 지금 읽는 절(본문 차례의 aria-current)을 표시하고 그 항목에 초점을 둔다.
     let current = null
     sheetLinks.forEach((link, i) => {
       if (sourceLinks[i]?.getAttribute('aria-current') === 'location') {
@@ -64,7 +64,7 @@ export function initTocSheet(root = document, view = window) {
     })
   })
 
-  // 넓은 화면의 사례 글처럼 목차가 옆에 붙어 따라오면(sticky) 화면에 남아 있으므로 버튼이 뜨지 않는다.
+  // 넓은 화면(75em 이상)에서는 본문 차례가 숨고 레일이 대신하므로 버튼이 뜨지 않는다.
   new view.IntersectionObserver(([entry]) => {
     button.hidden = entry.isIntersecting || entry.boundingClientRect.bottom >= 0
     if (button.hidden && dialog.open) dialog.close()

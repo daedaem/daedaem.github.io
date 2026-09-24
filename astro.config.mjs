@@ -5,6 +5,8 @@ import { unified } from '@astrojs/markdown-remark'
 import { SITE } from './src/consts.ts'
 import remarkNoteHeadings from './src/plugins/remark-note-headings.mjs'
 import rehypeContentFixups from './src/plugins/rehype-content-fixups.mjs'
+import rehypeSectionNumbers from './src/plugins/rehype-section-numbers.mjs'
+import rehypeLeadingNotice from './src/plugins/rehype-leading-notice.mjs'
 import readableCodeColors from './src/plugins/shiki-readable-colors.mjs'
 
 export default defineConfig({
@@ -50,7 +52,8 @@ export default defineConfig({
   markdown: {
     processor: unified({
       remarkPlugins: [remarkNoteHeadings],
-      rehypePlugins: [rehypeContentFixups],
+      // 사례 글의 절 번호·첫머리 고지는 파일 경로(src/content/posts)로 범위를 정한다.
+      rehypePlugins: [rehypeContentFixups, rehypeSectionNumbers, rehypeLeadingNotice],
     }),
     shikiConfig: {
       themes: { light: 'light-plus', dark: 'dark-plus' },

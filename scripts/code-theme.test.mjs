@@ -73,11 +73,17 @@ test('forced-dark Shiki blocks require the root foreground and background', () =
 })
 
 test('layout, CSS and the site check share an explicit code-theme contract', () => {
+  // 라이트에서도 검은 코드 블록(강제 다크)은 폐기했다. 모든 글이 라이트·다크 두 검사를 받는다
   const layout = source('src/layouts/PostLayout.astro')
-  assert.match(layout, /data-code-theme=\{archived \? 'auto' : 'dark'\}/)
-  assert.match(layout, /\.post\[data-code-theme='dark'\] \.body :global\(pre\.astro-code\)/)
-  assert.doesNotMatch(layout, /\.post:not\(\.is-archived\)/)
-  assert.match(source('src/pages/wiki/[...slug].astro'), /<article class="post">/)
-  assert.doesNotMatch(source('src/pages/wiki/[...slug].astro'), /data-code-theme="dark"/)
+  assert.doesNotMatch(layout, /data-code-theme/)
+  assert.doesNotMatch(layout, /--shiki-dark/)
+  assert.match(layout, /<article class:list=\{\['art', 'post'/)
+  assert.match(source('src/pages/wiki/[...slug].astro'), /<article class="art post">/)
+  assert.doesNotMatch(source('src/pages/wiki/[...slug].astro'), /data-code-theme/)
+  // 라이트 코드 면은 --code(= --code-bg)다
+  assert.match(
+    source('src/styles/global.css'),
+    /pre\.astro-code \{\s*background-color: var\(--code-bg\) !important;/,
+  )
   assert.match(source('scripts/check-site.mjs'), /lightCodeBackground\(readerCss\)/)
 })

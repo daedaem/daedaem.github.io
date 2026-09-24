@@ -115,12 +115,14 @@ test('title styling preserves every character and only splits the first colon-sp
     subtitle: '둘째: 셋째',
   })
   const layout = source('src/layouts/PostLayout.astro')
-  assert.match(layout, /<slot\s*\/>/)
+  // 제목은 나누지 않고 그대로 둔다. 본문은 슬롯을 문자열로 받아 첫머리 고지를 앞으로 옮긴다
+  assert.match(layout, /<h1 tabindex="-1">\{title\}<\/h1>/)
+  assert.match(layout, /Astro\.slots\.render\('default'\)/)
   assert.match(layout, /original=\{archived\}/)
   assert.match(layout, /publishedAt=\{date\}/)
   assert.match(layout, /updatedAt=\{updated\}/)
-  assert.match(layout, /사례 시점: \{happened\}/)
-  assert.match(layout, /<span class="cause-label">원인 한 줄<\/span>/)
+  assert.match(layout, /사례 시점 \$\{happened\}/)
+  assert.match(layout, /<p class="k">원인 한 줄<\/p>/)
 })
 
 test('header and all favicon sizes use the approved monogram', () => {
@@ -166,12 +168,11 @@ test('anchor landings and sticky article/wiki navigation share the header cleara
   assert.match(css, /--header-h: 96px;/)
   assert.match(css, /--header-clearance: calc\(var\(--header-h\) \+ 1rem\);/)
   assert.match(css, /scroll-padding-top: var\(--header-clearance\)/)
-  for (const path of [
-    'src/layouts/PostLayout.astro',
-    'src/pages/wiki/index.astro',
-    'src/pages/wiki/[...slug].astro',
-  ]) {
-    assert.match(source(path), /top: var\(--header-clearance\)/)
+  assert.match(source('src/pages/wiki/index.astro'), /top: var\(--header-clearance\)/)
+  // 글·위키 문서의 오른쪽 레일(전역 nav.rail)도 머리줄 아래에서 시작한다
+  assert.match(css, /nav\.rail \{[^}]*top: calc\(var\(--header-clearance\) \+ 1\.5rem\);/)
+  for (const path of ['src/layouts/PostLayout.astro', 'src/pages/wiki/[...slug].astro']) {
+    assert.match(source(path), /<nav class="rail" aria-label="차례" data-pagefind-ignore>/)
   }
 })
 

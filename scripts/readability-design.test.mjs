@@ -78,16 +78,17 @@ test('home and list summaries keep body-size text instead of mobile-only shrinki
 })
 
 test('article cause stays body-size and medium-weight on mobile without rewriting its text', () => {
-  assert.match(
-    layout,
-    /\.cause\s*\{[^}]*font-size:\s*var\(--type-body\);[^}]*font-weight:\s*500;[^}]*color:\s*var\(--text\);/,
-  )
-  const mobile = layout.split('@media (max-width: 640px)')[1]
-  const cause = mobile.match(/\.cause\s*\{([^}]+)\}/)?.[1]
+  // 원인 한 줄: 라벨(.k, 강조색) + 문장. 본문 크기 그대로, 굵기 500. 문장은 frontmatter의 cause 그대로
+  assert.match(layout, /<aside class="cause">\s*<p class="k">원인 한 줄<\/p>\s*<p>\{cause\}<\/p>/)
+  const cause = css.match(/aside\.cause p \+ p\s*\{([^}]+)\}/)?.[1]
   assert.ok(cause)
-  assert.doesNotMatch(cause, /font-size:|font-weight:|color:/)
-  assert.match(layout, /<span class="cause-label">원인 한 줄<\/span>\s*\{cause\}/)
-  assert.match(layout, /<slot\s*\/>/)
+  assert.match(cause, /font-weight:\s*500;/)
+  assert.doesNotMatch(cause, /font-size:/)
+  assert.doesNotMatch(css.match(/aside\.cause\s*\{([^}]+)\}/)?.[1], /font-size:/)
+  assert.match(css, /aside\.cause \.k\s*\{\s*color: var\(--accent\);/)
+  // 본문은 슬롯을 문자열로 받아 첫머리 고지를 원인 한 줄 아래로 옮긴다
+  assert.match(layout, /Astro\.slots\.render\('default'\)/)
+  assert.match(layout, /<div class="prose">/)
 })
 
 test('reading comparison uses existing responsive thumbnails and retains full 3:2 assets', () => {

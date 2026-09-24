@@ -24,8 +24,13 @@ test('검색 대화상자: 초점이 제목 띠에 가려지지 않고, 결과 �
 
 test('안내 문장 속 링크는 밑줄로 링크임을 보인다', () => {
   assert.match(source('src/styles/global.css'), /\.text-link \{[^}]*text-decoration: underline;/)
-  assert.match(source('src/pages/404.astro'), /class="text-link"[^>]*href="\/notes\/"/)
-  assert.match(source('src/pages/404.astro'), /class="text-link home-link" href="\/"/)
+  const notFound = source('src/pages/404.astro')
+  assert.match(notFound, /class="text-link"[^>]*href="\/notes\/"/)
+  // 404의 이동 행: 글 목록 · 학습 위키 · 학습 노트 아카이브 · 검색 단추. 화살표는 모바일에서도 보인다
+  assert.match(notFound, /<ul class="linkrows">/)
+  for (const href of ['/posts/', '/wiki/', '/notes/'])
+    assert.ok(notFound.includes(`href: '${href}'`))
+  assert.match(notFound, /<button type="button" id="notfound-search">/)
   assert.match(source('src/pages/projects.astro'), /class="text-link" href="\/posts\/"/)
   assert.match(
     source('src/layouts/PostLayout.astro'),
@@ -128,10 +133,10 @@ test('찾는 목록은 행 전체를 누를 수 있다', () => {
   // 한 줄짜리 보조 링크도 44px
   assert.match(
     source('src/pages/algorithms/[...slug].astro'),
-    /\.crumb a,\s*\.source-link \{[^}]*min-height: var\(--control-size\)/,
+    /\.source-link \{[^}]*min-height: var\(--control-size\)/,
   )
   assert.match(
     source('src/layouts/PostLayout.astro'),
-    /\.others-head a \{[^}]*min-height: var\(--control-size\)/,
+    /section\.back a \{[^}]*min-height: var\(--control-size\)/,
   )
 })

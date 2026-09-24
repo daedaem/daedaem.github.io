@@ -66,12 +66,13 @@ test('real numbered note series are explicitly opted into chapter ordering', () 
   assert.match(source, /items:\s*orderNoteSeries\(/)
 })
 
-test('wiki contents progressively enhance open native details without changing the document tree', () => {
+test('wiki contents are a native details element with no tree sidebar or breakpoint script', () => {
   const source = readFileSync(new URL('../src/pages/wiki/[...slug].astro', import.meta.url), 'utf8')
-  assert.match(source, /<nav class="toc"[^>]*data-pagefind-ignore>\s*<details open>\s*<summary>/)
-  assert.match(source, /querySelector<HTMLDetailsElement>\('\.post > \.toc details'\)/)
-  assert.match(source, /contents\.open = !narrow\.matches/)
-  assert.match(source, /<details class="side-mobile" data-pagefind-ignore>/)
+  // 차례는 접힌 details로 시작하고(4개 이상일 때), 넓은 화면에서는 전역 CSS가 숨기고 레일이 대신한다
+  assert.match(source, /<details class="toc" data-pagefind-ignore>\s*<summary>/)
+  assert.match(source, /const hasToc = toc\.length >= 4/)
+  assert.doesNotMatch(source, /matchMedia\('\(max-width: 60rem\)'\)|contents\.open/)
+  assert.doesNotMatch(source, /WikiTree|side-mobile/)
 })
 
 test('about shortcuts have focusable heading targets and are excluded from article search', () => {

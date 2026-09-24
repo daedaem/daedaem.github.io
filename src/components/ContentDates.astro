@@ -7,6 +7,8 @@ interface Props {
   original?: boolean
   stacked?: boolean
   compact?: boolean
+  /** 글 머리 메타 줄 안에서 앞뒤 글자와 같은 크기·색으로 이어 쓴다. 날짜 사이는 ' · '로 나눈다 */
+  inline?: boolean
   dateLabel?: string
   updatedLabel?: string
 }
@@ -16,21 +18,20 @@ const {
   original = false,
   stacked = false,
   compact = false,
+  inline = false,
   dateLabel = original ? '원문 작성' : '작성',
   updatedLabel = '수정',
 } = Astro.props
 const displayDate = compact ? formatCompactDate : formatDate
+const withLabel = (label: string, value: Date) =>
+  label ? `${label} ${displayDate(value)}` : displayDate(value)
+const revised = updated && updated.getTime() !== date.getTime() ? updated : undefined
 ---
 
-<span class:list={['content-dates', { stacked, compact }]}>
-  <time datetime={date.toISOString()}>{dateLabel} {displayDate(date)}</time>
-  {
-    updated && updated.getTime() !== date.getTime() && (
-      <time datetime={updated.toISOString()}>
-        {updatedLabel} {displayDate(updated)}
-      </time>
-    )
-  }
+<span class:list={['content-dates', { stacked, compact, inline }]}>
+  <time datetime={date.toISOString()}>{withLabel(dateLabel, date)}</time>
+  {inline && revised && ' · '}
+  {revised && <time datetime={revised.toISOString()}>{withLabel(updatedLabel, revised)}</time>}
 </span>
 
 <style>
@@ -53,6 +54,16 @@ const displayDate = compact ? formatCompactDate : formatDate
     display: contents;
   }
   .compact time {
+    white-space: normal;
+  }
+  /* 메타 줄 안에서는 상속받은 크기·색을 쓴다 */
+  .inline {
+    display: inline;
+    gap: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+  .inline time {
     white-space: normal;
   }
   @media (max-width: 640px) {

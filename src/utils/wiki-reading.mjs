@@ -22,6 +22,33 @@ export function internalReadingLinks(body = '') {
   ]
 }
 
+/** 본문에서 현재 문서를 가리키는 글·문서. 입력 순서를 그대로 둔다. */
+function referencesOf(pool, current) {
+  const currentURL = pathOf(current)
+  return pool.filter(
+    (entry) =>
+      !entry.data.draft && pathOf(entry) !== currentURL && entry.body?.includes(currentURL),
+  )
+}
+
+/** 정렬 기준 날짜. 글은 작성일, 위키는 갱신일(없으면 만든 날). */
+const dateOf = (entry) => {
+  const value = entry.data.date ?? entry.data.updated ?? entry.data.created
+  return value ? new Date(value).valueOf() : 0
+}
+
+/**
+ * 역링크("이 문서를 참고하는 글"). 글·위키 본문에 /wiki/{id}/ 링크가 있는 문서를 최신순으로 돌려준다.
+ * @template {{collection: string, id: string, body?: string, data: {title: string, draft?: boolean, date?: Date, created?: Date, updated?: Date}}} T
+ * @param {T[]} pool
+ * @param {T} current
+ */
+export function selectWikiReferences(pool, current) {
+  return referencesOf(pool, current).sort(
+    (a, b) => dateOf(b) - dateOf(a) || a.data.title.localeCompare(b.data.title, 'ko'),
+  )
+}
+
 /**
  * 역링크는 보존하고, 명시 링크와 구체 개념이 겹치는 문서만 이어 읽기로 고른다.
  * @template {{collection: string, id: string, body?: string, data: {title: string, tags: string[], draft?: boolean, topic?: string}}} T
@@ -33,7 +60,7 @@ export function selectWikiReading(pool, current, limit = 3) {
   const currentURL = pathOf(current)
   const candidates = pool.filter((entry) => !entry.data.draft && pathOf(entry) !== currentURL)
   // 기존의 실제 본문 참조 목록과 순서는 변경하지 않는다.
-  const references = candidates.filter((entry) => entry.body?.includes(currentURL))
+  const references = referencesOf(pool, current)
   const referencePaths = new Set(references.map(pathOf))
   const eligible = candidates.filter((entry) => !referencePaths.has(pathOf(entry)))
   const byPath = new Map(eligible.map((entry) => [pathOf(entry), entry]))

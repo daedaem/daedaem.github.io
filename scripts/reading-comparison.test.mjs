@@ -77,7 +77,10 @@ test('both catalog routes use the same reading rows and real category navigation
 test('mobile lead title keeps full width with an 88px supporting cover beside the summary', () => {
   const home = source('src/pages/index.astro')
   const mobile = home.slice(home.indexOf('@media (max-width: 640px)'))
-  assert.match(mobile, /\.lead-card:not\(\.without-cover\)\s*\{\s*grid-template-columns: minmax\(0, 1fr\) 5\.5rem;\s*grid-template-areas: 'copy copy' 'note cover';/)
+  assert.match(
+    mobile,
+    /\.lead-card:not\(\.without-cover\)\s*\{\s*grid-template-columns: minmax\(0, 1fr\) 5\.5rem;\s*grid-template-areas: 'copy copy' 'note cover';/,
+  )
   assert.match(home, /\(max-width: 640px\) 5\.5rem, \(max-width: 900px\) 50vw, 360px/)
   assert.match(home, /\.editorial-card\.without-cover\s*\{[^}]*grid-template-areas: 'copy' 'note';/)
   assert.match(mobile, /\.lead-card \.card-title\s*\{\s*font-size: 1\.5rem;/)
@@ -97,15 +100,13 @@ test('catalog explanations are disclosed, not deleted, and original date meaning
 
 test('reader changes are scoped to cases and preserve full title, cause, content and comments', () => {
   const layout = source('src/layouts/PostLayout.astro')
-  assert.match(layout, /\.post\[data-code-theme='dark'\] \.body\s*\{[^}]*font-size:\s*1\.0625rem;/)
-  assert.match(layout, /\.subtitle\s*\{[^}]*display:\s*block;/)
-  assert.doesNotMatch(
-    layout,
-    /\.post\[data-code-theme='dark'\] \.subtitle\s*\{[^}]*display:\s*inline;/,
-  )
-  assert.match(layout, /heading\.main \+ heading\.separator/)
-  assert.match(layout, /<span class="subtitle">\{heading\.subtitle\}<\/span>/)
-  assert.match(layout, /<slot\s*\/>/)
+  // 사례 글도 다른 글과 같은 본문 크기(전역 body)를 쓴다. 강제 다크 코드 면은 없다
+  assert.doesNotMatch(layout, /data-code-theme/)
+  assert.doesNotMatch(layout, /font-size:\s*1\.0625rem/)
+  // 제목은 나누지 않고 그대로 h1에 둔다
+  assert.match(layout, /<h1 tabindex="-1">\{title\}<\/h1>/)
+  assert.doesNotMatch(layout, /splitEditorialTitle|class="subtitle"/)
+  assert.match(layout, /Astro\.slots\.render\('default'\)/)
   assert.match(layout, /<Comments\s*\/>/)
   assert.match(layout, /\{cause\}/)
 })

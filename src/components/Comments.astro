@@ -16,8 +16,8 @@ const g = SITE.giscus
       data-category={g.category}
       data-category-id={g.categoryId}
     >
-      <h2>댓글</h2>
-      <p class="muted">GitHub 계정으로 남길 수 있습니다. 저장소의 Discussions에 기록됩니다.</p>
+      <h2 class="k">댓글</h2>
+      <p>GitHub 계정으로 남길 수 있습니다. 저장소의 Discussions에 기록됩니다.</p>
       <div class="giscus" />
     </section>
   )
@@ -71,17 +71,15 @@ const g = SITE.giscus
 
 <style>
   .comments {
-    margin-top: 3.5rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border);
-  }
-  .comments h2 {
-    margin: 0;
-    font-size: 1.125rem;
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
   }
   .comments p {
     margin: 0.4rem 0 1.25rem;
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: var(--muted);
   }
   /* 외부 CSS가 늦게 와도 iframe 기본 너비(300px)가 좁은 본문을 밀어내지 않는다. */
   .comments :global(iframe.giscus-frame) {

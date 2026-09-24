@@ -82,15 +82,12 @@ test('대체 글꼴의 메트릭이 Pretendard에 맞춰져 있어 글꼴 교체
 test('태그와 검색 결과 링크는 손가락으로 누를 수 있는 크기다', () => {
   for (const path of ['src/layouts/PostLayout.astro', 'src/pages/wiki/[...slug].astro']) {
     const text = source(path)
-    const rule = text.match(/\.tags a \{[^}]*\}/)?.[0]
-    assert.ok(rule, `${path}에 .tags a 규칙이 있어야 한다`)
+    // 태그는 글자 링크(전역 a 밑줄)다. 링크·비링크 모두 44px 줄 높이를 가진다
+    const rule = text.match(/p\.tags a,\s*p\.tags span:not\(\.k\) \{[^}]*\}/)?.[0]
+    assert.ok(rule, `${path}에 p.tags a 규칙이 있어야 한다`)
     assert.match(rule, /min-height:\s*var\(--control-size\)/)
-    // 누를 수 있는 태그만 테두리를 가져 링크가 아닌 태그와 구분된다
-    assert.match(rule, /border:\s*1px solid/)
-    assert.match(text, /\.tags a:focus-visible \{[^}]*outline:/)
-    const item = text.match(/\.tags li \{[^}]*\}/)?.[0]
-    assert.ok(item, `${path}에 .tags li 규칙이 있어야 한다`)
-    assert.match(item, /min-height:\s*var\(--control-size\)/)
+    assert.match(text, /p\.tags a:focus-visible \{[^}]*outline:/)
+    assert.match(text, /<span class="k">태그<\/span>/)
   }
 
   const search = source('src/components/Search.astro')

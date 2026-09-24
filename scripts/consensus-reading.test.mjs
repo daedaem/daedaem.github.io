@@ -5,83 +5,84 @@ import { runInNewContext } from 'node:vm'
 import yaml from 'js-yaml'
 
 const read = (path) => readFileSync(new URL('../' + path, import.meta.url), 'utf8')
-const outlines = [
-  ['src/layouts/PostLayout.astro', '(min-width: 1200px)', false],
-  ['src/pages/wiki/[...slug].astro', '(max-width: 60rem)', true],
-]
+const outlines = ['src/layouts/PostLayout.astro', 'src/pages/wiki/[...slug].astro']
 
-for (const [path, query, narrowMatch] of outlines) {
-  test(`${path}: outline initializes while parsing, before the body, with a no-JS fallback`, () => {
+for (const path of outlines) {
+  test(`${path}: outline is a closed native details before the body, replaced by a rail on wide screens`, () => {
     const source = read(path)
-    const outline = source.match(/<nav class="toc"[\s\S]*?<\/nav>/)?.[0]
+    // 4개 이상일 때만 차례를 두고, 접힌 채로 시작한다(JS 없이도 동작). 폭 분기 스크립트는 없다
+    assert.match(source, /const hasToc = toc\.length >= 4/)
+    const outline = source.match(
+      /<details class="toc" data-pagefind-ignore>[\s\S]*?<\/details>/,
+    )?.[0]
     assert.ok(outline)
-    assert.match(outline, /<details open>\s*<summary>/)
-    assert.match(outline, /<\/details>\s*<script is:inline>/)
-    const body = source.search(/<(?:Content|slot)\s*\/>/)
-    assert.ok(body > source.indexOf(outline), 'initialize before article content is parsed')
-    const initial = outline.match(/<script is:inline>([\s\S]*?)<\/script>/)?.[1]
-    assert.ok(initial)
-    for (const isNarrow of [true, false]) {
-      class Details {
-        open = true
-      }
-      const details = new Details()
-      runInNewContext(initial, {
-        document: { currentScript: { previousElementSibling: details } },
-        HTMLDetailsElement: Details,
-        matchMedia: (actual) => {
-          assert.equal(actual, query)
-          return { matches: isNarrow ? narrowMatch : !narrowMatch }
-        },
-      })
-      assert.equal(details.open, !isNarrow)
-    }
+    assert.doesNotMatch(outline, /<details[^>]*\sopen/)
+    assert.match(
+      outline,
+      /<summary>\s*<span class="k">\s*차례<span class="n">\{toc\.length\}<\/span>/,
+    )
+    assert.match(outline, /<ol>[\s\S]*<li class:list=\{\{ d3: h\.depth === 3 \}\}>/)
+    assert.doesNotMatch(source, /<script is:inline>|matchMedia\('\((?:min|max)-width/)
+    const body = source.search(/<(?:Content\s*\/>|div class="prose">)/)
+    assert.ok(body > source.indexOf(outline), 'outline comes before article content')
+    // 넓은 화면 레일: 차례 + 현재 절 + 맨 위로
+    const rail = source.match(
+      /<nav class="rail" aria-label="차례" data-pagefind-ignore>[\s\S]*?<\/nav>/,
+    )?.[0]
+    assert.ok(rail)
+    assert.match(rail, /<button type="button" class="totop">\s*맨 위로\s*<\/button>/)
+    assert.match(source, /\.rail \.totop/)
   })
 
-  test(`${path}: delayed module preserves a manual toggle and only breakpoint changes resync it`, () => {
+  test(`${path}: module wires location tracking, the mid-article sheet and the back-to-top button once`, () => {
     const script = read(path)
       .match(/<script>([\s\S]*?)<\/script>/)[1]
       .replace(/^\s*import .+$/gm, '')
-      .replace(/querySelector<HTMLDetailsElement>/g, 'querySelector')
-    for (const isNarrow of [true, false]) {
-      let change
-      let locationInitializations = 0
-      let tocSheetInitializations = 0
-      // The reader toggled the native summary after the inline initializer.
-      const details = { open: isNarrow }
-      const media = {
-        matches: isNarrow ? narrowMatch : !narrowMatch,
-        addEventListener: (event, handler) => {
-          assert.equal(event, 'change')
-          change = handler
-        },
-      }
-      runInNewContext(script, {
-        document: { querySelector: () => details },
-        matchMedia: (actual) => {
-          assert.equal(actual, query)
-          return media
-        },
-        initCurrentHeading: () => locationInitializations++,
-        initTocSheet: () => tocSheetInitializations++,
-      })
-      assert.equal(details.open, isNarrow, 'module must not overwrite a user toggle')
-      assert.equal(locationInitializations, 1)
-      assert.equal(tocSheetInitializations, 1)
-      assert.equal(typeof change, 'function')
-      media.matches = !media.matches
-      details.open = !isNarrow
-      change()
-      assert.equal(details.open, isNarrow, 'new breakpoint state must still apply')
-    }
+      .replace(/querySelector<[^>]+>/g, 'querySelector')
+    let locationInitializations = 0
+    let tocSheetInitializations = 0
+    let handler
+    const button = { addEventListener: (event, fn) => (event === 'click' ? (handler = fn) : null) }
+    const scrolls = []
+    const heading = { focus: (options) => scrolls.push(['focus', options]) }
     runInNewContext(script, {
-      document: { querySelector: () => null },
-      matchMedia: () => ({}),
-      initCurrentHeading() {},
-      initTocSheet() {},
+      document: {
+        querySelector: (selector) => (selector === '.rail .totop' ? button : heading),
+      },
+      matchMedia: () => ({ matches: true }),
+      scrollTo: (options) => scrolls.push(['scroll', options]),
+      initCurrentHeading: () => locationInitializations++,
+      initTocSheet: () => tocSheetInitializations++,
     })
+    assert.equal(locationInitializations, 1)
+    assert.equal(tocSheetInitializations, 1)
+    assert.equal(typeof handler, 'function')
+    handler()
+    // 동작 줄이기에서는 바로 올라가고, 초점은 제목으로 옮긴다
+    // vm 컨텍스트의 객체는 프로토타입이 달라 값만 비교한다
+    assert.equal(
+      JSON.stringify(scrolls),
+      JSON.stringify([
+        ['scroll', { top: 0, behavior: 'auto' }],
+        ['focus', { preventScroll: true }],
+      ]),
+    )
   })
 }
+
+test('global outline styles hide the inline contents on wide screens and show the sheet button elsewhere', () => {
+  const css = read('src/styles/global.css')
+  assert.match(css, /@media \(min-width: 75em\) \{\s*details\.toc \{\s*display: none;/)
+  assert.match(
+    css,
+    /@media \(min-width: 75em\) \{\s*nav\.rail \{\s*display: block;\s*position: fixed;/,
+  )
+  assert.match(css, /@media \(min-width: 75em\) \{\s*\.fab \{\s*display: none !important;/)
+  const sheet = read('src/utils/toc-sheet.mjs')
+  assert.match(sheet, /querySelector\('details\.toc'\)/)
+  assert.match(sheet, /button\.className = 'fab toc-fab'/)
+  assert.match(sheet, /dialog\.className = 'sheet toc-sheet'/)
+})
 
 test('code blocks keep a separate top band with a language label and an always-visible copy button', () => {
   const css = read('src/styles/global.css')

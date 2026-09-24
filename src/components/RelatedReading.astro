@@ -1,4 +1,5 @@
 ---
+// 위키 문서 끝의 '이어 읽기'. 역링크("이 문서를 참고하는 글")는 문서 페이지가 따로 그린다.
 import { getCollection } from 'astro:content'
 import { selectWikiReading } from '@/utils/wiki-reading.mjs'
 interface Props {
@@ -10,82 +11,30 @@ const pool = [
   ...(await getCollection('posts', ({ data }) => !data.draft)),
 ]
 const currentEntry = pool.find((entry) => entry.collection === 'wiki' && entry.id === current)
-const { references, related } = currentEntry
-  ? selectWikiReading(pool, currentEntry)
-  : { references: [], related: [] }
+const { related } = currentEntry ? selectWikiReading(pool, currentEntry) : { related: [] }
 ---
 
 {
-  (references.length > 0 || related.length > 0) && (
-    <aside class="related" data-pagefind-ignore aria-label="연결된 문서">
-      {references.length > 0 && (
-        <section>
-          <h2>이 문서를 참고한 글·문서</h2>
-          <ul>
-            {references.map((e) => (
-              <li>
-                <span>{e.collection === 'posts' ? '사례' : '위키'}</span>
-                <a href={'/' + e.collection + '/' + e.id + '/'}>{e.data.title}</a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-      {related.length > 0 && (
-        <section>
-          <h2>이어 읽기</h2>
-          <ul>
-            {related.map((e) => (
-              <li>
-                <span>{e.collection === 'posts' ? '사례' : '위키'}</span>
-                <a href={'/' + e.collection + '/' + e.id + '/'}>{e.data.title}</a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-    </aside>
+  related.length > 0 && (
+    <section class="back" aria-label="이어 읽을 글" data-pagefind-ignore>
+      <h2 class="k">이어 읽기</h2>
+      <ul>
+        {related.map((e) => (
+          <li>
+            <a href={'/' + e.collection + '/' + e.id + '/'}>{e.data.title}</a>
+            <span class="k-in">{e.collection === 'posts' ? '글' : '위키'}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
+
 <style>
-  .related {
-    border-top: 1px solid var(--border-strong);
-    margin-top: 3rem;
-    padding-top: 1rem;
-  }
-  section + section {
-    margin-top: 1.5rem;
-  }
-  h2 {
-    font-size: 1rem;
-  }
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  li {
-    display: grid;
-    grid-template-columns: 2.5rem minmax(0, 1fr);
-    align-items: baseline;
-    gap: 0.75rem;
-    margin: 0;
-    border-bottom: 1px solid var(--border);
-  }
-  li span {
-    font-size: 0.8125rem;
-    color: var(--text-muted);
-    white-space: nowrap;
-  }
   a {
     display: inline-flex;
     align-items: center;
     min-height: var(--control-size);
-    padding-block: 0.5rem;
-    font-size: var(--type-body);
-    line-height: 1.65;
-  }
-  a:hover {
-    color: var(--accent);
   }
   a:focus-visible {
     outline: 2px solid var(--accent);

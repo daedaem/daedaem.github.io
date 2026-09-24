@@ -76,9 +76,12 @@ test('public content dates are valid and revisions do not predate creation', () 
 })
 test('project evidence text uses readable body size and repository links have 44px targets', () => {
   const page = read('src/pages/projects.astro')
+  // 본문 크기(전역 body 18px)를 그대로 쓴다. 작은 글자로 줄이지 않는다
+  assert.match(page, /<div class="prose">/)
   for (const selector of ['what', 'team-lead', 'team-desc', 'meta dd']) {
     const css = page.split(`.${selector} {`)[1]?.split('}')[0]
-    assert.match(css, /font-size: var\(--type-body\)/)
+    assert.ok(css, `${selector} 규칙이 있어야 한다`)
+    assert.doesNotMatch(css, /font-size:/)
   }
   assert.match(page.split('.repo {')[1]?.split('}')[0], /min-height: var\(--control-size\)/)
 })

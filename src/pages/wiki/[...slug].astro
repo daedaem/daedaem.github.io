@@ -1,35 +1,45 @@
 ---
 import { getCollection, render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
-import WikiTree from '@/components/WikiTree.astro'
 import RelatedReading from '@/components/RelatedReading.astro'
 import ContentDates from '@/components/ContentDates.astro'
 import { getWikiTopic } from '@/consts'
-import { readingMinutes, tagSlug } from '@/utils/format'
+import { tagSlug } from '@/utils/format'
 import { linkableTagSlugs } from '@/utils/tags'
+import { selectWikiReferences } from '@/utils/wiki-reading.mjs'
 
 export const getStaticPaths = async () => {
   const entries = await getCollection('wiki', ({ data }) => !data.draft)
-  // 트리에 쓸 전체 문서 목록. 모든 페이지가 같은 목록을 받는다.
-  const docs = entries.map((e) => ({
-    id: e.id,
-    title: e.data.title,
-    topic: e.data.topic,
-    status: e.data.status,
+  const posts = await getCollection('posts', ({ data }) => !data.draft)
+  const pool = [...entries, ...posts]
+  const revised = (e: (typeof entries)[number]) => (e.data.updated ?? e.data.created).valueOf()
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: {
+      entry,
+      // 이 문서를 본문에서 가리키는 글·문서, 최신순
+      references: selectWikiReferences(pool, entry).map((e) => ({
+        href: `/${e.collection}/${e.id}/`,
+        title: e.data.title,
+        kind: e.collection === 'posts' ? '글' : '위키',
+      })),
+      // 같은 주제의 다른 문서, 최근 갱신순 최대 8편
+      siblings: entries
+        .filter((e) => e.id !== entry.id && e.data.topic === entry.data.topic)
+        .sort((a, b) => revised(b) - revised(a) || a.data.title.localeCompare(b.data.title, 'ko'))
+        .slice(0, 8)
+        .map((e) => ({ href: `/wiki/${e.id}/`, title: e.data.title })),
+    },
   }))
-  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry, docs } }))
 }
 
-const { entry, docs } = Astro.props
+const { entry, references, siblings } = Astro.props
 const { Content, headings } = await render(entry)
 const linkable = await linkableTagSlugs()
 const topic = getWikiTopic(entry.data.topic)
-const STATUS_LABEL: Record<string, string> = {
-  seed: '메모 수준입니다. 뼈대만 잡아 두었습니다.',
-  growing: '보완하는 중입니다. 빠진 내용이 있을 수 있습니다.',
-  stable: '한 차례 정리를 마친 문서입니다.',
-}
+const status = entry.data.status === 'stable' ? '정리됨' : '보완 중'
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
+const hasToc = toc.length >= 4
 ---
 
 <BaseLayout
@@ -40,97 +50,129 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
   updatedAt={entry.data.updated}
   ogSlug={`wiki/${entry.id}`}
 >
-  <div class="wrap-wide layout">
-    <aside class="side" data-pagefind-ignore>
-      <WikiTree docs={docs} current={entry.id} />
-    </aside>
-
-    <details class="side-mobile" data-pagefind-ignore>
-      <summary>위키 문서 목록</summary>
-      <WikiTree docs={docs} current={entry.id} />
-    </details>
-
-    <article class="post">
-      <header>
-        <nav class="breadcrumbs" aria-label="문서 위치" data-pagefind-ignore>
-          <a class="crumb" href="/wiki/">위키</a>
-          {
-            topic && (
-              <span class="sep" aria-hidden="true">
-                ›
-              </span>
-            )
-          }
-          {
-            topic && (
-              <a class="topic" href={`/wiki/#${topic.id}`} style={`--wt: ${topic.hue}`}>
-                <span class="swatch" aria-hidden="true" />
-                {topic.name}
-              </a>
-            )
-          }
-        </nav>
-        <h1>{entry.data.title}</h1>
-        <div class="meta" data-pagefind-ignore>
+  <div class="page">
+    <article class="art post">
+      <header class="art-head">
+        <p class="meta" data-pagefind-ignore>
+          <a href="/wiki/" set:text="위키" />
+          {topic && <span class="sep" aria-hidden="true" set:text="›" />}
+          {topic && <i class="dot" style={`--wt: ${topic.hue}`} aria-hidden="true" />}
+          {topic && <a href={`/wiki/#${topic.id}`} set:text={topic.name} />}
+          <span class="sep" aria-hidden="true" set:text="·" />
+          <span set:text={status} />
+          <span class="sep" aria-hidden="true" set:text="·" />
           <ContentDates
             date={entry.data.created}
             updated={entry.data.updated}
-            dateLabel="처음 작성"
-            updatedLabel="마지막 수정"
-            compact
+            dateLabel="만듦"
+            updatedLabel="갱신"
+            inline
           />
-          <span>{readingMinutes(entry.body ?? '')}분 읽기</span>
-        </div>
-        <p class="lead">{entry.data.description}</p>
-        <p class="status muted" data-pagefind-ignore>{STATUS_LABEL[entry.data.status]}</p>
+        </p>
+        <h1 tabindex="-1">{entry.data.title}</h1>
+        <p class="deck">{entry.data.description}</p>
       </header>
 
       {
-        toc.length > 2 && (
-          <nav class="toc" aria-label="목차" data-pagefind-ignore>
-            <details open>
-              <summary>이 문서의 목차</summary>
-              <ul>
-                {toc.map((h) => (
-                  <li class={`d${h.depth}`}>
-                    <a href={`#${h.slug}`}>{h.text}</a>
-                  </li>
-                ))}
-              </ul>
-            </details>
-            <script is:inline>
-              {
-                // PC 목차는 본문 흐름 안에 있으므로 나중에 펼치거나 접지 않는다.
-                const contents = document.currentScript.previousElementSibling
-                if (contents instanceof HTMLDetailsElement) {
-                  contents.open = !matchMedia('(max-width: 60rem)').matches
-                }
-              }
-            </script>
-          </nav>
+        hasToc && (
+          <details class="toc" data-pagefind-ignore>
+            <summary>
+              <span class="k">
+                차례<span class="n">{toc.length}</span>
+              </span>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </summary>
+            <ol>
+              {toc.map((h) => (
+                <li class:list={{ d3: h.depth === 3 }}>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ol>
+          </details>
         )
       }
 
-      <div class="body">
+      <div class="prose">
         <Content />
       </div>
 
+      <footer class="art-end">
+        {
+          entry.data.tags.length > 0 && (
+            <p class="tags">
+              <span class="k">태그</span>
+              {entry.data.tags.map((t) =>
+                linkable.has(tagSlug(t)) ? (
+                  <a href={`/tags/${tagSlug(t)}/`}>{t}</a>
+                ) : (
+                  <span>{t}</span>
+                ),
+              )}
+            </p>
+          )
+        }
+        {
+          references.length > 0 && (
+            <section class="back" aria-label="이 문서를 참고하는 글" data-pagefind-ignore>
+              <h2 class="k">이 문서를 참고하는 글</h2>
+              <ul>
+                {references.map((r) => (
+                  <li>
+                    <a href={r.href}>{r.title}</a>
+                    <span class="k-in">{r.kind}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+        {
+          siblings.length > 0 && (
+            <section class="back" aria-label="같은 주제의 문서" data-pagefind-ignore>
+              <h2 class="k">같은 주제의 문서</h2>
+              <ul>
+                {siblings.map((s) => (
+                  <li>
+                    <a href={s.href}>{s.title}</a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+        <RelatedReading current={entry.id} />
+      </footer>
+
       {
-        entry.data.tags.length > 0 && (
-          <ul class="tags">
-            {entry.data.tags.map((t) =>
-              linkable.has(tagSlug(t)) ? (
-                <li>
-                  <a href={`/tags/${tagSlug(t)}/`}>#{t}</a>
+        hasToc && (
+          <nav class="rail" aria-label="차례" data-pagefind-ignore>
+            <p class="k">차례</p>
+            <ol>
+              {toc.map((h) => (
+                <li class:list={{ d3: h.depth === 3 }}>
+                  <a href={`#${h.slug}`}>{h.text}</a>
                 </li>
-              ) : (
-                <li>#{t}</li>
-              ),
-            )}
-          </ul>
+              ))}
+            </ol>
+            <button type="button" class="totop">
+              맨 위로
+            </button>
+          </nav>
         )
       }
-      <RelatedReading current={entry.id} />
     </article>
   </div>
 </BaseLayout>
@@ -138,249 +180,51 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 <script>
   import { initCurrentHeading } from '@/utils/current-heading.mjs'
   import { initTocSheet } from '@/utils/toc-sheet.mjs'
-  // 초기 상태는 동기 스크립트에서 정하고, 모듈은 화면 분기 변경에만 반응한다.
-  const contents = document.querySelector<HTMLDetailsElement>('.post > .toc details')
-  const narrow = matchMedia('(max-width: 60rem)')
-  if (contents) {
-    const sync = () => {
-      contents.open = !narrow.matches
-    }
-    narrow.addEventListener('change', sync)
-  }
   initCurrentHeading()
   initTocSheet()
+  document.querySelector<HTMLButtonElement>('.rail .totop')?.addEventListener('click', () => {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+    scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' })
+    document.querySelector<HTMLElement>('.art-head h1')?.focus({ preventScroll: true })
+  })
 </script>
 
 <style>
-  /* 데스크톱: 왼쪽 트리 + 본문. 본문 폭은 --measure를 넘지 않는다. */
-  .layout {
-    display: grid;
-    grid-template-columns: 15rem minmax(0, var(--measure));
-    gap: 3rem;
-    padding-top: var(--page-inset);
-    align-items: start;
+  /* 주제 점. 색은 점에만 쓰고 글자는 --muted다 */
+  .meta .dot {
+    --dot: hsl(var(--wt) 65% 48%);
   }
-  .side {
-    position: sticky;
-    top: var(--header-clearance);
-    max-height: calc(100dvh - var(--header-clearance) - 1rem);
-    overflow-y: auto;
-    padding-right: 0.5rem;
-  }
-  .side-mobile {
-    display: none;
-  }
-  .post {
-    min-width: 0;
-  }
-
-  .meta,
-  .breadcrumbs {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.8125rem;
-    color: var(--text-muted);
-  }
-  .meta {
-    margin-top: 0.75rem;
-    gap: 0.4rem 0.8rem;
-  }
-  .breadcrumbs a {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--control-size);
-    min-width: var(--control-size);
-    padding-inline: 0.375rem;
-  }
-  .breadcrumbs a:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-  .topic,
-  .crumb {
-    color: var(--text-muted);
-    font-weight: 600;
-  }
-  .topic {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-  .topic:hover,
-  .crumb:hover {
-    color: var(--text);
-  }
-  .swatch {
-    width: 8px;
-    height: 8px;
-    border-radius: 2px;
-    background: hsl(var(--wt) 65% 48%);
-  }
-  .sep {
-    color: var(--text-dim);
-  }
-  h1 {
-    margin: 0.7rem 0 0;
-    font-size: clamp(26px, 4vw, 32px);
-    line-height: 1.45;
-    letter-spacing: -0.035em;
-  }
-  .lead {
-    margin: 0.75rem 0 0;
-    color: var(--text-secondary);
-    font-size: 1.0625rem;
-    line-height: 1.7;
-  }
-  .status {
-    margin: 0.5rem 0 0;
-    font-size: var(--type-label);
-  }
-  .toc {
-    margin-top: 1.5rem;
-    padding: 0 1.3rem;
-    background: var(--bg-subtle);
-    border-radius: var(--radius);
-    font-size: 0.875rem;
-  }
-  .toc summary {
-    padding-block: 0.65rem;
-    min-height: var(--control-size);
-    font-weight: 700;
-    cursor: pointer;
-    color: var(--text-muted);
-  }
-  .toc :is(summary, a):focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-  }
-  .toc ul {
-    list-style: none;
-    margin: 0;
-    padding: 0 0 1rem;
-  }
-  .toc li {
-    margin-block: 0.2rem;
-  }
-  .toc .d3 {
-    padding-left: 1rem;
-  }
-  .toc a {
-    display: flex;
-    align-items: center;
-    min-height: 2rem;
-    text-decoration: none;
-    color: var(--text-muted);
-  }
-  .toc a:hover {
-    color: var(--text);
-  }
-  .toc a[aria-current='location'] {
-    color: var(--accent);
-    font-weight: 700;
-    text-decoration: underline;
-    text-underline-offset: 0.25em;
-  }
-  .body {
-    margin-top: 1.75rem;
-  }
-  .body :global(h2) {
-    margin-top: 3.25rem;
-    font-size: var(--type-article-h2);
-    line-height: 1.5;
-    padding-bottom: 0.4rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .body :global(h3) {
-    margin-top: 2.25rem;
-    font-size: var(--type-article-h3);
-    line-height: 1.5;
-  }
-  .body :global(p),
-  .body :global(ul),
-  .body :global(ol) {
-    margin-block: 1.15rem;
-  }
-  .body :global(a) {
-    color: var(--accent);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
-    text-decoration-thickness: 1px;
-  }
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 0.375rem;
-    list-style: none;
-    margin: 3rem 0 0;
-    padding: 1.25rem 0 0;
-    border-top: 1px solid var(--border);
-    font-size: 0.8125rem;
-    color: var(--text-muted);
-  }
-  /* 사례 글과 같은 규칙. 태그 줄 높이를 제어 크기에 맞추고 링크만 테두리를 준다 */
-  .tags li {
-    display: flex;
-    align-items: center;
-    min-height: var(--control-size);
-    padding-inline: 0.125rem;
-  }
-  .tags a {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--control-size);
-    padding-inline: 0.625rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    color: var(--text-secondary);
-    text-decoration: none;
-  }
-  .tags a:hover {
-    border-color: var(--accent);
-    color: var(--text);
-  }
-  .tags a:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-
   @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme='light'])) .swatch {
-      background: hsl(var(--wt) 70% 65%);
+    :global(:root:not([data-theme='light'])) .meta .dot {
+      --dot: hsl(var(--wt) 70% 65%);
     }
   }
-  :global(:root[data-theme='dark']) .swatch {
-    background: hsl(var(--wt) 70% 65%);
+  :global(:root[data-theme='dark']) .meta .dot {
+    --dot: hsl(var(--wt) 70% 65%);
   }
-
-  /* 좁은 화면: 트리를 본문 위의 접힌 목록으로 */
-  @media (max-width: 60rem) {
-    .layout {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 1.5rem;
-      padding-top: 1.5rem;
-    }
-    .side {
-      display: none;
-    }
-    .side-mobile {
-      display: block;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 0 1rem;
-    }
-    .side-mobile > summary {
-      padding: 0.75rem 0;
-      font-size: 0.875rem;
-      font-weight: 600;
-      cursor: pointer;
-      min-height: var(--control-size);
-    }
+  /* 본문이 제목으로 시작하면 위 선과 여백을 겹쳐 두지 않는다 */
+  .prose > :global(h2:first-child) {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
   }
-  @media (max-width: 60rem), (pointer: coarse) {
-    .toc a {
-      min-height: var(--control-size);
-    }
+  p.tags a,
+  p.tags span:not(.k) {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-size);
+  }
+  p.tags a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  section.back a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--control-size);
+  }
+  section.back .k-in {
+    flex-shrink: 0;
+    white-space: nowrap;
   }
 </style>

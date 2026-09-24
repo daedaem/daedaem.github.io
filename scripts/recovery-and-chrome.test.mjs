@@ -65,5 +65,12 @@ test('search labels each result with its kind and keeps wiki navigation out of e
   assert.match(search, /result\.meta\.title = `\$\{kind\} · \$\{result\.meta\.title\}`/)
   assert.match(search, /id="search-help"/)
   const wiki = source('src/pages/wiki/[...slug].astro')
-  assert.match(wiki, /<aside class="side" data-pagefind-ignore>/)
+  for (const chrome of [
+    /<details class="toc" data-pagefind-ignore>/,
+    /<nav class="rail" aria-label="차례" data-pagefind-ignore>/,
+    /<section class="back" aria-label="이 문서를 참고하는 글" data-pagefind-ignore>/,
+    /<section class="back" aria-label="같은 주제의 문서" data-pagefind-ignore>/,
+  ]) {
+    assert.match(wiki, chrome)
+  }
 })
