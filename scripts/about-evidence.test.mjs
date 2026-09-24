@@ -27,8 +27,8 @@ test('home keeps factual identity: role label, author name and the one intro sen
   assert.match(home, /<p class="env">\{SITE\.environment\}<\/p>/)
   assert.match(home, /<p class="lede">\{SITE\.intro\}<\/p>/)
   assert.doesNotMatch(home, /백엔드 · 레거시 시스템 · 문제 해결|남긴 기록입니다/)
-  // 추천 글 행의 결과 줄은 cases.ts의 outcome. 값이 있는 글만 보인다
-  assert.match(home, /outcome=\{CASES\.find\(\(c\) => c\.id === post\.id\)\?\.outcome\}/)
+  // 추천 글 행의 결과 줄은 cases.ts의 outcomePlain(한다체). 원인 한 줄(frontmatter, 한다체)과 말투를 맞춘다
+  assert.match(home, /outcome=\{CASES\.find\(\(c\) => c\.id === post\.id\)\?\.outcomePlain\}/)
 })
 
 test('AI disclosure distinguishes author records from editing help without claiming full verification', () => {
@@ -60,9 +60,17 @@ test('about emphasizes three supported cases and links only to currently public 
       'retire-flash-module-by-integration',
     ],
   )
-  for (const c of CASES)
-    for (const key of ['title', 'judgement', 'outcome'])
+  for (const c of CASES) {
+    for (const key of ['title', 'judgement', 'outcome', 'outcomePlain'])
       assert.ok(typeof c[key] === 'string' && c[key].trim().length > 0, `${c.id}.${key}`)
+    // 한다체 문장은 어미만 다르고 사실·수치는 합니다체와 같다
+    const strip = (t) =>
+      t.replace(/(습니다|했습니다|었습니다|았습니다|다)\./g, '.').replace(/\s+/g, ' ')
+    const plain = c.outcomePlain.replace(/(없앴|남았|대체했|줄였|맞췄|했)다\./g, '$1.')
+    const polite = c.outcome.replace(/(없앴|남았|대체했|줄였|맞췄|했)습니다\./g, '$1.')
+    assert.equal(strip(plain), strip(polite), `${c.id}.outcomePlain`)
+    assert.doesNotMatch(c.outcomePlain, /습니다/)
+  }
   assert.equal(links(rest).length, 3)
   const all = [...CASES.map((c) => c.id), ...links(rest)]
   assert.equal(new Set(all).size, 6)

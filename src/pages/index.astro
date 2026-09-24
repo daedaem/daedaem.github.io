@@ -58,10 +58,9 @@ const arrow =
                 href={`/posts/${post.id}/`}
                 title={post.data.title}
                 date={post.data.date}
-                happened={post.data.happened}
                 category={post.data.category}
                 cause={post.data.cause ?? post.causeSummary}
-                outcome={CASES.find((c) => c.id === post.id)?.outcome}
+                outcome={CASES.find((c) => c.id === post.id)?.outcomePlain}
                 description={post.data.description}
               />
             ))}
@@ -90,7 +89,6 @@ const arrow =
                 href={`/posts/${post.id}/`}
                 title={post.data.title}
                 date={post.data.date}
-                happened={post.data.happened}
                 category={post.data.category}
                 description={post.data.description}
               />
