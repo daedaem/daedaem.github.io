@@ -51,7 +51,16 @@ export function initTocSheet(root = document, view = window) {
   close.addEventListener('click', () => dialog.close())
   // 배경(대화상자 바깥)을 누르면 닫는다. 링크를 누르면 닫은 뒤 기본 이동을 그대로 한다.
   dialog.addEventListener('click', (event) => {
-    if (event.target === dialog || event.target.closest?.('a')) dialog.close()
+    const link = event.target.closest?.('a')
+    if (event.target === dialog || link) dialog.close()
+    if (!link) return
+    // 대화상자가 닫히면 초점이 버튼으로 돌아가므로, 이동한 절의 제목으로 초점을 옮긴다.
+    const heading = root.getElementById(decodeURIComponent(link.hash.slice(1)))
+    view.requestAnimationFrame(() => {
+      if (!heading) return
+      if (!heading.hasAttribute('tabindex')) heading.setAttribute('tabindex', '-1')
+      heading.focus({ preventScroll: true })
+    })
   })
 
   const wide = view.matchMedia('(min-width: 1200px)')
