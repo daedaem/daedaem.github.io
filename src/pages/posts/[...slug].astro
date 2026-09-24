@@ -3,33 +3,53 @@ import { getCollection, render } from 'astro:content'
 import PostLayout from '@/layouts/PostLayout.astro'
 import { readingMinutes } from '@/utils/format'
 import { selectRelatedPosts } from '@/utils/related-posts.mjs'
+import { relatedRecordIds } from '@/utils/related-records.mjs'
+import { selectWikiReading } from '@/utils/wiki-reading.mjs'
 
 export const getStaticPaths = async () => {
   const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
     (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
   )
+  const wiki = await getCollection('wiki', ({ data }) => !data.draft)
   // 최신순 배열이므로 i+1이 더 오래된 글(이전), i-1이 더 새 글(다음)이다
   return posts.map((post, i) => {
     const link = (p?: (typeof posts)[number]) =>
       p ? { href: `/posts/${p.id}/`, title: p.data.title } : undefined
-    // 이전·다음과 겹치지 않는 관련 사례 세 편만 빌드 시 고른다.
-    const others = selectRelatedPosts(posts, post, [posts[i + 1]?.id, posts[i - 1]?.id]).map(
-      (p) => ({
-        href: `/posts/${p.id}/`,
-        title: p.data.title,
-        category: p.data.category,
-        date: p.data.date,
-        updated: p.data.updated,
-      }),
-    )
+    // 같은 전환 작업을 나눠 적은 글. '관련 기록'으로 잇고, 이어 읽을 글에서는 뺀다
+    const records = relatedRecordIds(post.id)
+      .map((id) => posts.find((p) => p.id === id))
+      .filter((p) => p !== undefined)
+      .map((p) => link(p)!)
+    // 이전·다음·관련 기록과 겹치지 않는 관련 사례 세 편만 빌드 시 고른다.
+    const others = selectRelatedPosts(posts, post, [
+      posts[i + 1]?.id,
+      posts[i - 1]?.id,
+      ...relatedRecordIds(post.id),
+    ]).map((p) => ({
+      href: `/posts/${p.id}/`,
+      title: p.data.title,
+      category: p.data.category,
+      date: p.data.date,
+      updated: p.data.updated,
+    }))
+    // 관련 위키: 본문의 /wiki/ 링크가 먼저, 그다음 구체 태그가 겹치는 문서(위키 문서의 이어 읽기와 같은 계산)
+    const { related } = selectWikiReading([...wiki, post], post)
+    const wikiReading = related.map((e) => ({ href: `/wiki/${e.id}/`, title: e.data.title }))
     return {
       params: { slug: post.id },
-      props: { post, prev: link(posts[i + 1]), next: link(posts[i - 1]), others },
+      props: {
+        post,
+        prev: link(posts[i + 1]),
+        next: link(posts[i - 1]),
+        others,
+        records,
+        wikiReading,
+      },
     }
   })
 }
 
-const { post, prev, next, others } = Astro.props
+const { post, prev, next, others, records, wikiReading } = Astro.props
 const { Content, headings } = await render(post)
 ---
 
@@ -47,6 +67,8 @@ const { Content, headings } = await render(post)
   prev={prev}
   next={next}
   others={others}
+  records={records}
+  wikiReading={wikiReading}
   cause={post.data.cause}
 >
   <Content />

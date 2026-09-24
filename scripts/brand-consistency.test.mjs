@@ -21,15 +21,34 @@ test('home identity is the author name under a role label while the social previ
   const og = source('src/pages/og/[...slug].png.ts')
   assert.match(source('src/consts.ts'), new RegExp(`identityTitle: '${identityTitle}'`))
   assert.match(source('src/consts.ts'), new RegExp(`motto: '${motto}'`))
-  // 홈 첫 화면: h1 "이름 · 백엔드 개발자"(직무는 본문 크기) → 소개 한 문장 → 소개 보기. 히어로 판·카드·표지는 없다
+  // 홈 첫 화면: h1 "이름 · 직무"(SITE.role, 본문 크기) → 환경 한 줄(SITE.environment) → 소개 한 문장
+  // → 소개 보기 · 연락 · GitHub. 히어로 판·카드·표지는 없다. 직무·환경은 consts 한 곳에서 온다
   assert.match(
     home,
-    /<section class="ident"[^>]*>\s*<h1[^>]*>\s*\{SITE\.author\}\{' '\}<span class="role"[\s\S]*?백엔드 개발자<\/span\s*>\s*<\/h1>\s*<p class="lede">\{SITE\.intro\}<\/p>/,
+    /<section class="ident"[^>]*>\s*<h1[^>]*>\s*\{SITE\.author\}\{' '\}<span class="role"[\s\S]*?\{SITE\.role\}<\/span\s*>\s*<\/h1>\s*<p class="env">\{SITE\.environment\}<\/p>\s*<p class="lede">\{SITE\.intro\}<\/p>/,
   )
   assert.doesNotMatch(home, /<p class="k">백엔드 개발자<\/p>/)
+  assert.doesNotMatch(home, /<p class="k">.*환경/)
+  assert.match(home, /<p class="links">\s*<a class="more" href="\/about\/">소개 보기/)
+  assert.match(home, /<a class="more" href="\/about\/#contact">연락<\/a>/)
+  assert.match(home, /<a class="more" href=\{SITE\.githubUrl\} rel="me noopener">GitHub<\/a>/)
+  assert.doesNotMatch(home, /mailto:/)
   assert.equal([...home.matchAll(/<h1(?:\s|>)/g)].length, 1)
   assert.match(home, /<h2 class="k" id="recommended-title">\s*먼저 읽을 글\s*<\/h2>/)
   assert.doesNotMatch(home, /byline|hero|card-title|PostCover|identity-context/)
+  // 직무 낱말은 consts의 SITE.role 한 곳에만 있다
+  assert.match(source('src/consts.ts'), /role: '백엔드 개발자'/)
+  for (const path of [
+    'src/pages/index.astro',
+    'src/pages/about.astro',
+    'src/layouts/PostLayout.astro',
+    'src/components/AuthorCard.astro',
+    'src/components/BaseHead.astro',
+  ]) {
+    assert.doesNotMatch(source(path).replace(/description="[^"]*"/, ''), /백엔드 개발자/, path)
+  }
+  // 공유 카드: 제목은 identityTitle, kicker는 직무(사이트 이름은 카드 아래 마크 옆에 이미 나온다)
+  assert.match(og, /kicker: SITE\.role/)
   assert.match(og, /title: SITE\.identityTitle/)
   assert.match(og, /identityTitle: SITE\.identityTitle/)
   assert.match(og, /subtitle: SITE\.motto/)

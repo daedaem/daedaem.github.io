@@ -25,12 +25,14 @@ test('검색 대화상자: 초점이 제목 띠에 가려지지 않고, 결과 �
 test('안내 문장 속 링크는 밑줄로 링크임을 보인다', () => {
   assert.match(source('src/styles/global.css'), /\.text-link \{[^}]*text-decoration: underline;/)
   const notFound = source('src/pages/404.astro')
-  // 404의 이동 행: 글 목록 · 학습 위키 · 학습 노트 아카이브 · 검색 단추. 화살표는 모바일에서도 보인다.
+  // 404의 이동 행: 글 목록 · 학습 위키 · 학습 노트 아카이브 · 소개(이름 · 직무) · 검색 단추. 화살표는 모바일에서도 보인다.
   // 안내 문장은 아래 행을 가리키기만 하고 같은 링크를 두 번 두지 않는다
   assert.equal((notFound.match(/href[=:] ?['"]\/notes\/['"]/g) ?? []).length, 1)
   assert.match(notFound, /<ul class="linkrows">/)
-  for (const href of ['/posts/', '/wiki/', '/notes/'])
+  for (const href of ['/posts/', '/wiki/', '/notes/', '/about/'])
     assert.ok(notFound.includes(`href: '${href}'`))
+  assert.match(notFound, /label: '소개', note: `\$\{SITE\.author\} · \$\{SITE\.role\}`/)
+  assert.match(notFound, /\{row\.note && <span class="row-d">\{row\.note\}<\/span>\}/)
   assert.match(notFound, /<button type="button" id="notfound-search">/)
   assert.match(source('src/pages/projects.astro'), /class="text-link" href="\/posts\/"/)
   assert.match(

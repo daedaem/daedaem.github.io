@@ -1,11 +1,13 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import { SITE } from '@/consts'
 const arrow =
   '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 18l6-6M13 6l6 6"/></svg>'
 const rows = [
   { href: '/posts/', label: '글 목록' },
   { href: '/wiki/', label: '학습 위키' },
   { href: '/notes/', label: '학습 노트 아카이브' },
+  { href: '/about/', label: '소개', note: `${SITE.author} · ${SITE.role}` },
 ]
 ---
 
@@ -25,6 +27,7 @@ const rows = [
           <li>
             <a href={row.href}>
               <span class="row-t">{row.label}</span>
+              {row.note && <span class="row-d">{row.note}</span>}
               <Fragment set:html={arrow} />
             </a>
           </li>

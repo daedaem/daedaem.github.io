@@ -9,7 +9,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await getCollection('posts', ({ data }) => !data.draft)
   const wiki = await getCollection('wiki', ({ data }) => !data.draft)
   return [
-    { params: { slug: 'site' }, props: { title: SITE.identityTitle, kicker: SITE.title } },
+    // 사이트 이름은 카드 아래 마크 옆(siteTitle)에 이미 나온다. kicker는 직무가 맡는다
+    { params: { slug: 'site' }, props: { title: SITE.identityTitle, kicker: SITE.role } },
     ...posts.map((p) => ({
       params: { slug: `posts/${p.id}` },
       props: { title: p.data.title, kicker: '글' },

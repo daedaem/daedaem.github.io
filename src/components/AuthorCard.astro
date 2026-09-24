@@ -1,0 +1,45 @@
+---
+// 글·위키 문서 끝의 글쓴이 카드: 이름·직무 / 소개 보기 → · 연락 · GitHub. 2줄 안(D1).
+// 연락은 /about/#contact로 모은다(mailto는 두지 않는다).
+import { SITE } from '@/consts'
+
+interface Props {
+  /** AI 활용 고지 한 줄. 있으면 카드 아래 p.ai로 그린다 */
+  ai?: string
+}
+const { ai } = Astro.props
+---
+
+<aside class="author" data-pagefind-ignore>
+  <p>
+    <strong>{SITE.author}</strong> · {SITE.role}
+  </p>
+  <span class="author-links">
+    <a href="/about/">
+      소개 보기
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M5 12h14M13 18l6-6M13 6l6 6"></path>
+      </svg>
+    </a>
+    <a href="/about/#contact">연락</a>
+    <a href={SITE.githubUrl} rel="me noopener">GitHub</a>
+  </span>
+</aside>
+
+{
+  ai && (
+    <p class="ai" data-pagefind-ignore>
+      {ai}
+    </p>
+  )
+}

@@ -1,10 +1,12 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import { SITE } from '@/consts'
+import { CASES } from '@/data/cases'
 ---
 
 <BaseLayout
   title="소개"
+  type="profile"
   description="여러 업무 도메인의 레거시 시스템을 개발·운영하는 백엔드 개발자 조해성입니다. 맡아 해결한 사례와 기술, 연구에서 개발로 전환한 배경을 소개합니다."
 >
   <div class="page">
@@ -12,12 +14,20 @@ import { SITE } from '@/consts'
       <p class="k">소개</p>
       <div class="name-line">
         <h1>{SITE.author}</h1>
-        <span>백엔드 개발자</span>
+        <span>{SITE.role}</span>
       </div>
       <p class="lead">여러 업무 도메인의 레거시 시스템을 개발·운영합니다.</p>
       <dl class="at-a-glance">
-        <div><dt>환경</dt><dd>Java·Spring·Oracle 중심, C#/.NET 병행</dd></div>
+        <div><dt>환경</dt><dd>{SITE.environment}</dd></div>
         <div><dt>업무</dt><dd>신규 기능 개발 · 유지보수 · 운영 문제의 원인 분석</dd></div>
+        <div>
+          <dt>학력</dt>
+          <dd>서울대학교 대학원 운동생화학 석사 · 부산대학교 체육교육 학사</dd>
+        </div>
+        <div>
+          <dt>자격</dt>
+          <dd>정보처리기사 · SQLD · ADsP</dd>
+        </div>
       </dl>
       <nav class="about-nav" aria-label="소개 바로가기" data-pagefind-ignore>
         <a href="#work">해 온 일</a>
@@ -33,66 +43,26 @@ import { SITE } from '@/consts'
         <h2 id="work" tabindex="-1">해 온 일</h2>
         <p>실제로 맡아 해결한 문제들입니다. 자세한 판단 과정은 각 글에 있습니다.</p>
         <ul class="work-highlights" aria-label="대표 사례">
-          <li>
-            <h3>
-              <a href="/posts/null-and-empty-string-sync-failure/"
-                >시스템 간 동기화 오류의 두 원인 분리</a
-              >
-            </h3>
-            <dl class="case-summary">
-              <div>
-                <dt>판단</dt><dd>
-                  데이터가 지나가는 각 계층을 조사해 NULL·빈 문자열 비교 오류와 인터페이스 처리
-                  구분값의 규약 불일치를 분리했습니다.
-                </dd>
-              </div>
-              <div>
-                <dt>변경·결과</dt><dd>
-                  상대 담당자와 송수신 규약을 맞추고 비교·반영 로직을 수정해, 해당 오류로 월 34건
-                  반복되던 불필요한 결재를 없앴습니다.
-                </dd>
-              </div>
-            </dl>
-          </li>
-          <li>
-            <h3>
-              <a href="/posts/address-search-9s-to-100ms/">주소 조회 튜닝과 데이터 관리 범위 축소</a
-              >
-            </h3>
-            <dl class="case-summary">
-              <div>
-                <dt>판단</dt><dd>
-                  조회 성능을 개선해도 주소 갱신 문제가 남아, 외부 주소 검색을 선택했습니다.
-                </dd>
-              </div>
-              <div>
-                <dt>변경·결과</dt><dd>
-                  DB 조회를 9초에서 1초대로 줄인 뒤, 외부 검색 팝업과 콜백을 연동해 수기 적재를
-                  없앴습니다. 외부 서비스 의존은 남았습니다.
-                </dd>
-              </div>
-            </dl>
-          </li>
-          <li>
-            <h3>
-              <a href="/posts/retire-flash-module-by-integration/"
-                >기존 계약 API 연동과 전후 업무 로직 개발</a
-              >
-            </h3>
-            <dl class="case-summary">
-              <div>
-                <dt>판단</dt><dd>
-                  회의에서 제안된 기존 계약 시스템 API 활용 방안의 구현을 맡았습니다.
-                </dd>
-              </div>
-              <div>
-                <dt>변경·결과</dt><dd>
-                  연동 전후 업무 로직을 새로 개발하고 상태 동기화·적재 실패 복구를 구성해, Flash
-                  기반 계약 모듈을 대체했습니다.
-                </dd>
-              </div>
-            </dl>
-          </li>
+          {
+            /* 문장은 src/data/cases.ts 한 곳에 있다. 홈 '먼저 읽을 글'의 결과 줄과 같은 출처다 */
+            CASES.map((c) => (
+              <li>
+                <h3>
+                  <a href={`/posts/${c.id}/`}>{c.title}</a>
+                </h3>
+                <dl class="case-summary">
+                  <div>
+                    <dt>판단</dt>
+                    <dd>{c.judgement}</dd>
+                  </div>
+                  <div>
+                    <dt>변경·결과</dt>
+                    <dd>{c.outcome}</dd>
+                  </div>
+                </dl>
+              </li>
+            ))
+          }
         </ul>
         <h3 class="other-work-title">다른 사례</h3>
         <ul class="work">
@@ -171,16 +141,6 @@ import { SITE } from '@/consts'
             </p>
           </li>
         </ol>
-        <dl class="stack">
-          <div>
-            <dt>학력</dt>
-            <dd>서울대학교 대학원 운동생화학 석사 · 부산대학교 체육교육 학사</dd>
-          </div>
-          <div>
-            <dt>자격</dt>
-            <dd>정보처리기사 · SQLD · ADsP</dd>
-          </div>
-        </dl>
       </section>
 
       <section>

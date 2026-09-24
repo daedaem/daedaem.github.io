@@ -5,14 +5,17 @@ const year = new Date().getFullYear()
 
 <footer class="ft">
   <p>© {year} {SITE.author} · {SITE.title}</p>
+  {/* 작성자 도구(/admin/)는 바닥글에 두지 않는다. 주소로 직접 연다 */}
   <nav aria-label="바닥글 메뉴">
     <a href="/posts/">글</a>
     <a href="/wiki/">위키</a>
     <a href="/learn/">학습 기록</a>
     <a href="/about/">소개</a>
+    <a href="/projects/">프로젝트</a>
     <a href="/rss.xml">RSS</a>
     <a href={SITE.githubUrl} rel="me noopener">GitHub</a>
-    <a href="/admin/">작성자 안내</a>
+    <a href={`mailto:${SITE.email}`}>Email</a>
+    <a href={SITE.linkedinUrl} rel="me noopener">LinkedIn</a>
   </nav>
 </footer>
 

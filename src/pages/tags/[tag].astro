@@ -15,6 +15,8 @@ type Item = {
   sortDate: Date
   category?: string
   topic?: string
+  /** 글의 사례 시점(frontmatter happened). 위키 행에는 없다 */
+  happened?: string
 }
 
 export const getStaticPaths = async () => {
@@ -29,6 +31,7 @@ export const getStaticPaths = async () => {
       date: p.data.date,
       sortDate: p.data.date,
       category: p.data.category,
+      happened: p.data.happened,
       tags: p.data.tags ?? [],
     })),
     ...wiki.map((w) => ({
@@ -100,6 +103,7 @@ const { tag, list } = Astro.props
               title={it.title}
               description={it.description}
               date={it.date}
+              happened={it.happened}
               prefix="글"
               category={it.category}
             />

@@ -136,10 +136,15 @@ test('the inner code scrolls so the label and copy button stay put, and the fade
 
 test('list rows show only the authoring date, and the home links onward with collection counts', () => {
   const home = readFileSync(new URL('../src/pages/index.astro', import.meta.url), 'utf8')
+  // 사례 시점은 행 부품(PostRow)이 frontmatter 값 그대로 그린다. 홈은 값만 넘긴다
   assert.doesNotMatch(home, /사례 시점/)
-  // 주제별 글 레일 대신 '더 보기' 행: 위키 건수와 노트·풀이 건수는 컬렉션에서 센다
+  assert.match(home, /happened=\{post\.data\.happened\}/)
+  // 주제별 글 레일 대신 '더 보기' 행: 위키 건수·상태·기간, 노트 건수·연도, 풀이 건수는 컬렉션에서 센다
   assert.match(home, /\{wiki\.length\}편/)
-  assert.match(home, /\{notes\.length\}편 · 알고리즘 풀이 \{solutions\.length\}건/)
+  assert.match(
+    home,
+    /\{notes\.length\}편 \(\{noteYears\}\) · 알고리즘 풀이 \{solutions\.length\}건/,
+  )
   const row = readFileSync(new URL('../src/components/PostRow.astro', import.meta.url), 'utf8')
   assert.match(
     row,

@@ -161,7 +161,17 @@ test('production design retains navigation and real search without mock controls
   const home = source('src/pages/index.astro')
   assert.doesNotMatch(home, /dd-editorial|data-palette|Tweak|search-dialog|fonts\.googleapis/)
   assert.match(source('src/layouts/PostLayout.astro'), /<Comments\s*\/>/)
-  assert.match(source('src/components/Footer.astro'), /href="\/admin\/"/)
+  // 바닥글: 글 · 위키 · 학습 기록 · 소개 · 프로젝트 · RSS · GitHub · Email · LinkedIn.
+  // 작성자 도구(/admin/)는 바닥글에 두지 않는다(페이지는 남아 주소로 연다)
+  const footer = source('src/components/Footer.astro')
+  assert.doesNotMatch(footer, /href="\/admin\/"/)
+  assert.match(footer, /href="\/projects\/"/)
+  assert.match(footer, /mailto:\$\{SITE\.email\}/)
+  assert.match(footer, /SITE\.linkedinUrl/)
+  assert.deepEqual(
+    [...footer.matchAll(/<a href=[^>]*>([^<]+)<\/a>/g)].map((m) => m[1]),
+    ['글', '위키', '학습 기록', '소개', '프로젝트', 'RSS', 'GitHub', 'Email', 'LinkedIn'],
+  )
 })
 
 test('anchor landings and sticky article/wiki navigation share the header clearance', () => {
@@ -193,9 +203,25 @@ test('home reads label, name, sentence, then recommended rows, recent rows and l
     order.every((index, i) => index >= 0 && (i === 0 || index > order[i - 1])),
     String(order),
   )
-  // 더 보기 행의 건수는 컬렉션에서 센다
-  assert.match(home, /\{wiki\.length\}편 · 주제와 상태로 거르기/)
-  assert.match(home, /학습 노트 \{notes\.length\}편 · 알고리즘 풀이 \{solutions\.length\}건/)
+  // 더 보기 행의 건수·기간은 컬렉션에서 센다(위키 상태·기간, 노트 연도, 프로젝트 건수)
+  assert.match(
+    home,
+    /\{wiki\.length\}편 · 정리됨 \{wikiStats\.stable\} · 보완 중 \{wikiStats\.growing\} · \{\s*wikiStats\.from\s*\}부터 \{wikiStats\.to\}까지/,
+  )
+  assert.match(
+    home,
+    /학습 노트 \{notes\.length\}편 \(\{noteYears\}\) · 알고리즘 풀이 \{solutions\.length\}건/,
+  )
+  assert.match(
+    home,
+    /개인 프로젝트 \{PROJECTS\.length\}건 진행 중 · 교육 과정 팀 프로젝트 \{\s*TEAM_PROJECTS\.length\s*\}건/,
+  )
+  assert.doesNotMatch(home, /주제와 상태로 거르기|2021년 12월부터/)
+  const rows = home.match(/<ul class="linkrows">([\s\S]*?)<\/ul>/)?.[1]
+  assert.deepEqual(
+    [...rows.matchAll(/<a href="([^"]+)">/g)].map((m) => m[1]),
+    ['/wiki/', '/learn/', '/projects/'],
+  )
   assert.doesNotMatch(home, /@media|grid-template|reading-rail|archive-links|selectRecentWiki/)
 })
 

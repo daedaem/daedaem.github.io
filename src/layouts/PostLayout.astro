@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro'
+import AuthorCard from '@/components/AuthorCard.astro'
 import Comments from '@/components/Comments.astro'
 import ContentDates from '@/components/ContentDates.astro'
 import { SITE, getCategory } from '@/consts'
@@ -29,6 +30,10 @@ interface Props {
   next?: { href: string; title: string }
   /** 현재 글과 이전·다음을 제외하고 고른 관련 사례 */
   others?: { href: string; title: string; category?: string; date: Date; updated?: Date }[]
+  /** 같은 전환 작업을 나눠 적은 글(src/utils/related-records.mjs). 태그 아래 '관련 기록'으로 잇는다 */
+  records?: { href: string; title: string }[]
+  /** 본문 링크·구체 태그로 고른 위키 문서. '이어 읽을 글' 아래 '관련 위키' */
+  wikiReading?: { href: string; title: string }[]
   /** 원인 한 줄. 제목 아래 고정된 자리에 나온다 */
   cause?: string
 }
@@ -49,6 +54,8 @@ const {
   prev,
   next,
   others = [],
+  records = [],
+  wikiReading = [],
   cause,
 } = Astro.props
 
@@ -97,7 +104,7 @@ const body = rendered.slice(lead.length)
                 <span class="sep" aria-hidden="true" set:text="·" />
                 글쓴이 <a href="/about/" set:text={SITE.author} />
                 <span class="sep" aria-hidden="true" set:text="·" />
-                백엔드 개발자
+                {SITE.role}
               </>
             )
           }
@@ -232,6 +239,17 @@ const body = rendered.slice(lead.length)
         }
 
         {
+          records.length > 0 && (
+            <p class="rel" data-pagefind-ignore>
+              <span class="k">관련 기록</span>
+              {records.map((r) => (
+                <a href={r.href}>{r.title}</a>
+              ))}
+            </p>
+          )
+        }
+
+        {
           (prev || next) && (
             <nav class="pn" aria-label="이전·다음 글" data-pagefind-ignore>
               {prev ? (
@@ -254,36 +272,7 @@ const body = rendered.slice(lead.length)
 
         {
           !archived && (
-            <aside class="author" data-pagefind-ignore>
-              <p>
-                <strong>{SITE.author}</strong> · 백엔드 개발자
-              </p>
-              <a href="/about/">
-                소개 보기
-                <svg
-                  width="15"
-                  height="15"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.75"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M5 12h14M13 18l6-6M13 6l6 6" />
-                </svg>
-              </a>
-            </aside>
-          )
-        }
-
-        {
-          !archived && (
-            <p class="ai" data-pagefind-ignore>
-              사례 글은 직접 작성한 업무 기록을 바탕으로, AI의 도움을 받아 재구성하고 문장을
-              다듬었습니다.
-            </p>
+            <AuthorCard ai="사례 글은 직접 작성한 업무 기록을 바탕으로, AI의 도움을 받아 재구성하고 문장을 다듬었습니다." />
           )
         }
 
@@ -298,6 +287,22 @@ const body = rendered.slice(lead.length)
                     {o.category && getCategory(o.category) && (
                       <span class="k-in">{getCategory(o.category)?.name}</span>
                     )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+
+        {
+          wikiReading.length > 0 && (
+            <section class="back" aria-label="관련 위키" data-pagefind-ignore>
+              <h2 class="k">관련 위키</h2>
+              <ul>
+                {wikiReading.map((w) => (
+                  <li>
+                    <a href={w.href}>{w.title}</a>
+                    <span class="k-in">위키</span>
                   </li>
                 ))}
               </ul>

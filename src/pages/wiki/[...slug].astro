@@ -1,9 +1,10 @@
 ---
 import { getCollection, render } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import AuthorCard from '@/components/AuthorCard.astro'
 import RelatedReading from '@/components/RelatedReading.astro'
 import ContentDates from '@/components/ContentDates.astro'
-import { getWikiTopic } from '@/consts'
+import { SITE, getWikiTopic } from '@/consts'
 import { tagSlug } from '@/utils/format'
 import { linkableTagSlugs } from '@/utils/tags'
 import { selectWikiReferences, selectWikiReading } from '@/utils/wiki-reading.mjs'
@@ -70,6 +71,10 @@ const hasToc = toc.length >= 4
           {topic && <span class="sep" aria-hidden="true" set:text="›" />}
           {topic && <i class="dot" style={`--wt: ${topic.hue}`} aria-hidden="true" />}
           {topic && <a href={`/wiki/#${topic.id}`} set:text={topic.name} />}
+          <span class="sep" aria-hidden="true" set:text="·" />
+          글쓴이 <a href="/about/" set:text={SITE.author} />
+          <span class="sep" aria-hidden="true" set:text="·" />
+          {SITE.role}
           <span class="sep" aria-hidden="true" set:text="·" />
           <span set:text={status} />
           <span class="sep" aria-hidden="true" set:text="·" />
@@ -165,6 +170,7 @@ const hasToc = toc.length >= 4
             </p>
           )
         }
+        <AuthorCard />
         <section
           class="back"
           id="back"

@@ -3,14 +3,16 @@ import { getCategory } from '@/consts'
 import { formatCompactDate } from '@/utils/format'
 
 /**
- * 목록 행. 위줄(.k) "●분류 · 2026.09.24" → 제목 → 요약(.row-d) 또는 원인 한 줄(.row-c).
+ * 목록 행. 위줄(.k) "●분류 · 사례 시점 … · 2026.09.24" → 제목 → 요약(.row-d) 또는 원인 한 줄(.row-c) → 결과(.row-o).
  * 표지 썸네일과 읽기 시간은 두지 않는다. 행 전체가 링크다.
- * 위줄은 [prefix] · [분류(점) | label(점)] · [extra] · 날짜 순으로 있는 것만 잇는다.
+ * 위줄은 [prefix] · [분류(점) | label(점)] · [extra] · [사례 시점] · 날짜 순으로 있는 것만 잇는다.
  */
 interface Props {
   href: string
   title: string
   date: Date
+  /** 일이 실제로 있었던 시기(frontmatter happened 그대로). 글 행에만 넘긴다 */
+  happened?: string
   /** 글 분류 id. 점은 [data-cat]::before가 그린다 */
   category?: string
   /** 분류 대신 쓰는 이름(위키 주제 등). hue가 있으면 색점을 앞에 붙인다 */
@@ -23,12 +25,27 @@ interface Props {
   /** 한 줄 요약. cause가 있으면 대신 원인 한 줄을 보인다 */
   description?: string
   cause?: string
+  /** 결과 한 줄(src/data/cases.ts). 원인 한 줄 아래에 같은 모양으로 붙는다 */
+  outcome?: string
   /** 목록 스크립트가 행을 찾는 열쇠(li의 data-id) */
   dataId?: string
 }
 
-const { href, title, date, category, label, hue, prefix, extra, description, cause, dataId } =
-  Astro.props
+const {
+  href,
+  title,
+  date,
+  happened,
+  category,
+  label,
+  hue,
+  prefix,
+  extra,
+  description,
+  cause,
+  outcome,
+  dataId,
+} = Astro.props
 const cat = category ? getCategory(category) : undefined
 const name = cat?.name ?? label
 ---
@@ -38,13 +55,7 @@ const name = cat?.name ?? label
     <span class="row-b">
       <span class="k">
         {prefix}
-        {
-          prefix && (name || extra) && (
-            <span class="sep" aria-hidden="true">
-              ·
-            </span>
-          )
-        }
+        {prefix && (name || extra) && <span class="sep" aria-hidden="true" set:text="·" />}
         {
           cat && (
             <span data-cat={cat.id}>
@@ -60,22 +71,25 @@ const name = cat?.name ?? label
             </span>
           )
         }
-        {
-          name && extra && (
-            <span class="sep" aria-hidden="true">
-              ·
-            </span>
-          )
-        }
+        {name && extra && <span class="sep" aria-hidden="true" set:text="·" />}
         {extra}
         {
-          (prefix || name || extra) && (
-            <span class="sep" aria-hidden="true">
-              ·
-            </span>
+          happened && (
+            <>
+              {(prefix || name || extra) && <span class="sep" aria-hidden="true" set:text="·" />}
+              <span class="nowrap">사례 시점 {happened}</span>
+            </>
           )
         }
-        <time datetime={date.toISOString()}>{formatCompactDate(date)}</time>
+        {/* 날짜는 구분점과 한 덩어리로 줄을 바꾼다(좁은 폭에서 둘째 줄로 함께 내려간다) */}
+        <span class="nowrap">
+          {
+            (prefix || name || extra || happened) && (
+              <span class="sep" aria-hidden="true" set:text="·" />
+            )
+          }
+          <time datetime={date.toISOString()}>{formatCompactDate(date)}</time>
+        </span>
       </span>
       <span class="row-t">{title}</span>
       {
@@ -86,6 +100,14 @@ const name = cat?.name ?? label
           </span>
         ) : (
           description && <span class="row-d">{description}</span>
+        )
+      }
+      {
+        outcome && (
+          <span class="row-c row-o">
+            <span class="row-ck">결과</span>
+            {outcome}
+          </span>
         )
       }
     </span>

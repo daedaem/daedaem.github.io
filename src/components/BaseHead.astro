@@ -6,7 +6,8 @@ import jetbrainsCss from '../../public/fonts/jetbrains-mono.css?raw'
 interface Props {
   title: string
   description?: string
-  type?: 'website' | 'article'
+  /** profile은 소개 페이지. JSON-LD를 ProfilePage로 낸다 */
+  type?: 'website' | 'article' | 'profile'
   publishedAt?: Date
   updatedAt?: Date
   /** OG 카드 경로. 없으면 사이트 기본 카드를 쓴다 */
@@ -34,8 +35,8 @@ const person = {
   '@type': 'Person',
   name: SITE.author,
   url: SITE.url,
-  /* 국내 채용은 '백엔드 개발자', 영문·외국계는 Software Engineer로 찾는다. 둘 다 남긴다 */
-  jobTitle: ['백엔드 개발자', 'Software Engineer'],
+  /* 국내 채용은 한국어 직무명(SITE.role), 영문·외국계는 Software Engineer로 찾는다. 둘 다 남긴다 */
+  jobTitle: [SITE.role, 'Software Engineer'],
   sameAs: [SITE.githubUrl, SITE.linkedinUrl],
 }
 const jsonLd =
@@ -52,16 +53,24 @@ const jsonLd =
         ...(publishedAt && { datePublished: publishedAt.toISOString() }),
         ...(updatedAt && { dateModified: updatedAt.toISOString() }),
       }
-    : {
-        '@context': 'https://schema.org',
-        '@type': 'WebSite',
-        name: SITE.title,
-        alternateName: SITE.altNames,
-        description,
-        url: SITE.url,
-        inLanguage: 'ko-KR',
-        author: person,
-      }
+    : type === 'profile'
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'ProfilePage',
+          url: canonical.href,
+          inLanguage: 'ko-KR',
+          mainEntity: { ...person, email: SITE.email, description },
+        }
+      : {
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: SITE.title,
+          alternateName: SITE.altNames,
+          description: SITE.description,
+          url: SITE.url,
+          inLanguage: 'ko-KR',
+          author: person,
+        }
 ---
 
 <meta charset="utf-8" />

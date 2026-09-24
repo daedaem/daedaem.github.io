@@ -4,6 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import PageHead from '@/components/PageHead.astro'
 import LearningNav from '@/components/LearningNav.astro'
 import PostRow from '@/components/PostRow.astro'
+import { noteYearRange } from '@/utils/learning-range.mjs'
 
 const solutions = await getCollection('solutions')
 const notes = (await getCollection('notes')).sort(
@@ -11,13 +12,8 @@ const notes = (await getCollection('notes')).sort(
 )
 const boj = solutions.filter((s) => s.data.site === '백준').length
 const pgs = solutions.filter((s) => s.data.site === '프로그래머스').length
-// 노트의 연도 범위. 날짜는 서울 기준으로 읽는다
-const year = (date: Date) =>
-  new Intl.DateTimeFormat('ko-KR', { year: 'numeric', timeZone: 'Asia/Seoul' })
-    .formatToParts(date)
-    .find((p) => p.type === 'year')!.value
-const years = [...new Set(notes.map((n) => year(n.data.date)))].sort()
-const noteYears = years.length > 1 ? `${years[0]}–${years.at(-1)}` : (years[0] ?? '')
+// 노트의 연도 범위(서울 기준). 홈 '더 보기' 행과 같은 함수를 쓴다
+const noteYears = noteYearRange(notes)
 const arrow =
   '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 18l6-6M13 6l6 6"/></svg>'
 ---

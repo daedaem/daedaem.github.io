@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
+import { runInNewContext } from 'node:vm'
 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const about = read('src/pages/about.astro')
@@ -8,15 +9,26 @@ const aboutText = about.replace(/\s+/g, ' ')
 const highlights = about.match(/<ul class="work-highlights"[^>]*>([\s\S]*?)<\/ul>/)?.[1]
 const rest = about.match(/<ul class="work">([\s\S]*?)<\/ul>/)?.[1]
 const links = (html) => [...html.matchAll(/href="\/posts\/([^/]+)\/"/g)].map((m) => m[1])
+// 대표 사례의 문장은 src/data/cases.ts 한 곳에 있다. 배열 리터럴만 떼어 읽는다
+const casesSource = read('src/data/cases.ts')
+const CASES = [
+  ...runInNewContext(
+    `(${casesSource.slice(casesSource.indexOf('= [') + 2, casesSource.lastIndexOf(']') + 1)})`,
+  ),
+]
+const caseText = CASES.map((c) => `${c.title} ${c.judgement} ${c.outcome}`).join(' ')
 
 test('home keeps factual identity: role label, author name and the one intro sentence', () => {
   const home = read('src/pages/index.astro')
-  // 직무는 13px 라벨이 아니라 이름 옆 본문 크기의 글자다
-  assert.match(home, /<span class="role"[\s\S]*?백엔드 개발자<\/span/)
+  // 직무는 13px 라벨이 아니라 이름 옆 본문 크기의 글자다. 낱말은 consts의 SITE.role 한 곳에서 온다
+  assert.match(home, /<span class="role"[\s\S]*?\{SITE\.role\}<\/span/)
   // 이름과 직무 사이의 공백이 있어 접근 가능한 이름이 '조해성 백엔드 개발자'로 읽힌다
   assert.match(home, /<h1[^>]*>\s*\{SITE\.author\}\{' '\}<span class="role"/)
+  assert.match(home, /<p class="env">\{SITE\.environment\}<\/p>/)
   assert.match(home, /<p class="lede">\{SITE\.intro\}<\/p>/)
   assert.doesNotMatch(home, /백엔드 · 레거시 시스템 · 문제 해결|남긴 기록입니다/)
+  // 추천 글 행의 결과 줄은 cases.ts의 outcome. 값이 있는 글만 보인다
+  assert.match(home, /outcome=\{CASES\.find\(\(c\) => c\.id === post\.id\)\?\.outcome\}/)
 })
 
 test('AI disclosure distinguishes author records from editing help without claiming full verification', () => {
@@ -34,29 +46,53 @@ test('AI disclosure distinguishes author records from editing help without claim
 test('about emphasizes three supported cases and links only to currently public cases', () => {
   assert.ok(highlights)
   assert.ok(rest)
-  assert.deepEqual(links(highlights), [
-    'null-and-empty-string-sync-failure',
-    'address-search-9s-to-100ms',
-    'retire-flash-module-by-integration',
-  ])
+  // 소개는 cases.ts를 그대로 그린다: h3 > a[href=/posts/{id}/] → dl.case-summary(판단 / 변경·결과)
+  assert.match(highlights, /CASES\.map\(\(c\) => \(/)
+  assert.match(highlights, /<h3>\s*<a href=\{`\/posts\/\$\{c\.id\}\/`\}>\{c\.title\}<\/a>\s*<\/h3>/)
+  assert.match(highlights, /<dl class="case-summary">/)
+  assert.match(highlights, /<dt>판단<\/dt>\s*<dd>\{c\.judgement\}<\/dd>/)
+  assert.match(highlights, /<dt>변경·결과<\/dt>\s*<dd>\{c\.outcome\}<\/dd>/)
+  assert.deepEqual(
+    CASES.map((c) => c.id),
+    [
+      'null-and-empty-string-sync-failure',
+      'address-search-9s-to-100ms',
+      'retire-flash-module-by-integration',
+    ],
+  )
+  for (const c of CASES)
+    for (const key of ['title', 'judgement', 'outcome'])
+      assert.ok(typeof c[key] === 'string' && c[key].trim().length > 0, `${c.id}.${key}`)
   assert.equal(links(rest).length, 3)
-  const all = [...links(highlights), ...links(rest)]
+  const all = [...CASES.map((c) => c.id), ...links(rest)]
   assert.equal(new Set(all).size, 6)
   for (const id of all) assert.match(read(`src/content/posts/${id}.md`), /draft: false/)
-  assert.equal((highlights.match(/<h3>/g) ?? []).length, 3)
-  assert.equal((highlights.match(/<dl class="case-summary">/g) ?? []).length, 3)
-  assert.equal((highlights.match(/<dt>판단<\/dt>/g) ?? []).length, 3)
-  assert.equal((highlights.match(/<dt>변경·결과<\/dt>/g) ?? []).length, 3)
-  for (const link of highlights.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a\s*>/g))
-    assert.doesNotMatch(link[1], /<(?:p|dl)>/)
+  assert.doesNotMatch(casesSource, /<[a-z]+>/)
 })
 
 test('about identifies the author and shows evidence before general work philosophy', () => {
   assert.match(about, /<h1>\{SITE.author\}<\/h1>/)
-  assert.match(about, /<span>백엔드 개발자<\/span>/)
+  assert.match(about, /<span>\{SITE\.role\}<\/span>/)
   assert.match(about, /<dl class="at-a-glance">/)
+  // 머리 요약: 환경(consts) · 업무 · 학력 · 자격. 학력·자격은 배경 절이 아니라 머리에 있다
+  const glance = about.match(/<dl class="at-a-glance">([\s\S]*?)<\/dl>/)?.[1]
+  assert.ok(glance)
+  assert.match(glance, /<dt>환경<\/dt><dd>\{SITE\.environment\}<\/dd>/)
+  assert.deepEqual(
+    [...glance.matchAll(/<dt>([^<]+)<\/dt>/g)].map((m) => m[1]),
+    ['환경', '업무', '학력', '자격'],
+  )
+  assert.match(glance, /서울대학교 대학원 운동생화학 석사 · 부산대학교 체육교육 학사/)
+  assert.match(glance, /정보처리기사 · SQLD · ADsP/)
+  assert.equal((about.match(/<dt>학력<\/dt>/g) ?? []).length, 1)
   assert.ok(about.indexOf('class="work-highlights"') < about.indexOf('id="approach"'))
   assert.match(about, /AI로 생성한 개념 일러스트/)
+  // 구조화 데이터는 ProfilePage(BaseHead의 profile 분기)
+  assert.match(about, /<BaseLayout\s+title="소개"\s+type="profile"/)
+  const head = read('src/components/BaseHead.astro')
+  assert.match(head, /'@type': 'ProfilePage'/)
+  assert.match(head, /mainEntity: \{ \.\.\.person, email: SITE\.email, description \}/)
+  assert.match(head, /jobTitle: \[SITE\.role, 'Software Engineer'\]/)
 })
 
 test('each about section has its own search destination rather than inheriting the previous anchor', () => {
@@ -72,9 +108,9 @@ test('each about section has its own search destination rather than inheriting t
 })
 
 test('about summaries retain the external dependency limit and do not claim an API speedup', () => {
-  assert.match(highlights, /9초에서 1초대로/)
-  assert.match(highlights, /외부 서비스 의존은 남았습니다/)
-  assert.doesNotMatch(highlights.replace(/<[^>]*>/g, ''), /100밀리|100ms|폴백|무중단/)
+  assert.match(caseText, /9초에서 1초대로/)
+  assert.match(caseText, /외부 서비스 의존은 남았습니다/)
+  assert.doesNotMatch(caseText, /100밀리|100ms|폴백|무중단/)
   const lead = about.match(/<p class="lead">([\s\S]*?)<\/p>/)?.[1]
   assert.doesNotMatch(lead, /화면의 요청|서버와 DB/)
 })
@@ -116,7 +152,7 @@ test('author background uses the stated research motivation without implying AI 
 })
 
 test('case summaries expose supported implementation and collaboration without inventing outcomes', () => {
-  const summary = highlights.replace(/\s+/g, ' ')
+  const summary = caseText
   assert.match(summary, /NULL·빈 문자열 비교 오류/)
   assert.match(summary, /처리 구분값의 규약 불일치/)
   assert.match(summary, /송수신 규약을 맞추고 비교·반영 로직을 수정/)
@@ -127,19 +163,18 @@ test('case summaries expose supported implementation and collaboration without i
   assert.match(summary, /Flash 기반 계약 모듈을 대체/)
   assert.doesNotMatch(summary, /소유권|대표값|판정을 한곳|옛 계약 조회/)
   assert.doesNotMatch(summary, /재발 0|100%|단독|총괄|무중단|비용 \d+%/)
+  // 숫자·문장은 각 글 본문이 출처다. 새 사실을 더하지 않는다(D6)
+  assert.match(casesSource, /숫자·문장은 각 글 본문이 출처/)
 })
 
 test('address summary distinguishes the choice from measured DB results and later popup integration', () => {
-  const item = highlights.split('<li>')[2]
-  const fields = [...item.matchAll(/<dt>([^<]+)<\/dt>\s*<dd>([\s\S]*?)<\/dd>/g)]
-  const summary = Object.fromEntries(
-    fields.map(([, label, value]) => [label, value.replace(/\s+/g, ' ')]),
-  )
-  assert.match(summary['판단'], /주소 갱신 문제가 남아, 외부 주소 검색을 선택/)
-  assert.doesNotMatch(summary['판단'], /9초|1초대/)
-  assert.match(summary['변경·결과'], /DB 조회를 9초에서 1초대로 줄인 뒤/)
-  assert.match(summary['변경·결과'], /외부 검색 팝업과 콜백을 연동해 수기 적재를 없앴습니다/)
-  assert.match(summary['변경·결과'], /외부 서비스 의존은 남았습니다/)
+  const address = CASES.find((c) => c.id === 'address-search-9s-to-100ms')
+  assert.ok(address)
+  assert.match(address.judgement, /주소 갱신 문제가 남아, 외부 주소 검색을 선택/)
+  assert.doesNotMatch(address.judgement, /9초|1초대/)
+  assert.match(address.outcome, /DB 조회를 9초에서 1초대로 줄인 뒤/)
+  assert.match(address.outcome, /외부 검색 팝업과 콜백을 연동해 수기 적재를 없앴습니다/)
+  assert.match(address.outcome, /외부 서비스 의존은 남았습니다/)
 })
 
 test('work approach stays concise and private ongoing company projects remain withheld', () => {
@@ -178,4 +213,16 @@ test('project navigation separates ongoing work from education and prioritizes i
   assert.ok(projects.indexOf('<dl class="meta">') < projects.indexOf('<figure class="shot">'))
   assert.match(projects, /alt=\{t.image.alt\}/)
   assert.match(projects, /\{t.period.slice\(0, 4\)\}년 당시 화면/)
+  // 편집 지면의 행 문법: 기간 라벨(.k) → h3, 위 1px 선. 상자·채움·칩·배지는 없다
+  assert.match(projects, /<p class="k">\{p\.period\}<\/p>\s*<h3>\{p\.name\}<\/h3>/)
+  assert.match(
+    projects,
+    /<p class="k">\s*\{t\.period\}\s*\{t\.lead && ' · 팀장'\}\s*<\/p>\s*<h3>\{t\.name\}<\/h3>/,
+  )
+  assert.match(projects, /<dt>기술<\/dt>\s*<dd>\{p\.stack\.join\(', '\)\}<\/dd>/)
+  assert.doesNotMatch(
+    projects,
+    /class="badge"|class="stack"|class="period"|\.featured \{|border-radius: var\(--radius\)/,
+  )
+  assert.match(projects, /\.project,\s*\.team-project \{[^}]*border-top: 1px solid var\(--line\);/)
 })

@@ -781,6 +781,10 @@ code {
 .meta .nowrap {
   white-space: nowrap;
 }
+/* 목록 행 위줄의 '사례 시점 …'과 '· 날짜'도 같은 규칙이다 */
+.k .nowrap {
+  white-space: nowrap;
+}
 
 /* 절 번호 라벨("01"). h2 안에 블록으로 둔다 */
 .hn {
@@ -830,7 +834,7 @@ code {
   display: inline;
 }
 
-/* 홈 첫 화면: 라벨 → 이름 → 한 문장 → 소개 링크. 히어로가 아니다 */
+/* 홈 첫 화면: 이름 · 직무 → 환경 한 줄 → 한 문장 → 소개·연락·GitHub. 히어로가 아니다 */
 .ident {
   padding-bottom: 1.1rem;
   border-bottom: 1px solid var(--line);
@@ -851,13 +855,26 @@ code {
 .ident .role .sep {
   margin: 0 0.35em 0 0;
 }
+/* 주력 기술 한 줄(SITE.environment). 라벨·상자 없이 본문 크기 한 줄 */
+.ident .env {
+  margin: 0.35rem 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--fg2);
+}
 .ident .lede {
-  margin-top: 0.6rem;
+  margin-top: 0.45rem;
   max-width: 36rem;
 }
-.ident .more {
-  margin-top: 0;
-  margin-bottom: -0.35rem;
+/* 링크 줄: 소개 보기 → · 연락 · GitHub. 44px 조작 높이 아래의 빈 공간은 음수 여백으로 거둔다(글자와 선 사이 약 1rem) */
+.ident .links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  margin: 0 0 -0.75rem;
+}
+.ident .links .more {
+  margin: 0;
 }
 
 /* 절 묶음과 절 머리(라벨 + 오른쪽 '더 보기') */
@@ -909,6 +926,10 @@ code {
   min-width: 0;
   display: block;
 }
+/* 위줄은 라벨 자신의 줄 높이(1.5)를 갖는 블록. 본문 줄 상자 안에 떠 있지 않아 두 줄로 접혀도 19.5px씩만 늘어난다 */
+.row-b .k {
+  display: block;
+}
 .row-t {
   display: block;
   margin-top: 0.3rem;
@@ -947,6 +968,10 @@ code {
   font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--accent);
+}
+/* 결과 한 줄. 원인 한 줄과 같은 선·글자, 간격만 좁다 */
+.row-o {
+  margin-top: 0.35rem;
 }
 @media (min-width: 46em) {
   .row-t {
@@ -1564,6 +1589,28 @@ p.tags a:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+/* 관련 기록(같은 전환 작업의 다른 글). 태그 줄과 같은 문법, 링크는 밑줄 */
+p.rel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.8rem;
+  margin: 1rem 0 0;
+  font-size: 0.9375rem;
+  color: var(--fg2);
+}
+p.rel .k {
+  margin-right: 0.2rem;
+}
+p.rel a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-size);
+}
+p.rel a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 .pn {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1614,6 +1661,12 @@ aside.author {
 aside.author p {
   margin: 0;
   font-size: 1rem;
+}
+/* 소개 보기 → · 연락 · GitHub. 좁은 폭에서는 줄 전체가 둘째 줄로 내려간다(카드는 2줄 안) */
+aside.author .author-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1rem;
 }
 aside.author a {
   display: inline-flex;

@@ -3,7 +3,10 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
 import { SITE } from '@/consts'
+import { CASES } from '@/data/cases'
+import { PROJECTS, TEAM_PROJECTS } from '@/data/projects'
 import { selectHomeContent } from '@/utils/home-content.mjs'
+import { noteYearRange, wikiRange } from '@/utils/learning-range.mjs'
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
@@ -12,21 +15,29 @@ const wiki = await getCollection('wiki', ({ data }) => !data.draft)
 const notes = await getCollection('notes')
 const solutions = await getCollection('solutions')
 const { recommended, rest } = selectHomeContent(posts)
+// '더 보기' 행의 건수·기간은 컬렉션에서 센다. 손으로 쓴 숫자는 없다
+const wikiStats = wikiRange(wiki)
+const noteYears = noteYearRange(notes)
 const arrow =
   '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 18l6-6M13 6l6 6"/></svg>'
 ---
 
 <BaseLayout title={SITE.title} description={SITE.description} searchIndex={false}>
   <div class="page">
-    <!-- 첫 화면: 이름 · 직무 → 한 문장 → 소개 링크. 히어로가 아니다. 직무는 본문 크기로 이름 옆에 둔다 -->
+    <!-- 첫 화면: 이름 · 직무 → 환경 한 줄 → 한 문장 → 소개·연락·GitHub. 히어로가 아니다. 직무는 본문 크기로 이름 옆에 둔다 -->
     <section class="ident" aria-labelledby="ident-title">
       <h1 id="ident-title">
         {SITE.author}{' '}<span class="role"
-          ><span class="sep" aria-hidden="true">·</span>백엔드 개발자</span
+          ><span class="sep" aria-hidden="true">·</span>{SITE.role}</span
         >
       </h1>
+      <p class="env">{SITE.environment}</p>
       <p class="lede">{SITE.intro}</p>
-      <a class="more" href="/about/">소개 보기<Fragment set:html={arrow} /></a>
+      <p class="links">
+        <a class="more" href="/about/">소개 보기<Fragment set:html={arrow} /></a>
+        <a class="more" href="/about/#contact">연락</a>
+        <a class="more" href={SITE.githubUrl} rel="me noopener">GitHub</a>
+      </p>
     </section>
 
     {
@@ -47,8 +58,10 @@ const arrow =
                 href={`/posts/${post.id}/`}
                 title={post.data.title}
                 date={post.data.date}
+                happened={post.data.happened}
                 category={post.data.category}
                 cause={post.data.cause ?? post.causeSummary}
+                outcome={CASES.find((c) => c.id === post.id)?.outcome}
                 description={post.data.description}
               />
             ))}
@@ -77,6 +90,7 @@ const arrow =
                 href={`/posts/${post.id}/`}
                 title={post.data.title}
                 date={post.data.date}
+                happened={post.data.happened}
                 category={post.data.category}
                 description={post.data.description}
               />
@@ -94,7 +108,11 @@ const arrow =
         <li>
           <a href="/wiki/">
             <span class="row-t">학습 위키</span>
-            <span class="row-d">{wiki.length}편 · 주제와 상태로 거르기</span>
+            <span class="row-d"
+              >{wiki.length}편 · 정리됨 {wikiStats.stable} · 보완 중 {wikiStats.growing} · {
+                wikiStats.from
+              }부터 {wikiStats.to}까지</span
+            >
             <Fragment set:html={arrow} />
           </a>
         </li>
@@ -102,7 +120,18 @@ const arrow =
           <a href="/learn/">
             <span class="row-t">학습 기록</span>
             <span class="row-d"
-              >학습 노트 {notes.length}편 · 알고리즘 풀이 {solutions.length}건</span
+              >학습 노트 {notes.length}편 ({noteYears}) · 알고리즘 풀이 {solutions.length}건</span
+            >
+            <Fragment set:html={arrow} />
+          </a>
+        </li>
+        <li>
+          <a href="/projects/">
+            <span class="row-t">프로젝트</span>
+            <span class="row-d"
+              >개인 프로젝트 {PROJECTS.length}건 진행 중 · 교육 과정 팀 프로젝트 {
+                TEAM_PROJECTS.length
+              }건</span
             >
             <Fragment set:html={arrow} />
           </a>
