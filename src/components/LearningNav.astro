@@ -1,44 +1,35 @@
 ---
+/**
+ * 학습 기록·알고리즘·학습 노트 목록을 오가는 한 줄 텍스트 링크. 각 목록 머리(.phead) 아래에 둔다.
+ * 탭 바가 아니라 라벨(.k) 크기의 링크 줄이며, 상세 페이지에는 두지 않는다.
+ */
 const path = Astro.url.pathname
 const links = [
-  { href: '/learn/', label: '학습 기록 전체' },
+  { href: '/learn/', label: '학습 기록' },
   { href: '/algorithms/', label: '알고리즘' },
   { href: '/notes/', label: '학습 노트' },
 ]
 ---
 
-<nav class="wrap-wide learning-nav" aria-label="학습 기록 탐색" data-pagefind-ignore>
+<nav class="k subnav" aria-label="학습 기록 탐색" data-pagefind-ignore>
   {
-    links.map((link) => (
-      <a href={link.href} aria-current={
-          // 목록 페이지에서만 '현재 페이지'이고, 그 아래 상세 페이지에서는 '현재 구역'이다
-          path === link.href ? 'page' : path.startsWith(link.href) ? 'true' : undefined
-        }>
-        {link.label}
-      </a>
+    links.map((link, index) => (
+      <>
+        {index > 0 && (
+          <span class="sep" aria-hidden="true">
+            ·
+          </span>
+        )}
+        <a
+          href={link.href}
+          aria-current={
+            // 목록 페이지에서만 '현재 페이지'이고, 그 아래 상세 페이지에서는 '현재 구역'이다
+            path === link.href ? 'page' : path.startsWith(link.href) ? 'true' : undefined
+          }
+        >
+          {link.label}
+        </a>
+      </>
     ))
   }
 </nav>
-<style>
-  .learning-nav {
-    display: flex;
-    gap: 1.25rem;
-    padding-top: 1rem;
-    font-size: 0.875rem;
-  }
-  a {
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    color: var(--text-muted);
-    border-bottom: 2px solid transparent;
-  }
-  a[aria-current] {
-    color: var(--accent);
-    border-color: var(--accent);
-    font-weight: 600;
-  }
-  a:hover {
-    color: var(--text);
-  }
-</style>

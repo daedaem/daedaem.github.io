@@ -10,8 +10,18 @@ test('an empty wiki result is announced in the visible count row with a reset be
   assert.match(wiki, /id="wiki-clear"[^>]*hidden/)
   assert.match(wiki, /id="wiki-global"/)
   assert.match(wiki, /new CustomEvent\('site-search', \{ detail: query\.value\.trim\(\) \}\)/)
-  // 목록의 날짜는 다른 목록과 같은 짧은 형식을 쓴다.
-  assert.match(wiki, /formatCompactDate\(entry\.data\.updated \?\? entry\.data\.created\)/)
+  // 빈 결과 안에서도 조건을 지울 수 있다
+  assert.match(
+    wiki,
+    /<div id="wiki-empty" class="empty" hidden>[\s\S]*?id="wiki-reset"[\s\S]*?id="wiki-global"/,
+  )
+  // 목록의 날짜는 다른 목록과 같은 짧은 형식(PostRow의 formatCompactDate)을 쓴다. 마지막 갱신일이다
+  assert.match(
+    wiki,
+    /const revised = \(entry: [^=]*\) => entry\.data\.updated \?\? entry\.data\.created/,
+  )
+  assert.match(wiki, /<PostRow[\s\S]*?date=\{revised\(entry\)\}/)
+  assert.match(source('src/components/PostRow.astro'), /formatCompactDate\(date\)/)
 })
 
 test('the 404 page names the problem and offers search', () => {
@@ -42,20 +52,23 @@ test('focus rings share one 2px style and search keeps its text label on small s
   assert.doesNotMatch(search, /#search-open span,\s*#search-open kbd \{\s*display: none;/)
 })
 
-test('the dark home panel is a sunken navy instead of the bright logo tile', () => {
+test('the home has no navy panel: the identity block is text on the page background', () => {
   const css = source('src/styles/global.css')
-  assert.match(css, /--hero-bg: #223e60;/)
-  assert.equal(css.match(/--hero-bg: #1f3148;/g)?.length, 2)
+  assert.doesNotMatch(css, /--hero-bg|--hero-ink|--cover-navy/)
+  const home = source('src/pages/index.astro')
+  assert.doesNotMatch(home, /hero|background:/)
   assert.match(
-    source('src/pages/index.astro'),
-    /background: var\(--hero-bg\);\s*color: var\(--hero-ink\);/,
+    css,
+    /\.ident\s*\{\s*padding-bottom: 1\.1rem;\s*border-bottom: 1px solid var\(--line\);/,
   )
 })
 
 test('recommended posts show their writing date like every other list', () => {
+  // 홈 추천 글도 PostRow를 쓰므로 같은 <time>과 같은 짧은 날짜 형식을 받는다
+  assert.match(source('src/pages/index.astro'), /<PostRow[\s\S]*?date=\{post\.data\.date\}/)
   assert.match(
-    source('src/pages/index.astro'),
-    /<time datetime=\{post\.data\.date\.toISOString\(\)\}>\s*작성 \{formatCompactDate\(post\.data\.date\)\}/,
+    source('src/components/PostRow.astro'),
+    /<time datetime=\{date\.toISOString\(\)\}>\{formatCompactDate\(date\)\}<\/time>/,
   )
 })
 

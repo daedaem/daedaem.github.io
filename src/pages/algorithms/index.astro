@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PageHead from '@/components/PageHead.astro'
+import LearningNav from '@/components/LearningNav.astro'
 import PageNumbers from '@/components/PageNumbers.astro'
 import { getCollection } from 'astro:content'
 
@@ -69,6 +70,19 @@ const goldPlus = boj.filter((i) => i.rank >= 10 && i.rank < 100).length
 /** 그룹당 한 쪽에 보여 주는 개수. 넘는 건 쪽 번호로 넘긴다. 필터 결과도 같은 단위로 나눈다. */
 const PAGE = 10
 const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
+
+const siteGroups = [
+  { title: '백준', groups: bojGroups, prefix: 'boj-', tierOf: (g: string, i: Item) => i.tier },
+  {
+    title: '프로그래머스',
+    groups: pgsGroups,
+    prefix: 'pgs-',
+    tierOf: (g: string) => g.replace('Level ', 'Lv'),
+  },
+]
+const groupKey = (prefix: string, name: string) =>
+  prefix === 'boj-' ? `boj-${name.toLowerCase()}` : `pgs-${name.replace('Level ', 'lv')}`
+const defaultOpen = (name: string) => ['Platinum', 'Gold', 'Level 4', 'Level 3'].includes(name)
 ---
 
 <BaseLayout
@@ -76,66 +90,64 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
   description={`백준 ${boj.length}문제, 프로그래머스 ${pgs.length}문제. 티어·유형·언어별로 정리한 풀이 기록입니다.`}
   searchIndex={false}
 >
-  <div class="wrap-wide page">
-    <PageHead title="알고리즘" compact>
-      <p>
+  <div class="page">
+    <PageHead title="알고리즘" label={`${all.length}문제`}>
+      <p class="lede">
         2021년 12월부터 2023년 10월까지의 풀이 기록. 문제 이름으로 찾거나 난이도별로 넘겨 봅니다.
       </p>
     </PageHead>
+    <LearningNav />
 
-    <section class="stats">
-      <div class="stat"><b>{all.length}</b><span>전체</span></div>
-      <div class="stat"><b>{boj.length}</b><span>백준</span></div>
-      <div class="stat"><b>{pgs.length}</b><span>프로그래머스</span></div>
-      <div class="stat"><b>{goldPlus}</b><span>Gold 이상</span></div>
-    </section>
+    <p class="k stats">
+      백준 {boj.length}<span class="sep" aria-hidden="true">·</span>프로그래머스 {pgs.length}<span
+        class="sep"
+        aria-hidden="true">·</span
+      >Gold 이상 {goldPlus}
+    </p>
 
-    <div class="filter" role="search">
-      <input
-        id="q"
-        class="list-input"
-        type="search"
-        placeholder="문제 이름으로 찾기"
-        aria-label="문제 이름으로 찾기"
-        autocomplete="off"
-        maxlength="200"
-      />
-      <span id="count" class="count" aria-live="polite"></span>
-      <button type="button" id="clear" class="control-button" hidden>필터 지우기</button>
+    <div class="filters" role="search" aria-label="풀이 거르기">
+      <div class="f-q">
+        <label for="q" class="k">찾기</label>
+        <input id="q" type="search" placeholder="문제 이름" autocomplete="off" maxlength="200" />
+      </div>
+      <details class="facets-box">
+        <summary>유형·언어로 좁히기 <span id="facet-state"></span></summary>
+        <div class="facets" aria-label="알고리즘 상세 필터">
+          <fieldset class="f-g">
+            <legend class="k">많이 푼 유형</legend>
+            <div class="chips">
+              {
+                byCls.map(([k, v]) => (
+                  <button type="button" class="chip" data-cls={k} aria-pressed="false">
+                    {k} <span class="n">{v}</span>
+                  </button>
+                ))
+              }
+            </div>
+          </fieldset>
+          <fieldset class="f-g">
+            <legend class="k">언어</legend>
+            <div class="chips">
+              {
+                byLang.map(([k, v]) => (
+                  <button type="button" class="chip" data-lang={k} aria-pressed="false">
+                    {k} <span class="n">{v}</span>
+                  </button>
+                ))
+              }
+            </div>
+          </fieldset>
+          <p class="legend">
+            유형 분류는 백준 풀이 기준입니다. 프로그래머스 풀이는 아직 유형 미분류입니다.
+          </p>
+        </div>
+      </details>
     </div>
 
-    <details class="advanced-facets">
-      <summary>유형·언어로 좁히기 <span id="facet-state"></span></summary>
-      <section class="facets" aria-label="알고리즘 상세 필터">
-        <div>
-          <h2>많이 푼 유형 <span class="hint">— 누르면 거릅니다</span></h2>
-          <div class="chips">
-            {
-              byCls.map(([k, v]) => (
-                <button type="button" class="chip filter-chip" data-cls={k} aria-pressed="false">
-                  {k} <em>{v}</em>
-                </button>
-              ))
-            }
-          </div>
-        </div>
-        <div>
-          <h2>언어</h2>
-          <div class="chips">
-            {
-              byLang.map(([k, v]) => (
-                <button type="button" class="chip filter-chip" data-lang={k} aria-pressed="false">
-                  {k} <em>{v}</em>
-                </button>
-              ))
-            }
-          </div>
-        </div>
-      </section>
-      <p class="repo">
-        유형 분류는 백준 풀이 기준입니다. 프로그래머스 풀이는 아직 유형 미분류입니다.
-      </p>
-    </details>
+    <div class="count">
+      <p id="count" role="status" aria-live="polite"></p>
+      <button type="button" id="clear" class="btn" hidden>필터 지우기</button>
+    </div>
 
     {
       /*
@@ -150,107 +162,55 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
         setTimeout(() => document.documentElement.classList.remove('algo-restoring'), 3000)
       }
     </script>
-    <h2 class="site-title">백준</h2>
     {
-      bojGroups.map((g) => (
-        <details
-          class="group"
-          open={g.name === 'Platinum' || g.name === 'Gold'}
-          data-total={g.items.length}
-          data-group={`boj-${g.name.toLowerCase()}`}
-        >
-          <summary>
-            {g.name} <em>{g.items.length}</em>
-          </summary>
-          <ul class="list">
-            {g.items.map((i, idx) => (
-              <li
-                data-title={i.title.toLowerCase()}
-                data-cls={i.cls.join('|')}
-                data-lang={i.lang.join('|')}
-                hidden={idx >= PAGE}
-              >
-                <span class="tier">{i.tier}</span>
-                <a class="name stretched-link" href={i.href}>
-                  {i.title}
-                  {i.needsReview && <span class="review-label"> · 확인 필요</span>}
-                </a>
-                <span class="facts">
-                  <span class="cls">{i.cls.slice(0, 3).join(' · ')}</span>
-                  <span class="lang">{i.lang.join(', ')}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-          <nav class="pager" aria-label={`${g.name} 쪽 이동`} hidden={g.items.length <= PAGE}>
-            <button type="button" class="pg control-button prev" disabled>
-              ‹ 이전
-            </button>
-            <PageNumbers total={pagesOf(g.items.length)} />
-            <button
-              type="button"
-              class="pg control-button next"
-              disabled={pagesOf(g.items.length) <= 1}
+      siteGroups.map((site) => (
+        <>
+          <h2 class="site-title k">{site.title}</h2>
+          {site.groups.map((g) => (
+            <details
+              class="group"
+              open={defaultOpen(g.name)}
+              data-total={g.items.length}
+              data-group={groupKey(site.prefix, g.name)}
             >
-              다음 ›
-            </button>
-            <span class="range">
-              1–{Math.min(PAGE, g.items.length)} / {g.items.length}
-            </span>
-          </nav>
-        </details>
-      ))
-    }
-
-    <h2 class="site-title">프로그래머스</h2>
-    {
-      pgsGroups.map((g) => (
-        <details
-          class="group"
-          open={g.name === 'Level 4' || g.name === 'Level 3'}
-          data-total={g.items.length}
-          data-group={`pgs-${g.name.replace('Level ', 'lv')}`}
-        >
-          <summary>
-            {g.name} <em>{g.items.length}</em>
-          </summary>
-          <ul class="list">
-            {g.items.map((i, idx) => (
-              <li
-                data-title={i.title.toLowerCase()}
-                data-cls={i.cls.join('|')}
-                data-lang={i.lang.join('|')}
-                hidden={idx >= PAGE}
-              >
-                <span class="tier">{g.name.replace('Level ', 'Lv')}</span>
-                <a class="name stretched-link" href={i.href}>
-                  {i.title}
-                  {i.needsReview && <span class="review-label"> · 확인 필요</span>}
-                </a>
-                <span class="facts">
-                  <span class="cls">{i.cls.slice(0, 3).join(' · ')}</span>
-                  <span class="lang">{i.lang.join(', ')}</span>
+              <summary>
+                {g.name} <span class="n">{g.items.length}</span>
+              </summary>
+              <ul class="list">
+                {g.items.map((i, idx) => (
+                  <li
+                    data-title={i.title.toLowerCase()}
+                    data-cls={i.cls.join('|')}
+                    data-lang={i.lang.join('|')}
+                    hidden={idx >= PAGE}
+                  >
+                    <span class="tier">{site.tierOf(g.name, i)}</span>
+                    <a class="name stretched-link" href={i.href}>
+                      {i.title}
+                      {i.needsReview && <span class="review-label"> · 확인 필요</span>}
+                    </a>
+                    <span class="facts">
+                      <span class="cls">{i.cls.slice(0, 3).join(' · ')}</span>
+                      <span class="lang">{i.lang.join(', ')}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <nav class="pager" aria-label={`${g.name} 쪽 이동`} hidden={g.items.length <= PAGE}>
+                <button type="button" class="pg btn prev" disabled>
+                  ‹ 이전
+                </button>
+                <PageNumbers total={pagesOf(g.items.length)} />
+                <button type="button" class="pg btn next" disabled={pagesOf(g.items.length) <= 1}>
+                  다음 ›
+                </button>
+                <span class="range">
+                  1–{Math.min(PAGE, g.items.length)} / {g.items.length}
                 </span>
-              </li>
-            ))}
-          </ul>
-          <nav class="pager" aria-label={`${g.name} 쪽 이동`} hidden={g.items.length <= PAGE}>
-            <button type="button" class="pg control-button prev" disabled>
-              ‹ 이전
-            </button>
-            <PageNumbers total={pagesOf(g.items.length)} />
-            <button
-              type="button"
-              class="pg control-button next"
-              disabled={pagesOf(g.items.length) <= 1}
-            >
-              다음 ›
-            </button>
-            <span class="range">
-              1–{Math.min(PAGE, g.items.length)} / {g.items.length}
-            </span>
-          </nav>
-        </details>
+              </nav>
+            </details>
+          ))}
+        </>
       ))
     }
 
@@ -334,8 +294,8 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       for (const li of hit.slice(from, to)) li.hidden = false
 
       const total = Number(g.dataset.total)
-      const em = g.querySelector('summary em')!
-      em.textContent = active ? `${hit.length} / ${total}` : String(total)
+      const n = g.querySelector('summary .n')!
+      n.textContent = active ? `${hit.length} / ${total}` : String(total)
       g.hidden = active && hit.length === 0
       if (expandMatches && active && hit.length > 0) g.open = true
 
@@ -381,7 +341,6 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
       for (const c of chips) {
         const on =
           (c.dataset.cls && c.dataset.cls === cls) || (c.dataset.lang && c.dataset.lang === lang)
-        c.classList.toggle('on', !!on)
         c.setAttribute('aria-pressed', String(!!on))
       }
       if (sync) scheduleURL()
@@ -460,110 +419,181 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
   :global(html.algo-restoring) #empty {
     visibility: hidden;
   }
-  .page {
-    padding-bottom: 5rem;
-  }
 
+  /* 건수 한 줄. 라벨 크기이며 숫자는 폭이 같은 숫자다. 티어 이름(Gold)은 대문자로 바꾸지 않는다 */
   .stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.25rem;
-    margin: 0;
-  }
-  .stat {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.4rem;
-  }
-  .stat b {
-    font-size: 1rem;
-    letter-spacing: -0.03em;
-  }
-  .stat span {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-  }
-
-  .facets {
-    display: grid;
-    grid-template-columns: 1.6fr 1fr;
-    gap: 28px;
     margin-top: 1rem;
-  }
-  .facets h2 {
-    font-size: var(--type-label);
-    font-weight: 700;
-    letter-spacing: 0;
-    color: var(--text-muted);
-    margin: 0 0 10px;
-  }
-  .advanced-facets {
-    margin-top: 0.75rem;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .advanced-facets > summary {
-    cursor: pointer;
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    min-height: 44px;
-    align-content: center;
-  }
-  #facet-state {
-    color: var(--accent);
-    margin-left: 0.5rem;
-  }
-  .advanced-facets .repo {
-    font-size: 0.875rem;
-    margin-block: 1rem;
-  }
-  .facets .hint {
-    font-weight: 400;
-    letter-spacing: 0;
     text-transform: none;
-    color: var(--text-dim);
-  }
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 0;
-    padding: 0;
-  }
-  .chip.on em {
-    color: var(--bg);
-  }
-  .chips em {
-    font-style: normal;
-    color: var(--text);
-    font-weight: 600;
   }
 
-  .filter {
+  /* 유형·언어 칩은 접어 둔다. 열면 위키와 같은 칩 묶음이다 */
+  .facets-box {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .facets-box > summary {
     display: flex;
     align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 28px;
+    gap: 0.5rem;
+    min-height: var(--control-size);
+    padding: 0 0.9rem;
+    cursor: pointer;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    list-style: none;
   }
-  .filter input {
-    flex: 1 1 16rem;
+  .facets-box > summary::-webkit-details-marker {
+    display: none;
   }
+  .facets-box > summary::after {
+    content: '';
+    width: 0.5em;
+    height: 0.5em;
+    margin-left: auto;
+    border-right: 1.5px solid var(--muted);
+    border-bottom: 1.5px solid var(--muted);
+    transform: rotate(45deg) translateY(-0.15em);
+    transition: transform 0.2s;
+  }
+  .facets-box[open] > summary::after {
+    transform: rotate(225deg) translateY(0.1em);
+  }
+  #facet-state {
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .facets {
+    display: grid;
+    gap: 1rem;
+    padding: 0.75rem 0.9rem 1rem;
+    border-top: 1px solid var(--line);
+  }
+  .facets .legend {
+    margin: 0;
+  }
+
+  /* 건수 줄: 필터가 있을 때만 결과 수와 지우기 단추가 보인다. 없을 때는 자리도 차지하지 않는다 */
   .count {
-    font-size: var(--type-label);
-    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+  .count p {
+    margin: 0;
+    color: var(--muted);
+  }
+  .count p:empty {
+    display: none;
+  }
+  #clear {
+    min-height: 2rem;
+    padding: 0 0.6rem;
+    font-size: 0.8125rem;
+    letter-spacing: 0;
+  }
+
+  .site-title {
+    margin: 1.5rem 0 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--fg);
+    color: var(--fg);
+  }
+
+  .group {
+    border-bottom: 1px solid var(--line);
+  }
+  .group summary {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: var(--control-size);
+    cursor: pointer;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    list-style: none;
+  }
+  .group summary::-webkit-details-marker {
+    display: none;
+  }
+  .group summary::before {
+    content: '▸';
+    display: inline-block;
+    width: 1.2em;
+    color: var(--muted);
+    transition: transform 0.15s ease;
+  }
+  .group[open] summary::before {
+    transform: rotate(90deg);
+  }
+  .group summary .n {
+    font-weight: 400;
+    font-size: 0.8125rem;
+    color: var(--muted);
     font-variant-numeric: tabular-nums;
+  }
+
+  .list {
+    list-style: none;
+    margin: 0 0 0.75rem;
+    padding: 0;
+  }
+  .list li {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr auto auto;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding: 0.45rem 0 0.45rem 1.2em;
+    font-size: 0.9375rem;
+    border-top: 1px solid var(--line);
+    position: relative;
+  }
+  /* 넓은 화면의 목록 밀도는 유지하고, 손가락으로 누르는 화면에서만 행 높이를 44px로 맞춘다 */
+  @media (max-width: 47.5em), (pointer: coarse) {
+    .list li {
+      min-height: var(--control-size);
+    }
+  }
+  .tier {
+    font-size: 0.8125rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .name {
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .name:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .review-label {
+    color: var(--muted);
+    font-size: 0.8125rem;
+  }
+  /* 넓은 화면에서는 유형·언어가 각자 열을 차지하도록 묶음을 풀어 둔다 */
+  .facts {
+    display: contents;
+  }
+  .cls,
+  .lang {
+    font-size: 0.8125rem;
+    color: var(--muted);
+    white-space: nowrap;
   }
 
   .pager {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    gap: 8px;
-    margin: 0 0 12px;
-    padding-top: 12px;
-    border-top: 1px solid var(--border);
-    font-size: var(--type-label);
+    gap: 0.5rem;
+    margin: 0 0 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.875rem;
   }
   .prev {
     grid-column: 1;
@@ -577,115 +607,21 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     grid-column: 2;
     grid-row: 2;
     text-align: center;
-    color: var(--text-dim);
+    color: var(--muted);
     font-variant-numeric: tabular-nums;
   }
   .empty {
-    margin-top: 32px;
-    color: var(--text-muted);
+    margin-top: 1.5rem;
+    color: var(--fg2);
   }
 
   .repo {
-    margin-top: 28px;
-    font-size: 14.5px;
-    color: var(--text-muted);
-  }
-  .repo a {
-    color: var(--accent);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
+    margin-top: 1.5rem;
+    font-size: 0.9375rem;
+    color: var(--muted);
   }
 
-  .site-title {
-    margin: 24px 0 12px;
-    font-size: var(--type-section);
-    letter-spacing: -0.03em;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .group {
-    border-bottom: 1px solid var(--border);
-  }
-  .group summary {
-    cursor: pointer;
-    padding: 12px 0;
-    font-size: 15px;
-    font-weight: 600;
-    list-style: none;
-  }
-  .group summary::-webkit-details-marker {
-    display: none;
-  }
-  .group summary::before {
-    content: '▸';
-    display: inline-block;
-    width: 1.2em;
-    color: var(--text-dim);
-    transition: transform 0.15s ease;
-  }
-  .group[open] summary::before {
-    transform: rotate(90deg);
-  }
-  .group summary em {
-    font-style: normal;
-    font-weight: 400;
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-left: 4px;
-  }
-
-  .list {
-    list-style: none;
-    margin: 0 0 12px;
-    padding: 0;
-  }
-  .list li {
-    display: grid;
-    grid-template-columns: 5.5rem 1fr auto auto;
-    gap: 12px;
-    align-items: baseline;
-    padding: 7px 0 7px 1.2em;
-    font-size: 14px;
-    border-top: 1px solid var(--border);
-    position: relative;
-  }
-  /* 넓은 화면의 목록 밀도는 유지하고, 손가락으로 누르는 화면에서만 행 높이를 44px로 맞춘다 */
-  @media (max-width: 760px), (pointer: coarse) {
-    .list li {
-      min-height: var(--control-size);
-    }
-  }
-  .tier {
-    font-size: var(--type-caption);
-    color: var(--text-dim);
-    font-variant-numeric: tabular-nums;
-  }
-  .name {
-    text-decoration: none;
-  }
-  .name:hover {
-    text-decoration: underline;
-    text-decoration-color: var(--accent);
-  }
-  /* 넓은 화면에서는 유형·언어가 각자 열을 차지하도록 묶음을 풀어 둔다 */
-  .facts {
-    display: contents;
-  }
-  .cls,
-  .lang {
-    font-size: var(--type-caption);
-    color: var(--text-dim);
-    white-space: nowrap;
-  }
-
-  @media (max-width: 760px) {
-    .stat b {
-      font-size: 1rem;
-    }
-    .facets {
-      grid-template-columns: 1fr;
-    }
+  @media (max-width: 47.5em) {
     .list li {
       grid-template-columns: 4.5rem 1fr;
     }
@@ -702,9 +638,6 @@ const pagesOf = (n: number) => Math.max(1, Math.ceil(n / PAGE))
     }
     .cls:empty {
       display: none;
-    }
-    .lang {
-      color: var(--text-muted);
     }
   }
 </style>

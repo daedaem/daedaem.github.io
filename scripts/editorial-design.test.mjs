@@ -36,8 +36,9 @@ test('approved articles own their covers rather than borrowing a home position',
   )
   const home = source('src/pages/index.astro')
   assert.match(home, /selectHomeContent\(posts\)/)
-  assert.match(home, /resolvePostCover\(post\.data\)/)
-  assert.match(home, /'without-cover': !cover/)
+  // 홈은 표지를 그리지 않는다. 추천 글 행은 원인 한 줄(frontmatter cause, 없으면 causeSummary)을 보인다
+  assert.doesNotMatch(home, /resolvePostCover|PostCover/)
+  assert.match(home, /cause=\{post\.data\.cause \?\? post\.causeSummary\}/)
 })
 
 test('custom local covers override presets while empty values stay optional', () => {
@@ -78,17 +79,19 @@ test('cover sources reject remote URLs, traversal, non-images and encoded paths'
   }
 })
 
-test('home, all-post and category lists share cover resolution without changing reading pages', () => {
+test('home, all-post and category lists share one cover-free row without changing reading pages', () => {
   for (const path of [
     'src/pages/index.astro',
     'src/pages/posts/index.astro',
     'src/pages/categories/[category].astro',
   ]) {
-    assert.match(source(path), /cover=\{resolvePostCover\((?:post|p)\.data\)\}/)
+    const text = source(path)
+    assert.doesNotMatch(text, /resolvePostCover|PostCover|readingMinutes/)
+    assert.match(text, /<PostRow[\s\S]*?category=\{(?:post|p)\.data\.category\}/)
   }
   const row = source('src/components/PostRow.astro')
-  assert.match(row, /'with-cover': !!cover/)
-  assert.match(row, /<PostCover kind=\{cover\.kind\} src=\{cover\.src\}/)
+  assert.doesNotMatch(row, /PostCover|cover|readingMinutes/)
+  assert.match(row, /<li class="row"[^>]*>\s*<a class="row-a" href=\{href\}>/)
   const cover = source('src/components/PostCover.astro')
   assert.match(cover, /@container \(max-width: 220px\)/)
   assert.match(cover, /alt=""/)
@@ -168,7 +171,8 @@ test('anchor landings and sticky article/wiki navigation share the header cleara
   assert.match(css, /--header-h: 96px;/)
   assert.match(css, /--header-clearance: calc\(var\(--header-h\) \+ 1rem\);/)
   assert.match(css, /scroll-padding-top: var\(--header-clearance\)/)
-  assert.match(source('src/pages/wiki/index.astro'), /top: var\(--header-clearance\)/)
+  // 위키 목록에는 따라오는 사이드바가 없다(칩 필터가 머리 아래 한 열에 있다)
+  assert.doesNotMatch(source('src/pages/wiki/index.astro'), /position: sticky|library-layout/)
   // 글·위키 문서의 오른쪽 레일(전역 nav.rail)도 머리줄 아래에서 시작한다
   assert.match(css, /nav\.rail \{[^}]*top: calc\(var\(--header-clearance\) \+ 1\.5rem\);/)
   for (const path of ['src/layouts/PostLayout.astro', 'src/pages/wiki/[...slug].astro']) {
@@ -176,22 +180,42 @@ test('anchor landings and sticky article/wiki navigation share the header cleara
   }
 })
 
-test('reading comparison keeps the title before a secondary thumbnail on mobile', () => {
+test('home reads label, name, sentence, then recommended rows, recent rows and link rows in one column', () => {
   const home = source('src/pages/index.astro')
-  const mobile = home.split('@media (max-width: 640px)')[1]
-  assert.ok(mobile)
-  assert.match(home, /grid-template-areas:\s*'copy cover' 'note note';/)
-  assert.match(mobile, /grid-template-columns:\s*minmax\(0, 1fr\) 5\.5rem;/)
-  assert.ok(home.indexOf('<h3 class="card-title">') < home.indexOf('<div class="card-cover">'))
-  assert.doesNotMatch(home, /order:\s*-1/)
+  const order = [
+    '<section class="ident"',
+    'id="recommended-title"',
+    'id="recent-title"',
+    'id="more-title"',
+    '<ul class="linkrows">',
+  ].map((needle) => home.indexOf(needle))
+  assert.ok(
+    order.every((index, i) => index >= 0 && (i === 0 || index > order[i - 1])),
+    String(order),
+  )
+  // 더 보기 행의 건수는 컬렉션에서 센다
+  assert.match(home, /\{wiki\.length\}편 · 주제와 상태로 거르기/)
+  assert.match(home, /학습 노트 \{notes\.length\}편 · 알고리즘 풀이 \{solutions\.length\}건/)
+  assert.doesNotMatch(home, /@media|grid-template|reading-rail|archive-links|selectRecentWiki/)
 })
 
-test('article separators distinguish rows without expanding the link into the gap', () => {
-  const home = source('src/pages/index.astro')
+test('row separators are one global rule and the whole row is the link', () => {
+  const css = source('src/styles/global.css')
   assert.match(
-    home,
-    /\.editorial-card\s*\{[^}]*padding:\s*1\.5rem 0;[^}]*border-bottom:\s*1px solid var\(--border\);/,
+    css,
+    /\.rows > li\s*\{[^}]*position: relative;[^}]*border-bottom: 1px solid var\(--line\);/,
   )
-  assert.doesNotMatch(home, /\.editorial-card::before/)
-  assert.match(home, /\.editorial-card a::after\s*\{[^}]*inset:\s*0;/)
+  assert.match(css, /\.row-a\s*\{[^}]*padding: 0\.95rem 0 1\.05rem;[^}]*text-decoration: none;/)
+  const row = source('src/components/PostRow.astro')
+  const parts = [
+    '<span class="k">',
+    '<time datetime={date.toISOString()}>',
+    '<span class="row-t">',
+    '<span class="row-c">',
+  ]
+  const at = parts.map((needle) => row.indexOf(needle))
+  assert.ok(
+    at.every((index, i) => index >= 0 && (i === 0 || index > at[i - 1])),
+    String(at),
+  )
 })

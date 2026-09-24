@@ -2,572 +2,116 @@
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
-import PostCover from '@/components/PostCover.astro'
-import { SITE, CATEGORIES, getCategory, getWikiTopic } from '@/consts'
-import { readingMinutes, formatCompactDate } from '@/utils/format'
-import { selectHomeContent, selectRecentWiki } from '@/utils/home-content.mjs'
-import { resolvePostCover, splitEditorialTitle } from '@/utils/editorial.mjs'
+import { SITE } from '@/consts'
+import { selectHomeContent } from '@/utils/home-content.mjs'
+
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 )
 const wiki = await getCollection('wiki', ({ data }) => !data.draft)
+const notes = await getCollection('notes')
+const solutions = await getCollection('solutions')
 const { recommended, rest } = selectHomeContent(posts)
-const recentWiki = selectRecentWiki(wiki, 2)
-const counts = new Map<string, number>()
-for (const post of posts) counts.set(post.data.category, (counts.get(post.data.category) ?? 0) + 1)
+const arrow =
+  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 18l6-6M13 6l6 6"/></svg>'
 ---
 
 <BaseLayout title={SITE.title} description={SITE.description} searchIndex={false}>
-  <div class="wrap-wide home">
-    <header class="byline">
-      <div class="identity">
-        <h1>{SITE.identityTitle}</h1><p class="identity-context">{SITE.motto}</p>
-        <p class="identity-lead">{SITE.intro}</p>
-      </div>
-      <a href="/about/">소개·경력 <span aria-hidden="true">→</span></a>
-    </header>
-    <div class="reading-desk">
-      <div class="reading-main">
+  <div class="page">
+    <!-- 첫 화면: 직무 라벨 → 이름 → 한 문장 → 소개 링크. 히어로가 아니다 -->
+    <section class="ident" aria-labelledby="ident-title">
+      <p class="k">백엔드 개발자</p>
+      <h1 id="ident-title">{SITE.author}</h1>
+      <p class="lede">{SITE.intro}</p>
+      <a class="more" href="/about/">소개 보기<Fragment set:html={arrow} /></a>
+    </section>
+
+    {
+      recommended.length > 0 && (
+        <section class="blk" aria-labelledby="recommended-title">
+          <div class="sec-h">
+            <h2 class="k" id="recommended-title">
+              먼저 읽을 글
+            </h2>
+            <a class="more" href="/posts/">
+              전체 글 {posts.length}편
+              <Fragment set:html={arrow} />
+            </a>
+          </div>
+          <ol class="rows">
+            {recommended.map((post) => (
+              <PostRow
+                href={`/posts/${post.id}/`}
+                title={post.data.title}
+                date={post.data.date}
+                category={post.data.category}
+                cause={post.data.cause ?? post.causeSummary}
+                description={post.data.description}
+              />
+            ))}
+          </ol>
+        </section>
+      )
+    }
+
+    <section class="blk" aria-labelledby="recent-title">
+      <div class="sec-h">
+        <h2 class="k" id="recent-title">최근 글</h2>
         {
-          recommended.length > 0 && (
-            <section class="reading-section" aria-labelledby="recommended-title">
-              <div class="section-head">
-                <>
-                  <h2 id="recommended-title">먼저 읽을 글</h2>
-                  <a href="/posts/">
-                    전체 보기 <span aria-hidden="true">→</span>
-                  </a>
-                </>
-              </div>
-              <ul class="reading-list">
-                {recommended.map((post, index) => {
-                  const cat = getCategory(post.data.category)
-                  const cover = resolvePostCover(post.data)
-                  const heading = splitEditorialTitle(post.data.title)
-                  return (
-                    <li
-                      class:list={[
-                        'editorial-card',
-                        { 'lead-card': index === 0, 'without-cover': !cover },
-                      ]}
-                    >
-                      <div class="card-copy">
-                        <p class="card-meta">
-                          {cat && <span class="category">{cat.name}</span>}
-                          <time datetime={post.data.date.toISOString()}>
-                            작성 {formatCompactDate(post.data.date)}
-                          </time>
-                          <span>{readingMinutes(post.body ?? '')}분 읽기</span>
-                        </p>
-                        <h3 class="card-title">
-                          <a href={`/posts/${post.id}/`}>
-                            {index === 0 ? (
-                              <>
-                                {/* 부제가 줄을 바꿔 이어지므로 구분자는 읽기 순서에만 남긴다. 배열로 붙여 제목과 구분자 사이에 공백이 끼지 않게 한다 */}
-                                {[
-                                  heading.main,
-                                  <span class="visually-hidden">{heading.separator}</span>,
-                                ]}
-                                {heading.subtitle && (
-                                  <span class="subtitle">{heading.subtitle}</span>
-                                )}
-                              </>
-                            ) : (
-                              post.data.title
-                            )}
-                          </a>
-                        </h3>
-                      </div>
-                      {cover && (
-                        <div class="card-cover">
-                          <PostCover
-                            kind={cover.kind}
-                            src={cover.src}
-                            thumbnail
-                            lead={index === 0}
-                            sizes={
-                              index === 0
-                                ? '(max-width: 640px) 5.5rem, (max-width: 900px) 50vw, 360px'
-                                : undefined
-                            }
-                          />
-                        </div>
-                      )}
-                      <p class="reading-note">{post.readingNote}</p>
-                    </li>
-                  )
-                })}
-              </ul>
-            </section>
+          recommended.length === 0 && (
+            <a class="more" href="/posts/">
+              전체 글 {posts.length}편
+              <Fragment set:html={arrow} />
+            </a>
           )
         }
-        <section class="other-posts" aria-labelledby="other-posts-title">
-          <div class="section-head"><h2 id="other-posts-title">다른 글</h2></div>
-          {
-            rest.length > 0 ? (
-              <ul class="rows">
-                {rest.slice(0, 8).map((post) => (
-                  <PostRow
-                    href={`/posts/${post.id}/`}
-                    title={post.data.title}
-                    date={post.data.date}
-                    category={post.data.category}
-                    cover={resolvePostCover(post.data)}
-                    readingMinutes={readingMinutes(post.body ?? '')}
-                    compact
-                    editorial
-                    reading
-                  />
-                ))}
-              </ul>
-            ) : (
-              <p class="empty">새로운 문제 해결 기록을 준비하고 있습니다.</p>
-            )
-          }
-        </section>
       </div>
-      <aside class="reading-rail">
-        <nav class="topics" aria-labelledby="topic-title">
-          <h2 id="topic-title">주제별 글</h2>
-          <ul>
-            {
-              CATEGORIES.filter((category) => (counts.get(category.id) ?? 0) > 0).map(
-                (category) => (
-                  <li>
-                    <a href={`/categories/${category.id}/`}>
-                      <>
-                        <span>{category.name}</span>
-                        {(counts.get(category.id) ?? 0) >= 3 && (
-                          <span class="count">{counts.get(category.id)}</span>
-                        )}
-                      </>
-                    </a>
-                  </li>
-                ),
-              )
-            }
-          </ul>
-        </nav>
-        <section class="notebook" aria-labelledby="notebook-title">
-          <p class="notebook-kicker">항상 갱신 중</p><h2 id="notebook-title">
-            배운 것을 쌓아 두는 곳.
-          </h2>
-          <p class="notebook-description">
-            일하다 막힌 것, 공부하다 남긴 질문. 완성되지 않은 기록도 남깁니다.
-          </p>
-          <ul class="wiki-list">
-            {
-              recentWiki.map((doc) => (
-                <li>
-                  <>
-                    <span class="wiki-topic">{getWikiTopic(doc.data.topic)?.name}</span>
-                    <h3>
-                      <a href={`/wiki/${doc.id}/`}>{doc.data.title}</a>
-                    </h3>
-                    <p class="wiki-date">
-                      <time datetime={(doc.data.updated ?? doc.data.created).toISOString()}>
-                        {formatCompactDate(doc.data.updated ?? doc.data.created)}
-                      </time>{' '}
-                      {doc.data.updated ? '갱신' : '작성'}
-                    </p>
-                  </>
-                </li>
-              ))
-            }
-          </ul>
-          <a class="notebook-link" href="/wiki/"
-            >학습 위키 둘러보기 <span aria-hidden="true">→</span></a
-          >
-        </section>
-        <nav class="archive-links" aria-label="학습 기록">
-          <a href="/algorithms/"
-            ><span>알고리즘</span><small>백준 · 프로그래머스 풀이</small><span aria-hidden="true"
-              >→</span
-            ></a
-          >
-          <a href="/notes/"
-            ><span>학습 노트</span><small>2022–2023년 기록</small><span aria-hidden="true">→</span
-            ></a
-          >
-        </nav>
-      </aside>
-    </div>
+      {
+        rest.length > 0 ? (
+          <ol class="rows">
+            {rest.map((post) => (
+              <PostRow
+                href={`/posts/${post.id}/`}
+                title={post.data.title}
+                date={post.data.date}
+                category={post.data.category}
+                description={post.data.description}
+              />
+            ))}
+          </ol>
+        ) : (
+          <p class="empty">새로운 문제 해결 기록을 준비하고 있습니다.</p>
+        )
+      }
+    </section>
+
+    <section class="blk" aria-labelledby="more-title">
+      <div class="sec-h"><h2 class="k" id="more-title">더 보기</h2></div>
+      <ul class="linkrows">
+        <li>
+          <a href="/wiki/">
+            <span class="row-t">학습 위키</span>
+            <span class="row-d">{wiki.length}편 · 주제와 상태로 거르기</span>
+            <Fragment set:html={arrow} />
+          </a>
+        </li>
+        <li>
+          <a href="/learn/">
+            <span class="row-t">학습 기록</span>
+            <span class="row-d"
+              >학습 노트 {notes.length}편 · 알고리즘 풀이 {solutions.length}건</span
+            >
+            <Fragment set:html={arrow} />
+          </a>
+        </li>
+      </ul>
+    </section>
   </div>
 </BaseLayout>
+
 <style>
-  .home {
-    padding-bottom: 3rem;
-  }
-  /* 첫 화면의 정체성 띠. 마크와 같은 네이비 위에 이름·문구를 두고, 다크에서는 마크처럼 반전된다. */
-  .byline {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-    padding: 2.25rem 2.25rem;
-    background: var(--hero-bg);
-    color: var(--hero-ink);
-    border-radius: 12px;
-  }
-  .identity {
-    min-width: 0;
-  }
-  /* 이름은 작은 머리글, 문장이 큰 제목, 설명이 그 아래. 검색 제목(h1)은 이름으로 유지한다. */
-  .byline h1 {
-    margin: 0;
-    color: inherit;
-    opacity: 0.8;
-    font-size: 0.9375rem;
-    line-height: 1.5;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-  }
-  .identity-context {
-    margin: 0.5rem 0 0;
-    color: inherit;
-    font-size: 1.875rem;
-    line-height: 1.3;
-    font-weight: 700;
-    letter-spacing: -0.025em;
-  }
-  .identity-lead {
-    margin: 0.9rem 0 0;
-    max-width: 36rem;
-    color: inherit;
-    opacity: 0.85;
-    font-size: var(--type-body);
-    line-height: 1.75;
-  }
-  .byline > a,
-  .section-head a,
-  .notebook-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-height: var(--control-size);
-    color: var(--accent);
-    font-size: var(--type-label);
-    white-space: nowrap;
-  }
-  .byline > a {
-    color: inherit;
-    padding-inline: 1rem;
-    border: 1px solid color-mix(in srgb, currentColor 45%, transparent);
-    border-radius: 999px;
-  }
-  .byline > a:hover {
-    background: color-mix(in srgb, currentColor 12%, transparent);
-  }
-  .byline > a:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 3px;
-  }
-  .reading-desk {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 16rem;
-    gap: 4rem;
-    padding-top: 2rem;
-  }
-  .reading-main,
-  .reading-rail {
-    min-width: 0;
-  }
-  .section-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    min-height: var(--control-size);
-    margin-bottom: 0.25rem;
-  }
-  .section-head h2,
-  .topics h2 {
-    margin: 0;
-    font-size: var(--type-section);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-  .reading-list,
-  .rows,
-  .topics ul,
-  .wiki-list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .editorial-card {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 9rem;
-    grid-template-areas: 'copy cover' 'note note';
-    gap: 0.65rem 1.5rem;
-    align-items: center;
-    padding: 1.5rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .card-copy {
-    grid-area: copy;
-    min-width: 0;
-  }
-  .lead-card:not(.without-cover) {
-    grid-template-columns: minmax(0, 1fr) 50%;
-    align-items: start;
-  }
-  .lead-card .subtitle {
-    display: block;
-    margin-top: 0.5rem;
-    color: var(--accent);
-    font-size: 0.8em;
-    line-height: 1.6;
-    font-weight: 550;
-  }
-  .editorial-card.without-cover {
-    grid-template-columns: 1fr;
-    grid-template-areas: 'copy' 'note';
-  }
-  .card-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1rem;
-    margin: 0 0 0.45rem;
-    color: var(--text-muted);
-    font-size: var(--type-caption);
-  }
-  .category {
-    color: var(--accent);
-    font-weight: 600;
-  }
-  .card-title {
-    margin: 0;
-    color: var(--text);
-    font-size: 1.375rem;
-    font-weight: 700;
-    line-height: 1.5;
-    letter-spacing: -0.025em;
-    word-break: keep-all;
-    overflow-wrap: anywhere;
-  }
-  .lead-card .card-title {
-    font-size: 2rem;
-    line-height: 1.3;
-  }
-  .editorial-card a::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-  }
-  .editorial-card a:focus-visible {
-    outline: none;
-  }
-  .editorial-card a:focus-visible::after {
-    outline: 2px solid var(--accent);
-    outline-offset: 4px;
-  }
-  .editorial-card:hover .card-title {
-    color: var(--accent);
-  }
-  .card-cover {
-    grid-area: cover;
-    min-width: 0;
-    pointer-events: none;
-  }
-  .reading-note {
-    grid-area: note;
-    margin: 0;
-    font-size: var(--type-body);
-    line-height: 1.75;
-    color: var(--text-secondary);
-  }
-  .other-posts {
-    margin-top: 2.5rem;
-  }
-  .rows {
-    border-bottom: 1px solid var(--border);
-  }
-  .reading-rail {
-    border-left: 1px solid var(--border);
-    padding-left: 1.5rem;
-  }
-  .topics h2 {
-    font-size: 1rem;
-    min-height: var(--control-size);
-    align-content: center;
-  }
-  .topics li a {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    min-height: var(--control-size);
-    gap: 1rem;
-    color: var(--text-secondary);
-    font-size: var(--type-label);
-  }
-  .topics li a:hover {
-    color: var(--accent);
-    text-decoration: underline;
-  }
-  .count {
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-  }
-  .notebook {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
-  }
-  .notebook-kicker {
-    margin: 0 0 0.5rem;
-    font-size: var(--type-caption);
-    color: var(--text-muted);
-  }
-  .notebook h2 {
-    margin: 0;
-    font-size: var(--type-section);
-    line-height: 1.5;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-  .notebook-description {
-    margin: 0.75rem 0 1rem;
-    font-size: var(--type-body);
-    line-height: 1.75;
-    color: var(--text-secondary);
-  }
-  .wiki-list li {
-    position: relative;
-    padding: 1rem 0;
-    border-top: 1px solid var(--border);
-  }
-  .wiki-topic,
-  .wiki-date {
-    color: var(--text-muted);
-    font-size: var(--type-caption);
-  }
-  .wiki-list h3 {
-    margin: 0.375rem 0;
-    font-size: var(--type-body);
-    line-height: 1.65;
-    font-weight: 600;
-    word-break: keep-all;
-  }
-  .wiki-list h3 a:hover {
-    color: var(--accent);
-  }
-  .wiki-list a::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-  }
-  .wiki-list a:focus-visible {
-    outline: none;
-  }
-  .wiki-list a:focus-visible::after {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-  }
-  .wiki-date {
-    margin: 0.4rem 0 0;
-  }
-  .archive-links {
-    display: grid;
-    gap: 0.75rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
-  }
-  .archive-links a {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    column-gap: 0.5rem;
-    min-height: var(--control-size);
-    font-size: var(--type-body);
-  }
-  .archive-links small {
-    grid-column: 1;
-    font-size: var(--type-caption);
-    color: var(--text-muted);
-  }
-  .archive-links [aria-hidden] {
-    grid-column: 2;
-    grid-row: 1 / 3;
-    align-self: center;
-    color: var(--accent);
-  }
-  @media (max-width: 900px) {
-    .reading-desk {
-      grid-template-columns: 1fr;
-      gap: 2.5rem;
-    }
-    .reading-rail {
-      border-left: 0;
-      padding-left: 0;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-    }
-    .notebook {
-      border-top: 0;
-      margin-top: 0;
-      padding-top: 0;
-    }
-    .archive-links {
-      grid-column: 1 / -1;
-      grid-template-columns: 1fr 1fr;
-      margin-top: 0;
-    }
-  }
-  @media (max-width: 640px) {
-    .byline {
-      display: block;
-      margin-top: 1rem;
-      padding: 1.5rem 1.25rem;
-      border-radius: 10px;
-    }
-    .byline h1 {
-      font-size: 0.875rem;
-    }
-    .identity-context {
-      font-size: 1.5rem;
-    }
-    .identity-lead {
-      font-size: 0.9375rem;
-    }
-    .byline > a {
-      margin-top: 1rem;
-    }
-    .reading-desk {
-      padding-top: 1.25rem;
-    }
-    .editorial-card {
-      grid-template-columns: minmax(0, 1fr) 5.5rem;
-      gap: 0.65rem 1rem;
-      padding-block: 1.25rem;
-    }
-    /* 긴 제목은 전체 폭으로 읽고, 표지는 요약 옆에서 내용을 보조한다. */
-    .lead-card:not(.without-cover) {
-      grid-template-columns: minmax(0, 1fr) 5.5rem;
-      grid-template-areas: 'copy copy' 'note cover';
-    }
-    .card-title {
-      font-size: 1.25rem;
-    }
-    .lead-card .card-title {
-      font-size: 1.5rem;
-    }
-    .card-meta {
-      gap: 0.25rem 0.75rem;
-    }
-    .reading-rail {
-      grid-template-columns: 1fr;
-    }
-    .notebook {
-      border-top: 1px solid var(--border);
-      padding-top: 1.5rem;
-    }
-    .archive-links {
-      grid-column: auto;
-      grid-template-columns: 1fr;
-    }
+  .empty {
+    margin: 1rem 0 0;
+    color: var(--fg2);
   }
 </style>

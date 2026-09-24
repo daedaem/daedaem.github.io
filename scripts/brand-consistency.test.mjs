@@ -16,21 +16,19 @@ const content = {
   subtitle: motto,
 }
 
-test('home identity and social preview share one short title and one motto', () => {
+test('home identity is the author name under a role label while the social preview keeps the short title and motto', () => {
   const home = source('src/pages/index.astro')
   const og = source('src/pages/og/[...slug].png.ts')
   assert.match(source('src/consts.ts'), new RegExp(`identityTitle: '${identityTitle}'`))
   assert.match(source('src/consts.ts'), new RegExp(`motto: '${motto}'`))
-  assert.match(home, /<h1>\{SITE\.identityTitle\}<\/h1>/)
-  assert.match(home, /<p class="identity-context">\{SITE\.motto\}<\/p>/)
-  assert.equal([...home.matchAll(/<h1(?:\s|>)/g)].length, 1)
-  assert.match(home, /<h2 id="recommended-title">먼저 읽을 글<\/h2>/)
-  assert.match(home, /<h3 class="card-title">/)
-  assert.match(home, /\.byline h1\s*\{[^}]*font-size:\s*0\.9375rem;[^}]*font-weight:\s*600;/)
+  // 홈 첫 화면: 라벨 "백엔드 개발자" → h1 이름 → 소개 한 문장 → 소개 보기. 히어로 판·카드·표지는 없다
   assert.match(
-    home.split('@media (max-width: 640px)')[1],
-    /\.byline h1\s*\{[^}]*font-size:\s*0\.875rem;/,
+    home,
+    /<section class="ident"[^>]*>\s*<p class="k">백엔드 개발자<\/p>\s*<h1[^>]*>\{SITE\.author\}<\/h1>\s*<p class="lede">\{SITE\.intro\}<\/p>/,
   )
+  assert.equal([...home.matchAll(/<h1(?:\s|>)/g)].length, 1)
+  assert.match(home, /<h2 class="k" id="recommended-title">\s*먼저 읽을 글\s*<\/h2>/)
+  assert.doesNotMatch(home, /byline|hero|card-title|PostCover|identity-context/)
   assert.match(og, /title: SITE\.identityTitle/)
   assert.match(og, /identityTitle: SITE\.identityTitle/)
   assert.match(og, /subtitle: SITE\.motto/)

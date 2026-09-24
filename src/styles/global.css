@@ -72,10 +72,6 @@
   --bg-card: #f5f6f8;
   --code-bg: #f7f8fa;
   --accent-hover: #1f3148;
-  /* 홈 첫 화면 판. 홈이 새 구성으로 바뀌면 지운다 */
-  --hero-bg: #223e60;
-  --hero-ink: #fcfaf5;
-  --cover-navy: #324e6e;
 
   /* 카테고리 색. 글자에는 쓰지 않고 점(dot)에만 쓴다. 라벨 글자는 --muted다. */
   --cat-data-integrity: #d9480f;
@@ -90,10 +86,6 @@
   --font-mono:
     'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
-  /* 본문 폭. 새 화면은 .page(45rem)를 쓴다. 아래 셋은 아직 옮기지 않은 화면의 폭이다. */
-  --measure: 44rem;
-  --measure-list: 52rem;
-  --measure-wide: 68.75rem;
   /* 반경은 하나. 999px 알약과 12px 시트는 목차 시트·FAB에만 쓴다 */
   --radius: 4px;
 
@@ -131,15 +123,11 @@
   }
 }
 
-/* 목록의 입력·조작 요소. 읽기 전용 상태 배지는 이 규칙에 포함하지 않는다. */
-.list-input,
-.control-button,
-.filter-chip {
+/* 검색 대화상자의 범위 선택 같은 입력 요소. 목록의 입력·칩·단추는 아래 .f-q/.chip/.btn을 쓴다 */
+.list-input {
   font: inherit;
   min-height: var(--control-size);
   border-radius: var(--control-radius);
-}
-.list-input {
   min-width: 0;
   padding: 0.6rem 0.75rem;
   border: 1px solid var(--line2);
@@ -150,47 +138,6 @@
 .list-input::placeholder {
   color: var(--muted);
 }
-.control-button,
-.filter-chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
-  min-width: var(--control-size);
-  padding: 0.5rem 0.75rem;
-  font-size: var(--type-label);
-  line-height: 1.5;
-  cursor: pointer;
-  text-decoration: none;
-}
-.control-button {
-  border: 1px solid var(--line2);
-  background: var(--bg);
-  color: var(--fg);
-}
-.filter-chip {
-  border: 1px solid var(--line2);
-  background: var(--bg);
-  color: var(--fg2);
-  font-weight: 600;
-}
-:is(.control-button, .filter-chip):hover:not(:disabled) {
-  background: var(--soft);
-  color: var(--fg);
-}
-.control-button:disabled {
-  color: var(--muted);
-  opacity: 0.6;
-  cursor: default;
-}
-.filter-chip[aria-pressed='true'],
-.filter-chip[aria-current]:not([aria-current='false']),
-.control-button[aria-current='page'] {
-  background: var(--fg);
-  border-color: var(--fg);
-  color: var(--bg);
-  font-weight: 600;
-}
 /*
  * 초점 표시를 한 모양으로 맞춘다. 따로 정하지 않은 링크·버튼·요약도 브라우저 기본(1px) 대신
  * 2px 강조색 테두리를 쓴다. :where라 구체적으로 정한 규칙이 있으면 그쪽이 이긴다.
@@ -199,7 +146,7 @@
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
-:is(.list-input, .control-button, .filter-chip):focus-visible {
+.list-input:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
@@ -243,9 +190,6 @@ h4[tabindex='-1']:focus-visible {
     --bg-card: #1a1f28;
     --code-bg: #1a1f28;
     --accent-hover: #c6d7ee;
-    --hero-bg: #1f3148;
-    --hero-ink: #e4e9f0;
-    --cover-navy: #2b415e;
 
     --cat-data-integrity: #ff8a65;
     --cat-performance: #69db7c;
@@ -282,9 +226,6 @@ h4[tabindex='-1']:focus-visible {
   --bg-card: #1a1f28;
   --code-bg: #1a1f28;
   --accent-hover: #c6d7ee;
-  --hero-bg: #1f3148;
-  --hero-ink: #e4e9f0;
-  --cover-navy: #2b415e;
 
   --cat-data-integrity: #ff8a65;
   --cat-performance: #69db7c;
@@ -689,30 +630,6 @@ th {
   }
 }
 
-.wrap {
-  max-width: var(--measure);
-  margin-inline: auto;
-  padding-inline: 24px;
-}
-
-.wrap-list {
-  max-width: var(--measure-list);
-  margin-inline: auto;
-  padding-inline: 24px;
-}
-
-.wrap-wide {
-  max-width: var(--measure-wide);
-  margin-inline: auto;
-  padding-inline: 40px;
-}
-
-@media (max-width: 640px) {
-  .wrap-wide {
-    padding-inline: 20px;
-  }
-}
-
 .muted {
   color: var(--muted);
 }
@@ -1023,14 +940,19 @@ code {
   flex-shrink: 0;
   color: var(--muted);
 }
+/* 좁은 화면: 첫 줄에 제목과 화살표, 둘째 줄에 설명. 제목이 화살표에 밀려 세로로 쪼개지지 않게 기준 폭을 준다 */
 @media (max-width: 40em) {
   .linkrows a,
   .linkrows button {
     flex-wrap: wrap;
     gap: 0.25rem 1rem;
   }
+  .linkrows .row-t {
+    flex: 1 1 calc(100% - 2.5rem);
+  }
   .linkrows .row-d {
-    flex-basis: calc(100% - 2.5rem);
+    flex-basis: 100%;
+    order: 2;
   }
 }
 
@@ -1171,6 +1093,78 @@ code {
 }
 .btn:hover {
   background: var(--soft);
+}
+.btn:disabled {
+  color: var(--muted);
+  opacity: 0.6;
+  cursor: default;
+  background: var(--bg);
+}
+.btn[aria-current='page'] {
+  background: var(--fg);
+  border-color: var(--fg);
+  color: var(--bg);
+}
+
+/* ==== 목록 ==== */
+/*
+ * 주제 점. 위키 주제처럼 색상각(hue)만 정해진 점은 <i class="dot hue" style="--wt: 24">로 쓴다.
+ * 위키 문서 머리의 점과 같은 채도·명도다. 카테고리 점은 [data-cat]::before가 맡는다.
+ */
+.dot.hue {
+  --dot: hsl(var(--wt) 65% 48%);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .dot.hue {
+    --dot: hsl(var(--wt) 70% 65%);
+  }
+}
+:root[data-theme='dark'] .dot.hue {
+  --dot: hsl(var(--wt) 70% 65%);
+}
+/* 라벨 줄에 놓인 분류·주제 이름은 한 덩어리로 줄을 바꾼다 */
+.k [data-cat],
+.k .topic {
+  white-space: nowrap;
+}
+/* 절 머리 라벨 안의 건수 */
+.sec-h .k .n {
+  margin-left: 0.4em;
+  color: var(--muted);
+}
+/* 학습 기록 아래 목록 사이를 오가는 한 줄 텍스트 링크(머리 아래) */
+.subnav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.2rem;
+  margin: 0.5rem 0 0;
+}
+.subnav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-size);
+  text-decoration: none;
+  color: var(--muted);
+}
+.subnav a:hover {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.subnav a[aria-current] {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.3em;
+}
+/* 절 머리 아래 안내 한 문장(학습 기록·노트 시리즈) */
+.blurb {
+  margin: 1rem 0 0;
+}
+.blurb a {
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
 }
 
 /* 글 머리: 메타 줄 → 제목 → 원인 한 줄 → 고지 → 차례 → 본문 */

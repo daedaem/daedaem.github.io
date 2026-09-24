@@ -2,10 +2,8 @@
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
-import ReadingCatalog from '@/components/ReadingCatalog.astro'
+import CategoryNav from '@/components/CategoryNav.astro'
 import PageHead from '@/components/PageHead.astro'
-import { readingMinutes } from '@/utils/format'
-import { resolvePostCover } from '@/utils/editorial.mjs'
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
@@ -19,9 +17,9 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
   description="레거시 시스템 개발·운영 과정에서 데이터 정합성, 조회 성능, 시스템 연동을 개선한 기록. 원인과 선택의 근거를 씁니다."
   searchIndex={false}
 >
-  <ReadingCatalog counts={counts} total={posts.length}>
-    <PageHead title="글" slot="header">
-      <p>실제로 맡아 고친 문제를 남깁니다.</p>
+  <div class="page">
+    <PageHead title="글" label={`${posts.length}편`}>
+      <p class="lede">실제로 맡아 고친 문제를 남깁니다.</p>
       <details class="criteria">
         <summary>기록·날짜 안내</summary>
         <p>
@@ -30,13 +28,14 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
           정리한 날입니다.
         </p>
       </details>
+      <CategoryNav counts={counts} total={posts.length} />
     </PageHead>
 
     {
       posts.length === 0 ? (
-        <p class="empty muted">아직 발행한 글이 없습니다.</p>
+        <p class="empty">아직 발행한 글이 없습니다.</p>
       ) : (
-        <ul class="rows">
+        <ol class="rows">
           {posts.map((p) => (
             <PostRow
               href={`/posts/${p.id}/`}
@@ -44,37 +43,37 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
               description={p.data.description}
               date={p.data.date}
               category={p.data.category}
-              cover={resolvePostCover(p.data)}
-              readingMinutes={readingMinutes(p.body ?? '')}
-              editorial
-              reading
             />
           ))}
-        </ul>
+        </ol>
       )
     }
-  </ReadingCatalog>
+  </div>
 </BaseLayout>
 
 <style>
-  .rows {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-bottom: 1px solid var(--border);
-  }
   .empty {
-    padding: 40px 0 72px;
+    margin: 1rem 0 0;
+    color: var(--fg2);
   }
+  /* 기록·날짜 안내는 접어 둔다. 요약 한 줄은 머리에 남고 자세한 설명은 열어서 읽는다 */
   .criteria {
-    margin-top: 0.5rem;
-    max-width: 44rem;
-    color: var(--text-secondary);
+    margin-top: 0.25rem;
+    max-width: 36rem;
+    color: var(--fg2);
   }
   .criteria summary {
+    display: inline-flex;
+    align-items: center;
     min-height: var(--control-size);
-    align-content: center;
     cursor: pointer;
-    font-size: var(--type-label);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--fg2);
+  }
+  .criteria p {
+    margin: 0 0 0.5rem;
+    font-size: 0.9375rem;
+    line-height: 1.7;
   }
 </style>

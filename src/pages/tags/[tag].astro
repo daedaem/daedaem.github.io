@@ -1,16 +1,20 @@
 ---
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
+import PostRow from '@/components/PostRow.astro'
+import PageHead from '@/components/PageHead.astro'
+import { getWikiTopic } from '@/consts'
 import { tagSlug } from '@/utils/format'
-import ContentDates from '@/components/ContentDates.astro'
 
 type Item = {
   kind: 'post' | 'wiki'
   title: string
+  description: string
   href: string
   date: Date
-  updated?: Date
   sortDate: Date
+  category?: string
+  topic?: string
 }
 
 export const getStaticPaths = async () => {
@@ -20,20 +24,22 @@ export const getStaticPaths = async () => {
     ...posts.map((p) => ({
       kind: 'post' as const,
       title: p.data.title,
+      description: p.data.description,
       href: `/posts/${p.id}/`,
       date: p.data.date,
-      updated: p.data.updated,
       sortDate: p.data.date,
+      category: p.data.category,
       tags: p.data.tags ?? [],
     })),
     ...wiki.map((w) => ({
       kind: 'wiki' as const,
       title: w.data.title,
+      description: w.data.description,
       href: `/wiki/${w.id}/`,
       date: w.data.created,
-      updated: w.data.updated,
       // 화면에는 작성일만 보이므로 순서도 작성일을 따른다(수정일로 정렬하면 날짜가 뒤섞여 보인다)
       sortDate: w.data.created,
+      topic: w.data.topic,
       tags: w.data.tags ?? [],
     })),
   ]
@@ -70,63 +76,36 @@ const { tag, list } = Astro.props
   description={`#${tag} 태그가 달린 글과 위키 문서 ${list.length}건.`}
   searchIndex={false}
 >
-  <div class="wrap page">
-    <header class="head">
-      <h1>#{tag}</h1>
-      <p class="muted">{list.length}건</p>
-    </header>
-    <ul class="list">
+  <div class="page">
+    <PageHead title={`#${tag}`} label={`${list.length}건`}>
+      <p class="lede">이 태그가 달린 글과 위키 문서입니다.</p>
+    </PageHead>
+    <ol class="rows">
       {
-        list.map((it) => (
-          <li>
-            <a class="stretched-link" href={it.href}>
-              {it.kind === 'wiki' && <span class="kind">[위키]</span>}
-              {it.title}
-            </a>
-            <ContentDates date={it.date} stacked />
-          </li>
-        ))
+        list.map((it) => {
+          const topic = it.topic ? getWikiTopic(it.topic) : undefined
+          return it.kind === 'wiki' ? (
+            <PostRow
+              href={it.href}
+              title={it.title}
+              description={it.description}
+              date={it.date}
+              prefix="위키"
+              label={topic?.name}
+              hue={topic?.hue}
+            />
+          ) : (
+            <PostRow
+              href={it.href}
+              title={it.title}
+              description={it.description}
+              date={it.date}
+              prefix="글"
+              category={it.category}
+            />
+          )
+        })
       }
-    </ul>
+    </ol>
   </div>
 </BaseLayout>
-
-<style>
-  .page {
-    padding-block: 3.5rem 5rem;
-  }
-  h1 {
-    margin: 0;
-    font-size: 1.75rem;
-    letter-spacing: -0.03em;
-  }
-  .head p {
-    margin: 0.5rem 0 0;
-  }
-  .list {
-    list-style: none;
-    margin: 2rem 0 0;
-    padding: 0;
-  }
-  .list li {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: baseline;
-    justify-content: space-between;
-    padding: 0.7rem 0;
-    border-top: 1px solid var(--border);
-    font-size: 0.9375rem;
-    position: relative;
-  }
-  .list a:hover {
-    text-decoration: underline;
-    text-decoration-color: var(--accent);
-    text-underline-offset: 0.2em;
-  }
-  .kind {
-    color: var(--text-dim);
-    font-size: 0.8125rem;
-    margin-right: 0.35rem;
-  }
-</style>

@@ -85,12 +85,17 @@ test('the inner code scrolls so the label and copy button stay put, and the fade
   assert.match(layout, /markScrollableCode\(pre\)/)
 })
 
-test('list rows show only the authoring date and topic counts stay hidden below three posts', () => {
+test('list rows show only the authoring date, and the home links onward with collection counts', () => {
   const home = readFileSync(new URL('../src/pages/index.astro', import.meta.url), 'utf8')
   assert.doesNotMatch(home, /사례 시점/)
-  assert.match(home, /\(counts\.get\(category\.id\) \?\? 0\) >= 3 &&/)
+  // 주제별 글 레일 대신 '더 보기' 행: 위키 건수와 노트·풀이 건수는 컬렉션에서 센다
+  assert.match(home, /\{wiki\.length\}편/)
+  assert.match(home, /\{notes\.length\}편 · 알고리즘 풀이 \{solutions\.length\}건/)
   const row = readFileSync(new URL('../src/components/PostRow.astro', import.meta.url), 'utf8')
-  assert.match(row, /<ContentDates date=\{date\} compact \/>/)
+  assert.match(
+    row,
+    /<time datetime=\{date\.toISOString\(\)\}>\{formatCompactDate\(date\)\}<\/time>/,
+  )
   assert.doesNotMatch(row, /updated/)
   for (const path of ['src/pages/notes/index.astro', 'src/pages/tags/[tag].astro']) {
     assert.doesNotMatch(

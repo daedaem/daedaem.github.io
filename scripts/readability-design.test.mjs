@@ -59,22 +59,22 @@ test('body and summary tokens exceed 7:1 on each reading surface in both themes'
   }
 })
 
-test('home and list summaries keep body-size text instead of mobile-only shrinking', () => {
+test('home and list summaries share one row grammar at one size on every width', () => {
   assert.match(css, /--type-body:\s*1rem;/)
+  // 행 요약(.row-d)과 원인 한 줄(.row-c)은 전역 한 규칙이다. 모바일에서 따로 줄이지 않는다
   assert.match(
-    home,
-    /\.reading-note\s*\{[^}]*font-size:\s*var\(--type-body\);[^}]*line-height:\s*1\.75;[^}]*color:\s*var\(--text-secondary\);/,
+    css,
+    /\.row-d\s*\{[^}]*font-size:\s*0\.9375rem;[^}]*line-height:\s*1\.6;[^}]*color:\s*var\(--fg2\);/,
   )
-  for (const match of home.matchAll(/\.lead-card \.reading-note\s*\{([^}]+)\}/g)) {
-    assert.doesNotMatch(match[1], /font-size:|line-height:|color:/)
-  }
-  for (const selector of ['\\.notebook-description', '\\.wiki-list h3']) {
-    assert.match(home, new RegExp(`${selector}\\s*\\{[^}]*font-size:\\s*var\\(--type-body\\);`))
-  }
-  assert.match(
-    source('src/components/PostRow.astro'),
-    /\.desc\s*\{[^}]*font-size:\s*var\(--type-body\);[^}]*line-height:\s*1\.75;[^}]*color:\s*var\(--text-secondary\);/,
-  )
+  assert.match(css, /\.row-c\s*\{[^}]*border-left:\s*2px solid var\(--accent\);/)
+  assert.doesNotMatch(css, /@media[^{]*\{[^}]*\.row-d\s*\{/)
+  const row = source('src/components/PostRow.astro')
+  assert.match(row, /<span class="row-d">\{description\}<\/span>/)
+  assert.match(row, /<span class="row-c">\s*<span class="row-ck">원인<\/span>\s*\{cause\}/)
+  assert.doesNotMatch(row, /<style>/)
+  // 홈은 같은 PostRow를 쓰고 자기만의 요약 글자 크기를 두지 않는다
+  assert.match(home, /<PostRow[\s\S]*?cause=\{post\.data\.cause \?\? post\.causeSummary\}/)
+  assert.doesNotMatch(home, /font-size:/)
 })
 
 test('article cause stays body-size and medium-weight on mobile without rewriting its text', () => {
@@ -91,16 +91,13 @@ test('article cause stays body-size and medium-weight on mobile without rewritin
   assert.match(layout, /<div class="prose">/)
 })
 
-test('reading comparison uses existing responsive thumbnails and retains full 3:2 assets', () => {
-  const [desktop, mobile] = home.split('@media (max-width: 640px)')
-  assert.doesNotMatch(desktop, /width:\s*min\(100%, 18rem\)/)
-  assert.match(
-    mobile,
-    /\.editorial-card\s*\{[^}]*grid-template-columns:\s*minmax\(0, 1fr\) 5\.5rem;/,
-  )
-  assert.match(home, /<PostCover[\s\S]*?thumbnail[\s\S]*?lead=\{index === 0\}/)
-  assert.doesNotMatch(mobile, /order:\s*-1;/)
-  assert.match(css, /@media \(max-width: 640px\)\s*\{\s*\.wrap-wide\s*\{\s*padding-inline:\s*20px;/)
+test('lists carry no cover thumbnails while the OG cover component retains full 3:2 assets', () => {
+  // 홈·목록 행에 표지가 없다. 표지 부품은 OG용으로만 남는다
+  assert.doesNotMatch(home, /<PostCover|<img|resolvePostCover/)
+  assert.doesNotMatch(source('src/components/PostRow.astro'), /<PostCover|<img|cover/)
+  // 옛 목록 폭(.wrap*)과 홈 판 토큰은 사라졌다. 새 화면은 .page 한 열이다
+  assert.doesNotMatch(css, /\.wrap(?:-list|-wide)?\s*\{|--hero-bg|--hero-ink|--cover-navy/)
+  assert.match(home, /<div class="page">/)
   for (const src of Object.keys(assets)) {
     const card = getCoverImageAttributes(src)
     assert.equal(card.width / card.height, 3 / 2)

@@ -47,9 +47,15 @@ test('글이 없는 분류와 문서가 없는 정리 상태는 만들지 않는
     source('src/pages/categories/[category].astro'),
     /CATEGORIES\.filter\(\(category\) => \(counts\.get\(category\.id\) \?\? 0\) > 0\)/,
   )
+  // 위키 상태 칩은 정리됨/보완 중 두 가지이고, 뼈대만 있는 문서(seed)는 보완 중으로 센다
+  const wiki = source('src/pages/wiki/index.astro')
   assert.match(
-    source('src/pages/wiki/index.astro'),
-    /entries\.some\(\(entry\) => entry\.data\.status === value\)/,
+    wiki,
+    /entries\.some\(\(entry\) => normalizeStatus\(entry\.data\.status\) === value\)/,
+  )
+  assert.match(
+    wiki,
+    /const normalizeStatus = \(status: string\) => \(status === 'stable' \? 'stable' : 'growing'\)/,
   )
 })
 
@@ -109,22 +115,32 @@ test('노트 상세도 사례 글·위키와 같은 목차를 받는다', () => 
   assert.match(note, /headings=\{headings\}/)
 })
 
-test('넓은 화면 글 목록은 표지가 요약 옆까지 걸쳐 제목과 요약 사이가 비지 않는다', () => {
+test('글 목록 행에는 표지가 없어 제목과 요약이 바로 붙는다', () => {
   const row = source('src/components/PostRow.astro')
-  assert.match(
-    row,
-    /@media \(min-width: 768px\)[\s\S]*\.row\.with-cover:not\(\.no-desc\) \.row-content \{[^}]*'desc cover'/,
-  )
+  assert.doesNotMatch(row, /with-cover|row-cover|grid-template-areas|<style>/)
+  assert.match(row, /<span class="row-t">\{title\}<\/span>\s*\{\s*cause \?/)
 })
 
 test('찾는 목록은 행 전체를 누를 수 있다', () => {
-  assert.match(source('src/styles/global.css'), /\.stretched-link::after \{[^}]*inset: 0;/)
+  const css = source('src/styles/global.css')
+  // 새 행 문법: li.row 안의 a.row-a가 위줄·제목·요약을 모두 감싼다
+  assert.match(css, /\.rows > li \{[^}]*position: relative;/)
+  assert.match(css, /\.row-a \{[^}]*display: flex;/)
+  for (const path of [
+    'src/pages/notes/index.astro',
+    'src/pages/learn/index.astro',
+    'src/pages/tags/[tag].astro',
+    'src/pages/wiki/index.astro',
+  ]) {
+    const text = source(path)
+    assert.match(text, /<ol[^>]*class="rows"[^>]*>[\s\S]*?<PostRow/, `${path}의 목록 행`)
+    assert.doesNotMatch(text, /stretched-link/)
+  }
+  // 알고리즘 풀이 목록은 표 같은 행이라 stretched-link를 그대로 쓴다
+  assert.match(css, /\.stretched-link::after \{[^}]*inset: 0;/)
   for (const [path, row] of [
-    ['src/pages/notes/index.astro', /\n  li \{[^}]*position: relative;/],
     ['src/pages/algorithms/index.astro', /\.list li \{[^}]*position: relative;/],
-    ['src/pages/tags/[tag].astro', /\.list li \{[^}]*position: relative;/],
     ['src/pages/algorithms/[...slug].astro', /\.related li \{[^}]*position: relative;/],
-    ['src/pages/wiki/index.astro', /\.documents li \{[^}]*position: relative;/],
   ]) {
     const text = source(path)
     assert.match(text, /class="(name )?stretched-link"/, `${path}의 목록 링크`)

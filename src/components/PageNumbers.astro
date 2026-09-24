@@ -21,7 +21,7 @@ const { numbers, gapBefore } = paginationWindow(total, 1)
         </span>
         <button
           type="button"
-          class="pg control-button num"
+          class="pg btn num"
           data-page={number}
           hidden={!numbers.includes(number)}
           aria-label={`${number}쪽`}
@@ -38,16 +38,21 @@ const { numbers, gapBefore } = paginationWindow(total, 1)
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 2px;
+    gap: 0.25rem;
     grid-column: 1 / -1;
     grid-row: 1;
     font-variant-numeric: tabular-nums;
+  }
+  .num {
+    min-width: var(--control-size);
+    justify-content: center;
+    padding: 0 0.5rem;
   }
   .pg-gap {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 10px;
-    color: var(--text-muted);
+    color: var(--muted);
   }
 </style>

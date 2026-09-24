@@ -89,6 +89,7 @@ test('cover loading preserves a prioritized hero and lazy decorative thumbnails'
   assert.match(cover, /fetchpriority=\{lead \? 'high' : undefined\}/)
   assert.match(cover, /aria-hidden="true"/)
   assert.match(cover, /alt=""/)
-  assert.match(source('src/components/PostRow.astro'), /<PostCover[^>]* thumbnail\s*\/>/)
+  // 표지는 목록 행에도, 글 머리에도 그리지 않는다(부품은 OG용으로만 남는다)
+  assert.doesNotMatch(source('src/components/PostRow.astro'), /<PostCover/)
   assert.doesNotMatch(source('src/layouts/PostLayout.astro'), /<PostCover/)
 })

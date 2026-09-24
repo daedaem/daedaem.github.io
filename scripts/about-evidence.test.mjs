@@ -9,10 +9,11 @@ const highlights = about.match(/<ul class="work-highlights"[^>]*>([\s\S]*?)<\/ul
 const rest = about.match(/<ul class="work">([\s\S]*?)<\/ul>/)?.[1]
 const links = (html) => [...html.matchAll(/href="\/posts\/([^/]+)\/"/g)].map((m) => m[1])
 
-test('home keeps factual identity and replaces duplicate topic keywords with a short context', () => {
+test('home keeps factual identity: role label, author name and the one intro sentence', () => {
   const home = read('src/pages/index.astro')
-  assert.match(home, /<h1>\{SITE\.identityTitle\}<\/h1>/)
-  assert.match(home, /<p class="identity-context">\{SITE\.motto\}<\/p>/)
+  assert.match(home, /<p class="k">백엔드 개발자<\/p>/)
+  assert.match(home, /<h1[^>]*>\{SITE\.author\}<\/h1>/)
+  assert.match(home, /<p class="lede">\{SITE\.intro\}<\/p>/)
   assert.doesNotMatch(home, /백엔드 · 레거시 시스템 · 문제 해결|남긴 기록입니다/)
 })
 

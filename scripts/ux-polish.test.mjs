@@ -76,24 +76,18 @@ test('home summaries are separate from the actual article cause and reading orde
   assert.match(recommended[0].causeSummary, /수신값이 정상 반영되지 않았다/)
 })
 
-test('card and row links contain only titles while CSS preserves the whole click and focus target', () => {
+test('the whole row is one link whose name is the label line, title and summary in reading order', () => {
   const home = source('src/pages/index.astro')
-  assert.match(home, /<h3 class="card-title">\s*<a href=\{`\/posts\/\$\{post\.id\}\/`\}>/)
-  assert.match(home, /\{\s*\[\s*heading\.main,/)
-  // 구분자는 화면에서만 숨기고 링크의 읽기 순서에는 남긴다
-  assert.match(home, /<span class="visually-hidden">\{heading\.separator\}<\/span>/)
-  assert.match(
-    home,
-    /heading\.subtitle &&\s*\(?\s*<span class="subtitle">\{heading\.subtitle\}<\/span>/,
-  )
-  assert.match(home, /\.editorial-card a:focus-visible::after/)
-  assert.match(home, /\.wiki-list a:focus-visible::after/)
-  assert.match(home, /<nav class="archive-links" aria-label="학습 기록">/)
+  // 홈은 행 부품을 그대로 쓴다. 카드·표지·사이드 레일이 없다
+  assert.match(home, /href=\{`\/posts\/\$\{post\.id\}\/`\}/)
+  assert.doesNotMatch(home, /card-title|editorial-card|wiki-list|archive-links|reading-rail/)
+  assert.match(home, /<ul class="linkrows">/)
   const row = source('src/components/PostRow.astro')
-  assert.match(row, /<a class="title" href=\{href\}>\{title\}<\/a>/)
-  assert.doesNotMatch(row, /aria-labelledby/)
-  assert.match(row, /\.title:focus-visible::after/)
-  assert.doesNotMatch(home, /post\.(causeSummary|data\.cause)/)
+  assert.match(row, /<a class="row-a" href=\{href\}>/)
+  assert.doesNotMatch(row, /aria-labelledby|stretched-link/)
+  assert.match(row, /<span class="row-t">\{title\}<\/span>/)
+  // 추천 글 행은 글의 원인 한 줄을 보인다(없으면 홈 요약)
+  assert.match(home, /cause=\{post\.data\.cause \?\? post\.causeSummary\}/)
   assert.match(source('src/components/PostCover.astro'), /aria-hidden="true"/)
 })
 

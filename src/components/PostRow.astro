@@ -1,267 +1,87 @@
 ---
 import { getCategory } from '@/consts'
-import ContentDates from './ContentDates.astro'
-import PostCover from './PostCover.astro'
-import type { PostCoverData } from '@/utils/editorial.mjs'
+import { formatCompactDate } from '@/utils/format'
 
+/**
+ * 목록 행. 위줄(.k) "●분류 · 2026.09.24" → 제목 → 요약(.row-d) 또는 원인 한 줄(.row-c).
+ * 표지 썸네일과 읽기 시간은 두지 않는다. 행 전체가 링크다.
+ * 위줄은 [prefix] · [분류(점) | label(점)] · [extra] · 날짜 순으로 있는 것만 잇는다.
+ */
 interface Props {
   href: string
   title: string
   date: Date
+  /** 글 분류 id. 점은 [data-cat]::before가 그린다 */
   category?: string
-  readingMinutes?: number
-  /** 목록 페이지에서는 한 줄 요약을 같이 보여 준다. 홈처럼 제목만 둘 때는 생략한다. */
+  /** 분류 대신 쓰는 이름(위키 주제 등). hue가 있으면 색점을 앞에 붙인다 */
+  label?: string
+  hue?: number
+  /** 위줄 맨 앞 글자(예: '아카이브', '위키') */
+  prefix?: string
+  /** 이름과 날짜 사이의 글자(예: '정리됨') */
+  extra?: string
+  /** 한 줄 요약. cause가 있으면 대신 원인 한 줄을 보인다 */
   description?: string
-  compact?: boolean
-  editorial?: boolean
-  reading?: boolean
-  cover?: PostCoverData
+  cause?: string
+  /** 목록 스크립트가 행을 찾는 열쇠(li의 data-id) */
+  dataId?: string
 }
 
-const {
-  href,
-  title,
-  date,
-  category,
-  readingMinutes,
-  description,
-  compact = false,
-  editorial = false,
-  reading = false,
-  cover,
-} = Astro.props
+const { href, title, date, category, label, hue, prefix, extra, description, cause, dataId } =
+  Astro.props
 const cat = category ? getCategory(category) : undefined
-const showDesc = !compact && !!description
+const name = cat?.name ?? label
 ---
 
-<li
-  class:list={[
-    'row',
-    { 'no-cat': !cat, editorial, reading, 'with-cover': !!cover, 'no-desc': !showDesc },
-  ]}
->
-  <div class="row-content">
-    {
-      cat && (
-        <span class="cat" data-cat={cat.id}>
-          {cat.name}
-        </span>
-      )
-    }
-    <span class="body">
-      <a class="title" href={href}>{title}</a>
-      {showDesc && <span class="desc">{description}</span>}
+<li class="row" data-id={dataId}>
+  <a class="row-a" href={href}>
+    <span class="row-b">
+      <span class="k">
+        {prefix}
+        {
+          prefix && (name || extra) && (
+            <span class="sep" aria-hidden="true">
+              ·
+            </span>
+          )
+        }
+        {cat && <span data-cat={cat.id}>{cat.name}</span>}
+        {
+          !cat && label && (
+            <span class="topic">
+              {hue !== undefined && <i class="dot hue" style={`--wt: ${hue}`} aria-hidden="true" />}
+              {label}
+            </span>
+          )
+        }
+        {
+          name && extra && (
+            <span class="sep" aria-hidden="true">
+              ·
+            </span>
+          )
+        }
+        {extra}
+        {
+          (prefix || name || extra) && (
+            <span class="sep" aria-hidden="true">
+              ·
+            </span>
+          )
+        }
+        <time datetime={date.toISOString()}>{formatCompactDate(date)}</time>
+      </span>
+      <span class="row-t">{title}</span>
+      {
+        cause ? (
+          <span class="row-c">
+            <span class="row-ck">원인</span>
+            {cause}
+          </span>
+        ) : (
+          description && <span class="row-d">{description}</span>
+        )
+      }
     </span>
-    <span class="meta">
-      <ContentDates date={date} compact />
-      {readingMinutes && <span>{readingMinutes}분 읽기</span>}
-    </span>
-    {
-      cover && (
-        <div class="row-cover">
-          <PostCover kind={cover.kind} src={cover.src} thumbnail />
-        </div>
-      )
-    }
-  </div>
+  </a>
 </li>
-
-<style>
-  .row {
-    position: relative;
-    border-top: 1px solid var(--border);
-  }
-
-  .row-content {
-    display: grid;
-    grid-template-columns: 6.5rem minmax(0, 1fr) auto;
-    align-items: baseline;
-    gap: 0 16px;
-    padding: 15px 0;
-  }
-
-  /* 카테고리 페이지처럼 라벨이 없는 곳에서는 첫 열을 비워 두지 않는다 */
-  .row.no-cat .row-content {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .title::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    border-radius: 4px;
-  }
-  .title:focus-visible {
-    outline: none;
-  }
-  .title:focus-visible::after {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-
-  .cat {
-    font-size: 12.5px;
-    font-weight: 600;
-    color: var(--text-muted);
-    white-space: nowrap;
-  }
-
-  .body {
-    display: block;
-    min-width: 0;
-  }
-
-  .title {
-    display: block;
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.55;
-    letter-spacing: -0.02em;
-  }
-
-  .row:hover .title {
-    color: var(--accent);
-  }
-
-  .desc {
-    display: block;
-    margin-top: 4px;
-    font-size: var(--type-body);
-    line-height: 1.75;
-    color: var(--text-secondary);
-  }
-
-  .meta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    font-size: 13px;
-    color: var(--text-dim);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .row.editorial .row-content {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.375rem;
-    padding: 1.375rem 0;
-  }
-  .editorial .cat {
-    font-size: 13px;
-    font-weight: 400;
-  }
-  .editorial .cat::before {
-    display: none;
-  }
-  .editorial .title {
-    font-size: 17px;
-  }
-  .editorial .meta {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.25rem 0.75rem;
-  }
-
-  .row.with-cover .row-content {
-    grid-template-columns: minmax(0, 1fr) 9rem;
-    grid-template-areas: 'cat cover' 'title cover' 'desc desc' 'meta meta';
-    grid-template-rows: min-content 1fr auto auto;
-    align-items: start;
-    gap: 0.5rem 1.25rem;
-    padding: 1.375rem 0;
-  }
-  .row.with-cover.no-cat .row-content {
-    grid-template-areas: 'title cover' 'desc desc' 'meta meta';
-    grid-template-rows: auto auto auto;
-  }
-  .with-cover .body {
-    display: contents;
-  }
-  .with-cover .cat {
-    grid-area: cat;
-  }
-  .with-cover .title {
-    grid-area: title;
-  }
-  .with-cover .desc {
-    grid-area: desc;
-    margin-top: 0;
-  }
-  .with-cover .meta {
-    grid-area: meta;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-  /* 요약이 없는 넓은 화면의 행은 날짜를 제목 바로 아래에 붙이고, 표지가 그 옆 전체에 걸친다 */
-  @media (min-width: 641px) {
-    .row.with-cover.no-desc .row-content {
-      grid-template-areas: 'cat cover' 'title cover' 'meta cover';
-      grid-template-rows: min-content min-content 1fr;
-    }
-    .row.with-cover.no-desc.no-cat .row-content {
-      grid-template-areas: 'title cover' 'meta cover';
-      grid-template-rows: min-content 1fr;
-    }
-  }
-  /*
-   * 요약이 있는 행도 넓은 화면에서는 표지가 요약·날짜 옆까지 걸친다. 그렇지 않으면 제목 행이
-   * 표지 높이를 그대로 가져 제목과 요약 사이가 43–74px 빈다. 641–767px은 요약 폭이 너무 좁아져
-   * 행이 오히려 길어지므로 768px부터 적용한다.
-   */
-  @media (min-width: 768px) {
-    .row.with-cover:not(.no-desc) .row-content {
-      grid-template-areas: 'cat cover' 'title cover' 'desc cover' 'meta cover';
-      grid-template-rows: min-content min-content min-content 1fr;
-    }
-    .row.with-cover.no-cat:not(.no-desc) .row-content {
-      grid-template-areas: 'title cover' 'desc cover' 'meta cover';
-      grid-template-rows: min-content min-content 1fr;
-    }
-  }
-  .row-cover {
-    grid-area: cover;
-    min-width: 0;
-    pointer-events: none;
-  }
-
-  @media (max-width: 640px) {
-    .row-content,
-    .row.no-cat .row-content {
-      grid-template-columns: 1fr;
-      gap: 3px 0;
-    }
-    .meta {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 0.15rem 0.75rem;
-    }
-    .row.with-cover .row-content {
-      grid-template-columns: minmax(0, 1fr) 5.5rem;
-      column-gap: 1rem;
-    }
-  }
-  .reading.with-cover .row-content {
-    grid-template-columns: minmax(0, 1fr) 9rem;
-    padding-block: 1.5rem;
-  }
-  .reading .title {
-    font-size: 1.25rem;
-    line-height: 1.5;
-    font-weight: 650;
-  }
-  .reading .cat {
-    font-size: var(--type-caption);
-    color: var(--accent);
-  }
-  .reading .desc {
-    font-size: var(--type-body);
-    line-height: 1.75;
-  }
-  @media (max-width: 640px) {
-    .reading.with-cover .row-content {
-      grid-template-columns: minmax(0, 1fr) 5.5rem;
-      padding-block: 1.25rem;
-    }
-  }
-</style>

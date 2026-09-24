@@ -2,8 +2,6 @@
 import BaseHead from '@/components/BaseHead.astro'
 import Header from '@/components/Header.astro'
 import Footer from '@/components/Footer.astro'
-import LearningNav from '@/components/LearningNav.astro'
-import { activeNavigation } from '@/utils/navigation.mjs'
 import { searchScope } from '@/utils/search-scope.mjs'
 
 interface Props {
@@ -35,7 +33,6 @@ const { searchIndex = true } = Astro.props
       data-pagefind-ignore={searchIndex ? undefined : 'all'}
       data-pagefind-filter={searchIndex ? `구분:${searchScope(Astro.url.pathname)}` : undefined}
     >
-      {activeNavigation(Astro.url.pathname) === '/learn/' && <LearningNav />}
       <slot />
     </main>
     <Footer />

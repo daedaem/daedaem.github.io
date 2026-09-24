@@ -1,6 +1,7 @@
 ---
 import { CATEGORIES } from '@/consts'
 
+/** 글 목록 머리 아래 분류 칩 한 줄. 사이드바나 접이식 없이 링크로 오간다 */
 interface Props {
   /** 카테고리 id별 글 수 */
   counts: Map<string, number>
@@ -12,32 +13,26 @@ interface Props {
 const { counts, total, active } = Astro.props
 ---
 
-<nav class="chips" aria-label="카테고리">
-  <a
-    href="/posts/"
-    class:list={['filter-chip', { on: !active }]}
-    aria-current={!active ? 'page' : undefined}
-  >
-    전체 {total}
+<nav class="chips catnav" aria-label="카테고리">
+  <a href="/posts/" class="chip" aria-current={!active ? 'page' : undefined}>
+    전체 <span class="n">{total}</span>
   </a>
   {
     CATEGORIES.filter((c) => (counts.get(c.id) ?? 0) > 0).map((c) => (
       <a
         href={`/categories/${c.id}/`}
-        class:list={['filter-chip', { on: active === c.id }]}
+        class="chip"
         data-cat={c.id}
         aria-current={active === c.id ? 'page' : undefined}
       >
-        {c.name} {counts.get(c.id) ?? 0}
+        {c.name} <span class="n">{counts.get(c.id) ?? 0}</span>
       </a>
     ))
   }
 </nav>
 
 <style>
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+  .catnav {
+    margin-top: 1rem;
   }
 </style>

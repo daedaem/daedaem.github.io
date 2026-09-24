@@ -178,9 +178,19 @@ const { sizes: _defaultSizes, ...spreadAttributes } = imageAttributes ?? {}
     font-size: 11px;
     font-weight: 500;
   }
+  /* 남색 판. 목록에서는 쓰지 않으므로 전역 토큰 대신 여기서만 정한다 */
   .cover-null {
+    --cover-navy: #324e6e;
     background: var(--cover-navy);
     color: #fcfaf5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .cover-null {
+      --cover-navy: #2b415e;
+    }
+  }
+  :global(:root[data-theme='dark']) .cover-null {
+    --cover-navy: #2b415e;
   }
   .cover-null,
   .cover-null.cover-lead {

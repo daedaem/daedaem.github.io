@@ -1,101 +1,84 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
-import { runInNewContext } from 'node:vm'
+import { existsSync, readFileSync } from 'node:fs'
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
-test('category enhancement opens desktop, preserves mobile native disclosure and follows resize', () => {
-  const nav = source('src/components/ReadingCategories.astro')
-  const script = nav.match(/<script is:inline>([\s\S]*?)<\/script>/)[1]
-  for (const initialDesktop of [false, true]) {
-    class Details {
-      open = false
-      dataset = {}
-    }
-    const details = new Details()
-    let resize
-    const media = {
-      matches: initialDesktop,
-      addEventListener: (event, fn) => {
-        assert.equal(event, 'change')
-        resize = fn
-      },
-    }
-    runInNewContext(script, {
-      document: { querySelector: () => details },
-      HTMLDetailsElement: Details,
-      matchMedia: (query) => {
-        assert.equal(query, '(min-width: 901px)')
-        return media
-      },
-    })
-    assert.equal(details.open, initialDesktop)
-    assert.equal(details.dataset.enhanced, 'true')
-    details.open = !details.open // native summary interaction
-    assert.equal(details.open, !initialDesktop)
-    media.matches = !initialDesktop
-    resize()
-    assert.equal(details.open, !initialDesktop)
+test('category navigation is one chip row of real links: no sidebar, no disclosure, no script', () => {
+  const nav = source('src/components/CategoryNav.astro')
+  assert.match(nav, /<nav class="chips catnav" aria-label="카테고리">/)
+  assert.doesNotMatch(nav, /<details|<script|matchMedia|position: sticky/)
+  assert.match(nav, /counts\.get\(c\.id\) \?\? 0\) > 0/)
+  assert.match(nav, /href=\{`\/categories\/\$\{c\.id\}\/`\}/)
+  assert.match(
+    nav,
+    /class="chip"[\s\S]*?data-cat=\{c\.id\}[\s\S]*?aria-current=\{active === c\.id \? 'page' : undefined\}/,
+  )
+  assert.match(nav, /<span class="n">\{counts\.get\(c\.id\) \?\? 0\}<\/span>/)
+  for (const gone of ['ReadingCatalog', 'ReadingCategories']) {
+    assert.equal(existsSync(new URL(`../src/components/${gone}.astro`, import.meta.url)), false)
   }
 })
 
-test('enlarged home illustration is explicit while ordinary reading thumbnails retain established sizes', () => {
-  const home = source('src/pages/index.astro')
-  assert.match(home, /\.lead-card:not\(\.without-cover\)\s*\{[^}]*50%/)
-  assert.match(home, /sizes=\{\s*index === 0/)
+test('rows carry a category dot, a compact date and no thumbnail or reading time', () => {
   const row = source('src/components/PostRow.astro')
-  assert.match(row, /\.reading\.with-cover \.row-content\s*\{[^}]*9rem;/)
+  assert.match(row, /<span data-cat=\{cat\.id\}>\{cat\.name\}<\/span>/)
   assert.match(
     row,
-    /@media \(max-width: 640px\)[\s\S]*\.reading\.with-cover \.row-content\s*\{[^}]*5\.5rem;/,
+    /<time datetime=\{date\.toISOString\(\)\}>\{formatCompactDate\(date\)\}<\/time>/,
   )
+  assert.doesNotMatch(row, /PostCover|<img|readingMinutes|분 읽기|ContentDates/)
+  // 위키 주제처럼 색상각만 있는 이름은 점(.dot.hue)을 앞에 붙인다
+  assert.match(row, /<i class="dot hue" style=\{`--wt: \$\{hue\}`\} aria-hidden="true" \/>/)
   assert.match(
-    source('src/components/PostCover.astro'),
-    /sizes=\{sizes \?\? imageAttributes\?\.sizes\}/,
+    source('src/styles/global.css'),
+    /\.dot\.hue\s*\{\s*--dot: hsl\(var\(--wt\) 65% 48%\);/,
   )
 })
 
-test('both catalog routes use the same reading rows and real category navigation', () => {
+test('both catalog routes use the same rows, head and chip navigation', () => {
   for (const path of ['src/pages/posts/index.astro', 'src/pages/categories/[category].astro']) {
     const text = source(path)
-    assert.match(text, /<ReadingCatalog counts=\{counts\}/)
-    assert.match(text, /<PostRow[\s\S]*?editorial\s+reading/)
-    assert.doesNotMatch(text, /updated=\{p\.data\.updated\}/)
+    assert.match(text, /<div class="page">/)
+    assert.match(text, /<PageHead title=/)
+    assert.match(text, /<CategoryNav counts=\{counts\} total=\{(?:posts\.length|total)\}/)
+    assert.match(text, /<ol class="rows">\s*\{posts\.map\(\(p\) => \(\s*<PostRow/)
+    assert.doesNotMatch(text, /updated=\{p\.data\.updated\}|ReadingCatalog|wrap-wide/)
   }
-  const nav = source('src/components/ReadingCategories.astro')
-  assert.match(nav, /<details[^>]*data-reading-categories>/)
-  assert.doesNotMatch(nav, /<details[^>]*\sopen[\s>]/)
-  assert.match(nav, /주제 고르기 <strong>현재: \{current\}/)
-  assert.match(nav, /categoryDetails\.dataset\.enhanced = 'true'/)
-  assert.match(nav, /\.reading-categories\[data-enhanced\] summary\s*\{\s*display: none/)
-  assert.match(nav, /categoryDetails\.open = desktop\.matches/)
-  assert.match(nav, /counts\.get\(category\.id\) \?\? 0\) > 0/)
-  assert.match(nav, /href=\{`\/categories\/\$\{category\.id\}\/`\}/)
-  assert.match(nav, /aria-current=/)
+  // 분류 페이지 머리는 건수 라벨과 분류 점을 함께 둔다
+  assert.match(
+    source('src/pages/categories/[category].astro'),
+    /<PageHead title=\{category\.name\} label=\{`\$\{posts\.length\}편`\} category=\{category\.id\}>/,
+  )
+  const head = source('src/components/PageHead.astro')
+  assert.match(
+    head,
+    /<header class="phead">\s*\{label && <p class="k">\{label\}<\/p>\}\s*<h1 data-cat=\{category\}>\{title\}<\/h1>/,
+  )
 })
 
-test('mobile lead title keeps full width with an 88px supporting cover beside the summary', () => {
+test('home recommended rows show the cause line and keep the full title in the row link', () => {
   const home = source('src/pages/index.astro')
-  const mobile = home.slice(home.indexOf('@media (max-width: 640px)'))
   assert.match(
-    mobile,
-    /\.lead-card:not\(\.without-cover\)\s*\{\s*grid-template-columns: minmax\(0, 1fr\) 5\.5rem;\s*grid-template-areas: 'copy copy' 'note cover';/,
+    home,
+    /\{recommended\.map\(\(post\) => \(\s*<PostRow[\s\S]*?title=\{post\.data\.title\}[\s\S]*?cause=\{post\.data\.cause \?\? post\.causeSummary\}/,
   )
-  assert.match(home, /\(max-width: 640px\) 5\.5rem, \(max-width: 900px\) 50vw, 360px/)
-  assert.match(home, /\.editorial-card\.without-cover\s*\{[^}]*grid-template-areas: 'copy' 'note';/)
-  assert.match(mobile, /\.lead-card \.card-title\s*\{\s*font-size: 1\.5rem;/)
-  assert.match(home, /\{\s*\[\s*heading\.main,/)
-  // 구분자는 화면에서만 숨기고 링크의 읽기 순서에는 남긴다
-  assert.match(home, /<span class="visually-hidden">\{heading\.separator\}<\/span>/)
-  assert.match(home, /<span class="subtitle">\{heading\.subtitle\}<\/span>/)
+  assert.doesNotMatch(home, /splitEditorialTitle|heading\.subtitle|class="subtitle"|card-title/)
+  const row = source('src/components/PostRow.astro')
+  assert.match(row, /<span class="row-t">\{title\}<\/span>/)
+  assert.match(
+    row,
+    /<span class="row-c">\s*<span class="row-ck">원인<\/span>\s*\{cause\}\s*<\/span>/,
+  )
 })
 
 test('catalog explanations are disclosed, not deleted, and original date meaning is retained', () => {
   const posts = source('src/pages/posts/index.astro')
-  assert.match(posts, /실제로 맡아 고친 문제를 남깁니다\./)
+  assert.match(posts, /<p class="lede">실제로 맡아 고친 문제를 남깁니다\.<\/p>/)
   assert.match(posts, /<details class="criteria">/)
   assert.match(posts.replace(/\s+/g, ' '), /작성일은 그 일을 블로그에 글로 정리한 날입니다\./)
   assert.match(posts, /min-height:\s*var\(--control-size\)/)
+  // 머리 라벨은 건수만("6편"). 제목 '글'을 라벨에 되풀이하지 않는다
+  assert.match(posts, /<PageHead title="글" label=\{`\$\{posts\.length\}편`\}>/)
 })
 
 test('reader changes are scoped to cases and preserve full title, cause, content and comments', () => {

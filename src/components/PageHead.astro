@@ -1,45 +1,27 @@
 ---
+/**
+ * 목록 페이지 머리: 건수 라벨(.k) → h1 → 한 문장(슬롯의 p.lede).
+ * 라벨이 제목과 같은 낱말이면 넘기지 않는다(예: 학습 기록).
+ */
 interface Props {
   title: string
+  /** "6편"처럼 건수만. 제목과 같은 낱말이면 생략한다 */
+  label?: string
   category?: string
-  divider?: boolean
-  compact?: boolean
 }
-const { title, category, divider = false, compact = false } = Astro.props
+const { title, label, category } = Astro.props
 ---
 
-<header class:list={['page-head', { divider, compact }]}>
+<header class="phead">
+  {label && <p class="k">{label}</p>}
   <h1 data-cat={category}>{title}</h1>
-  <div class="description"><slot /></div>
+  <slot />
 </header>
 <style>
-  .page-head {
-    padding-block: var(--page-inset) 1.5rem;
-  }
-  .compact {
-    padding-top: 1.5rem;
-  }
-  .divider {
-    border-bottom: 1px solid var(--border-strong);
-  }
-  h1 {
-    margin: 0;
-    font-size: var(--type-page-title);
-    line-height: 1.35;
-    letter-spacing: -0.03em;
-    text-wrap: balance;
-  }
   h1[data-cat]::before {
     width: 12px;
     height: 12px;
     margin-right: 0.4em;
     vertical-align: 0.1em;
-  }
-  .description :global(p) {
-    margin: 0.75rem 0 0;
-    max-width: 44rem;
-    font-size: var(--type-body);
-    line-height: 1.75;
-    color: var(--text-secondary);
   }
 </style>
