@@ -80,14 +80,19 @@ test('대체 글꼴의 메트릭이 Pretendard에 맞춰져 있어 글꼴 교체
 })
 
 test('태그와 검색 결과 링크는 손가락으로 누를 수 있는 크기다', () => {
+  // 태그는 링크가 있든 없든 같은 모양(전역 규칙)이고, 둘 다 44px 줄 높이를 가진다
+  const css = source('src/styles/global.css')
+  const rule = css.match(/p\.tags a,\s*p\.tags \.tag \{[^}]*\}/)?.[0]
+  assert.ok(rule, 'global.css에 p.tags a, p.tags .tag 규칙이 있어야 한다')
+  assert.match(rule, /min-height:\s*var\(--control-size\)/)
+  assert.match(rule, /text-decoration:\s*none/)
+  assert.match(css, /p\.tags a:hover \{[^}]*text-decoration: underline/)
+  assert.match(css, /p\.tags a:focus-visible \{[^}]*outline:/)
   for (const path of ['src/layouts/PostLayout.astro', 'src/pages/wiki/[...slug].astro']) {
     const text = source(path)
-    // 태그는 글자 링크(전역 a 밑줄)다. 링크·비링크 모두 44px 줄 높이를 가진다
-    const rule = text.match(/p\.tags a,\s*p\.tags span:not\(\.k\) \{[^}]*\}/)?.[0]
-    assert.ok(rule, `${path}에 p.tags a 규칙이 있어야 한다`)
-    assert.match(rule, /min-height:\s*var\(--control-size\)/)
-    assert.match(text, /p\.tags a:focus-visible \{[^}]*outline:/)
     assert.match(text, /<span class="k">태그<\/span>/)
+    assert.match(text, /<span class="tag">\{t\}<\/span>/)
+    assert.doesNotMatch(text, /p\.tags span:not\(\.k\)/)
   }
 
   const search = source('src/components/Search.astro')

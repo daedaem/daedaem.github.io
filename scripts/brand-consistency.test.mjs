@@ -21,11 +21,12 @@ test('home identity is the author name under a role label while the social previ
   const og = source('src/pages/og/[...slug].png.ts')
   assert.match(source('src/consts.ts'), new RegExp(`identityTitle: '${identityTitle}'`))
   assert.match(source('src/consts.ts'), new RegExp(`motto: '${motto}'`))
-  // 홈 첫 화면: 라벨 "백엔드 개발자" → h1 이름 → 소개 한 문장 → 소개 보기. 히어로 판·카드·표지는 없다
+  // 홈 첫 화면: h1 "이름 · 백엔드 개발자"(직무는 본문 크기) → 소개 한 문장 → 소개 보기. 히어로 판·카드·표지는 없다
   assert.match(
     home,
-    /<section class="ident"[^>]*>\s*<p class="k">백엔드 개발자<\/p>\s*<h1[^>]*>\{SITE\.author\}<\/h1>\s*<p class="lede">\{SITE\.intro\}<\/p>/,
+    /<section class="ident"[^>]*>\s*<h1[^>]*>\s*\{SITE\.author\}\{' '\}<span class="role"[\s\S]*?백엔드 개발자<\/span\s*>\s*<\/h1>\s*<p class="lede">\{SITE\.intro\}<\/p>/,
   )
+  assert.doesNotMatch(home, /<p class="k">백엔드 개발자<\/p>/)
   assert.equal([...home.matchAll(/<h1(?:\s|>)/g)].length, 1)
   assert.match(home, /<h2 class="k" id="recommended-title">\s*먼저 읽을 글\s*<\/h2>/)
   assert.doesNotMatch(home, /byline|hero|card-title|PostCover|identity-context/)

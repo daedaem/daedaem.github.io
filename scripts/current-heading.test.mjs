@@ -164,7 +164,7 @@ test('wiki document and related-reading links use visible focus and existing 44p
   }
   const wiki = read('src/pages/wiki/[...slug].astro')
   assert.match(wiki, /selectWikiReferences\(pool, entry\)/)
-  assert.match(wiki, /<h2 class="k">이 문서를 참고하는 글<\/h2>/)
+  assert.match(wiki, /<h2 class="k">이 문서를 참고하는 글·문서<\/h2>/)
   assert.match(wiki, /<h2 class="k">같은 주제의 문서<\/h2>/)
   assert.match(wiki, /\.slice\(0, 8\)/)
   assert.match(wiki, /<RelatedReading current=\{entry\.id\} \/>/)

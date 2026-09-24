@@ -21,7 +21,11 @@ test('category navigation is one chip row of real links: no sidebar, no disclosu
 
 test('rows carry a category dot, a compact date and no thumbnail or reading time', () => {
   const row = source('src/components/PostRow.astro')
-  assert.match(row, /<span data-cat=\{cat\.id\}>\{cat\.name\}<\/span>/)
+  // 분류 이름은 .name으로 감싸 라벨의 대문자 변환을 받지 않는다(Spring은 Spring으로 보인다)
+  assert.match(
+    row,
+    /<span data-cat=\{cat\.id\}>\s*<span class="name">\{cat\.name\}<\/span>\s*<\/span>/,
+  )
   assert.match(
     row,
     /<time datetime=\{date\.toISOString\(\)\}>\{formatCompactDate\(date\)\}<\/time>/,

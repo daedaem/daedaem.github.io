@@ -154,7 +154,7 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
   />
 </BaseLayout>
 <script>
-  import { selectDocuments } from '@/utils/wiki-library.mjs'
+  import { selectDocuments, facetCounts } from '@/utils/wiki-library.mjs'
   import { persistURL } from '@/utils/url-state.mjs'
   const docs = JSON.parse(document.getElementById('wiki-data')!.textContent!)
   const list = document.getElementById('wiki-documents')!
@@ -171,8 +171,22 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
   let topic = '',
     status = '',
     page = 1
-  const pressChips = (chips: HTMLButtonElement[], key: 'topic' | 'status', value: string) => {
-    for (const chip of chips) chip.setAttribute('aria-pressed', String(chip.dataset[key] === value))
+  // 칩의 눌림과 건수. 지금 조건에서 0편인 칩은 누를 수 없게 두되, 눌린 칩은 항상 살아 있다
+  const pressChips = (
+    chips: HTMLButtonElement[],
+    key: 'topic' | 'status',
+    value: string,
+    counts: Record<string, number>,
+  ) => {
+    for (const chip of chips) {
+      const own = chip.dataset[key]!
+      const pressed = own === value
+      const count = counts[own] ?? 0
+      chip.setAttribute('aria-pressed', String(pressed))
+      chip.querySelector('.n')!.textContent = String(count)
+      if (!pressed && count === 0) chip.setAttribute('aria-disabled', 'true')
+      else chip.removeAttribute('aria-disabled')
+    }
   }
   function show(sync = true) {
     const result = selectDocuments(docs, {
@@ -189,8 +203,9 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
       row.hidden = false
       list.append(row)
     }
-    pressChips(topics, 'topic', topic)
-    pressChips(statusChips, 'status', status)
+    const counts = facetCounts(docs, { query: query.value, topic, status })
+    pressChips(topics, 'topic', topic, counts.topic)
+    pressChips(statusChips, 'status', status, counts.status)
     const active = !!(query.value.trim() || topic || status)
     document.getElementById('wiki-heading')!.textContent = topic
       ? topics
@@ -262,12 +277,14 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
   })
   for (const chip of topics)
     chip.addEventListener('click', () => {
+      if (chip.getAttribute('aria-disabled') === 'true') return
       topic = chip.dataset.topic!
       page = 1
       show()
     })
   for (const chip of statusChips)
     chip.addEventListener('click', () => {
+      if (chip.getAttribute('aria-disabled') === 'true') return
       status = chip.dataset.status!
       page = 1
       show()
@@ -276,7 +293,11 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
     e.preventDefault()
     reset()
   })
-  document.getElementById('wiki-reset')!.addEventListener('click', reset)
+  // 빈 결과의 '조건 초기화'는 누르면 사라지므로 초점을 찾기 입력으로 옮긴다(#wiki-clear와 같다)
+  document.getElementById('wiki-reset')!.addEventListener('click', () => {
+    reset()
+    query.focus()
+  })
   document.getElementById('wiki-clear')!.addEventListener('click', () => {
     reset()
     query.focus()

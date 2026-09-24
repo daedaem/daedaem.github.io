@@ -31,10 +31,20 @@ test('the 404 page names the problem and offers search', () => {
   assert.match(page, /site-search/)
 })
 
-test('the sticky header steps aside while reading on every width and returns on scroll up, focus or an open dialog', () => {
+test('the sticky header steps aside while reading only on narrow screens and returns on scroll up, focus or an open dialog', () => {
   const header = source('src/components/Header.astro')
-  assert.doesNotMatch(header, /matchMedia\('\(max-width: 640px\)'\)/)
-  assert.match(header, /y < 120 \|\| header\.contains\(document\.activeElement\) \|\|/)
+  // 데스크톱(한 줄 머리줄)은 늘 둔다. 좁은 화면(두 줄)에서만 아래로 읽을 때 올라간다
+  assert.match(header, /const narrow = matchMedia\('\(max-width: 640px\)'\)/)
+  assert.match(
+    header,
+    /!narrow\.matches \|\|\s*y < 120 \|\|\s*header\.contains\(document\.activeElement\) \|\|/,
+  )
+  // 차례로 건너뛴 큰 이동은 방향으로 세지 않는다(숨은 머리줄이 줄어든 착지 여백 위로 내려오지 않게)
+  assert.match(header, /const jumped = Math\.abs\(y - lastY\) > innerHeight/)
+  assert.match(
+    source('src/styles/global.css'),
+    /:root:has\(#site-header\.is-away\) \{\s*--header-clearance: 1\.25rem;/,
+  )
   assert.match(header, /document\.querySelector\('dialog\[open\]'\)/)
   assert.match(header, /header\.is-away\s*\{\s*translate: 0 -100%;/)
   assert.match(header, /addEventListener\('focusin'/)
@@ -81,7 +91,7 @@ test('search labels each result with its kind and keeps wiki navigation out of e
   for (const chrome of [
     /<details class="toc" data-pagefind-ignore>/,
     /<nav class="rail" aria-label="차례" data-pagefind-ignore>/,
-    /<section class="back" aria-label="이 문서를 참고하는 글" data-pagefind-ignore>/,
+    /<section\s+class="back"\s+id="back"\s+aria-label="이 문서를 참고하는 글·문서"\s+data-pagefind-ignore\s*>/,
     /<section class="back" aria-label="같은 주제의 문서" data-pagefind-ignore>/,
   ]) {
     assert.match(wiki, chrome)

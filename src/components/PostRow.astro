@@ -45,12 +45,18 @@ const name = cat?.name ?? label
             </span>
           )
         }
-        {cat && <span data-cat={cat.id}>{cat.name}</span>}
+        {
+          cat && (
+            <span data-cat={cat.id}>
+              <span class="name">{cat.name}</span>
+            </span>
+          )
+        }
         {
           !cat && label && (
             <span class="topic">
               {hue !== undefined && <i class="dot hue" style={`--wt: ${hue}`} aria-hidden="true" />}
-              {label}
+              <span class="name">{label}</span>
             </span>
           )
         }

@@ -19,7 +19,7 @@ for (const path of outlines) {
     assert.doesNotMatch(outline, /<details[^>]*\sopen/)
     assert.match(
       outline,
-      /<summary>\s*<span class="k">\s*차례<span class="n">\{toc\.length\}<\/span>/,
+      /<summary>\s*<span class="k">\s*차례 <span class="n">\{toc\.length\}<\/span>/,
     )
     assert.match(outline, /<ol>[\s\S]*<li class:list=\{\{ d3: h\.depth === 3 \}\}>/)
     assert.doesNotMatch(source, /<script is:inline>|matchMedia\('\((?:min|max)-width/)

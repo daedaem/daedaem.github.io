@@ -11,8 +11,10 @@ const links = (html) => [...html.matchAll(/href="\/posts\/([^/]+)\/"/g)].map((m)
 
 test('home keeps factual identity: role label, author name and the one intro sentence', () => {
   const home = read('src/pages/index.astro')
-  assert.match(home, /<p class="k">백엔드 개발자<\/p>/)
-  assert.match(home, /<h1[^>]*>\{SITE\.author\}<\/h1>/)
+  // 직무는 13px 라벨이 아니라 이름 옆 본문 크기의 글자다
+  assert.match(home, /<span class="role"[\s\S]*?백엔드 개발자<\/span/)
+  // 이름과 직무 사이의 공백이 있어 접근 가능한 이름이 '조해성 백엔드 개발자'로 읽힌다
+  assert.match(home, /<h1[^>]*>\s*\{SITE\.author\}\{' '\}<span class="role"/)
   assert.match(home, /<p class="lede">\{SITE\.intro\}<\/p>/)
   assert.doesNotMatch(home, /백엔드 · 레거시 시스템 · 문제 해결|남긴 기록입니다/)
 })

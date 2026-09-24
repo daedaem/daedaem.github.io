@@ -38,10 +38,13 @@ const { searchIndex = true } = Astro.props
     <Footer />
     <script>
       import { createCodeCopy } from '@/utils/code-copy.mjs'
-      import { markScrollableCode } from '@/utils/code-scroll.mjs'
-      // 옆으로 넘길 수 있는 코드 블록에만 오른쪽 가장자리 페이드를 켠다.
+      import { markScrollableCode, markScrollableTable } from '@/utils/code-scroll.mjs'
+      // 옆으로 넘길 수 있는 코드 블록·표에만 탭 정지와 이름, 오른쪽 가장자리 페이드를 켠다.
       for (const pre of document.querySelectorAll<HTMLElement>('pre.astro-code')) {
         markScrollableCode(pre)
+      }
+      for (const table of document.querySelectorAll<HTMLElement>('.table, .table-scroll')) {
+        markScrollableTable(table)
       }
       // 코드 블록마다 복사 버튼을 붙인다. 클립보드 API가 없는 환경에서는 붙이지 않는다.
       // 버튼은 아이콘과 '복사' 글자를 항상 보인다(가리키기 전에도 있는 걸 알 수 있게).

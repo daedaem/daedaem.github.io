@@ -1,12 +1,11 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { markScrollableCode } from '../src/utils/code-scroll.mjs'
+import { markScrollableCode, markScrollableTable } from '../src/utils/code-scroll.mjs'
 
-function fakePre({ scrollWidth, clientWidth, scrollLeft = 0 }) {
-  const attrs = new Set()
+function fakeScroller({ scrollWidth, clientWidth, scrollLeft = 0 }) {
   const listeners = {}
-  const code = {
+  return {
     scrollWidth,
     clientWidth,
     scrollLeft,
@@ -17,24 +16,40 @@ function fakePre({ scrollWidth, clientWidth, scrollLeft = 0 }) {
     removeAttribute(name) {
       delete this.attributes[name]
     },
+    getAttribute(name) {
+      return this.attributes[name] ?? null
+    },
     addEventListener(type, fn) {
       listeners[type] = fn
     },
+    fire(type) {
+      listeners[type]()
+    },
   }
+}
+
+function fakePre({ scrollWidth, clientWidth, scrollLeft = 0, label = '코드: sql' }) {
+  const attrs = new Set()
+  const code = fakeScroller({ scrollWidth, clientWidth, scrollLeft })
   return {
     attrs,
     code,
     removed: [],
+    attributes: { tabindex: '0', 'aria-label': label },
     querySelector: () => code,
+    getAttribute(name) {
+      return this.attributes[name] ?? null
+    },
     removeAttribute(name) {
       this.removed.push(name)
+      delete this.attributes[name]
     },
     toggleAttribute(name, force) {
       force ? attrs.add(name) : attrs.delete(name)
     },
     addEventListener() {},
     fire(type) {
-      listeners[type]()
+      code.fire(type)
     },
   }
 }
@@ -56,19 +71,47 @@ test('only overflowing code blocks are marked and the mark clears at the end of 
   assert.deepEqual([...wide.attrs].sort(), ['data-scrollable'])
 })
 
-test('keyboard focus moves from pre to the inner code that actually scrolls', () => {
+test('focus, role and name move together from pre to the inner code that actually scrolls', () => {
   const pre = fakePre({ scrollWidth: 800, clientWidth: 300 })
   markScrollableCode(pre, win)
-  assert.equal(pre.code.attributes.tabindex, '0')
-  assert.deepEqual(pre.removed, ['tabindex'])
+  // 초점을 받는 code가 이름을 갖고, 초점 없는 pre에는 금지 속성(aria-label)이 남지 않는다
+  assert.deepEqual(pre.code.attributes, { tabindex: '0', role: 'group', 'aria-label': '코드: sql' })
+  assert.deepEqual(pre.removed, ['tabindex', 'aria-label'])
+  assert.deepEqual(pre.attributes, {})
 
-  // 넘길 것이 없는 블록은 탭 정지가 되지 않고, 창이 좁아져 넘치게 되면 그때 초점을 받는다
+  // 넘길 것이 없는 블록은 탭 정지도 이름도 갖지 않고, 창이 좁아져 넘치게 되면 그때 셋을 받는다
   const fits = fakePre({ scrollWidth: 300, clientWidth: 300 })
   const update = markScrollableCode(fits, win)
-  assert.equal(fits.code.attributes.tabindex, undefined)
+  assert.deepEqual(fits.code.attributes, {})
   fits.code.clientWidth = 200
   update()
-  assert.equal(fits.code.attributes.tabindex, '0')
+  assert.deepEqual(fits.code.attributes, {
+    tabindex: '0',
+    role: 'group',
+    'aria-label': '코드: sql',
+  })
+  fits.code.clientWidth = 300
+  update()
+  assert.deepEqual(fits.code.attributes, {})
+
+  // 언어 라벨이 없던 블록은 '코드'로 부른다
+  const plain = fakePre({ scrollWidth: 800, clientWidth: 300, label: '' })
+  markScrollableCode(plain, win)
+  assert.equal(plain.code.attributes['aria-label'], '코드')
+})
+
+test('table wrappers scroll themselves, so they are a tab stop with a name only while overflowing', () => {
+  const table = fakeScroller({ scrollWidth: 900, clientWidth: 360 })
+  const marks = new Set()
+  table.attributes = { tabindex: '0', 'aria-label': '표 2' }
+  table.toggleAttribute = (name, force) => (force ? marks.add(name) : marks.delete(name))
+  const update = markScrollableTable(table, win)
+  assert.deepEqual(table.attributes, { tabindex: '0', role: 'group', 'aria-label': '표 2' })
+  assert.deepEqual([...marks], ['data-scrollable'])
+  table.clientWidth = 900
+  update()
+  assert.deepEqual(table.attributes, {})
+  assert.deepEqual([...marks], ['data-scroll-end'])
 })
 
 test('the inner code scrolls so the label and copy button stay put, and the fade uses the same attributes', () => {
@@ -81,8 +124,14 @@ test('the inner code scrolls so the label and copy button stay put, and the fade
     css,
     /pre\.astro-code\[data-scrollable\] > code:focus-visible\s*\{[^}]*mask-image: none;/,
   )
+  // 넘치는 표는 첫 열을 붙여 둔다(B13). 표시는 같은 data-scrollable이다
+  assert.match(
+    css,
+    /\.table\[data-scrollable\] th:first-child,\s*\.table\[data-scrollable\] td:first-child,[^{]*\{[^}]*position: sticky;[^}]*left: 0;/,
+  )
   const layout = readFileSync(new URL('../src/layouts/BaseLayout.astro', import.meta.url), 'utf8')
   assert.match(layout, /markScrollableCode\(pre\)/)
+  assert.match(layout, /markScrollableTable\(table\)/)
 })
 
 test('list rows show only the authoring date, and the home links onward with collection counts', () => {

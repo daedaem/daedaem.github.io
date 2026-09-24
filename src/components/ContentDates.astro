@@ -56,15 +56,12 @@ const revised = updated && updated.getTime() !== date.getTime() ? updated : unde
   .compact time {
     white-space: normal;
   }
-  /* 메타 줄 안에서는 상속받은 크기·색을 쓴다 */
+  /* 메타 줄 안에서는 상속받은 크기·색을 쓴다. 날짜(time)는 한 덩어리로 줄을 바꾼다 */
   .inline {
     display: inline;
     gap: 0;
     color: inherit;
     font-size: inherit;
-  }
-  .inline time {
-    white-space: normal;
   }
   @media (max-width: 640px) {
     .stacked {

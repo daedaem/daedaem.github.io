@@ -109,9 +109,9 @@ const body = rendered.slice(lead.length)
             inline
           />
           {happened && <span class="sep" aria-hidden="true" set:text="·" />}
-          {happened && <span set:text={`사례 시점 ${happened}`} />}
+          {happened && <span class="nowrap" set:text={`사례 시점 ${happened}`} />}
           {readingMinutes && <span class="sep" aria-hidden="true" set:text="·" />}
-          {readingMinutes && <span set:text={`${readingMinutes}분 읽기`} />}
+          {readingMinutes && <span class="nowrap" set:text={`${readingMinutes}분 읽기`} />}
         </p>
         <h1 tabindex="-1">{title}</h1>
       </header>
@@ -159,7 +159,7 @@ const body = rendered.slice(lead.length)
           <details class="toc" data-pagefind-ignore>
             <summary>
               <span class="k">
-                차례<span class="n">{toc.length}</span>
+                차례 <span class="n">{toc.length}</span>
               </span>
               <svg
                 width="18"
@@ -189,6 +189,28 @@ const body = rendered.slice(lead.length)
         )
       }
 
+      {
+        /* 넓은 화면의 오른쪽 레일. 초점 순서가 본문보다 앞서도록 차례 바로 뒤에 둔다(배치는 fixed) */
+        hasToc && (
+          <nav class="rail" aria-label="차례" data-pagefind-ignore>
+            <p class="k">차례</p>
+            <ol>
+              {toc.map((h) => (
+                <li class:list={{ d3: h.depth === 3 }}>
+                  <a href={`#${h.slug}`}>
+                    {h.num && <span class="tn">{h.num}</span>}
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+            <button type="button" class="totop">
+              맨 위로
+            </button>
+          </nav>
+        )
+      }
+
       <div class="prose">
         <Fragment set:html={body} />
       </div>
@@ -202,7 +224,7 @@ const body = rendered.slice(lead.length)
                 linkable.has(tagSlug(t)) ? (
                   <a href={`/tags/${tagSlug(t)}/`}>{t}</a>
                 ) : (
-                  <span>{t}</span>
+                  <span class="tag">{t}</span>
                 ),
               )}
             </p>
@@ -285,27 +307,6 @@ const body = rendered.slice(lead.length)
       </footer>
 
       {!archived && <Comments />}
-
-      {
-        hasToc && (
-          <nav class="rail" aria-label="차례" data-pagefind-ignore>
-            <p class="k">차례</p>
-            <ol>
-              {toc.map((h) => (
-                <li class:list={{ d3: h.depth === 3 }}>
-                  <a href={`#${h.slug}`}>
-                    {h.num && <span class="tn">{h.num}</span>}
-                    {h.text}
-                  </a>
-                </li>
-              ))}
-            </ol>
-            <button type="button" class="totop">
-              맨 위로
-            </button>
-          </nav>
-        )
-      }
     </article>
   </div>
 </BaseLayout>
@@ -334,17 +335,6 @@ const body = rendered.slice(lead.length)
     padding-top: 0;
     border-top: 0;
   }
-  /* 태그는 글자 링크. 손가락으로 누를 수 있는 높이를 준다 */
-  p.tags a,
-  p.tags span:not(.k) {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--control-size);
-  }
-  p.tags a:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
   /* 아카이브 안내: 고지와 같은 모양에 라벨 한 줄 */
   .archived .k {
     margin-bottom: 0.35rem;
@@ -357,15 +347,15 @@ const body = rendered.slice(lead.length)
     align-items: center;
     min-height: var(--control-size);
   }
-  /* 이어 읽을 글 */
+  /* 이어 읽을 글. 종류 라벨(.k-in)의 nowrap은 전역 규칙이다 */
   section.back a {
     display: inline-flex;
     align-items: center;
     min-height: var(--control-size);
   }
-  section.back .k-in {
-    flex-shrink: 0;
-    white-space: nowrap;
+  section.back a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
   @media (max-width: 40em) {
     .art-head h1 {
