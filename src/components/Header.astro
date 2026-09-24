@@ -9,7 +9,7 @@ const path = Astro.url.pathname
 const active = activeNavigation(path)
 ---
 
-<header>
+<header id="site-header">
   <div class="wrap-wide bar">
     <a href="/" class="brand">
       <Mark size={34} class="brand-mark" />
@@ -38,6 +38,36 @@ const active = activeNavigation(path)
     </div>
   </div>
 </header>
+
+<script>
+  const header = document.getElementById('site-header')!
+  const narrow = matchMedia('(max-width: 640px)')
+  let lastY = scrollY
+  let scheduled = false
+  function place() {
+    scheduled = false
+    const y = scrollY
+    const keep =
+      !narrow.matches ||
+      y < 120 ||
+      header.contains(document.activeElement) ||
+      document.querySelector('dialog[open]')
+    if (keep || y < lastY - 6) header.classList.remove('is-away')
+    else if (y > lastY + 6) header.classList.add('is-away')
+    lastY = y
+  }
+  addEventListener(
+    'scroll',
+    () => {
+      if (scheduled) return
+      scheduled = true
+      requestAnimationFrame(place)
+    },
+    { passive: true },
+  )
+  narrow.addEventListener('change', place)
+  header.addEventListener('focusin', () => header.classList.remove('is-away'))
+</script>
 
 <style>
   header {
@@ -129,7 +159,12 @@ const active = activeNavigation(path)
     width: var(--control-size);
     padding-inline: 0;
   }
-  .tools :global(#search-open span),
+  /* 검색은 모든 너비에서 글자 라벨을 함께 보인다. 단축키 표시만 넓은 화면에서 보인다 */
+  .tools :global(#search-open) {
+    width: auto;
+    gap: 0.375rem;
+    padding-inline: 0.5rem;
+  }
   .tools :global(#search-open kbd) {
     display: none;
   }
@@ -141,13 +176,28 @@ const active = activeNavigation(path)
       padding-inline: 0.625rem;
       font-size: var(--type-label);
     }
-    .tools :global(#search-open span),
     .tools :global(#search-open kbd) {
       display: inline;
     }
     .tools :global(#search-open kbd) {
       font-size: 0.75rem;
       opacity: 1;
+    }
+  }
+
+  /*
+   * 좁은 화면에서 머리줄은 두 줄(약 111px, 화면의 13%)이다. 아래로 읽는 동안에는 올려 두고,
+   * 위로 스크롤하거나 키보드 초점이 들어오면 다시 내린다. 움직임을 줄인 설정에서는 바로 바뀐다.
+   */
+  header {
+    transition: translate 0.2s ease-out;
+  }
+  header.is-away {
+    translate: 0 -100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    header {
+      transition: none;
     }
   }
 
