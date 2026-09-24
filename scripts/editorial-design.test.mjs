@@ -159,10 +159,12 @@ test('production design retains navigation and real search without mock controls
   assert.match(source('src/components/Footer.astro'), /href="\/admin\/"/)
 })
 
-test('anchor landings and sticky article/wiki navigation share the taller header clearance', () => {
+test('anchor landings and sticky article/wiki navigation share the header clearance', () => {
   const css = source('src/styles/global.css')
-  assert.match(css, /--header-clearance: 7rem/)
-  assert.match(css, /--header-clearance: 7\.5rem/)
+  // 머리줄 높이(데스크톱 61, 모바일 96) + 1rem
+  assert.match(css, /--header-h: 61px;/)
+  assert.match(css, /--header-h: 96px;/)
+  assert.match(css, /--header-clearance: calc\(var\(--header-h\) \+ 1rem\);/)
   assert.match(css, /scroll-padding-top: var\(--header-clearance\)/)
   for (const path of [
     'src/layouts/PostLayout.astro',

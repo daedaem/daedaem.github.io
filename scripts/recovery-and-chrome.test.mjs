@@ -21,12 +21,15 @@ test('the 404 page names the problem and offers search', () => {
   assert.match(page, /site-search/)
 })
 
-test('the two-row mobile header steps aside while reading and returns on scroll up or focus', () => {
+test('the sticky header steps aside while reading on every width and returns on scroll up, focus or an open dialog', () => {
   const header = source('src/components/Header.astro')
-  assert.match(header, /matchMedia\('\(max-width: 640px\)'\)/)
+  assert.doesNotMatch(header, /matchMedia\('\(max-width: 640px\)'\)/)
+  assert.match(header, /y < 120 \|\| header\.contains\(document\.activeElement\) \|\|/)
+  assert.match(header, /document\.querySelector\('dialog\[open\]'\)/)
   assert.match(header, /header\.is-away\s*\{\s*translate: 0 -100%;/)
   assert.match(header, /addEventListener\('focusin'/)
   assert.match(header, /prefers-reduced-motion: reduce/)
+  assert.match(header, /position: sticky;\s*top: 0;/)
 })
 
 test('focus rings share one 2px style and search keeps its text label on small screens', () => {

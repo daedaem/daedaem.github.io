@@ -10,8 +10,8 @@ import { selectHomeContent, HOME_READING_PICKS } from '../src/utils/home-content
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const background = source('src/styles/global.css').match(/--code-bg:\s*(#[\da-f]{6})/)?.[1]
-// VS Code Dark+ 배경과 사이트 다크 코드 면 중 더 밝은 쪽까지 통과해야 한다
-const darkBackgrounds = ['#1e1e1e', '#1d2025']
+// VS Code Dark+ 배경과 사이트 다크 코드 면(--code) 둘 다 통과해야 한다
+const darkBackgrounds = ['#1e1e1e', '#1a1f28']
 
 test('low-contrast Light+ syntax colors have a readable light replacement', () => {
   for (const [before, after] of Object.entries(readableLightColors)) {
@@ -99,7 +99,11 @@ test('card and row links contain only titles while CSS preserves the whole click
 
 test('global motion preference and header targets remain explicit', () => {
   assert.match(source('src/styles/global.css'), /@media \(prefers-reduced-motion: reduce\)/)
-  const header = source('src/components/Header.astro').match(/nav a \{([^}]+)\}/)?.[1]
-  assert.match(header, /min-height: var\(--control-size\)/)
-  assert.match(header, /min-width: var\(--control-size\)/)
+  const header = source('src/components/Header.astro')
+  // 모바일 메뉴줄은 40px, 넓은 화면의 메뉴 링크는 44px
+  const mobile = header.match(/\.nav a \{([^}]+)\}/)?.[1]
+  assert.match(mobile, /min-height: 40px/)
+  assert.match(mobile, /min-width: var\(--control-size\)/)
+  const desktop = header.split('@media (min-width: 46em)')[1].match(/\.nav a \{([^}]+)\}/)?.[1]
+  assert.match(desktop, /min-height: var\(--control-size\)/)
 })

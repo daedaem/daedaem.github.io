@@ -8,7 +8,13 @@ import { renderOgCard, wrapOgTitle } from '../src/utils/og-card.mjs'
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const identityTitle = '조해성의 기술 블로그'
 const motto = '증상이 아니라 원인을 고칩니다'
-const content = { title: identityTitle, kicker: '대댐 로그', siteTitle: '대댐 로그', identityTitle, subtitle: motto }
+const content = {
+  title: identityTitle,
+  kicker: '대댐 로그',
+  siteTitle: '대댐 로그',
+  identityTitle,
+  subtitle: motto,
+}
 
 test('home identity and social preview share one short title and one motto', () => {
   const home = source('src/pages/index.astro')
@@ -74,19 +80,24 @@ test('cover disclosure belongs with reader-facing writing principles, not the ed
   assert.doesNotMatch(source('src/pages/admin/index.astro'), /글 표지는 AI로 생성/)
 })
 
-test('compact desktop header restores readable shortcuts only where space and hover allow', () => {
+test('the one-row header stays within 64px on desktop and two rows (52 + 40) on mobile', () => {
   const header = source('src/components/Header.astro')
-  assert.match(header, /\.bar\s*\{[^}]*min-height:\s*80px;/)
-  assert.match(header, /@media \(min-width: 1024px\) and \(hover: hover\)/)
-  const desktop = header
-    .split('@media (min-width: 1024px) and (hover: hover)')[1]
-    .split('@media (max-width: 640px)')[0]
-  assert.match(desktop, /#search-open kbd\)[^}]*display:\s*inline;/)
-  assert.match(desktop, /font-size:\s*0\.75rem;\s*opacity:\s*1;/)
+  // 위 3px 로고색 선, 로고 마크 + 이름, 메뉴, 검색·테마
+  assert.match(header, /border-top: 3px solid var\(--mark-bg\);/)
+  assert.match(header, /<Mark size=\{22\} class="brand-mark" \/>/)
+  assert.match(header, /\.brand\s*\{[^}]*min-height:\s*52px;/)
+  assert.match(header, /\.nav\s*\{[^}]*height:\s*40px;/)
+  assert.match(header, /grid-template-areas:\s*'brand tools'\s*'nav nav';/)
+  const desktop = header.split('@media (min-width: 46em)')[1]
+  assert.match(desktop, /\.top-in\s*\{[^}]*min-height:\s*57px;/)
+  assert.match(desktop, /grid-template-areas:\s*'brand nav tools';/)
   assert.match(header, /min-width:\s*var\(--control-size\)/)
-  assert.match(header.split('@media (max-width: 640px)')[1], /grid-template-columns:\s*1fr auto;/)
+  // 단축키 표시는 넓은 화면에서만 보인다
+  const search = source('src/components/Search.astro')
+  assert.match(search, /#search-open kbd \{\s*display: none;/)
   assert.match(
-    source('src/components/Search.astro'),
-    /shortcut\.textContent[\s\S]*\? '⌘K'\s*: 'Ctrl K'/,
+    search,
+    /@media \(min-width: 46em\) \{\s*#search-open kbd \{\s*display: inline-block;/,
   )
+  assert.match(search, /shortcut\.textContent[\s\S]*\? '⌘K'\s*: 'Ctrl K'/)
 })

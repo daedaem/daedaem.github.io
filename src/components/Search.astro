@@ -6,17 +6,17 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
 <button
   id="search-open"
   type="button"
-  aria-label="검색 열기"
   aria-haspopup="dialog"
   aria-controls="search-dialog"
+  aria-keyshortcuts="Control+K"
 >
   <svg
-    width="15"
-    height="15"
+    width="18"
+    height="18"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    stroke-width="2.2"
+    stroke-width="2"
     stroke-linecap="round"
     stroke-linejoin="round"
     aria-hidden="true"
@@ -24,22 +24,22 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
     <circle cx="11" cy="11" r="7"></circle>
     <path d="m20 20-3.5-3.5"></path>
   </svg>
-  <span>검색</span>
-  <kbd id="search-shortcut">Ctrl K</kbd>
+  <span class="tb-l">검색</span>
+  <kbd id="search-shortcut" aria-hidden="true">Ctrl K</kbd>
 </button>
 
-<dialog id="search-dialog" aria-label="검색">
+<dialog id="search-dialog" class="cmd" aria-label="검색">
   <div class="search-heading">
-    <span>글·위키·학습 기록 검색</span>
-    <button id="search-close" type="button" aria-label="검색 닫기">닫기 ×</button>
+    <label class="search-scope" id="search-scope-label" hidden>
+      검색 범위
+      <select id="search-scope" class="list-input">
+        <option value="">전체</option>
+        {SEARCH_SCOPES.map((scope) => <option value={scope}>{scope}</option>)}
+      </select>
+    </label>
+    <button id="search-close" type="button" aria-label="검색 닫기">닫기</button>
   </div>
-  <label class="search-scope" id="search-scope-label" hidden>
-    검색 범위
-    <select id="search-scope" class="list-input">
-      <option value="">전체</option>
-      {SEARCH_SCOPES.map((scope) => <option value={scope}>{scope}</option>)}
-    </select>
-  </label>
+  <div id="search-mount"></div>
   <p id="search-status" class="visually-hidden" role="status" aria-atomic="true"></p>
   <p id="search-partial" class="search-partial" hidden>
     입력한 낱말과 똑같이 일치하는 곳이 없어, 앞부분이 같은 낱말로 찾은 결과입니다.
@@ -55,7 +55,11 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
     <a href="/notes/">학습 노트</a>
     <a href="/algorithms/">알고리즘</a>
   </nav>
-  <div id="search-mount"></div>
+  <p class="cmd-foot">
+    <span><kbd>↑</kbd><kbd>↓</kbd> 이동</span>
+    <span><kbd>↵</kbd> 열기</span>
+    <span><kbd>Esc</kbd> 닫기</span>
+  </p>
 </dialog>
 
 <script>
@@ -82,6 +86,13 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
       : 'Ctrl K'
   let loaded = false
   let loading: Promise<void> | undefined
+
+  // Pagefind UI의 입력은 title(안내 문구)만 있어 이름이 없다. 짧은 이름을 따로 붙인다.
+  function labelInput() {
+    const input = mount?.querySelector<HTMLInputElement>('input')
+    if (input && !input.hasAttribute('aria-label')) input.setAttribute('aria-label', '검색어')
+    return input
+  }
 
   async function ensureLoaded() {
     if (loaded || !mount) return
@@ -141,6 +152,7 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
         searching: '검색 중…',
       },
     })
+    labelInput()
     scopeLabel.hidden = false
     loaded = true
   }
@@ -159,7 +171,7 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
         })
     }
     await loading
-    if (dialog.open) dialog.querySelector<HTMLInputElement>('input')?.focus()
+    if (dialog.open) labelInput()?.focus()
   }
 
   /*
@@ -175,6 +187,7 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
   let settle: number | undefined
   function describeResults() {
     if (!mount || !status || !partial || !weak || !weakTerm) return
+    labelInput()
     const message = mount.querySelector('.pagefind-ui__message')?.textContent?.trim() ?? ''
     const raw = mount.querySelector<HTMLInputElement>('input')?.value.trim() ?? ''
     const marks = [...mount.querySelectorAll('mark')].map((m) => m.textContent?.toLowerCase() ?? '')
@@ -276,21 +289,239 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
 </script>
 
 <style is:global>
+  /* 머리줄의 검색 버튼: 아이콘 + '검색'. 단축키 표시는 넓은 화면에서만 */
+  #search-open {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: var(--control-size);
+    min-width: var(--control-size);
+    padding: 0 0.6rem;
+    border: 0;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--fg2);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #search-open:hover {
+    background: var(--soft);
+    color: var(--fg);
+  }
+  #search-open:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  #search-open svg {
+    flex-shrink: 0;
+  }
+  #search-open kbd {
+    display: none;
+  }
+  @media (min-width: 46em) {
+    #search-open kbd {
+      display: inline-block;
+    }
+  }
+
+  /* 대화상자: 위 10vh, 폭 40rem, 반경 4px. 위 띠(범위·닫기) → 입력 54px → 결과 → 안내 */
+  #search-dialog {
+    width: min(40rem, calc(100vw - 2rem));
+    max-height: min(80dvh, calc(100dvh - 10vh - 1rem));
+    margin: 10vh auto 0;
+    padding: 0;
+    border: 1px solid var(--line2);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--fg);
+    box-shadow: var(--shadow);
+    /* 결과가 길면 대화상자 안에서 스크롤한다. 없으면 뷰포트 높이에서 그대로 잘린다 */
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    /* 결과를 거꾸로 훑을 때 초점 받은 링크가 위에 붙은 띠 밑으로 숨지 않게 한다 */
+    scroll-padding-top: 3.5rem;
+    --pagefind-ui-scale: 1;
+    --pagefind-ui-primary: var(--fg);
+    --pagefind-ui-text: var(--fg);
+    --pagefind-ui-background: var(--bg);
+    --pagefind-ui-border: var(--line);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: var(--radius);
+    --pagefind-ui-tag: var(--soft);
+    --pagefind-ui-font: var(--font-sans);
+  }
+  #search-dialog[open] {
+    animation: search-fade 0.18s ease-out;
+  }
+  @keyframes search-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .search-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    min-height: 40px;
+    padding: 0 0.25rem 0 0.9rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    font-size: 0.8125rem;
+    color: var(--muted);
+  }
   .search-scope {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-    color: var(--text-muted);
-    font-size: 0.875rem;
+    gap: 0.5rem;
+    color: var(--muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
   }
   .search-scope select {
     width: auto;
-    min-width: 9rem;
+    min-width: 7rem;
+    min-height: 32px;
+    padding: 0 0.5rem;
+    font-size: 0.875rem;
+    letter-spacing: 0;
   }
-  /* The native selector above controls the same filters without a second filter panel. */
+  #search-close {
+    min-width: var(--control-size);
+    min-height: 40px;
+    padding: 0 0.65rem;
+    border: 0;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--fg2);
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #search-close:hover {
+    background: var(--soft);
+    color: var(--fg);
+  }
+  #search-close:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+
+  /* 준비 중·실패 문구 */
+  #search-mount:empty,
+  #search-mount:not(:has(.pagefind-ui__form)) {
+    padding: 0.9rem 1rem;
+    font-size: 0.9375rem;
+    color: var(--fg2);
+  }
+  /* 선택 상자가 같은 필터를 맡으므로 Pagefind의 필터 판은 쓰지 않는다 */
   #search-mount .pagefind-ui__filter-panel {
     display: none;
+  }
+  /* 입력 한 줄: 54px, 테두리 대신 아래 선. 초점은 아래 2px 강조선으로 */
+  #search-mount .pagefind-ui__form::before {
+    top: 18px;
+    left: 1rem;
+    width: 18px;
+    height: 18px;
+    background-color: var(--muted);
+    opacity: 1;
+  }
+  #search-mount .pagefind-ui__search-input {
+    height: 54px;
+    padding: 0 4rem 0 2.75rem;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--fg);
+  }
+  #search-mount .pagefind-ui__search-input:focus-visible {
+    outline: none;
+    box-shadow: inset 0 -2px 0 var(--accent);
+  }
+  /* Pagefind 기본값은 안내 글자를 opacity 0.2로 흐리게 해 배경 대비가 1.5:1까지 떨어진다 */
+  #search-mount .pagefind-ui__search-input::placeholder {
+    color: var(--muted);
+    opacity: 1;
+  }
+  #search-mount .pagefind-ui__search-clear {
+    top: 5px;
+    right: 0.4rem;
+    height: 44px;
+    padding: 0 0.65rem;
+    border: 0;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--fg2);
+    font: inherit;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  #search-mount .pagefind-ui__search-clear:hover {
+    background: var(--soft);
+    color: var(--fg);
+  }
+  #search-mount .pagefind-ui__drawer {
+    display: block;
+  }
+  #search-mount .pagefind-ui__results-area {
+    min-width: 0;
+    margin: 0;
+  }
+  /* 결과 수: 작은 라벨 */
+  #search-mount .pagefind-ui__message {
+    height: auto;
+    padding: 0.6rem 1rem 0.1rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  #search-mount .pagefind-ui__results {
+    margin: 0;
+    padding: 0.3rem 0.5rem 0.5rem;
+    list-style: none;
+  }
+  /* 결과 행: 제목 1rem/600 + 설명 .875rem 2줄. 고른 행은 옅은 면 + 왼쪽 3px 강조선 */
+  #search-mount .pagefind-ui__result {
+    display: block;
+    padding: 0.55rem 0.6rem;
+    border: 0;
+    border-radius: var(--radius);
+  }
+  #search-mount .pagefind-ui__result:last-of-type {
+    border: 0;
+  }
+  #search-mount .pagefind-ui__result:hover,
+  #search-mount .pagefind-ui__result:focus-within {
+    background: var(--soft);
+    box-shadow: inset 3px 0 0 var(--accent);
+  }
+  #search-mount .pagefind-ui__result-inner {
+    display: block;
+    margin: 0;
+  }
+  #search-mount .pagefind-ui__result-title {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
   }
   /*
    * 검색 결과 링크는 글자 높이가 20–23px이라 손가락으로 누르기 어렵다.
@@ -304,155 +535,105 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
     padding-block: 0.375rem;
     margin-block: -0.375rem;
   }
-  /* Pagefind 기본값은 안내 글자를 opacity 0.2로 흐리게 해 배경 대비가 1.5:1까지 떨어진다 */
-  #search-mount .pagefind-ui__search-input::placeholder {
-    color: var(--text-muted);
-    opacity: 1;
+  #search-mount .pagefind-ui__result-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  #search-mount .pagefind-ui__result-excerpt {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-width: 0;
+    margin-top: 0.1rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--fg2);
+  }
+  #search-mount .pagefind-ui__result-nested {
+    padding-left: 1rem;
+  }
+  #search-mount .pagefind-ui__result-nested:first-of-type {
+    padding-top: 0.35rem;
+  }
+  #search-mount .pagefind-ui__result-nested .pagefind-ui__result-link {
+    font-size: 0.9375rem;
+  }
+  /* 하위 결과의 ↳ 화살표를 링크 밖 절대 위치 대신 글자 앞에 둔다 */
+  #search-mount .pagefind-ui__result-nested .pagefind-ui__result-link::before {
+    position: static;
+    margin-right: 0.35em;
+    color: var(--muted);
+  }
+  /* 원색 노랑 대신 강조색을 옅게 깐 무채 하이라이트 하나 */
+  #search-mount mark {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    color: inherit;
+  }
+  #search-mount .pagefind-ui__button {
+    margin: 0.5rem 0 0;
+    height: var(--control-size);
+    border: 1px solid var(--line2);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--fg);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  #search-mount .pagefind-ui__button:hover {
+    background: var(--soft);
+  }
+  #search-mount.is-weak .pagefind-ui__drawer {
+    display: none;
+  }
+
+  .search-partial {
+    margin: 0;
+    padding: 0.6rem 1rem;
+    border-top: 1px solid var(--line);
+    color: var(--fg2);
+    font-size: 0.875rem;
+    line-height: 1.6;
   }
   .search-help {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0 0.75rem;
-    margin: 0 0 0.75rem;
+    margin: 0;
+    padding: 0.25rem 1rem 0.4rem;
     font-size: 0.875rem;
-    color: var(--text-muted);
+    color: var(--muted);
   }
   .search-help a {
     display: inline-flex;
     align-items: center;
     min-height: var(--control-size);
-    color: var(--accent);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
+    color: var(--fg);
   }
-  /* 원색 노랑 대신 사이트 강조색을 옅게 깐다 */
-  #search-mount mark {
-    background: color-mix(in srgb, var(--accent) 22%, transparent);
-    color: inherit;
-    border-radius: 2px;
+  /* 아래 단축키 안내. 가리킬 수 없는 기기(터치)에서는 숨긴다 */
+  .cmd-foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin: 0;
+    padding: 0.5rem 0.9rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.8125rem;
+    color: var(--muted);
   }
-  /* 좁은 화면에서는 결과 하나가 화면을 다 차지하지 않게 여백과 하위 결과를 줄인다 */
-  @media (max-width: 40rem) {
-    #search-mount .pagefind-ui__result {
-      padding-block: 0.75rem;
-    }
-    #search-mount .pagefind-ui__result-nested {
-      padding-left: 0.75rem;
-    }
-    #search-mount .pagefind-ui__result-nested .pagefind-ui__result-excerpt {
+  .cmd-foot kbd {
+    margin-right: 0.3em;
+  }
+  @media (hover: none) {
+    .cmd-foot {
       display: none;
     }
-    .search-scope {
-      margin-bottom: 0.5rem;
-    }
   }
-  #search-mount.is-weak .pagefind-ui__drawer {
-    display: none;
-  }
-  #search-mount .pagefind-ui__result-link:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-  #search-open {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    height: var(--control-size);
-    min-width: var(--control-size);
-    padding: 0 0.6rem;
-    background: var(--bg-subtle);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text-muted);
-    font: inherit;
-    font-size: 0.8125rem;
-    cursor: pointer;
-  }
-  #search-open:hover {
-    border-color: var(--accent);
-    color: var(--text);
-  }
-  #search-open:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-  #search-open kbd {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    opacity: 0.7;
-  }
-
-  #search-dialog {
-    width: min(38rem, 92vw);
-    margin-top: 12vh;
-    padding: 1rem;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: var(--bg);
-    color: var(--text);
-    /* 결과가 길면 대화상자 안에서 스크롤한다. 없으면 뷰포트 높이에서 그대로 잘린다 */
-    max-height: min(72vh, calc(100vh - 14vh - 2rem));
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    /* 결과를 거꾸로 훑을 때 초점 받은 링크가 위에 붙은 제목 띠 밑으로 숨지 않게 한다 */
-    scroll-padding-top: 4.5rem;
-  }
-  .search-partial {
-    margin: 0 0 0.75rem;
-    padding: 0.5rem 0.75rem;
-    border-left: 2px solid var(--border-strong);
-    color: var(--text-muted);
-    font-size: 0.8125rem;
-  }
-  #search-dialog::backdrop {
-    background: rgb(0 0 0 / 0.45);
-  }
-
-  .search-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    position: sticky;
-    top: -1rem;
-    z-index: 1;
-    margin: -1rem -1rem 0.75rem;
-    padding: 0.5rem 1rem;
-    background: var(--bg);
-    border-bottom: 1px solid var(--border);
-    font-size: 0.8125rem;
-    color: var(--text-muted);
-  }
-  #search-close {
-    min-width: 44px;
-    min-height: 44px;
-    padding: 0.5rem;
-    border: 0;
-    border-radius: 6px;
-    background: var(--bg-subtle);
-    color: var(--text);
-    font: inherit;
-    cursor: pointer;
-  }
-  #search-close:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-
-  #search-dialog {
-    --pagefind-ui-primary: var(--text);
-    --pagefind-ui-text: var(--text);
-    --pagefind-ui-background: var(--bg);
-    --pagefind-ui-border: var(--border);
-    --pagefind-ui-tag: var(--bg-subtle);
-    --pagefind-ui-font: var(--font-sans);
-    --pagefind-ui-scale: 0.9;
-  }
-
-  /* 좁은 화면과 터치 기기에서는 단축키 안내가 의미 없으므로 숨기고, '검색' 글자는 남긴다 */
-  @media (max-width: 40rem), (hover: none) {
-    #search-open kbd {
+  /* 좁은 화면에서는 결과 하나가 화면을 다 차지하지 않게 하위 결과의 발췌를 줄인다 */
+  @media (max-width: 40rem) {
+    #search-mount .pagefind-ui__result-nested .pagefind-ui__result-excerpt {
       display: none;
     }
   }

@@ -20,13 +20,32 @@ test('the reading canvas is neutral white while the approved navy brand is prese
   const [light, systemDark, selectedDark] = palettes
   assert.equal(light.bg, '#ffffff')
   assert.equal(light.text, '#191f28')
-  assert.equal(light['text-secondary'], '#384452')
-  assert.equal(light.accent, '#294970')
+  assert.equal(light['text-secondary'], '#3d4552')
+  assert.equal(light.accent, '#223e60')
   assert.equal(light['mark-bg'], '#223e60')
   assert.equal(light['mark-ink'], '#fcfaf5')
-  assert.equal(systemDark.bg, '#161c24')
-  assert.equal(systemDark.text, '#eff3f8')
+  assert.equal(systemDark.bg, '#14181f')
+  assert.equal(systemDark.text, '#e4e9f0')
   assert.deepEqual(systemDark, selectedDark)
+  // 새 이름(--fg/--fg2/--muted/--line/--soft/--code)과 옛 이름은 같은 값이다
+  for (const palette of palettes) {
+    assert.equal(palette.text, palette.fg)
+    assert.equal(palette['text-secondary'], palette.fg2)
+    assert.equal(palette['text-muted'], palette.muted)
+    assert.equal(palette.border, palette.line)
+    assert.equal(palette['border-strong'], palette.line2)
+    assert.equal(palette['bg-subtle'], palette.soft)
+    assert.equal(palette['code-bg'], palette.code)
+  }
+  // 반경은 하나. 알약(999px)과 12px 시트는 목차 시트·FAB에만 남는다
+  assert.match(css, /--radius: 4px;/)
+  assert.doesNotMatch(css, /border-radius: (?:6|8|10)px/)
+  assert.match(css, /body \{[^}]*font-size: 1\.125rem;[^}]*line-height: 1\.8;/)
+  assert.match(
+    css,
+    /text-wrap: pretty;[^}]*hanging-punctuation: first;[^}]*text-spacing-trim: space-first;/,
+  )
+  assert.match(css, /\nem \{\s*font-style: normal;\s*font-weight: 600;/)
 })
 
 test('body and summary tokens exceed 7:1 on each reading surface in both themes', () => {

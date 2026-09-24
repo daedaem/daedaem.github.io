@@ -9,52 +9,50 @@ const path = Astro.url.pathname
 const active = activeNavigation(path)
 ---
 
-<header id="site-header">
-  <div class="wrap-wide bar">
+<header id="site-header" class="top">
+  <div class="top-in">
     <a href="/" class="brand">
-      <Mark size={34} class="brand-mark" />
-      {SITE.title}
+      <Mark size={22} class="brand-mark" />
+      <span>{SITE.title}</span>
     </a>
-    <div class="right">
-      <nav aria-label="주요 메뉴">
-        <ul>
-          {
-            PRIMARY_NAV.map((item) => (
-              <li>
-                <a
-                  href={item.href}
-                  aria-current={
-                    active !== item.href ? undefined : path === item.href ? 'page' : 'true'
-                  }
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-      </nav>
-      <div class="tools">
-        <Search />
-        <ThemeToggle />
-      </div>
+    <nav class="nav" aria-label="주요 메뉴">
+      <ul>
+        {
+          PRIMARY_NAV.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={
+                  active !== item.href ? undefined : path === item.href ? 'page' : 'true'
+                }
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="tools">
+      <Search />
+      <ThemeToggle />
     </div>
   </div>
 </header>
 
 <script>
+  /*
+   * 모든 폭에서, 아래로 120px 넘게 읽어 내려가면 머리줄을 위로 올려 두고 위로 스크롤하면 다시 내린다.
+   * 머리줄 안에 키보드 초점이 있거나 대화상자가 열려 있으면 숨기지 않는다.
+   */
   const header = document.getElementById('site-header')!
-  const narrow = matchMedia('(max-width: 640px)')
   let lastY = scrollY
   let scheduled = false
   function place() {
     scheduled = false
     const y = scrollY
     const keep =
-      !narrow.matches ||
-      y < 120 ||
-      header.contains(document.activeElement) ||
-      document.querySelector('dialog[open]')
+      y < 120 || header.contains(document.activeElement) || document.querySelector('dialog[open]')
     if (keep || y < lastY - 6) header.classList.remove('is-away')
     else if (y > lastY + 6) header.classList.add('is-away')
     lastY = y
@@ -68,133 +66,18 @@ const active = activeNavigation(path)
     },
     { passive: true },
   )
-  narrow.addEventListener('change', place)
   header.addEventListener('focusin', () => header.classList.remove('is-away'))
 </script>
 
 <style>
+  /* 위 3px 남색 선 위에 한 줄. 모바일은 로고줄 52 + 메뉴줄 40, 데스크톱은 57 */
   header {
-    border-bottom: 1px solid var(--border);
-    background: var(--bg);
     position: sticky;
     top: 0;
     z-index: 10;
-  }
-
-  .bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px 28px;
-    min-height: 80px;
-    flex-wrap: wrap;
-  }
-
-  .brand {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--control-size);
-    gap: 10px;
-    font-size: 1.4375rem;
-    font-weight: 800;
-    letter-spacing: -0.05em;
-    white-space: nowrap;
-  }
-  .brand :global(.brand-mark) {
-    color: var(--accent);
-  }
-
-  .right {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-
-  .tools {
-    display: flex;
-    align-items: center;
-    gap: 0;
-  }
-
-  nav ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 18px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    font-size: 14px;
-  }
-
-  nav a {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: var(--control-size);
-    min-width: var(--control-size);
-    padding-inline: 6px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-  }
-
-  nav a:hover {
-    color: var(--text);
-  }
-
-  nav a[aria-current] {
-    color: var(--text);
-    font-weight: 600;
-  }
-  nav a[aria-current]::after {
-    content: '';
-    position: absolute;
-    bottom: 1px;
-    inset-inline: 6px;
-    height: 2px;
-    background: var(--accent);
-  }
-  .tools :global(#search-open),
-  .tools :global(#theme-toggle) {
-    background: transparent;
-    border-color: transparent;
-    width: var(--control-size);
-    padding-inline: 0;
-  }
-  /* 검색은 모든 너비에서 글자 라벨을 함께 보인다. 단축키 표시만 넓은 화면에서 보인다 */
-  .tools :global(#search-open) {
-    width: auto;
-    gap: 0.375rem;
-    padding-inline: 0.625rem;
-    /* 글자처럼 보이지 않게 테두리를 남긴다 */
-    border-color: var(--border);
-  }
-  .tools :global(#search-open kbd) {
-    display: none;
-  }
-
-  @media (min-width: 1024px) and (hover: hover) {
-    .tools :global(#search-open) {
-      width: auto;
-      min-width: var(--control-size);
-      padding-inline: 0.625rem;
-      font-size: var(--type-label);
-    }
-    .tools :global(#search-open kbd) {
-      display: inline;
-    }
-    .tools :global(#search-open kbd) {
-      font-size: 0.75rem;
-      opacity: 1;
-    }
-  }
-
-  /*
-   * 좁은 화면에서 머리줄은 두 줄(약 111px, 화면의 13%)이다. 아래로 읽는 동안에는 올려 두고,
-   * 위로 스크롤하거나 키보드 초점이 들어오면 다시 내린다. 움직임을 줄인 설정에서는 바로 바뀐다.
-   */
-  header {
+    border-top: 3px solid var(--mark-bg);
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
     transition: translate 0.2s ease-out;
   }
   header.is-away {
@@ -206,37 +89,111 @@ const active = activeNavigation(path)
     }
   }
 
-  /* 좁은 화면: 첫 줄에 로고와 검색·테마 버튼, 둘째 줄에 가로로 넘기는 메뉴. 두 줄로 끝낸다. */
-  @media (max-width: 640px) {
-    .bar {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      row-gap: 4px;
-      min-height: 0;
-      padding-block: 14px 4px;
+  .top-in {
+    max-width: 45rem;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'brand tools'
+      'nav nav';
+    align-items: center;
+  }
+
+  .brand {
+    grid-area: brand;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 52px;
+    font-size: 1rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .brand :global(.brand-mark) {
+    flex-shrink: 0;
+  }
+
+  /* 모바일 둘째 줄: 가로로 넘기는 메뉴 */
+  .nav {
+    grid-area: nav;
+    height: 40px;
+    margin: 0 -1rem;
+    padding: 0 0.5rem;
+    border-top: 1px solid var(--line);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar {
+    display: none;
+  }
+  .nav ul {
+    display: flex;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .nav a {
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    min-height: 40px;
+    min-width: var(--control-size);
+    padding: 0 0.55rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--fg2);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav a:hover {
+    background: var(--soft);
+    color: var(--fg);
+  }
+  /* 현재 메뉴: 아래 2px 강조선 */
+  nav a[aria-current] {
+    color: var(--fg);
+    box-shadow: inset 0 -2px 0 var(--accent);
+  }
+
+  .tools {
+    grid-area: tools;
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    margin-right: -0.5rem;
+  }
+
+  @media (min-width: 46em) {
+    .top-in {
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas: 'brand nav tools';
+      min-height: 57px;
     }
-    .right {
-      display: contents;
+    .brand {
+      min-height: var(--control-size);
     }
-    .tools {
-      grid-column: 2;
-      grid-row: 1;
+    .nav {
+      height: auto;
+      margin: 0 0 0 1.25rem;
+      padding: 0;
+      border: 0;
+      overflow: visible;
     }
-    nav {
-      grid-column: 1 / -1;
-      grid-row: 2;
-      overflow-x: auto;
-      scrollbar-width: none;
-      margin-inline: 0;
-      padding-inline: 0;
+    .nav a {
+      min-height: var(--control-size);
+      padding: 0 0.7rem;
     }
-    nav::-webkit-scrollbar {
-      display: none;
-    }
-    nav ul {
-      flex-wrap: nowrap;
-      justify-content: space-between;
-      gap: 8px;
+  }
+  @media (min-width: 75em) {
+    .top-in {
+      max-width: none;
+      padding: 0 2rem;
     }
   }
 </style>

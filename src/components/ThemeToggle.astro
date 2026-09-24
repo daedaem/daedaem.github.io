@@ -5,8 +5,8 @@
 <button id="theme-toggle" type="button" aria-label="다크 모드로 전환">
   <svg
     class="sun"
-    width="16"
-    height="16"
+    width="18"
+    height="18"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -22,8 +22,8 @@
   </svg>
   <svg
     class="moon"
-    width="16"
-    height="16"
+    width="18"
+    height="18"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -39,6 +39,7 @@
 <script>
   const btn = document.getElementById('theme-toggle')
   const media = window.matchMedia('(prefers-color-scheme: dark)')
+  const themeColor = { light: '#ffffff', dark: '#14181f' }
 
   function effective(): 'light' | 'dark' {
     const set = document.documentElement.getAttribute('data-theme')
@@ -49,8 +50,11 @@
   // 다음 동작을 이름으로 알리는 일반 버튼이므로 aria-pressed는 쓰지 않는다.
   function sync() {
     if (!btn) return
-    const dark = effective() === 'dark'
-    btn.setAttribute('aria-label', dark ? '라이트 모드로 전환' : '다크 모드로 전환')
+    const theme = effective()
+    btn.setAttribute('aria-label', theme === 'dark' ? '라이트 모드로 전환' : '다크 모드로 전환')
+    // 저장한 테마가 시스템 설정과 다르면 브라우저 틀 색도 실효 테마를 따르게 한다
+    for (const meta of document.querySelectorAll('meta[name="theme-color"]'))
+      meta.setAttribute('content', themeColor[theme])
   }
 
   btn?.addEventListener('click', () => {
@@ -78,16 +82,16 @@
     height: var(--control-size);
     flex-shrink: 0;
     padding: 0;
-    background: var(--bg-subtle);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text-muted);
+    border: 0;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--fg2);
     cursor: pointer;
   }
 
   #theme-toggle:hover {
-    border-color: var(--accent);
-    color: var(--text);
+    background: var(--soft);
+    color: var(--fg);
   }
 
   #theme-toggle:focus-visible {
