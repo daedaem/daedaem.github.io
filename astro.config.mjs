@@ -53,7 +53,7 @@ export default defineConfig({
       rehypePlugins: [rehypeContentFixups],
     }),
     shikiConfig: {
-      themes: { light: 'github-light', dark: 'github-dark' },
+      themes: { light: 'light-plus', dark: 'dark-plus' },
       transformers: [readableCodeColors()],
       wrap: true,
     },

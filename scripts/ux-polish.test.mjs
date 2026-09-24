@@ -3,15 +3,17 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import readableCodeColors, {
   readableLightColors,
-  readableDarkComment,
+  readableDarkColors,
 } from '../src/plugins/shiki-readable-colors.mjs'
 import { checkRenderedCodeContrast, contrastRatio } from './code-contrast.mjs'
 import { selectHomeContent, HOME_READING_PICKS } from '../src/utils/home-content.mjs'
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const background = source('src/styles/global.css').match(/--code-bg:\s*(#[\da-f]{6})/)?.[1]
+// VS Code Dark+ 배경과 사이트 다크 코드 면 중 더 밝은 쪽까지 통과해야 한다
+const darkBackgrounds = ['#1e1e1e', '#1d2025']
 
-test('all three low-contrast syntax colors have a readable light replacement', () => {
+test('low-contrast Light+ syntax colors have a readable light replacement', () => {
   for (const [before, after] of Object.entries(readableLightColors)) {
     assert.ok(contrastRatio(before, background) < 4.5)
     assert.ok(contrastRatio(after, background) >= 4.5)
@@ -19,23 +21,23 @@ test('all three low-contrast syntax colors have a readable light replacement', (
   assert.equal(contrastRatio('#fff', '#000'), 21)
 })
 
-test('Shiki transformer changes only the exact light color, preserving dark and backgrounds', () => {
-  const node = {
-    properties: { style: 'color:#D73A49;--shiki-dark:#F97583;background-color:#D73A49' },
+test('low-contrast Dark+ syntax colors have a readable dark replacement', () => {
+  for (const [before, after] of Object.entries(readableDarkColors)) {
+    assert.ok(darkBackgrounds.some((bg) => contrastRatio(before, bg) < 4.5))
+    for (const bg of darkBackgrounds) assert.ok(contrastRatio(after, bg) >= 4.5)
   }
-  readableCodeColors().span(node)
-  assert.equal(node.properties.style, 'color:#bc3040;--shiki-dark:#F97583;background-color:#D73A49')
-  const unchanged = { properties: { style: 'font-weight:bold;color:#24292e;--shiki-dark:#d73a49' } }
-  readableCodeColors().span(unchanged)
-  assert.equal(unchanged.properties.style, 'font-weight:bold;color:#24292e;--shiki-dark:#d73a49')
-  assert.doesNotThrow(() => readableCodeColors().span({ properties: {} }))
 })
 
-test('dark comments meet contrast without changing the light comment color', () => {
-  const node = { properties: { style: 'color:#6A737D;--shiki-dark:#6A737D' } }
+test('Shiki transformer changes only the exact mapped colors, preserving backgrounds', () => {
+  const node = {
+    properties: { style: 'color:#267F99;--shiki-dark:#808080;background-color:#267F99' },
+  }
   readableCodeColors().span(node)
-  assert.equal(node.properties.style, `color:#6A737D;--shiki-dark:${readableDarkComment}`)
-  assert.ok(contrastRatio(readableDarkComment, '#24292e') >= 4.5)
+  assert.equal(node.properties.style, 'color:#1f6f86;--shiki-dark:#8c8c8c;background-color:#267F99')
+  const unchanged = { properties: { style: 'font-weight:bold;color:#000000;--shiki-dark:#267f99' } }
+  readableCodeColors().span(unchanged)
+  assert.equal(unchanged.properties.style, 'font-weight:bold;color:#000000;--shiki-dark:#267f99')
+  assert.doesNotThrow(() => readableCodeColors().span({ properties: {} }))
 })
 
 const code = (span) =>
