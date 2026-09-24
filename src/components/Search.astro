@@ -305,6 +305,7 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
     align-items: center;
     gap: 0.4rem;
     height: var(--control-size);
+    min-width: var(--control-size);
     padding: 0 0.6rem;
     background: var(--bg-subtle);
     border: 1px solid var(--border);
@@ -395,16 +396,10 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
     --pagefind-ui-scale: 0.9;
   }
 
-  /* 좁은 화면과 터치 기기에서는 단축키 안내가 의미 없으므로 돋보기만 남긴다 */
+  /* 좁은 화면과 터치 기기에서는 단축키 안내가 의미 없으므로 숨기고, '검색' 글자는 남긴다 */
   @media (max-width: 40rem), (hover: none) {
-    #search-open span,
     #search-open kbd {
       display: none;
-    }
-    #search-open {
-      width: var(--control-size);
-      padding: 0;
-      justify-content: center;
     }
   }
 </style>
