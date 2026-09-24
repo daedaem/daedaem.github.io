@@ -1,6 +1,7 @@
 /**
- * 1200px 미만에서는 목차가 본문 위에 접혀 있어, 글 중간에서 다른 절로 가려면 목차까지
- * 한참 되돌아가야 한다. 본문의 목차가 화면 위로 지나가면 오른쪽 아래에 '목차' 버튼을 띄우고,
+ * 목차가 본문 위에만 있는 화면(1200px 미만 전부, 넓은 화면의 위키 문서)에서는 글 중간에서
+ * 다른 절로 가려면 목차까지 한참 되돌아가야 한다. 본문의 목차가 화면 위로 지나가면
+ * 오른쪽 아래에 '목차' 버튼을 띄우고,
  * 누르면 같은 목록을 대화상자로 연다. 목록의 링크는 본문 목차와 같은 #앵커라서 주소와
  * 방문 기록이 그대로 남는다. JS가 없으면 본문의 목차만 쓴다.
  */
@@ -63,15 +64,9 @@ export function initTocSheet(root = document, view = window) {
     })
   })
 
-  const wide = view.matchMedia('(min-width: 1200px)')
-  let passed = false
-  const sync = () => {
-    button.hidden = wide.matches || !passed
-    if (wide.matches && dialog.open) dialog.close()
-  }
+  // 넓은 화면의 사례 글처럼 목차가 옆에 붙어 따라오면(sticky) 화면에 남아 있으므로 버튼이 뜨지 않는다.
   new view.IntersectionObserver(([entry]) => {
-    passed = !entry.isIntersecting && entry.boundingClientRect.bottom < 0
-    sync()
+    button.hidden = entry.isIntersecting || entry.boundingClientRect.bottom >= 0
+    if (button.hidden && dialog.open) dialog.close()
   }).observe(nav)
-  wide.addEventListener('change', sync)
 }
