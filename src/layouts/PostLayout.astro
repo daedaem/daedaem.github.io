@@ -256,6 +256,7 @@ const heading = splitEditorialTitle(title)
 
 <script>
   import { initCurrentHeading } from '@/utils/current-heading.mjs'
+  import { initTocSheet } from '@/utils/toc-sheet.mjs'
   // 초기 상태는 목차 직후의 동기 스크립트가 정한다. 늦은 모듈 실행으로 수동 조작을 덮지 않는다.
   const contents = document.querySelector<HTMLDetailsElement>('.post > .toc details')
   const wide = matchMedia('(min-width: 1200px)')
@@ -267,6 +268,7 @@ const heading = splitEditorialTitle(title)
   }
 
   initCurrentHeading()
+  initTocSheet()
 </script>
 
 <style>

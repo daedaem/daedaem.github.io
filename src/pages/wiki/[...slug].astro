@@ -137,6 +137,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
 
 <script>
   import { initCurrentHeading } from '@/utils/current-heading.mjs'
+  import { initTocSheet } from '@/utils/toc-sheet.mjs'
   // 초기 상태는 동기 스크립트에서 정하고, 모듈은 화면 분기 변경에만 반응한다.
   const contents = document.querySelector<HTMLDetailsElement>('.post > .toc details')
   const narrow = matchMedia('(max-width: 60rem)')
@@ -147,6 +148,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
     narrow.addEventListener('change', sync)
   }
   initCurrentHeading()
+  initTocSheet()
 </script>
 
 <style>

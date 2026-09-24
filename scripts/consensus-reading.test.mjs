@@ -43,6 +43,7 @@ for (const [path, query, narrowMatch] of outlines) {
     for (const isNarrow of [true, false]) {
       let change
       let locationInitializations = 0
+      let tocSheetInitializations = 0
       // The reader toggled the native summary after the inline initializer.
       const details = { open: isNarrow }
       const media = {
@@ -59,9 +60,11 @@ for (const [path, query, narrowMatch] of outlines) {
           return media
         },
         initCurrentHeading: () => locationInitializations++,
+        initTocSheet: () => tocSheetInitializations++,
       })
       assert.equal(details.open, isNarrow, 'module must not overwrite a user toggle')
       assert.equal(locationInitializations, 1)
+      assert.equal(tocSheetInitializations, 1)
       assert.equal(typeof change, 'function')
       media.matches = !media.matches
       details.open = !isNarrow
@@ -72,6 +75,7 @@ for (const [path, query, narrowMatch] of outlines) {
       document: { querySelector: () => null },
       matchMedia: () => ({}),
       initCurrentHeading() {},
+      initTocSheet() {},
     })
   })
 }
