@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PageHead from '@/components/PageHead.astro'
 import { WIKI_TOPICS, getWikiTopic } from '@/consts'
-import { formatDate } from '@/utils/format'
+import { formatCompactDate } from '@/utils/format'
 const entries = (await getCollection('wiki', ({ data }) => !data.draft)).sort(
   (a, b) =>
     (b.data.updated ?? b.data.created).valueOf() - (a.data.updated ?? a.data.created).valueOf(),
@@ -113,7 +113,9 @@ const documents = entries.map((entry) => ({
             aria-live="polite"
           >
             {entries.length}개 문서
-          </p>
+          </p><button type="button" id="wiki-clear" class="control-button" hidden>
+            조건 지우기
+          </button>
         </div>
         <ul id="wiki-documents" class="documents">
           {
@@ -142,7 +144,7 @@ const documents = entries.map((entry) => ({
                         .join(' ')}
                     </span>
                     <time datetime={(entry.data.updated ?? entry.data.created).toISOString()}>
-                      {formatDate(entry.data.updated ?? entry.data.created)}
+                      {formatCompactDate(entry.data.updated ?? entry.data.created)}
                       {entry.data.updated ? ' 갱신' : ' 작성'}
                     </time>
                   </>
@@ -154,7 +156,12 @@ const documents = entries.map((entry) => ({
         <div id="wiki-empty" class="empty" hidden>
           <h3>조건에 맞는 문서가 없습니다.</h3><p>
             검색어를 줄이거나 주제·정리 상태를 바꿔 보세요.
-          </p><button type="button" id="wiki-reset" class="control-button">전체 문서 보기</button>
+          </p><div class="empty-actions">
+            <button type="button" id="wiki-reset" class="control-button">전체 문서 보기</button
+            ><button type="button" id="wiki-global" class="control-button">
+              본문까지 전체 검색
+            </button>
+          </div>
         </div>
         <nav class="pagination" aria-label="위키 쪽 이동" id="wiki-pagination" hidden>
           <button id="wiki-prev" type="button" class="control-button">← 이전</button><span
@@ -223,12 +230,20 @@ const documents = entries.map((entry) => ({
           : '최근 갱신한 문서'
     document.getElementById('wiki-options-state')!.textContent =
       status.value || sort.value !== 'updated' ? '· 조건 적용 중' : ''
+    // 결과가 없을 때의 안내는 모바일에서 첫 화면 밖에 놓이므로, 화면 안의 건수 줄이 대신 알린다.
     document.getElementById('wiki-count')!.textContent =
       result.total +
       '개 문서' +
       (result.total
         ? ' · ' + ((page - 1) * 12 + 1) + '–' + Math.min(page * 12, result.total) + '번째'
-        : '')
+        : ' · 조건에 맞는 문서가 없습니다')
+    // 거르는 조건이 하나라도 있으면 접힌 '상태·정렬' 밖에서도 바로 지울 수 있게 한다.
+    document.getElementById('wiki-clear')!.hidden = !(
+      query.value.trim() ||
+      topic ||
+      status.value ||
+      sort.value !== 'updated'
+    )
     document.getElementById('wiki-empty')!.hidden = result.total > 0
     document.getElementById('wiki-pagination')!.hidden = result.pages <= 1
     document.getElementById('wiki-page')!.textContent = page + ' / ' + result.pages + '쪽'
@@ -288,6 +303,14 @@ const documents = entries.map((entry) => ({
     reset()
   })
   document.getElementById('wiki-reset')!.addEventListener('click', reset)
+  document.getElementById('wiki-clear')!.addEventListener('click', () => {
+    reset()
+    query.focus()
+  })
+  // 목록의 제목·설명·태그에 없더라도 본문에는 있을 수 있어, 같은 낱말로 사이트 검색을 연다.
+  document.getElementById('wiki-global')!.addEventListener('click', () => {
+    dispatchEvent(new CustomEvent('site-search', { detail: query.value.trim() }))
+  })
   for (const link of topics)
     link.addEventListener('click', (e) => {
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
@@ -412,6 +435,15 @@ const documents = entries.map((entry) => ({
   .result-head p {
     color: var(--text-muted);
     font-size: 0.875rem;
+  }
+  #wiki-clear {
+    margin-left: auto;
+  }
+  .empty-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
   }
   .documents {
     list-style: none;
