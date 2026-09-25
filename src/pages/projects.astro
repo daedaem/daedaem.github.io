@@ -138,19 +138,27 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
       font-size: 1.125rem;
     }
   }
+  /* 바로가기: 알약 줄 */
   .project-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 0 1.5rem;
-    margin-top: 0.5rem;
+    gap: 6px;
+    margin-top: 14px;
   }
   .project-nav a {
     display: inline-flex;
     align-items: center;
-    min-height: var(--control-size);
-    font-size: 0.9375rem;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    font-size: 0.875rem;
     font-weight: 600;
-    color: var(--fg2);
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .project-nav a:hover {
+    background: var(--soft);
   }
   .project-nav a:focus-visible,
   h2:focus-visible {
@@ -173,12 +181,14 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
     padding-top: 0;
     border-top: 0;
   }
-  /* 프로젝트 하나: 위 1px 선의 행. 라벨(기간) → 제목 → 문장. 상자·채움·칩은 없다 */
+  /* 프로젝트 하나: 카드(12px 반경). 라벨(기간) → 제목 → 문장 → 기술 → 저장소 알약 */
   .project,
   .team-project {
-    margin-top: 1.5rem;
-    padding: 1.25rem 0 0;
-    border-top: 1px solid var(--line);
+    margin-top: 1rem;
+    padding: 18px 20px 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    background: var(--card);
   }
   .project h3 {
     margin: 0.3rem 0 0;
@@ -209,7 +219,7 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
   .points li {
     margin: 0;
     padding-left: 0.875rem;
-    border-left: 2px solid var(--line2);
+    border-left: 2px solid var(--line);
   }
   .points strong {
     display: block;
@@ -228,11 +238,20 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
     display: inline-flex;
     align-items: center;
     min-height: var(--control-size);
-    font-size: 0.9375rem;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    font-size: 0.875rem;
     font-weight: 600;
     white-space: nowrap;
+    text-decoration: none;
+  }
+  a.repo:hover {
+    background: var(--soft);
   }
   .repo.private {
+    padding: 0;
+    border: 0;
     color: var(--muted);
     font-weight: 400;
   }
@@ -261,11 +280,12 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
     object-fit: cover;
     object-position: top center;
     border: 1px solid var(--line);
+    border-radius: var(--radius);
     background: var(--soft);
   }
   .shot figcaption {
     margin-top: 0.4rem;
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     color: var(--muted);
   }
   .meta {
@@ -284,7 +304,7 @@ const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>')
     align-items: baseline;
   }
   .meta dt {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 0.04em;
     color: var(--muted);

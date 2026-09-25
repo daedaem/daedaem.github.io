@@ -18,17 +18,22 @@ const CASES = [
 ]
 const caseText = CASES.map((c) => `${c.title} ${c.judgement} ${c.outcome}`).join(' ')
 
-test('home keeps factual identity: role label, author name and the one intro sentence', () => {
+test('home keeps factual identity: role label, motto headline and the one intro sentence', () => {
   const home = read('src/pages/index.astro')
-  // 직무는 13px 라벨이 아니라 이름 옆 본문 크기의 글자다. 낱말은 consts의 SITE.role 한 곳에서 온다
-  assert.match(home, /<span class="role"[\s\S]*?\{SITE\.role\}<\/span/)
-  // 이름과 직무 사이의 공백이 있어 접근 가능한 이름이 '조해성 백엔드 개발자'로 읽힌다
-  assert.match(home, /<h1[^>]*>\s*\{SITE\.author\}\{' '\}<span class="role"/)
+  // 첫 화면(시안): 작은 줄 '조해성 · 백엔드 개발자' → h1 좌우명 → 소개 문장 → 주력 기술 한 줄.
+  // 낱말은 consts의 SITE 한 곳에서 온다(이름·직무·좌우명·소개·환경)
+  assert.match(home, /<p class="role">\{SITE\.author\} · \{SITE\.role\}<\/p>/)
+  assert.match(home, /<h1 id="hero-title">[\s\S]*?motto\.before[\s\S]*?class="grad"[\s\S]*?<\/h1>/)
+  assert.match(home, /SITE\.motto\.indexOf\(SITE\.mottoAccent\)/)
   assert.match(home, /<p class="env">\{SITE\.environment\}<\/p>/)
   assert.match(home, /<p class="lede">\{SITE\.intro\}<\/p>/)
+  assert.ok(home.indexOf('{SITE.intro}') < home.indexOf('{SITE.environment}'))
   assert.doesNotMatch(home, /백엔드 · 레거시 시스템 · 문제 해결|남긴 기록입니다/)
-  // 추천 글 행의 결과 줄은 cases.ts의 outcomePlain(한다체). 원인 한 줄(frontmatter, 한다체)과 말투를 맞춘다
-  assert.match(home, /outcome=\{CASES\.find\(\(c\) => c\.id === post\.id\)\?\.outcomePlain\}/)
+  // 추천 카드의 결과 줄은 cases.ts의 outcomePlain(한다체). 원인 한 줄(frontmatter, 한다체)과 말투를 맞춘다
+  assert.match(home, /outcome: CASES\.find\(\(c\) => c\.id === post\.id\)\?\.outcomePlain/)
+  // 연락은 소개의 연락 절로 모은다. 홈에 메일 주소를 직접 드러내지 않는다
+  assert.match(home, /href="\/about\/#contact"/)
+  assert.doesNotMatch(home, /mailto:/)
 })
 
 test('AI disclosure distinguishes author records from editing help without claiming full verification', () => {
@@ -221,16 +226,16 @@ test('project navigation separates ongoing work from education and prioritizes i
   assert.ok(projects.indexOf('<dl class="meta">') < projects.indexOf('<figure class="shot">'))
   assert.match(projects, /alt=\{t.image.alt\}/)
   assert.match(projects, /\{t.period.slice\(0, 4\)\}년 당시 화면/)
-  // 편집 지면의 행 문법: 기간 라벨(.k) → h3, 위 1px 선. 상자·채움·칩·배지는 없다
+  // 카드 문법(시안): 기간 라벨(.k) → h3. 카드는 12px 반경 1px 선이고 배지·기술 칩은 없다
   assert.match(projects, /<p class="k">\{p\.period\}<\/p>\s*<h3>\{p\.name\}<\/h3>/)
   assert.match(
     projects,
     /<p class="k">\s*\{t\.period\}\s*\{t\.lead && ' · 팀장'\}\s*<\/p>\s*<h3>\{t\.name\}<\/h3>/,
   )
   assert.match(projects, /<dt>기술<\/dt>\s*<dd>\{p\.stack\.join\(', '\)\}<\/dd>/)
-  assert.doesNotMatch(
+  assert.doesNotMatch(projects, /class="badge"|class="stack"|class="period"|\.featured \{/)
+  assert.match(
     projects,
-    /class="badge"|class="stack"|class="period"|\.featured \{|border-radius: var\(--radius\)/,
+    /\.project,\s*\.team-project \{[^}]*border: 1px solid var\(--line\);[^}]*border-radius: var\(--r-card\);/,
   )
-  assert.match(projects, /\.project,\s*\.team-project \{[^}]*border-top: 1px solid var\(--line\);/)
 })

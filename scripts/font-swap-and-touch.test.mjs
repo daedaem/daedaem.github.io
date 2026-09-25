@@ -80,19 +80,20 @@ test('대체 글꼴의 메트릭이 Pretendard에 맞춰져 있어 글꼴 교체
 })
 
 test('태그와 검색 결과 링크는 손가락으로 누를 수 있는 크기다', () => {
-  // 태그는 링크가 있든 없든 같은 모양(전역 규칙)이고, 둘 다 44px 줄 높이를 가진다
+  // 태그는 시안의 #태그 알약. 링크가 있든 없든 같은 모양(전역 .tagb)이고, 36px 높이 + 6px 간격이라
+  // WCAG 2.5.8(24px 이상 또는 간격)을 넉넉히 넘는다. 링크만 가리키면 면이 바뀐다
   const css = source('src/styles/global.css')
-  const rule = css.match(/p\.tags a,\s*p\.tags \.tag \{[^}]*\}/)?.[0]
-  assert.ok(rule, 'global.css에 p.tags a, p.tags .tag 규칙이 있어야 한다')
-  assert.match(rule, /min-height:\s*var\(--control-size\)/)
+  const rule = css.match(/\.tagb \{[^}]*\}/)?.[0]
+  assert.ok(rule, 'global.css에 .tagb 규칙이 있어야 한다')
+  assert.match(rule, /min-height:\s*36px/)
   assert.match(rule, /text-decoration:\s*none/)
-  assert.match(css, /p\.tags a:hover \{[^}]*text-decoration: underline/)
-  assert.match(css, /p\.tags a:focus-visible \{[^}]*outline:/)
+  assert.match(css, /\.tags \{[^}]*gap: 6px;/)
+  assert.match(css, /a\.tagb:hover \{[^}]*background: var\(--soft\)/)
   for (const path of ['src/layouts/PostLayout.astro', 'src/pages/wiki/[...slug].astro']) {
     const text = source(path)
-    assert.match(text, /<span class="k">태그<\/span>/)
-    assert.match(text, /<span class="tag">\{t\}<\/span>/)
-    assert.doesNotMatch(text, /p\.tags span:not\(\.k\)/)
+    assert.match(text, /<ul class="tags" aria-label="태그">/)
+    assert.match(text, /<a class="tagb" href=\{`\/tags\/\$\{tagSlug\(t\)\}\/`\}>\s*#\{t\}\s*<\/a>/)
+    assert.match(text, /<span class="tagb">#\{t\}<\/span>/)
   }
 
   const search = source('src/components/Search.astro')

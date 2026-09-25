@@ -3,6 +3,8 @@ import BaseLayout from './BaseLayout.astro'
 import AuthorCard from '@/components/AuthorCard.astro'
 import Comments from '@/components/Comments.astro'
 import ContentDates from '@/components/ContentDates.astro'
+import CoverImage from '@/components/CoverImage.astro'
+import Icon from '@/components/Icon.astro'
 import { SITE, getCategory } from '@/consts'
 import { tagSlug } from '@/utils/format'
 import { linkableTagSlugs } from '@/utils/tags'
@@ -36,6 +38,8 @@ interface Props {
   wikiReading?: { href: string; title: string }[]
   /** 원인 한 줄. 제목 아래 고정된 자리에 나온다 */
   cause?: string
+  /** 표지 그림(frontmatter coverImage). 넓은 화면(≥1024px)에서만 제목 오른쪽에 보인다 */
+  cover?: string
 }
 
 const {
@@ -57,6 +61,7 @@ const {
   records = [],
   wikiReading = [],
   cause,
+  cover,
 } = Astro.props
 
 const linkable = await linkableTagSlugs()
@@ -87,41 +92,45 @@ const body = rendered.slice(lead.length)
 >
   <div class="page">
     <article class:list={['art', 'post', { 'is-archived': archived }]}>
-      <header class="art-head">
-        <p class="meta" data-pagefind-ignore>
-          {
-            archived ? (
-              <>
-                <a href="/learn/" set:text="학습 기록" />
-                <span class="sep" aria-hidden="true" set:text="›" />
-                <a href="/notes/" set:text="노트" />
-              </>
-            ) : (
-              <>
-                <a href="/posts/" set:text="글" />
-                {cat && <span class="sep" aria-hidden="true" set:text="›" />}
-                {cat && <a href={`/categories/${cat.id}/`} data-cat={cat.id} set:text={cat.name} />}
-                <span class="sep" aria-hidden="true" set:text="·" />
-                글쓴이 <a href="/about/" set:text={SITE.author} />
-                <span class="sep" aria-hidden="true" set:text="·" />
-                {SITE.role}
-              </>
-            )
-          }
-          <span class="sep" aria-hidden="true" set:text="·" />
-          <ContentDates
-            date={date}
-            original={archived}
-            dateLabel={archived ? '원문 작성' : ''}
-            inline
-          />
-          {happened && <span class="sep" aria-hidden="true" set:text="·" />}
-          {happened && <span class="nowrap" set:text={`사례 시점 ${happened}`} />}
-          {readingMinutes && <span class="sep" aria-hidden="true" set:text="·" />}
-          {readingMinutes && <span class="nowrap" set:text={`${readingMinutes}분 읽기`} />}
-        </p>
-        <h1 tabindex="-1">{title}</h1>
-      </header>
+      <a class="backlink" href={archived ? '/notes/' : '/posts/'} data-pagefind-ignore>
+        <Icon name="arrow-left" size={16} />
+        {archived ? '학습 노트' : '글 목록'}
+      </a>
+      <div class:list={['art-top', { 'has-cover': !!cover }]}>
+        <header class="art-head">
+          <p class="meta" data-pagefind-ignore>
+            {
+              archived ? (
+                <>
+                  <span class="badge" set:text="아카이브" />
+                  <a href="/learn/" set:text="학습 기록" />
+                  <span class="sep" aria-hidden="true" set:text="›" />
+                  <a href="/notes/" set:text="노트" />
+                </>
+              ) : (
+                <>
+                  {cat && <a class="badge" href={`/categories/${cat.id}/`} set:text={cat.name} />}
+                  글쓴이 <a href="/about/" set:text={SITE.author} />
+                  <span class="sep" aria-hidden="true" set:text="·" />
+                  {SITE.role}
+                </>
+              )
+            }
+            <span class="sep" aria-hidden="true" set:text="·" />
+            <ContentDates
+              date={date}
+              original={archived}
+              dateLabel={archived ? '원문 작성' : ''}
+              inline
+            />
+            {readingMinutes && <span class="sep" aria-hidden="true" set:text="·" />}
+            {readingMinutes && <span class="nowrap" set:text={`${readingMinutes}분 읽기`} />}
+          </p>
+          <h1 tabindex="-1">{title}</h1>
+          {happened && <p class="happened" set:text={`사례 시점 ${happened}`} />}
+        </header>
+        {cover && <CoverImage class="art-cover" src={cover} sizes="200px" />}
+      </div>
 
       {
         cause && (
@@ -168,19 +177,7 @@ const body = rendered.slice(lead.length)
               <span class="k">
                 차례 <span class="n">{toc.length}</span>
               </span>
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.75"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
+              <Icon name="chevron-down" />
             </summary>
             <ol>
               {toc.map((h) => (
@@ -225,16 +222,19 @@ const body = rendered.slice(lead.length)
       <footer class="art-end">
         {
           tags.length > 0 && (
-            <p class="tags">
-              <span class="k">태그</span>
-              {tags.map((t) =>
-                linkable.has(tagSlug(t)) ? (
-                  <a href={`/tags/${tagSlug(t)}/`}>{t}</a>
-                ) : (
-                  <span class="tag">{t}</span>
-                ),
-              )}
-            </p>
+            <ul class="tags" aria-label="태그">
+              {tags.map((t) => (
+                <li>
+                  {linkable.has(tagSlug(t)) ? (
+                    <a class="tagb" href={`/tags/${tagSlug(t)}/`}>
+                      #{t}
+                    </a>
+                  ) : (
+                    <span class="tagb">#{t}</span>
+                  )}
+                </li>
+              ))}
+            </ul>
           )
         }
 
@@ -285,7 +285,7 @@ const body = rendered.slice(lead.length)
                   <li>
                     <a href={o.href}>{o.title}</a>
                     {o.category && getCategory(o.category) && (
-                      <span class="k-in">{getCategory(o.category)?.name}</span>
+                      <span class="badge">{getCategory(o.category)?.name}</span>
                     )}
                   </li>
                 ))}
@@ -302,7 +302,7 @@ const body = rendered.slice(lead.length)
                 {wikiReading.map((w) => (
                   <li>
                     <a href={w.href}>{w.title}</a>
-                    <span class="k-in">위키</span>
+                    <span class="badge">위키</span>
                   </li>
                 ))}
               </ul>
@@ -330,10 +330,6 @@ const body = rendered.slice(lead.length)
 </script>
 
 <style>
-  /* 메타 줄의 분류 링크·글쓴이 링크는 밑줄 링크(전역 .meta a). 분류 앞 점은 [data-cat]가 그린다 */
-  .meta a[data-cat] {
-    white-space: nowrap;
-  }
   /* 본문이 제목으로 시작하면 위 선과 여백을 겹쳐 두지 않는다 */
   .prose > :global(h2:first-child) {
     margin-top: 0;
@@ -367,5 +363,8 @@ const body = rendered.slice(lead.length)
       /* 좁은 화면 예산: 첫 화면에 메타·제목·원인 한 줄이 들어온다 */
       margin-top: 0.5rem;
     }
+  }
+  .art-end .tags li {
+    display: flex;
   }
 </style>

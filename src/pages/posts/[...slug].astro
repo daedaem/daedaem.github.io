@@ -70,6 +70,7 @@ const { Content, headings } = await render(post)
   records={records}
   wikiReading={wikiReading}
   cause={post.data.cause}
+  cover={post.data.coverImage ?? undefined}
 >
   <Content />
 </PostLayout>

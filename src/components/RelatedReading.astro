@@ -22,7 +22,7 @@ const { related } = currentEntry ? selectWikiReading(pool, currentEntry) : { rel
         {related.map((e) => (
           <li>
             <a href={'/' + e.collection + '/' + e.id + '/'}>{e.data.title}</a>
-            <span class="k-in">{e.collection === 'posts' ? '글' : '위키'}</span>
+            <span class="badge">{e.collection === 'posts' ? '글' : '위키'}</span>
           </li>
         ))}
       </ul>

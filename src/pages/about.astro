@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import { SITE } from '@/consts'
 import { CASES } from '@/data/cases'
+import Icon from '@/components/Icon.astro'
 ---
 
 <BaseLayout
@@ -11,7 +12,7 @@ import { CASES } from '@/data/cases'
 >
   <div class="page">
     <header class="phead head">
-      <p class="k">소개</p>
+      <p class="role-k">소개</p>
       <div class="name-line">
         <h1>{SITE.author}</h1>
         <span>{SITE.role}</span>
@@ -171,18 +172,22 @@ import { CASES } from '@/data/cases'
 
       <section>
         <h2 id="contact" tabindex="-1">연락</h2>
-        <ul class="contact">
+        <ul class="contact pills">
           <li>
-            <span>Email</span>
-            <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+            <a class="pill" href={`mailto:${SITE.email}`}
+              ><Icon name="mail" size={15} /><span class="ck">Email</span>{SITE.email}</a
+            >
           </li>
           <li>
-            <span>GitHub</span>
-            <a href={SITE.githubUrl} rel="me noopener">github.com/daedaem</a>
+            <a class="pill" href={SITE.githubUrl} rel="me noopener"
+              ><Icon name="brand-github" size={15} /><span class="ck">GitHub</span
+              >github.com/daedaem</a
+            >
           </li>
           <li>
-            <span>LinkedIn</span>
-            <a href={SITE.linkedinUrl} rel="me noopener">프로필 보기</a>
+            <a class="pill" href={SITE.linkedinUrl} rel="me noopener"
+              ><Icon name="brand-linkedin" size={15} /><span class="ck">LinkedIn</span>프로필 보기</a
+            >
           </li>
         </ul>
       </section>
@@ -213,12 +218,26 @@ import { CASES } from '@/data/cases'
       font-size: 1.125rem;
     }
   }
+  /* 머리의 한눈 요약: 둥근 상자(원인 상자와 같은 모양) */
+  .role-k {
+    margin: 0 0 4px;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  .name-line h1 {
+    font-size: clamp(30px, 6vw, 40px);
+    line-height: 1.15;
+    letter-spacing: -0.045em;
+  }
   .at-a-glance {
     display: grid;
     gap: 0.5rem;
     margin: 1.25rem 0 0;
-    padding-left: 1rem;
-    border-left: 3px solid var(--accent);
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-box);
+    background: var(--card);
   }
   .at-a-glance > div {
     display: grid;
@@ -228,31 +247,36 @@ import { CASES } from '@/data/cases'
   }
   .at-a-glance dt,
   .case-summary dt,
-  .stack dt,
-  .contact span {
-    font-size: 0.8125rem;
+  .stack dt {
+    font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.04em;
     color: var(--muted);
   }
   .at-a-glance dd {
     margin: 0;
     line-height: 1.7;
   }
+  /* 바로가기: 알약 줄 */
   .about-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 0 1.25rem;
-    margin-top: 0.5rem;
+    gap: 6px;
+    margin-top: 14px;
   }
   .about-nav a {
     display: inline-flex;
     align-items: center;
-    min-height: var(--control-size);
-    min-width: var(--control-size);
-    font-size: 0.9375rem;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    font-size: 0.875rem;
     font-weight: 600;
-    color: var(--fg2);
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .about-nav a:hover {
+    background: var(--soft);
   }
   .about-nav a:focus-visible,
   h2:focus-visible {
@@ -297,7 +321,7 @@ import { CASES } from '@/data/cases'
   }
   .background-path li {
     padding: 0 0 1.5rem 1.25rem;
-    border-left: 2px solid var(--line2);
+    border-left: 2px solid var(--line);
   }
   .background-path li:last-child {
     padding-bottom: 0;
@@ -320,9 +344,16 @@ import { CASES } from '@/data/cases'
     margin: 1.25rem 0 0;
     padding: 0;
   }
+  /* 대표 사례: 카드 세 장 */
+  .work-highlights {
+    display: grid;
+    gap: 12px;
+  }
   .work-highlights li {
-    padding: 1.25rem 0;
-    border-top: 1px solid var(--line);
+    padding: 16px 18px 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+    background: var(--card);
   }
   .work-highlights li + li,
   .work li + li {
@@ -330,9 +361,10 @@ import { CASES } from '@/data/cases'
   }
   .work-highlights h3 {
     margin: 0;
-    font-size: 1.1875rem;
-    font-weight: 650;
-    line-height: 1.4;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.45;
   }
   .work-highlights h3 a {
     display: flex;
@@ -374,9 +406,8 @@ import { CASES } from '@/data/cases'
   }
   .other-work-title {
     margin: 1.5rem 0 0;
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.04em;
     color: var(--muted);
   }
   .other-work-title + .work {
@@ -397,27 +428,27 @@ import { CASES } from '@/data/cases'
     text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
   }
+  /* 연락: 알약 링크(아이콘 · 이름 · 주소) */
   .contact {
-    list-style: none;
-    margin: 0;
+    margin: 0.75rem 0 0;
     padding: 0;
+    list-style: none;
   }
   .contact li {
-    display: grid;
-    grid-template-columns: 5.5rem minmax(0, 1fr);
-    gap: 0.75rem;
-    align-items: center;
-    border-top: 1px solid var(--line);
+    display: flex;
+    margin: 0;
   }
   .contact li + li {
     margin-top: 0;
   }
   .contact a {
-    display: flex;
-    align-items: center;
     min-height: var(--control-size);
-    padding-block: 0.5rem;
+    padding-block: 0.25rem;
     overflow-wrap: anywhere;
+  }
+  .contact .ck {
+    font-weight: 700;
+    color: var(--muted);
   }
   .contact a:focus-visible {
     outline: 2px solid var(--accent);
