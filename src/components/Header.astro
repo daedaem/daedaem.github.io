@@ -12,7 +12,7 @@ const active = activeNavigation(path)
 <header id="site-header" class="top">
   <div class="top-in">
     <a href="/" class="brand">
-      <Mark size={22} class="brand-mark" />
+      <Mark size={24} class="brand-mark" />
       <span>{SITE.title}</span>
     </a>
     <nav class="nav" aria-label="주요 메뉴">
@@ -61,6 +61,8 @@ const active = activeNavigation(path)
       header.contains(document.activeElement) ||
       document.querySelector('dialog[open]')
     const jumped = Math.abs(y - lastY) > innerHeight
+    // 맨 위에서는 아래 선을 두지 않아 점 격자 띠와 이어지고, 조금이라도 내리면 선이 생긴다
+    header.classList.toggle('scrolled', y > 4)
     if (keep || (!jumped && y < lastY - 6)) header.classList.remove('is-away')
     else if (!jumped && y > lastY + 6) header.classList.add('is-away')
     lastY = y
@@ -75,19 +77,30 @@ const active = activeNavigation(path)
     { passive: true },
   )
   narrow.addEventListener('change', place)
+  place()
   header.addEventListener('focusin', () => header.classList.remove('is-away'))
 </script>
 
 <style>
-  /* 위 3px 남색 선 위에 한 줄. 모바일은 로고줄 48 + 메뉴줄 44(메뉴 링크가 44px 조작 크기), 데스크톱은 57 */
+  /*
+   * 시안의 머리줄: 로고 마크 + 이름, 메뉴 글자, 둥근 알약 검색 단추(Ctrl K), 테마 단추.
+   * 모바일은 로고줄 51 + 메뉴줄 44(메뉴 링크가 44px 조작 크기), 데스크톱은 한 줄 60. 아래 1px 선은
+   * 맨 위에서는 투명(점 격자 띠와 이어진다)이고 내리면 보인다.
+   */
   header {
     position: sticky;
     top: 0;
-    z-index: 10;
-    border-top: 3px solid var(--mark-bg);
-    border-bottom: 1px solid var(--line);
+    z-index: 30;
+    border-bottom: 1px solid transparent;
+    /* 시안은 96% 불투명 + 흐림이었다. 흐림은 느린 기기에서 스크롤마다 다시 그려 비싸고, 96%에서는
+       거의 보이지 않아 불투명 바탕만 쓴다 */
     background: var(--bg);
-    transition: translate 0.2s ease-out;
+    transition:
+      translate 0.2s ease-out,
+      border-color 0.15s;
+  }
+  header.scrolled {
+    border-bottom-color: var(--line);
   }
   header.is-away {
     translate: 0 -100%;
@@ -99,9 +112,9 @@ const active = activeNavigation(path)
   }
 
   .top-in {
-    max-width: 45rem;
+    max-width: 1180px;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0 0.5rem 0 1rem;
     display: grid;
     grid-template-columns: 1fr auto;
     grid-template-areas:
@@ -114,10 +127,10 @@ const active = activeNavigation(path)
     grid-area: brand;
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
-    min-height: 48px;
-    font-size: 1rem;
-    font-weight: 650;
+    gap: 8px;
+    min-height: 51px;
+    font-size: 0.875rem;
+    font-weight: 700;
     letter-spacing: -0.01em;
     text-decoration: none;
     white-space: nowrap;
@@ -130,7 +143,7 @@ const active = activeNavigation(path)
   .nav {
     grid-area: nav;
     height: 44px;
-    margin: 0 -1rem;
+    margin: 0 -0.5rem 0 -1rem;
     padding: 0 0.5rem;
     border-top: 1px solid var(--line);
     overflow-x: auto;
@@ -141,6 +154,7 @@ const active = activeNavigation(path)
   }
   .nav ul {
     display: flex;
+    gap: 2px;
     height: 100%;
     margin: 0;
     padding: 0;
@@ -152,7 +166,8 @@ const active = activeNavigation(path)
     height: 100%;
     min-height: var(--control-size);
     min-width: var(--control-size);
-    padding: 0 0.55rem;
+    justify-content: center;
+    padding: 0 0.625rem;
     font-size: 0.9375rem;
     font-weight: 600;
     letter-spacing: -0.005em;
@@ -165,7 +180,7 @@ const active = activeNavigation(path)
     color: var(--fg);
   }
   /*
-   * 현재 메뉴: 아래 2px 강조선. 모든 메뉴가 같은 굵기의 밑선 자리를 갖고(투명), 현재 메뉴만 색이 든다.
+   * 현재 메뉴: 굵은 글자 + 아래 2px 선(시안). 모든 메뉴가 같은 굵기의 밑선 자리를 갖고(투명), 현재 메뉴만 색이 든다.
    * 강제 색상 모드에서는 투명 선도 시스템 색으로 그려지므로, 현재 메뉴 말고는 선을 없앤다.
    */
   .nav a {
@@ -173,7 +188,11 @@ const active = activeNavigation(path)
   }
   nav a[aria-current] {
     color: var(--fg);
-    border-bottom-color: var(--accent);
+    font-weight: 700;
+    border-bottom-color: var(--fg);
+  }
+  nav a[aria-current]:hover {
+    background: transparent;
   }
   @media (forced-colors: active) {
     .nav a {
@@ -188,35 +207,38 @@ const active = activeNavigation(path)
     grid-area: tools;
     display: flex;
     align-items: center;
-    gap: 0.125rem;
-    margin-right: -0.5rem;
+    gap: 4px;
   }
 
   @media (min-width: 46em) {
     .top-in {
       grid-template-columns: auto 1fr auto;
       grid-template-areas: 'brand nav tools';
-      min-height: 57px;
+      min-height: 60px;
+      padding: 0 0.75rem 0 1.25rem;
     }
     .brand {
       min-height: var(--control-size);
     }
     .nav {
-      height: auto;
-      margin: 0 0 0 1.25rem;
+      height: 60px;
+      margin: 0 0 0 1rem;
       padding: 0;
       border: 0;
       overflow: visible;
     }
     .nav a {
       min-height: var(--control-size);
-      padding: 0 0.7rem;
+      padding: 0 12px;
+      font-size: 0.9375rem;
+      border-radius: var(--radius) var(--radius) 0 0;
     }
-  }
-  @media (min-width: 75em) {
-    .top-in {
-      max-width: none;
-      padding: 0 2rem;
+    .nav a:hover {
+      background: transparent;
+    }
+    .nav a:not([aria-current]):hover {
+      color: var(--fg);
+      border-bottom-color: var(--line2);
     }
   }
 </style>

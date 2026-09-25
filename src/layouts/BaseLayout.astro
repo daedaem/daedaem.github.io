@@ -27,6 +27,8 @@ const { searchIndex = true } = Astro.props
   <body>
     <a href="#main" class="visually-hidden skip-link">본문으로 건너뛰기</a>
     <Header />
+    {/* 머리줄 아래 점 격자 띠(장식). 그림은 public/grid-band.png, 색은 --fg */}
+    <div class="grid-band" aria-hidden="true"></div>
     <main
       id="main"
       data-pagefind-body={searchIndex ? true : undefined}

@@ -95,14 +95,17 @@ test('code blocks keep a separate top band with a language label and an always-v
   assert.doesNotMatch(button, /opacity: 0/)
   assert.match(
     css.match(/\npre \{([^}]+)\}/)[1],
-    /padding: calc\(var\(--code-band\) \+ 0\.9rem\) 1rem 0\.9rem;/,
+    /padding: calc\(var\(--code-band\) \+ 0\.9rem\) 1\.1rem 0\.9rem;/,
   )
   assert.match(css.match(/\npre \{([^}]+)\}/)[1], /font-variant-ligatures: none;/)
-  assert.match(css.match(/\npre \{([^}]+)\}/)[1], /border-radius: 0;/)
+  // 시안의 코드 상자: 14px 반경(좁은 화면에서 좌우로 넓힐 때만 반경 0)
+  assert.match(css.match(/\npre \{([^}]+)\}/)[1], /border-radius: var\(--r-box\);/)
+  assert.match(css, /--r-box: 14px;/)
+  assert.match(css, /@media \(max-width: 40em\) \{\s*pre \{[^}]*border-radius: 0;/)
   const label = css.match(
     /pre\[data-language\]:not\(\[data-language='plaintext'\]\)::before \{([^}]+)\}/,
   )[1]
-  assert.match(label, /font-size: 0\.8125rem;/)
+  assert.match(label, /font-size: 0\.75rem;/)
   assert.match(read('src/layouts/BaseLayout.astro'), /<span>복사<\/span>/)
   assert.match(css, /pre\.astro-code > code \{[^}]*overflow-x: auto;/)
   assert.match(css, /pre\.astro-code \{\s*overflow: visible !important;/)

@@ -16,26 +16,30 @@ const content = {
   subtitle: motto,
 }
 
-test('home identity is the author name under a role label while the social preview keeps the short title and motto', () => {
+test('home identity is the motto under a name · role line while the social preview keeps the short title and motto', () => {
   const home = source('src/pages/index.astro')
   const og = source('src/pages/og/[...slug].png.ts')
   assert.match(source('src/consts.ts'), new RegExp(`identityTitle: '${identityTitle}'`))
   assert.match(source('src/consts.ts'), new RegExp(`motto: '${motto}'`))
-  // 홈 첫 화면: h1 "이름 · 직무"(SITE.role, 본문 크기) → 환경 한 줄(SITE.environment) → 소개 한 문장
-  // → 소개 보기 · 연락 · GitHub. 히어로 판·카드·표지는 없다. 직무·환경은 consts 한 곳에서 온다
+  // 홈 첫 화면(시안): 작은 줄 "이름 · 직무" → h1 좌우명(SITE.motto, '원인'만 강조색) → 소개 한 문장
+  // → 주력 기술 한 줄 → 알약 링크(소개·경력 · 연락 · GitHub · RSS). 낱말은 consts 한 곳에서 온다
   assert.match(
     home,
-    /<section class="ident"[^>]*>\s*<h1[^>]*>\s*\{SITE\.author\}\{' '\}<span class="role"[\s\S]*?\{SITE\.role\}<\/span\s*>\s*<\/h1>\s*<p class="env">\{SITE\.environment\}<\/p>\s*<p class="lede">\{SITE\.intro\}<\/p>/,
+    /<section class="hero"[^>]*>\s*<p class="role">\{SITE\.author\} · \{SITE\.role\}<\/p>\s*<h1 id="hero-title">[\s\S]*?<\/h1>\s*<p class="lede">\{SITE\.intro\}<\/p>\s*<p class="env">\{SITE\.environment\}<\/p>/,
   )
+  assert.match(home, /<span class="grad">\{motto\.accent\}<\/span>/)
+  assert.match(source('src/consts.ts'), /mottoAccent: '원인'/)
+  assert.ok(motto.includes('원인'))
   assert.doesNotMatch(home, /<p class="k">백엔드 개발자<\/p>/)
   assert.doesNotMatch(home, /<p class="k">.*환경/)
-  assert.match(home, /<p class="links">\s*<a class="more" href="\/about\/">소개 보기/)
-  assert.match(home, /<a class="more" href="\/about\/#contact">연락<\/a>/)
-  assert.match(home, /<a class="more" href=\{SITE\.githubUrl\} rel="me noopener">GitHub<\/a>/)
+  assert.deepEqual(
+    [...home.matchAll(/<a class="pill" href=([^>]+)>/g)].map((m) => m[1].trim()),
+    ['"/about/"', '"/about/#contact"', '{SITE.githubUrl} rel="me noopener"', '"/rss.xml"'],
+  )
   assert.doesNotMatch(home, /mailto:/)
   assert.equal([...home.matchAll(/<h1(?:\s|>)/g)].length, 1)
-  assert.match(home, /<h2 class="k" id="recommended-title">\s*먼저 읽을 글\s*<\/h2>/)
-  assert.doesNotMatch(home, /byline|hero|card-title|PostCover|identity-context/)
+  assert.match(home, /<h2 id="recommended-title">먼저 읽을 글<\/h2>/)
+  assert.doesNotMatch(home, /byline|PostCover|identity-context/)
   // 직무 낱말은 consts의 SITE.role 한 곳에만 있다
   assert.match(source('src/consts.ts'), /role: '백엔드 개발자'/)
   for (const path of [
@@ -98,16 +102,18 @@ test('cover disclosure belongs with reader-facing writing principles, not the ed
   assert.doesNotMatch(source('src/pages/admin/index.astro'), /글 표지는 AI로 생성/)
 })
 
-test('the one-row header stays within 64px on desktop and two rows (48 + 44) on mobile', () => {
+test('the one-row header stays within 61px on desktop and two rows (51 + 44) on mobile', () => {
   const header = source('src/components/Header.astro')
-  // 위 3px 로고색 선, 로고 마크 + 이름, 메뉴, 검색·테마. 모바일 메뉴줄은 링크가 44px 조작 크기를 갖는다
-  assert.match(header, /border-top: 3px solid var\(--mark-bg\);/)
-  assert.match(header, /<Mark size=\{22\} class="brand-mark" \/>/)
-  assert.match(header, /\.brand\s*\{[^}]*min-height:\s*48px;/)
+  // 시안의 머리줄: 로고 마크(24) + 이름, 메뉴, 알약 검색·테마. 위 색 선은 없고 아래 선은 내리면 생긴다.
+  // 모바일은 로고줄 51 + 메뉴줄 44(링크가 44px 조작 크기), 데스크톱은 한 줄 60 + 선 1 = --header-h 61
+  assert.doesNotMatch(header, /border-top: 3px/)
+  assert.match(header, /<Mark size=\{24\} class="brand-mark" \/>/)
+  assert.match(header, /\.brand\s*\{[^}]*min-height:\s*51px;/)
   assert.match(header, /\.nav\s*\{[^}]*height:\s*44px;/)
+  assert.match(header, /header\.scrolled \{\s*border-bottom-color: var\(--line\);/)
   assert.match(header, /grid-template-areas:\s*'brand tools'\s*'nav nav';/)
   const desktop = header.split('@media (min-width: 46em)')[1]
-  assert.match(desktop, /\.top-in\s*\{[^}]*min-height:\s*57px;/)
+  assert.match(desktop, /\.top-in\s*\{[^}]*min-height:\s*60px;/)
   assert.match(desktop, /grid-template-areas:\s*'brand nav tools';/)
   assert.match(header, /min-width:\s*var\(--control-size\)/)
   // 단축키 표시는 넓은 화면에서만 보인다
@@ -115,7 +121,7 @@ test('the one-row header stays within 64px on desktop and two rows (48 + 44) on 
   assert.match(search, /#search-open kbd \{\s*display: none;/)
   assert.match(
     search,
-    /@media \(min-width: 46em\) \{\s*#search-open kbd \{\s*display: inline-block;/,
+    /@media \(min-width: 46em\) \{[^@]*#search-open kbd \{\s*display: inline-flex;/,
   )
   assert.match(search, /shortcut\.textContent[\s\S]*\? '⌘K'\s*: 'Ctrl K'/)
 })

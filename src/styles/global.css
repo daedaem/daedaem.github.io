@@ -40,7 +40,10 @@
 }
 
 /*
- * 색 토큰. 글자 --fg/--fg2/--muted, 선 --line/--line2, 면 --soft/--code, 강조 --accent 하나.
+ * 색 토큰. 시안(design2 final, Magic UI 계열)의 무채 회색 + 남색 강조.
+ * 글자 --fg/--fg2/--muted, 선 --line(면 경계)/--line2(구분선)/--line-input(입력·단추 테두리),
+ * 면 --card(카드)/--soft(가리킴·회색 탭 바탕)/--code, 강조 --accent(글자)·--accent-2(밝은 강조),
+ * 상태 --ok/--wip(글자)과 --ok-bg/--wip-bg(배지 면).
  * 옛 이름(--text, --border, --bg-subtle, --code-bg …)은 같은 값의 별칭으로 남겨 다른 화면이 깨지지 않게 한다.
  * 별칭은 검사 스크립트가 16진수를 읽으므로 var()가 아니라 값을 그대로 적는다.
  */
@@ -48,39 +51,37 @@
   color-scheme: light;
 
   --bg: #ffffff;
-  --fg: #191f28;
-  --fg2: #3d4552;
-  --muted: #5e6877;
-  --line: #e3e6ea;
-  --line2: #c4cad2;
-  /* 입력란·선택 상자·단추의 테두리. 바탕과 3:1 이상(라이트 4.0:1, 다크 5.0:1)이라 경계가 보인다 */
-  --line-input: #767f8c;
-  --soft: #f5f6f8;
-  --code: #f7f8fa;
-  --accent: #223e60;
-  --accent-2: #1f3148;
+  --fg: #0a0a0a;
+  --fg2: #404040;
+  --muted: #6b6b6b;
+  --line: #e5e5e5;
+  --line2: #d4d4d4;
+  /* 입력란·선택 상자·단추의 테두리. 바탕과 3:1 이상(라이트 4.2:1, 다크 5.1:1)이라 경계가 보인다 */
+  --line-input: #7c7c7c;
+  --card: #ffffff;
+  --soft: #f5f5f5;
+  --code: #fafafa;
+  --accent: #294970;
+  --accent-2: #4f7cb8;
+  --ok: #15803d;
+  --ok-bg: #f0fdf4;
+  --wip: #b45309;
+  --wip-bg: #fffbeb;
   --mark-bg: #223e60;
   --mark-ink: #fcfaf5;
-  --shadow: 0 12px 32px rgb(15 23 42 / 0.14);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px rgb(0 0 0 / 0.08);
 
   /* 별칭 */
-  --text: #191f28;
-  --text-secondary: #3d4552;
-  --text-muted: #5e6877;
-  --text-dim: #5e6877;
-  --border: #e3e6ea;
-  --border-strong: #c4cad2;
-  --bg-subtle: #f5f6f8;
-  --bg-card: #f5f6f8;
-  --code-bg: #f7f8fa;
+  --text: #0a0a0a;
+  --text-secondary: #404040;
+  --text-muted: #6b6b6b;
+  --text-dim: #6b6b6b;
+  --border: #e5e5e5;
+  --border-strong: #d4d4d4;
+  --bg-subtle: #f5f5f5;
+  --bg-card: #ffffff;
+  --code-bg: #fafafa;
   --accent-hover: #1f3148;
-
-  /* 카테고리 색. 글자에는 쓰지 않고 점(dot)에만 쓴다. 라벨 글자는 --muted다. */
-  --cat-data-integrity: #d9480f;
-  --cat-performance: #2f9e44;
-  --cat-operations: #7048e8;
-  --cat-legacy: #b8860b;
-  --cat-auth-security: #0c8599;
 
   --font-sans:
     'Pretendard Variable', Pretendard, 'Pretendard Fallback', -apple-system, BlinkMacSystemFont,
@@ -88,24 +89,32 @@
   --font-mono:
     'JetBrains Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
-  /* 반경은 하나. 999px 알약과 12px 시트는 목차 시트·FAB에만 쓴다 */
-  --radius: 4px;
+  /*
+   * 반경 체계(시안 값). 카드·타일·위키 카드 12px, 원인 상자·코드·저자 카드 14px, 표·입력·탭 바 12px,
+   * 단추 8px, 배지 6px, 알약(검색 단추·링크 알약·칩·FAB) 999px, 대화상자 16px, 시트 20px.
+   */
+  --radius: 10px;
+  --r-card: 12px;
+  --r-box: 14px;
+  --r-btn: 8px;
+  --r-badge: 6px;
+  --r-pill: 999px;
 
   /* 같은 역할의 UI만 공유한다. 홈 문구와 글 제목은 별도의 위계를 유지한다. */
   --type-caption: 0.8125rem;
   --type-label: 0.875rem;
   --type-body: 1rem;
   --type-section: 1.25rem;
-  --type-page-title: 1.875rem;
+  --type-page-title: 1.5rem;
   --type-article-h2: 1.5rem;
   --type-article-h3: 1.1875rem;
   --page-inset: 2rem;
   --control-size: 2.75rem;
-  --control-radius: var(--radius);
+  --control-radius: var(--r-btn);
   /* 코드 블록 위 띠(언어 라벨·복사 버튼) 높이. 복사 버튼이 44px 조작 크기를 갖는다 */
   --code-band: 44px;
   /*
-   * 머리줄 높이(위 3px 선 + 내용 + 아래 1px 선). 데스크톱 57 + 4, 모바일 로고줄 48 + 메뉴줄 44 + 4.
+   * 머리줄 높이(내용 + 아래 1px 선). 데스크톱 60 + 1, 모바일 로고줄 51 + 메뉴줄 44 + 1.
    * 앵커 착지·따라오는 목차는 여기에 1rem을 더한 만큼 내려 머리줄 뒤로 들어가지 않는다.
    */
   --header-h: 61px;
@@ -121,11 +130,87 @@
 @media (max-width: 640px) {
   :root {
     --page-inset: 1.5rem;
-    --type-page-title: 1.75rem;
   }
 }
 
-/* 검색 대화상자의 범위 선택 같은 입력 요소. 목록의 입력·칩·단추는 아래 .f-q/.chip/.btn을 쓴다 */
+/*
+ * 다크 토큰. 두 곳에 같은 값을 둔다.
+ * 1) 시스템이 다크이고 사용자가 라이트를 고르지 않았을 때
+ * 2) 사용자가 다크를 골랐을 때 (html[data-theme="dark"])
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --bg: #0a0a0a;
+    --fg: #fafafa;
+    --fg2: #d4d4d4;
+    --muted: #a3a3a3;
+    --line: #262626;
+    --line2: #3a3a3a;
+    --line-input: #828282;
+    --card: #0a0a0a;
+    --soft: #171717;
+    --code: #111113;
+    --accent: #a9c4ea;
+    --accent-2: #7aa7e6;
+    --ok: #4ade80;
+    --ok-bg: #052e16;
+    --wip: #fbbf24;
+    --wip-bg: #2a1a05;
+    --mark-bg: #a8c1e2;
+    --mark-ink: #192b43;
+    --shadow: 0 8px 24px rgb(0 0 0 / 0.5);
+
+    --text: #fafafa;
+    --text-secondary: #d4d4d4;
+    --text-muted: #a3a3a3;
+    --text-dim: #a3a3a3;
+    --border: #262626;
+    --border-strong: #3a3a3a;
+    --bg-subtle: #171717;
+    --bg-card: #0a0a0a;
+    --code-bg: #111113;
+    --accent-hover: #c6d7ee;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #0a0a0a;
+  --fg: #fafafa;
+  --fg2: #d4d4d4;
+  --muted: #a3a3a3;
+  --line: #262626;
+  --line2: #3a3a3a;
+  --line-input: #828282;
+  --card: #0a0a0a;
+  --soft: #171717;
+  --code: #111113;
+  --accent: #a9c4ea;
+  --accent-2: #7aa7e6;
+  --ok: #4ade80;
+  --ok-bg: #052e16;
+  --wip: #fbbf24;
+  --wip-bg: #2a1a05;
+  --mark-bg: #a8c1e2;
+  --mark-ink: #192b43;
+  --shadow: 0 8px 24px rgb(0 0 0 / 0.5);
+
+  --text: #fafafa;
+  --text-secondary: #d4d4d4;
+  --text-muted: #a3a3a3;
+  --text-dim: #a3a3a3;
+  --border: #262626;
+  --border-strong: #3a3a3a;
+  --bg-subtle: #171717;
+  --bg-card: #0a0a0a;
+  --code-bg: #111113;
+  --accent-hover: #c6d7ee;
+}
+
+/* 검색 대화상자의 범위 선택 같은 입력 요소. 목록의 입력·칩·단추는 아래 .input/.chip/.btn을 쓴다 */
 .list-input {
   font: inherit;
   min-height: var(--control-size);
@@ -159,125 +244,6 @@ h4[tabindex='-1']:focus-visible {
   /* 차례로 이동해 초점을 받은 제목. 착지한 자리를 잃지 않게 링을 두되 글자에서 조금 띄운다 */
   outline: 2px solid var(--accent);
   outline-offset: 4px;
-}
-
-/*
- * 다크 토큰. 두 곳에 같은 값을 둔다.
- * 1) 시스템이 다크이고 사용자가 라이트를 고르지 않았을 때
- * 2) 사용자가 다크를 골랐을 때 (html[data-theme="dark"])
- */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    color-scheme: dark;
-
-    --bg: #14181f;
-    --fg: #e4e9f0;
-    --fg2: #c5ccd6;
-    --muted: #9ba5b3;
-    --line: #2a313b;
-    --line2: #3e4753;
-    --line-input: #8a94a3;
-    --soft: #1a1f28;
-    --code: #1a1f28;
-    --accent: #a8c1e2;
-    --accent-2: #c6d7ee;
-    --mark-bg: #a8c1e2;
-    --mark-ink: #192b43;
-    --shadow: 0 12px 32px rgb(0 0 0 / 0.5);
-
-    --text: #e4e9f0;
-    --text-secondary: #c5ccd6;
-    --text-muted: #9ba5b3;
-    --text-dim: #9ba5b3;
-    --border: #2a313b;
-    --border-strong: #3e4753;
-    --bg-subtle: #1a1f28;
-    --bg-card: #1a1f28;
-    --code-bg: #1a1f28;
-    --accent-hover: #c6d7ee;
-
-    --cat-data-integrity: #ff8a65;
-    --cat-performance: #69db7c;
-    --cat-operations: #b197fc;
-    --cat-legacy: #ffd43b;
-    --cat-auth-security: #66d9e8;
-  }
-}
-
-:root[data-theme='dark'] {
-  color-scheme: dark;
-
-  --bg: #14181f;
-  --fg: #e4e9f0;
-  --fg2: #c5ccd6;
-  --muted: #9ba5b3;
-  --line: #2a313b;
-  --line2: #3e4753;
-  --line-input: #8a94a3;
-  --soft: #1a1f28;
-  --code: #1a1f28;
-  --accent: #a8c1e2;
-  --accent-2: #c6d7ee;
-  --mark-bg: #a8c1e2;
-  --mark-ink: #192b43;
-  --shadow: 0 12px 32px rgb(0 0 0 / 0.5);
-
-  --text: #e4e9f0;
-  --text-secondary: #c5ccd6;
-  --text-muted: #9ba5b3;
-  --text-dim: #9ba5b3;
-  --border: #2a313b;
-  --border-strong: #3e4753;
-  --bg-subtle: #1a1f28;
-  --bg-card: #1a1f28;
-  --code-bg: #1a1f28;
-  --accent-hover: #c6d7ee;
-
-  --cat-data-integrity: #ff8a65;
-  --cat-performance: #69db7c;
-  --cat-operations: #b197fc;
-  --cat-legacy: #ffd43b;
-  --cat-auth-security: #66d9e8;
-}
-
-/*
- * 카테고리 점. data-cat 속성을 단 요소 앞에 작은 색점을 붙인다.
- * 행, 글 상단, 칩, 카테고리 제목에서 같은 규칙으로 반복된다.
- */
-[data-cat]::before {
-  content: '';
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  margin-right: 0.5em;
-  border-radius: 50%;
-  background: var(--cat, var(--muted));
-  vertical-align: 0.05em;
-}
-[data-cat='data-integrity'] {
-  --cat: var(--cat-data-integrity);
-}
-[data-cat='performance'] {
-  --cat: var(--cat-performance);
-}
-[data-cat='operations'] {
-  --cat: var(--cat-operations);
-}
-[data-cat='legacy'] {
-  --cat: var(--cat-legacy);
-}
-[data-cat='auth-security'] {
-  --cat: var(--cat-auth-security);
-}
-/* 독립된 점 요소. <i class="dot" style="--dot: …" aria-hidden="true"> 처럼 쓴다 */
-.dot {
-  display: inline-block;
-  width: 0.5rem;
-  height: 0.5rem;
-  margin-right: 0.45em;
-  border-radius: 50%;
-  background: var(--dot, var(--muted));
-  vertical-align: 1px;
 }
 
 *,
@@ -324,7 +290,7 @@ body {
   }
 }
 
-/* 동작 줄이기 설정에서도 상태 변화와 키보드 조작은 그대로 유지한다. */
+/* 움직임은 가리킴의 색·테두리·화살표 변화(0.15초)뿐이다. 등장 애니메이션은 두지 않는다 */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -336,7 +302,7 @@ body {
   }
 }
 
-/* 링크는 밑줄로 구분한다. 색만으로 구분하지 않는다. 메뉴·행 링크는 각자 밑줄을 끈다 */
+/* 링크는 밑줄로 구분한다. 색만으로 구분하지 않는다. 메뉴·행·카드 링크는 각자 밑줄을 끈다 */
 a {
   color: inherit;
   text-decoration: underline;
@@ -390,13 +356,27 @@ button {
 }
 
 kbd {
+  display: inline-flex;
+  align-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  padding: 1px 5px;
-  border: 1px solid var(--line2);
-  border-bottom-width: 2px;
-  border-radius: var(--radius);
+  line-height: 1;
   color: var(--muted);
+}
+
+/* 날짜·건수·번호. 시안처럼 고정폭 숫자로 둔다 */
+.mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+.ti {
+  flex-shrink: 0;
 }
 
 code {
@@ -408,26 +388,26 @@ code {
 
 :not(pre) > code {
   background: var(--soft);
-  border-radius: var(--radius);
+  border-radius: var(--r-badge);
   padding: 0.1em 0.35em;
   overflow-wrap: anywhere;
 }
 
 /*
- * 코드 블록: 평면(반경 0)·1px 선. 위 40px 띠에 왼쪽 언어 라벨, 오른쪽 복사 버튼을 둔다.
+ * 코드 블록: 14px 반경·1px 선. 위 44px 띠에 왼쪽 언어 라벨, 오른쪽 복사 버튼을 둔다.
  * 글꼴은 JetBrains Mono를 명시하고 리거처를 끈다(=> 같은 결합 문자를 막는다).
  */
 pre {
   position: relative;
   margin: 1.5em 0;
-  padding: calc(var(--code-band) + 0.9rem) 1rem 0.9rem;
+  padding: calc(var(--code-band) + 0.9rem) 1.1rem 0.9rem;
   border: 1px solid var(--line);
-  border-radius: 0;
+  border-radius: var(--r-box);
   background: var(--code);
   font-family: var(--font-mono);
   font-variant-ligatures: none;
   font-size: 0.875rem;
-  line-height: 1.6;
+  line-height: 1.7;
   overflow-x: auto;
   word-break: normal;
   overflow-wrap: normal;
@@ -454,13 +434,13 @@ pre[data-language]:not([data-language='plaintext'])::before {
   content: attr(data-language);
   position: absolute;
   top: 0;
-  left: 0.9rem;
+  left: 1rem;
   display: flex;
   align-items: center;
   height: var(--code-band);
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  letter-spacing: 0.04em;
+  font-size: 0.75rem;
+  letter-spacing: 0;
   color: var(--muted);
   text-transform: lowercase;
 }
@@ -486,7 +466,7 @@ pre[data-language]:not([data-language='plaintext'])::before {
   background: none;
   color: var(--fg2);
   font-family: var(--font-sans);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 600;
   line-height: 1;
   letter-spacing: 0;
@@ -496,6 +476,9 @@ pre[data-language]:not([data-language='plaintext'])::before {
 .copy-code:hover {
   background: var(--soft);
   color: var(--fg);
+}
+.copy-code:focus-visible {
+  outline-offset: -2px;
 }
 
 .copy-code[data-copied] {
@@ -509,13 +492,14 @@ pre[data-language]:not([data-language='plaintext'])::before {
 pre.astro-code {
   white-space: pre !important;
 }
-/* 좁은 화면에서는 코드만 좌우 1rem 바깥으로 넓혀 한 줄에 더 담는다 */
+/* 좁은 화면에서는 코드만 좌우 1rem 바깥으로 넓혀 한 줄에 더 담는다(반경·옆 선 없이 위아래 선만) */
 @media (max-width: 40em) {
   pre {
     margin-left: -1rem;
     margin-right: -1rem;
     border-left: 0;
     border-right: 0;
+    border-radius: 0;
   }
 }
 
@@ -575,7 +559,7 @@ blockquote {
   color: var(--fg2);
 }
 
-/* 표: 래퍼(.table 또는 마크다운의 .table-scroll)가 선과 가로 스크롤을 맡고, 칸은 아래 선만 긋는다 */
+/* 표: 래퍼(.table 또는 마크다운의 .table-scroll)가 둥근 선과 가로 스크롤을 맡고, 칸은 아래 선만 긋는다 */
 table {
   width: 100%;
   min-width: 100%;
@@ -588,7 +572,7 @@ table {
 
 th,
 td {
-  padding: 0.55rem 0.8rem;
+  padding: 0.6rem 0.875rem;
   border-bottom: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
@@ -611,7 +595,7 @@ th {
   margin: 1.5em 0;
   overflow-x: auto;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--r-card);
   word-break: normal;
   overflow-wrap: normal;
 }
@@ -643,15 +627,38 @@ th {
   background: var(--soft);
 }
 
-/* 새 화면의 한 열 폭. 45rem 안에서 좌우 1rem */
+/* 한 열 폭. 45rem 안에서 좌우 1rem(글자 폭 688px) */
 .page {
   max-width: 45rem;
   margin: 0 auto;
-  padding: 1.25rem 1rem 3rem;
+  padding: 2.5rem 1rem 3rem;
 }
-@media (min-width: 46em) {
+@media (min-width: 40em) {
   .page {
-    padding: 2.5rem 1rem 5rem;
+    padding: 3rem 1rem 5rem;
+  }
+}
+
+/*
+ * 머리줄 바로 아래 점 격자 띠(시안). 장식이라 누를 수 없고, 높이(40px)가 .page의 위 여백(40px 이상)
+ * 안에 들어가 글자와 겹치지 않는다(글자 대비가 점 위에서 흐려지지 않는다).
+ * 점의 배치·진하기는 public/grid-band.png(scripts/generate-grid-band.mjs)가, 색은 --fg가 정한다.
+ */
+.grid-band {
+  position: absolute;
+  top: var(--header-h);
+  left: 0;
+  right: 0;
+  z-index: -1;
+  height: 40px;
+  background: var(--fg);
+  -webkit-mask: url('/grid-band.png') repeat-x 0 0 / 480px 40px;
+  mask: url('/grid-band.png') repeat-x 0 0 / 480px 40px;
+  pointer-events: none;
+}
+@media (forced-colors: active), print {
+  .grid-band {
+    display: none;
   }
 }
 
@@ -684,7 +691,7 @@ th {
 .text-link:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
-  border-radius: var(--radius);
+  border-radius: var(--r-badge);
 }
 
 /*
@@ -696,7 +703,7 @@ th {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: var(--radius);
+  border-radius: var(--r-btn);
 }
 .stretched-link:focus-visible {
   outline: none;
@@ -713,10 +720,11 @@ th {
   width: auto;
   height: auto;
   clip-path: none;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 0.875rem;
   border-radius: var(--radius);
-  background: var(--bg);
-  color: var(--fg);
+  background: var(--fg);
+  color: var(--bg);
+  font-weight: 700;
   outline: 2px solid var(--accent);
   z-index: 100;
 }
@@ -727,16 +735,15 @@ code {
   tab-size: 4;
 }
 
-/* ------------------------------------------------------------------ 편집 지면 부품 */
+/* ------------------------------------------------------------------ 부품 */
 
-/* 라벨(.k): 작은 글자, 자간 +0.04em. 분류·건수·절 이름에 쓴다 */
+/* 라벨(.k): 작은 굵은 회색 글자. 절 이름·건수·필터 이름에 쓴다 */
 .k {
   margin: 0;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   line-height: 1.5;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--muted);
   text-wrap: pretty;
   font-variant-numeric: tabular-nums;
@@ -744,7 +751,6 @@ code {
 .k a {
   text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
 }
-/* 라벨 안의 분류·주제 이름은 쓴 대로 보인다(Spring을 SPRING으로 바꾸지 않는다) */
 .k .name {
   text-transform: none;
 }
@@ -753,8 +759,7 @@ code {
   margin: 0 0.45em;
 }
 .k-in {
-  font-size: 0.8125rem;
-  letter-spacing: 0.04em;
+  font-size: 0.75rem;
   color: var(--muted);
   font-weight: 600;
   /* 목록 행 오른쪽의 '위키'·'글' 같은 종류 라벨은 두 글자를 세로로 쪼개지 않는다 */
@@ -762,7 +767,99 @@ code {
   flex-shrink: 0;
 }
 
-/* 글 머리 메타 줄: 14px/400. 글쓴이는 밑줄 링크, 구분자 ' · ' */
+/* 배지: 분류·주제·상태. 누르는 것이 아니면 글자 색만, 링크면 가리킬 때 면이 바뀐다 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-badge);
+  background: var(--bg);
+  color: var(--fg2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+  text-decoration: none;
+}
+a.badge {
+  height: 24px;
+  border-color: var(--line2);
+}
+a.badge:hover {
+  background: var(--soft);
+  color: var(--fg);
+}
+.badge.ok {
+  color: var(--ok);
+  background: var(--ok-bg);
+  border-color: transparent;
+}
+.badge.wip {
+  color: var(--wip);
+  background: var(--wip-bg);
+  border-color: transparent;
+}
+@media (forced-colors: active) {
+  .badge.ok,
+  .badge.wip {
+    border-color: CanvasText;
+  }
+}
+/* 페이지 제목 옆 건수 배지("6편") */
+.count-b {
+  display: inline-block;
+  margin-left: 0.4rem;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-badge);
+  background: var(--card);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--muted);
+  vertical-align: 3px;
+}
+
+/* 알약 링크·단추(소개·경력, 연락, GitHub, RSS …). 아이콘 15px */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.pill:hover {
+  background: var(--soft);
+}
+.pill .ti {
+  width: 15px;
+  height: 15px;
+}
+
+/* 글 머리 메타 줄: 13.5px 회색. 글쓴이는 밑줄 링크, 구분자 ' · ' */
 .meta {
   display: block;
   margin: 0;
@@ -781,7 +878,6 @@ code {
 .meta .nowrap {
   white-space: nowrap;
 }
-/* 목록 행 위줄의 '사례 시점 …'과 '· 날짜'도 같은 규칙이다 */
 .k .nowrap {
   white-space: nowrap;
 }
@@ -791,9 +887,9 @@ code {
   display: block;
   margin-bottom: 0.35rem;
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
   color: var(--accent);
 }
 
@@ -813,12 +909,15 @@ code {
 .more {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 4px;
   min-height: var(--control-size);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  color: var(--fg2);
-  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  color: var(--muted);
+  text-decoration: none;
+}
+.more:hover {
+  color: var(--fg);
 }
 .more svg {
   flex-shrink: 0;
@@ -834,242 +933,576 @@ code {
   display: inline;
 }
 
-/* 홈 첫 화면: 이름 · 직무 → 환경 한 줄 → 한 문장 → 소개·연락·GitHub. 히어로가 아니다 */
-.ident {
-  padding-bottom: 1.1rem;
-  border-bottom: 1px solid var(--line);
+/* 되돌아가기 링크("← 글 목록") */
+.backlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--control-size);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
 }
-.ident h1 {
-  margin: 0.2rem 0 0;
-  font-size: 1.9375rem;
-  letter-spacing: -0.02em;
-}
-/* 이름 옆 직무. 본문 크기·본문 색으로 두어 가장 중요한 낱말이 가장 작지 않게 한다 */
-.ident .role {
-  font-size: 1.0625rem;
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  color: var(--fg2);
-}
-/* 이름 뒤의 공백(접근 가능한 이름이 '조해성 백엔드 개발자'로 읽힌다)이 왼쪽 간격을 맡는다 */
-.ident .role .sep {
-  margin: 0 0.35em 0 0;
-}
-/* 주력 기술 한 줄(SITE.environment). 라벨·상자 없이 본문 크기 한 줄 */
-.ident .env {
-  margin: 0.35rem 0 0;
-  font-size: 1.0625rem;
-  line-height: 1.6;
-  color: var(--fg2);
-}
-.ident .lede {
-  margin-top: 0.45rem;
-  max-width: 36rem;
-}
-/* 링크 줄: 소개 보기 → · 연락 · GitHub. 44px 조작 높이 아래의 빈 공간은 음수 여백으로 거둔다(글자와 선 사이 약 1rem) */
-.ident .links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 1rem;
-  margin: 0 0 -0.75rem;
-}
-.ident .links .more {
-  margin: 0;
+.backlink:hover {
+  color: var(--fg);
 }
 
-/* 절 묶음과 절 머리(라벨 + 오른쪽 '더 보기') */
-.blk {
-  margin-top: 1.5rem;
+/* ------------------------------------------------------------------ 홈 */
+
+/* 첫 화면: 이름 · 직무 → 좌우명(원인만 강조색) → 소개 한 문장 → 주력 기술 → 알약 링크 */
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
-@media (min-width: 46em) {
-  .blk {
-    margin-top: 2rem;
+.hero .role {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.hero h1 {
+  margin: 0;
+  font-size: clamp(30px, 6vw, 48px);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.05em;
+}
+.grad {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@media (forced-colors: active) {
+  .grad {
+    background: none;
+    color: CanvasText;
   }
 }
-.sec-h {
+.hero .lede {
+  margin-top: 8px;
+  max-width: 600px;
+  font-size: 1.125rem;
+  line-height: 1.75;
+  color: var(--muted);
+}
+/* 주력 기술 한 줄(SITE.environment). 소개 문장보다 한 단계 작게, 라벨 없이 */
+.hero .env {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.hero .pills {
+  margin-top: 14px;
+}
+@media (max-width: 767px) {
+  .hero .lede {
+    font-size: 1.0625rem;
+  }
+}
+/* 좁은 화면: 네 알약이 한 줄에 들어가도록 좌우 여백·간격만 줄인다(높이 40px 그대로) */
+@media (max-width: 480px) {
+  .hero .pills {
+    gap: 6px;
+  }
+  .hero .pill {
+    gap: 5px;
+    padding: 0 10px;
+  }
+}
+
+/* 절 묶음과 절 머리(제목 + 오른쪽 '더 보기') */
+.blk {
+  margin-top: 56px;
+}
+@media (max-width: 640px) {
+  .blk {
+    margin-top: 44px;
+  }
+}
+.blk-h {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--fg);
+  margin-bottom: 14px;
 }
-.sec-h .k {
+.blk-h h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--fg);
 }
 /* 절 머리의 '더 보기'는 44px 높이를 갖되, 위아래 음수 여백으로 절 머리 줄 높이는 그대로 둔다 */
-.sec-h .more {
-  min-height: var(--control-size);
-  margin: -0.75rem 0;
-  font-size: 0.875rem;
+.blk-h .more {
+  margin-block: -14px;
+  white-space: nowrap;
 }
 
-/* 목록 행: 위줄(.k) → 제목 → 요약(또는 원인 한 줄 .row-c). 표지 없음 */
-.rows {
+/* 카드: 12px 반경 1px 선. 가리키면 면만 바뀐다(떠오르지 않는다) */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.rows > li {
-  position: relative;
-  border-bottom: 1px solid var(--line);
-}
-.row-a {
+.cards > li {
   display: flex;
-  gap: 1rem;
+}
+.cards > li.c-big {
+  grid-column: 1 / -1;
+}
+.card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--card);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+.card:hover {
+  background: var(--soft);
+}
+.card-body {
+  flex: 1;
+  min-width: 0;
+  padding: 18px;
+}
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.card-meta time {
+  white-space: nowrap;
+}
+.card-t {
+  display: block;
+  margin: 10px 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.45;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.card p {
+  margin: 6px 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--fg2);
+}
+/* 카드 속 원인·결과 줄: 라벨 + 문장(자르지 않는다) */
+.card-line .ck {
+  margin-right: 0.45em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+.card-line + .card-line {
+  margin-top: 4px;
+}
+.card.big {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+.card.big .card-body {
+  grid-column: 1;
+  grid-row: 1;
+  padding: 20px 22px 22px;
+}
+.card.big .card-t {
+  font-size: 1.4375rem;
+}
+.card-img {
+  grid-column: 2;
+  grid-row: 1;
+  display: block;
+  width: 240px;
+  height: 160px;
+  margin: 20px 20px 20px 0;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+@media (max-width: 640px) {
+  .card.big {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .card-img {
+    order: 2;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    margin: 0;
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+  }
+}
+@media (max-width: 560px) {
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .card.big .card-t {
+    font-size: 1.25rem;
+  }
+}
+:root[data-theme='dark'] :is(.card-img, .art-cover) {
+  filter: brightness(0.85);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) :is(.card-img, .art-cover) {
+    filter: brightness(0.85);
+  }
+}
+
+/* 번호 줄 목록: "01." + 제목(가리키면 ›) + 아래 작은 줄(분류·날짜) + 설명 */
+.nlist {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nlist.long {
+  gap: 14px;
+}
+.line {
+  display: flex;
   align-items: flex-start;
-  padding: 0.95rem 0 1.05rem;
+  gap: 8px;
+  padding: 10px 0;
+  color: inherit;
   text-decoration: none;
 }
-.row-b {
+.line-n {
+  flex-shrink: 0;
+  min-width: 2.2em;
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--fg);
+}
+.line-b {
   flex: 1;
   min-width: 0;
   display: block;
 }
-/* 위줄은 라벨 자신의 줄 높이(1.5)를 갖는 블록. 본문 줄 상자 안에 떠 있지 않아 두 줄로 접혀도 19.5px씩만 늘어난다 */
-.row-b .k {
+.line-t {
   display: block;
-}
-.row-t {
-  display: block;
-  margin-top: 0.3rem;
-  font-size: 1.1875rem;
-  line-height: 1.35;
-  font-weight: 650;
-  letter-spacing: -0.015em;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  font-weight: 500;
+  letter-spacing: -0.025em;
   text-wrap: balance;
 }
-.row-a:hover .row-t {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
-  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
-}
-.row-d {
-  display: block;
-  margin-top: 0.4rem;
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  color: var(--fg2);
-}
-.row-c {
-  display: block;
-  margin-top: 0.5rem;
-  padding-left: 0.75rem;
-  border-left: 2px solid var(--accent);
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  color: var(--fg2);
-}
-.row-ck {
+.chev {
   display: inline-block;
-  margin-right: 0.5em;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  margin-left: 4px;
+  vertical-align: -2px;
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.line:hover .chev,
+.line:focus-visible .chev {
+  opacity: 1;
+}
+.line-s {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.line-s .sep {
+  margin: 0 0.4em;
+}
+.line-s .nowrap,
+.line-s time {
+  white-space: nowrap;
+}
+.line-d {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--fg2);
+}
+.line-c {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--fg2);
+}
+.line-c .ck {
+  margin-right: 0.45em;
+  font-size: 0.75rem;
+  font-weight: 600;
   color: var(--accent);
 }
-/* 결과 한 줄. 원인 한 줄과 같은 선·글자, 간격만 좁다 */
-.row-o {
-  margin-top: 0.35rem;
+
+/* 타일(벤토): 큰 숫자 + 이름 + 작은 설명 */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 12px;
 }
-@media (min-width: 46em) {
-  .row-t {
-    font-size: 1.25rem;
+.bento:has(> :nth-child(2):last-child) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.tile-wide {
+  grid-column: span 2;
+}
+.tile {
+  display: block;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--card);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.15s;
+}
+a.tile:hover {
+  background: var(--soft);
+}
+.tile p {
+  margin: 0;
+}
+.tile-n {
+  font-family: var(--font-mono);
+  font-size: 1.875rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.tile-t {
+  margin-top: 6px !important;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-weight: 700;
+}
+.tile-s {
+  margin-top: 2px !important;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.tile-wide .tile-t {
+  margin-top: 0 !important;
+}
+@media (max-width: 560px) {
+  .bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tile-wide {
+    grid-column: 1 / -1;
   }
 }
-/* 이동 행 목록(홈 '더 보기', 404) */
-.linkrows {
+
+/* 태그 알약: 위키 주제 링크, 글 끝 #태그 */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.tagb {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-btn);
+  background: var(--bg);
+  color: var(--fg2);
+  font-size: 0.75rem;
+  line-height: 1.3;
+  text-decoration: none;
+}
+a.tagb:hover {
+  background: var(--soft);
+  color: var(--fg);
+}
+.tagb .n {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* 최근 갱신 행: 제목(가리키면 ↗) + 주제 / 오른쪽 날짜 */
+.elist {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.linkrows > li {
-  border-bottom: 1px solid var(--line);
-}
-.linkrows a,
-.linkrows button {
+.erow {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  width: 100%;
-  min-height: var(--control-size);
-  padding: 0.9rem 0;
-  border: 0;
-  background: none;
-  text-align: left;
+  gap: 12px;
+  padding: 12px 0;
+  color: inherit;
   text-decoration: none;
-  cursor: pointer;
 }
-.linkrows .row-t {
+.erow-b {
   flex: 1;
-  margin: 0;
-  font-size: 1.0625rem;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
-.linkrows .row-d {
-  flex: 0 1 auto;
-  margin: 0;
+.erow-t {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
 }
-.linkrows svg {
-  flex-shrink: 0;
+.erow-s {
+  font-size: 0.875rem;
+  line-height: 1.5;
   color: var(--muted);
 }
-/* 좁은 화면: 첫 줄에 제목과 화살표, 둘째 줄에 설명. 제목이 화살표에 밀려 세로로 쪼개지지 않게 기준 폭을 준다 */
-@media (max-width: 40em) {
-  .linkrows a,
-  .linkrows button {
-    flex-wrap: wrap;
-    gap: 0.25rem 1rem;
-  }
-  .linkrows .row-t {
-    flex: 1 1 calc(100% - 2.5rem);
-  }
-  .linkrows .row-d {
-    flex-basis: 100%;
-    order: 2;
-  }
+.erow-r {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.arr {
+  display: inline-block;
+  margin-left: 6px;
+  vertical-align: -1px;
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.erow:hover .arr,
+.erow:focus-visible .arr {
+  opacity: 1;
 }
 
-/* 목록 페이지 머리: 건수 라벨 → h1 → 한 문장 */
+/* ------------------------------------------------------------------ 목록 페이지 */
+
+/* 목록 페이지 머리: h1 + 건수 배지 → 한 문장(작은 회색) */
 .phead {
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--line);
+  margin-bottom: 28px;
 }
 .phead h1 {
-  margin: 0.2rem 0 0;
-  font-size: 1.9375rem;
-  letter-spacing: -0.02em;
+  margin: 0;
+  font-size: var(--type-page-title);
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.03em;
 }
 .phead .lede {
-  margin-top: 0.6rem;
-  max-width: 36rem;
-}
-.phead + .rows {
-  margin-top: 0.25rem;
+  margin-top: 6px;
+  max-width: 40rem;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--muted);
 }
 
-/* 위키 거르기: 찾기 입력, 칩, 범례, 건수 줄, 빈 결과 */
+/* 거르기: 돋보기 입력, 필터 이름, 회색 탭 바·세그먼트, 범례, 건수 줄, 빈 결과 */
 .filters {
-  margin-top: 1.25rem;
-  display: grid;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.flabel,
+.f-g legend {
+  margin: 0 0 6px;
+  padding: 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--muted);
+}
+.input,
+.f-q input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--line-input);
+  border-radius: var(--r-card);
+  background: var(--card);
+  color: var(--muted);
+}
+.input:focus-within {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 25%, transparent);
+}
+.input input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-size: 1rem;
 }
 .f-q {
   display: grid;
   gap: 0.35rem;
 }
 .f-q input {
-  width: 100%;
-  min-height: var(--control-size);
-  padding: 0 0.75rem;
+  display: block;
   border: 1px solid var(--line-input);
-  border-radius: var(--radius);
-  background: var(--bg);
   color: var(--fg);
   font: inherit;
   font-size: 1rem;
 }
-.f-q input::-webkit-search-cancel-button {
+.f-q input:focus-visible {
+  outline: 0;
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-2) 25%, transparent);
+}
+@media (forced-colors: active) {
+  .input:focus-within,
+  .f-q input:focus-visible {
+    outline: 2px solid Highlight;
+  }
+}
+:is(.input, .f-q) input::-webkit-search-cancel-button {
   -webkit-appearance: none;
   appearance: none;
 }
@@ -1079,14 +1512,75 @@ code {
   border: 0;
   min-width: 0;
 }
-.f-g legend {
-  padding: 0;
-  margin-bottom: 0.35rem;
+/* 회색 탭 바(주제)와 세그먼트(정리 상태). 고른 것은 검은 면·흰 글자 */
+.tabs,
+.seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--r-card);
+  background: var(--soft);
 }
+.seg {
+  display: inline-flex;
+}
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  flex-shrink: 0;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--fg2);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  cursor: pointer;
+}
+.tab .n {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+.tab:hover {
+  background: color-mix(in srgb, var(--fg) 6%, transparent);
+  color: var(--fg);
+}
+.tab[aria-pressed='true'],
+.tab[aria-current]:not([aria-current='false']) {
+  background: var(--fg);
+  color: var(--bg);
+  font-weight: 700;
+}
+.tab[aria-pressed='true'] .n,
+.tab[aria-current]:not([aria-current='false']) .n {
+  color: inherit;
+}
+/* 지금 조건에서 문서가 0편인 탭. 눌리지 않고 흐리게 보인다(누른 탭은 항상 살아 있다) */
+.tab[aria-disabled='true'] {
+  color: var(--muted);
+  cursor: default;
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, currentColor 50%, transparent);
+}
+.tab[aria-disabled='true']:hover {
+  background: transparent;
+  color: var(--muted);
+}
+.tab:focus-visible {
+  outline-offset: 0;
+}
+
+/* 알약 칩: 분류 이동, 알고리즘 유형·언어 거르기, 노트 시리즈 */
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.375rem;
+  gap: 6px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1094,21 +1588,23 @@ code {
 .chip {
   display: inline-flex;
   align-items: center;
-  min-height: var(--control-size);
-  padding: 0 0.8rem;
-  border: 1px solid var(--line2);
-  border-radius: var(--radius);
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
   background: var(--bg);
   color: var(--fg2);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 600;
+  line-height: 1.3;
   text-decoration: none;
   cursor: pointer;
+  transition: background-color 0.15s;
 }
 .chip .n {
   margin-left: 0.35em;
-  font-size: 0.8125rem;
-  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
   color: var(--muted);
 }
 .chip:hover {
@@ -1120,49 +1616,48 @@ code {
   background: var(--fg);
   border-color: var(--fg);
   color: var(--bg);
+  font-weight: 700;
 }
 .chip[aria-pressed='true'] .n,
 .chip[aria-current]:not([aria-current='false']) .n {
   color: inherit;
-  opacity: 0.8;
 }
-/* 지금 조건에서 문서가 0편인 칩. 눌리지 않고 흐리게 보인다(누른 칩은 항상 살아 있다) */
 .chip[aria-disabled='true'] {
   color: var(--muted);
-  border-color: var(--line);
   cursor: default;
 }
 .chip[aria-disabled='true']:hover {
   background: var(--bg);
   color: var(--muted);
 }
-/* 강제 색상(Windows 고대비): 배경 반전이 사라지므로 눌린 칩은 시스템 강조색으로 채운다 */
+/* 강제 색상(Windows 고대비): 배경 반전이 사라지므로 눌린 칩·탭은 시스템 강조색으로 채운다 */
 @media (forced-colors: active) {
   .chip[aria-pressed='true'],
-  .chip[aria-current]:not([aria-current='false']) {
+  .chip[aria-current]:not([aria-current='false']),
+  .tab[aria-pressed='true'],
+  .tab[aria-current]:not([aria-current='false']) {
     forced-color-adjust: none;
     background: Highlight;
     border-color: Highlight;
     color: HighlightText;
   }
-  .chip[aria-disabled='true'] {
+  .chip[aria-disabled='true'],
+  .tab[aria-disabled='true'] {
     color: GrayText;
     border-color: GrayText;
   }
 }
 .legend {
-  margin: 0.5rem 0 0;
-  font-size: 0.8125rem;
+  margin: 8px 0 0;
+  font-size: 0.75rem;
   line-height: 1.5;
   color: var(--muted);
 }
 .count {
-  margin: 1.25rem 0 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--fg);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  margin: 20px 0 12px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
 .empty {
@@ -1181,10 +1676,10 @@ code {
   min-height: var(--control-size);
   padding: 0 1rem;
   border: 1px solid var(--line-input);
-  border-radius: var(--radius);
+  border-radius: var(--r-btn);
   background: var(--bg);
   color: var(--fg);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
@@ -1194,7 +1689,7 @@ code {
 }
 .btn:disabled {
   color: var(--muted);
-  opacity: 0.6;
+  border-color: var(--line);
   cursor: default;
   background: var(--bg);
 }
@@ -1204,119 +1699,160 @@ code {
   color: var(--bg);
 }
 
-/* ==== 목록 ==== */
-/*
- * 주제 점. 위키 주제처럼 색상각(hue)만 정해진 점은 <i class="dot hue" style="--wt: 24">로 쓴다.
- * 위키 문서 머리의 점과 같은 채도·명도다. 카테고리 점은 [data-cat]::before가 맡는다.
- */
-.dot.hue {
-  --dot: hsl(var(--wt) 65% 48%);
+/* 위키 카드: 주제 배지 · 상태 배지 · 수정일 → 제목 → 설명 */
+.wlist {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .dot.hue {
-    --dot: hsl(var(--wt) 70% 65%);
-  }
+.wcard {
+  display: block;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--card);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
 }
-:root[data-theme='dark'] .dot.hue {
-  --dot: hsl(var(--wt) 70% 65%);
+.wcard:hover {
+  background: var(--soft);
 }
-/* 라벨 줄에 놓인 분류·주제 이름은 한 덩어리로 줄을 바꾼다 */
-.k [data-cat],
-.k .topic {
-  white-space: nowrap;
-}
-/* 절 머리 라벨 안의 건수. 마크업의 공백이 있어 이름이 '아카이브 26편'으로 읽힌다 */
-.sec-h .k .n {
-  margin-left: 0.15em;
+.wcard-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  font-size: 0.75rem;
+  line-height: 1.5;
   color: var(--muted);
 }
-/* 학습 기록 아래 목록 사이를 오가는 한 줄 텍스트 링크(머리 아래) */
+.wcard-t {
+  display: block;
+  margin: 10px 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.45;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.wcard-d {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--fg2);
+}
+
+/* 학습 기록 아래 목록 사이를 오가는 알약 줄(머리 아래) */
 .subnav {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0 0.2rem;
-  margin: 0.5rem 0 0;
-}
-.subnav a {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--control-size);
-  text-decoration: none;
-  color: var(--muted);
-}
-.subnav a:hover {
-  color: var(--fg);
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
-}
-.subnav a[aria-current] {
-  color: var(--fg);
-  text-decoration: underline;
-  text-decoration-color: var(--accent);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 0.3em;
+  gap: 6px;
+  margin: -12px 0 28px;
 }
 /* 절 머리 아래 안내 한 문장(학습 기록·노트 시리즈) */
 .blurb {
-  margin: 1rem 0 0;
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--fg2);
 }
 .blurb a {
   text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
 }
 
-/* 글 머리: 메타 줄 → 제목 → 원인 한 줄 → 고지 → 차례 → 본문 */
+/* ------------------------------------------------------------------ 글 */
+
+/* 글 머리: ← 글 목록 → 메타 줄(분류 배지) → 제목(+ 넓은 화면 오른쪽 표지) → 원인 상자 → 고지 → 차례 → 본문 */
 .art {
   position: relative;
 }
-.art-head h1 {
-  margin: 0.6rem 0 0;
-  font-size: 1.75rem;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
+.art-top {
+  display: block;
 }
-@media (min-width: 46em) {
-  .art-head h1 {
-    font-size: 2.125rem;
-    letter-spacing: -0.025em;
-    line-height: 1.22;
+.art-head .meta {
+  margin-top: 6px;
+  line-height: 1.9;
+}
+.art-head .meta .badge {
+  margin-right: 0.6em;
+  vertical-align: 1px;
+}
+.art-head h1 {
+  margin: 14px 0 0;
+  font-size: clamp(28px, 5.4vw, 40px);
+  line-height: 1.22;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+}
+.art-cover {
+  display: none;
+}
+@media (min-width: 64em) {
+  .art-top.has-cover {
+    display: flex;
+    align-items: flex-start;
+    gap: 28px;
   }
+  .art-top .art-head {
+    flex: 1;
+    min-width: 0;
+  }
+  .art-cover {
+    display: block;
+    flex-shrink: 0;
+    width: 200px;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    margin-top: 16px;
+    object-fit: cover;
+    border: 1px solid var(--line);
+    border-radius: var(--r-card);
+  }
+}
+.happened {
+  margin: 10px 0 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--muted);
 }
 .deck {
-  margin: 0.75rem 0 0;
+  margin: 14px 0 0;
   font-size: 1.0625rem;
-  line-height: 1.7;
+  line-height: 1.75;
   color: var(--fg2);
 }
-@media (min-width: 46em) {
-  .deck {
-    font-size: 1.125rem;
-  }
-}
-/* 원인 한 줄: 본문 크기, 옅은 면, 왼쪽 3px 강조선 */
+/* 원인 한 줄: 둥근 상자(callout). 라벨은 강조색 */
 aside.cause {
-  margin: 1.25rem 0 0;
-  padding: 0.9rem 1rem 0.95rem 1.1rem;
-  border-left: 3px solid var(--accent);
-  background: var(--soft);
-  border-radius: 0 var(--radius) var(--radius) 0;
+  margin: 24px 0 0;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-box);
+  background: var(--card);
 }
 aside.cause p {
   margin: 0;
 }
 aside.cause .k {
+  margin-bottom: 4px;
+  font-size: 0.75rem;
   color: var(--accent);
 }
+/* 문장은 본문 크기 그대로(시안의 16px보다 크게 두어 모바일에서도 줄이지 않는다), 굵기 600 */
 aside.cause p + p {
-  margin-top: 0.3rem;
-  font-weight: 500;
-  line-height: 1.65;
+  font-weight: 600;
+  line-height: 1.7;
 }
-/* 고지: 본문 크기 그대로, 왼쪽 1px 선. 회색 작은 글자로 만들지 않는다 */
+/* 고지: 본문 크기 그대로, 왼쪽 2px 선. 회색 작은 글자로 만들지 않는다 */
 aside.notice {
   margin: 1rem 0 0;
   padding: 0.1rem 0 0.1rem 1.1rem;
-  border-left: 1px solid var(--line2);
+  border-left: 2px solid var(--line2);
   color: var(--fg2);
 }
 aside.notice p {
@@ -1330,7 +1866,8 @@ aside.notice p + p {
 details.toc {
   margin: 1.25rem 0 0;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--r-card);
+  background: var(--card);
 }
 details.toc summary {
   display: flex;
@@ -1339,6 +1876,7 @@ details.toc summary {
   gap: 1rem;
   min-height: var(--control-size);
   padding: 0 1rem;
+  border-radius: var(--r-card);
   list-style: none;
   cursor: pointer;
 }
@@ -1355,7 +1893,7 @@ details.toc summary .k .n {
 details.toc summary svg {
   flex-shrink: 0;
   color: var(--muted);
-  transition: transform 0.2s;
+  transition: transform 0.15s;
 }
 details.toc[open] summary svg {
   transform: rotate(180deg);
@@ -1392,6 +1930,7 @@ nav.rail a {
 }
 details.toc a:hover,
 nav.rail a:hover {
+  color: var(--fg);
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
@@ -1400,7 +1939,7 @@ nav.rail a:hover {
   flex-shrink: 0;
   width: 1.6em;
   font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--muted);
 }
@@ -1417,7 +1956,11 @@ nav.rail {
     width: 13rem;
     max-height: calc(100dvh - var(--header-clearance) - 3rem);
     overflow-y: auto;
+    padding: 2px 4px;
     scrollbar-width: thin;
+  }
+  nav.rail .k {
+    font-size: 0.75rem;
   }
   nav.rail ol {
     margin: 0.5rem 0 0;
@@ -1431,16 +1974,19 @@ nav.rail {
     border-left: 2px solid transparent;
     font-size: 0.875rem;
     min-height: 2rem;
-    color: var(--fg2);
+    color: var(--muted);
   }
   nav.rail li.d3 a {
     padding-left: 1.9rem;
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
   }
   nav.rail a[aria-current] {
-    border-left-color: var(--accent);
+    border-left-color: var(--accent-2);
     color: var(--fg);
     font-weight: 600;
+  }
+  nav.rail a:focus-visible {
+    outline-offset: -2px;
   }
   .totop {
     margin-top: 0.25rem;
@@ -1448,11 +1994,12 @@ nav.rail {
     min-height: var(--control-size);
     border: 0;
     background: none;
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     color: var(--muted);
     cursor: pointer;
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
+  }
+  .totop:hover {
+    color: var(--fg);
   }
 }
 
@@ -1474,18 +2021,21 @@ nav.rail {
   padding-top: 1.1em;
   border-top: 1px solid var(--line);
   font-size: 1.5625rem;
-  line-height: 1.3;
-  letter-spacing: -0.01em;
+  line-height: 1.35;
+  font-weight: 700;
+  letter-spacing: -0.035em;
 }
 .prose h3 {
   margin-top: 2em;
-  font-size: 1.3rem;
-  font-weight: 650;
+  font-size: 1.1875rem;
+  line-height: 1.45;
+  font-weight: 700;
+  letter-spacing: -0.03em;
 }
 .prose h4 {
   margin-top: 1.6em;
-  font-size: 1.125rem;
-  font-weight: 650;
+  font-size: 1.0625rem;
+  font-weight: 700;
 }
 .prose h2 + *,
 .prose h3 + *,
@@ -1516,10 +2066,16 @@ nav.rail {
 .prose li > p {
   margin: 0;
 }
+.prose a {
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  text-underline-offset: 0.25em;
+}
 .prose blockquote {
   margin: 1.4em 0;
-  padding: 0.1em 0 0.1em 1.1em;
-  border-left: 3px solid var(--line2);
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--card);
   color: var(--fg2);
 }
 .prose blockquote > * {
@@ -1536,6 +2092,7 @@ nav.rail {
 .prose img {
   display: block;
   border: 1px solid var(--line);
+  border-radius: var(--r-card);
 }
 .prose figure {
   margin: 1.5em 0;
@@ -1551,45 +2108,25 @@ nav.rail {
   margin: 0;
 }
 .prose mark.hit {
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  background: color-mix(in srgb, var(--accent-2) 30%, transparent);
   color: inherit;
+  border-radius: 3px;
 }
 
-/* 글 끝: 2px 선, 태그, 이전·다음, 저자, AI 한 줄, 역링크 */
+/* 글 끝: 선, #태그 알약, 관련 기록, 이전·다음 카드, 저자 카드, AI 한 줄, 역링크 */
 .art-end {
   margin-top: 3rem;
-  padding-top: 1.25rem;
-  border-top: 2px solid var(--fg);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
 }
-p.tags {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.25rem 0.8rem;
+.art-end .tags {
   margin: 0;
-  font-size: 0.9375rem;
-  color: var(--fg2);
 }
-p.tags .k {
-  margin-right: 0.2rem;
+/* 태그는 링크가 있든 없든 같은 알약이다. 링크는 가리키면 면이 바뀐다 */
+.art-end .tags .tagb {
+  min-height: 36px;
 }
-/* 태그는 링크가 있든 없든 같은 모양이다. 링크는 가리키거나 초점을 받을 때 밑줄이 난다 */
-p.tags a,
-p.tags .tag {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--control-size);
-  text-decoration: none;
-}
-p.tags a:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
-}
-p.tags a:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-/* 관련 기록(같은 전환 작업의 다른 글). 태그 줄과 같은 문법, 링크는 밑줄 */
+/* 관련 기록(같은 전환 작업의 다른 글). 라벨 + 밑줄 링크 */
 p.rel {
   display: flex;
   flex-wrap: wrap;
@@ -1607,43 +2144,48 @@ p.rel a {
   align-items: center;
   min-height: var(--control-size);
 }
-p.rel a:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
+/* 이전·다음 글: 두 장의 카드 */
 .pn {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
   margin-top: 1.5rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--line);
 }
 .pn a {
   display: block;
   min-height: var(--control-size);
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-card);
+  background: var(--card);
   text-decoration: none;
+  transition: background-color 0.15s;
+}
+.pn a:hover {
+  background: var(--soft);
 }
 .pn a.next {
+  grid-column: 2;
   text-align: right;
+}
+.pn .k {
+  font-weight: 400;
 }
 .pn-t {
   display: block;
-  margin-top: 0.25rem;
-  font-size: 1rem;
+  margin-top: 4px;
+  font-size: 0.9375rem;
   line-height: 1.45;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   text-wrap: balance;
-}
-.pn a:hover .pn-t {
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
 }
 @media (max-width: 40em) {
   .pn {
     grid-template-columns: 1fr;
   }
   .pn a.next {
+    grid-column: auto;
     text-align: left;
   }
 }
@@ -1654,15 +2196,16 @@ aside.author {
   justify-content: space-between;
   gap: 0.25rem 1rem;
   margin-top: 1.5rem;
-  padding: 1rem 1.1rem;
+  padding: 12px 16px 12px 20px;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--r-box);
+  background: var(--card);
 }
 aside.author p {
   margin: 0;
   font-size: 1rem;
 }
-/* 소개 보기 → · 연락 · GitHub. 좁은 폭에서는 줄 전체가 둘째 줄로 내려간다(카드는 2줄 안) */
+/* 소개·경력 → · 연락 · GitHub. 좁은 폭에서는 줄 전체가 둘째 줄로 내려간다 */
 aside.author .author-links {
   display: flex;
   flex-wrap: wrap;
@@ -1671,24 +2214,27 @@ aside.author .author-links {
 aside.author a {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 4px;
   min-height: var(--control-size);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+}
+aside.author a:hover {
+  color: var(--fg);
 }
 p.ai {
   margin: 1rem 0 0;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   line-height: 1.6;
   color: var(--muted);
 }
 section.back {
-  margin-top: 1.5rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--line);
+  margin-top: 1.75rem;
 }
 section.back ul {
-  margin: 0.5rem 0 0;
+  margin: 0.25rem 0 0;
   padding: 0;
   list-style: none;
 }
@@ -1696,9 +2242,19 @@ section.back li {
   display: flex;
   align-items: baseline;
   gap: 0.6rem;
-  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--line);
   font-size: 1rem;
   line-height: 1.5;
+}
+section.back li a {
+  flex: 1;
+  min-width: 0;
+  padding: 0.35rem 0;
+  font-weight: 600;
+  text-decoration: none;
+}
+section.back li a:hover {
+  text-decoration: underline;
 }
 
 /* 대화상자 공통 */
@@ -1706,31 +2262,31 @@ dialog {
   color: var(--fg);
 }
 dialog::backdrop {
-  background: rgb(10 14 20 / 0.45);
+  background: rgb(0 0 0 / 0.4);
 }
 
 /*
- * 글 중간 목차: 본문의 목차가 화면 위로 지나가면 오른쪽 아래 버튼으로 연다.
- * 요소는 src/utils/toc-sheet.mjs가 만든다. 알약 반경과 12px 시트는 여기에만 허용한다.
+ * 글 중간 목차: 본문의 목차가 화면 위로 지나가면 오른쪽 아래 알약 버튼으로 연다.
+ * 요소는 src/utils/toc-sheet.mjs가 만든다. 시트는 위 모서리 20px.
  */
 .fab,
 .toc-fab {
   position: fixed;
-  right: 1rem;
-  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  right: 12px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   z-index: 40;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 6px;
   min-height: var(--control-size);
-  padding: 0 0.9rem;
-  border: 1px solid var(--line2);
-  border-radius: 999px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
   background: var(--bg);
   color: var(--fg);
   font: inherit;
-  font-size: 0.9375rem;
-  font-weight: 600;
+  font-size: 0.875rem;
+  font-weight: 700;
   box-shadow: var(--shadow);
   cursor: pointer;
 }
@@ -1748,13 +2304,13 @@ dialog.sheet,
   position: fixed;
   inset: auto 0 0 0;
   width: 100%;
-  max-width: 36rem;
+  max-width: 35rem;
   max-height: 70dvh;
   margin: 0 auto;
   padding: 0.5rem 0 env(safe-area-inset-bottom, 0px);
-  border: 1px solid var(--line2);
+  border: 1px solid var(--line);
   border-bottom: 0;
-  border-radius: 12px 12px 0 0;
+  border-radius: 20px 20px 0 0;
   background: var(--bg);
   color: var(--fg);
   overflow: auto;
@@ -1766,25 +2322,29 @@ dialog.sheet,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 0.5rem 0 1.1rem;
+  padding: 0 0.5rem 0 1.25rem;
   background: var(--bg);
 }
 .toc-sheet-head p {
   margin: 0;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--fg);
+  color: var(--muted);
 }
 .toc-sheet-close {
   min-width: var(--control-size);
   min-height: var(--control-size);
   border: 0;
+  border-radius: var(--radius);
   background: none;
   color: var(--muted);
   font: inherit;
   font-size: 0.9375rem;
   cursor: pointer;
+}
+.toc-sheet-close:hover {
+  background: var(--soft);
+  color: var(--fg);
 }
 .sheet ol,
 .toc-sheet ul {
@@ -1800,14 +2360,14 @@ dialog.sheet,
   min-height: var(--control-size);
   padding: 0.5rem 0.5rem;
   border-radius: var(--radius);
-  font-size: 1rem;
+  font-size: 0.9375rem;
   line-height: 1.45;
   color: var(--fg2);
   text-decoration: none;
 }
 .sheet a.d3,
 .toc-sheet .d3 a {
-  padding-left: 2rem;
+  padding-left: 1.5rem;
   font-size: 0.9375rem;
 }
 .sheet a:hover,
@@ -1819,8 +2379,8 @@ dialog.sheet,
 .toc-sheet a[aria-current='location'] {
   background: var(--soft);
   color: var(--fg);
-  font-weight: 600;
-  box-shadow: inset 3px 0 0 var(--accent);
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--accent-2);
 }
 @media (min-width: 75em) {
   .fab {
@@ -1832,4 +2392,31 @@ dialog.sheet,
   .toc-fab {
     display: none;
   }
+}
+
+/*
+ * 첫 화면 밖의 큰 덩어리는 화면에 다가올 때 그린다(content-visibility: auto).
+ * 웹폰트가 오기 전 첫 배치가 문서 전체의 글자를 대체 글꼴로 한 번 더 짜느라 느린 기기에서 첫 표시가
+ * 늦어졌다(측정: 글 상세 첫 Layout 1.7초 → 1.3초, 4배 CPU 감속). 내용은 접근성 트리·찾기·앵커에 그대로 있다.
+ * 페인트 격리가 가장자리 초점 링을 자르지 않도록 좌우·아래에 4px 여유를 두고 같은 만큼 되돌린다.
+ */
+.art-end,
+.comments,
+.lazy {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+  padding-inline: 4px;
+  margin-inline: -4px;
+}
+.lazy {
+  contain-intrinsic-size: auto 600px;
+  padding-bottom: 4px;
+  margin-bottom: -4px;
+}
+.wlist > li:nth-child(n + 5) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 160px;
+}
+.wcard:focus-visible {
+  outline-offset: -2px;
 }

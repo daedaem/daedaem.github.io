@@ -45,14 +45,14 @@ export function renderOgCard({ title, kicker, siteTitle, identityTitle, subtitle
     .join('')
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#ffffff"/>
-  <rect width="1200" height="8" fill="#223e60"/>
-  <text x="80" y="120" font-family="Pretendard" font-size="26" font-weight="600" fill="#223e60">${esc(kicker)}</text>
-  <text y="250" font-family="Pretendard" font-size="60" font-weight="700" fill="#191f28" letter-spacing="-2">${rows}</text>
+  <rect width="1200" height="8" fill="#294970"/>
+  <text x="80" y="120" font-family="Pretendard" font-size="26" font-weight="600" fill="#294970">${esc(kicker)}</text>
+  <text y="250" font-family="Pretendard" font-size="60" font-weight="700" fill="#0a0a0a" letter-spacing="-2">${rows}</text>
   <g transform="translate(80 520) scale(2)">
     <rect width="34" height="34" rx="9" fill="#223e60"/>
     <path d="${MONOGRAM_PATH}" fill="none" stroke="#fcfaf5" stroke-width="2.8" stroke-linejoin="round"/>
   </g>
-  <text x="170" y="550" font-family="Pretendard" font-size="28" font-weight="600" fill="#191f28">${esc(siteTitle)}</text>
-  <text x="170" y="589" font-family="Pretendard" font-size="22" fill="#3d4552">${esc(subtitle)}</text>
+  <text x="170" y="550" font-family="Pretendard" font-size="28" font-weight="600" fill="#0a0a0a">${esc(siteTitle)}</text>
+  <text x="170" y="589" font-family="Pretendard" font-size="22" fill="#404040">${esc(subtitle)}</text>
 </svg>`
 }

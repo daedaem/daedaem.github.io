@@ -7,8 +7,9 @@ const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'u
 const css = source('src/styles/global.css')
 
 test('입력란·선택 상자·단추의 테두리는 바탕과 3:1 이상인 전용 토큰을 쓴다', () => {
-  assert.match(css, /--line-input: #767f8c;/)
-  assert.equal((css.match(/--line-input: #8a94a3;/g) ?? []).length, 2)
+  // 라이트 #7c7c7c(흰 바탕 4.2:1), 다크 #828282(#0a0a0a 바탕 5.1:1). 이전 값(4.0:1, 5.0:1)보다 낮추지 않는다
+  assert.match(css, /--line-input: #7c7c7c;/)
+  assert.equal((css.match(/--line-input: #828282;/g) ?? []).length, 2)
   for (const selector of ['.list-input', '.f-q input', '.btn']) {
     const rule = css.match(new RegExp(selector.replace(/[.]/g, '\\.') + ' \\{[^}]*\\}'))?.[0]
     assert.match(rule, /border: 1px solid var\(--line-input\)/, selector)
@@ -31,10 +32,14 @@ test('넓은 화면의 차례 레일은 본문보다 앞에 있어 키보드로 
 test('강제 색상에서도 눌린 칩과 현재 메뉴가 구분된다', () => {
   assert.match(
     css,
-    /@media \(forced-colors: active\) \{\s*\.chip\[aria-pressed='true'\],\s*\.chip\[aria-current\]:not\(\[aria-current='false'\]\) \{\s*forced-color-adjust: none;\s*background: Highlight;/,
+    /@media \(forced-colors: active\) \{\s*\.chip\[aria-pressed='true'\],\s*\.chip\[aria-current\]:not\(\[aria-current='false'\]\),\s*\.tab\[aria-pressed='true'\],\s*\.tab\[aria-current\]:not\(\[aria-current='false'\]\) \{\s*forced-color-adjust: none;\s*background: Highlight;/,
   )
   const header = source('src/components/Header.astro')
-  assert.match(header, /nav a\[aria-current\] \{[^}]*border-bottom-color: var\(--accent\);/)
+  // 현재 메뉴는 시안처럼 글자색 2px 밑선(굵은 글자와 함께)
+  assert.match(
+    header,
+    /nav a\[aria-current\] \{[^}]*font-weight: 700;[^}]*border-bottom-color: var\(--fg\);/,
+  )
   assert.doesNotMatch(header, /box-shadow: inset 0 -2px 0/)
   assert.match(
     header,
@@ -80,7 +85,8 @@ test('위키 문서: 역링크 절은 늘 있고 없으면 한 문장, 머리 �
 test('메타 줄의 날짜·사례 시점·읽기 시간은 한 덩어리로 줄을 바꾼다', () => {
   assert.match(css, /\.meta time,\s*\.meta \.nowrap \{\s*white-space: nowrap;/)
   const post = source('src/layouts/PostLayout.astro')
-  assert.match(post, /<span class="nowrap" set:text=\{`사례 시점 \$\{happened\}`\} \/>/)
+  // 사례 시점은 시안처럼 제목 아래 한 줄로 따로 둔다
+  assert.match(post, /<p class="happened" set:text=\{`사례 시점 \$\{happened\}`\} \/>/)
   assert.match(post, /<span class="nowrap" set:text=\{`\$\{readingMinutes\}분 읽기`\} \/>/)
   assert.doesNotMatch(
     source('src/components/ContentDates.astro'),
@@ -88,30 +94,35 @@ test('메타 줄의 날짜·사례 시점·읽기 시간은 한 덩어리로 줄
   )
 })
 
-test('홈 직무는 이름 옆 본문 크기, 글 목록의 안내는 차례와 같은 펼침 문법, 404 링크는 하나', () => {
-  assert.match(css, /\.ident \.role \{\s*font-size: 1\.0625rem;/)
+test('홈 직무는 머리글 위 작은 줄, 글 목록의 안내는 차례와 같은 펼침 문법', () => {
+  assert.match(css, /\.hero \.role \{\s*margin: 0;\s*font-size: 0\.875rem;/)
   const posts = source('src/pages/posts/index.astro')
   assert.match(
     posts,
-    /<details class="criteria">\s*<summary>\s*<span class="k">기록·날짜 안내<\/span>\s*<svg/,
+    /<details class="criteria">\s*<summary>\s*<span>기록·날짜 안내<\/span>\s*<Icon name="chevron-down" \/>/,
   )
-  assert.match(posts, /\.criteria\[open\] summary svg \{\s*transform: rotate\(180deg\);/)
-  assert.match(posts, /\.criteria \{[^}]*border: 1px solid var\(--line\);/)
+  assert.match(posts, /\.criteria\[open\] summary :global\(svg\) \{\s*transform: rotate\(180deg\);/)
+  assert.match(
+    posts,
+    /\.criteria \{[^}]*border: 1px solid var\(--line\);[^}]*border-radius: var\(--r-card\);/,
+  )
 })
 
 test('작은 조판 결정: 이름 결합 공백, 제목 초점 링, h2 자간, 종류 라벨 nowrap, 주제 이름 원문 표기', () => {
-  assert.match(source('src/pages/learn/index.astro'), /학습 노트 아카이브 <span class="n">/)
+  assert.match(source('src/pages/learn/index.astro'), /학습 노트 아카이브 <span class="count-b">/)
   assert.match(
     css,
     /h4\[tabindex='-1'\]:focus-visible \{[^}]*outline: 2px solid var\(--accent\);\s*outline-offset: 4px;/,
   )
   assert.doesNotMatch(css, /h4\[tabindex='-1'\]:focus-visible \{[^}]*outline: none/)
-  assert.match(css, /\.prose h2 \{[^}]*letter-spacing: -0\.01em;/)
+  assert.match(css, /\.prose h2 \{[^}]*letter-spacing: -0\.035em;/)
   assert.match(css, /\.k-in \{[^}]*white-space: nowrap;\s*flex-shrink: 0;/)
   assert.match(css, /\.k \.name \{\s*text-transform: none;/)
+  // 번호 줄의 작은 줄은 분류·주제 이름을 쓴 대로(대문자로 바꾸지 않고) 한 덩어리씩 잇는다
   const row = source('src/components/PostRow.astro')
-  assert.match(row, /<span class="name">\{cat\.name\}<\/span>/)
-  assert.match(row, /<span class="name">\{label\}<\/span>/)
+  assert.match(row, /cat\?\.name \?\? label/)
+  assert.match(row, /<span class="nowrap">\{part\}<\/span>/)
+  assert.doesNotMatch(css, /\.line-s \{[^}]*text-transform/)
   assert.match(css, /\.prose > \.visually-hidden \{\s*margin: 0;/)
   assert.match(
     css,

@@ -20,20 +20,22 @@ const year = new Date().getFullYear()
 </footer>
 
 <style>
-  /* 한 줄: 왼쪽 저작권, 오른쪽 링크. 본문과 같은 45rem 폭 */
+  /* 시안의 바닥글: 넓은 폭(1180px) 한 줄, 왼쪽 저작권·오른쪽 링크, 작은 회색 글자. 선 없이 여백으로 나눈다 */
   .ft {
-    max-width: 45rem;
-    margin: 2rem auto 0;
-    padding: 1.5rem 1rem 3rem;
-    border-top: 1px solid var(--line);
+    max-width: 1180px;
+    margin: 3rem auto 0;
+    padding: 1.5rem 1.25rem 2.5rem;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem 1.5rem;
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     line-height: 1.5;
     color: var(--muted);
+    /* 첫 화면 밖이라 다가올 때 그린다(global.css의 content-visibility 설명 참고) */
+    content-visibility: auto;
+    contain-intrinsic-size: auto 120px;
   }
   p {
     margin: 0;

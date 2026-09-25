@@ -1,6 +1,7 @@
 ---
 // Pagefind는 빌드 후 dist/pagefind 에 생성된다. 개발 서버에서는 동작하지 않는다.
 import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
+import Icon from './Icon.astro'
 ---
 
 <button
@@ -10,20 +11,7 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
   aria-controls="search-dialog"
   aria-keyshortcuts="Control+K"
 >
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    aria-hidden="true"
-  >
-    <circle cx="11" cy="11" r="7"></circle>
-    <path d="m20 20-3.5-3.5"></path>
-  </svg>
+  <Icon name="search" />
   <span class="tb-l">검색</span>
   <kbd id="search-shortcut" aria-hidden="true">Ctrl K</kbd>
 </button>
@@ -289,23 +277,25 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
 </script>
 
 <style is:global>
-  /* 머리줄의 검색 버튼: 아이콘 + '검색'. 단축키 표시는 넓은 화면에서만 */
+  /* 머리줄의 검색 단추: 둥근 알약(시안). 아이콘 + '검색' + 넓은 화면에서만 단축키 */
   #search-open {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.45rem;
+    gap: 8px;
     min-height: var(--control-size);
     min-width: var(--control-size);
-    padding: 0 0.6rem;
-    border: 0;
-    border-radius: var(--radius);
-    background: transparent;
+    padding: 0 14px 0 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    background: var(--bg);
     color: var(--fg2);
     font: inherit;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 600;
+    line-height: 1;
     cursor: pointer;
+    transition: background-color 0.15s;
   }
   #search-open:hover {
     background: var(--soft);
@@ -322,19 +312,22 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
     display: none;
   }
   @media (min-width: 46em) {
+    #search-open {
+      padding: 0 8px 0 12px;
+    }
     #search-open kbd {
-      display: inline-block;
+      display: inline-flex;
     }
   }
 
-  /* 대화상자: 위 10vh, 폭 40rem, 반경 4px. 위 띠(범위·닫기) → 입력 54px → 결과 → 안내 */
+  /* 대화상자: 위 10vh, 폭 40rem, 반경 16px(시안). 위 띠(범위·닫기) → 입력 54px → 결과 → 안내 */
   #search-dialog {
     width: min(40rem, calc(100vw - 2rem));
     max-height: min(80dvh, calc(100dvh - 10vh - 1rem));
     margin: 10vh auto 0;
     padding: 0;
-    border: 1px solid var(--line2);
-    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    border-radius: 16px;
     background: var(--bg);
     color: var(--fg);
     box-shadow: var(--shadow);
@@ -349,7 +342,7 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
     --pagefind-ui-background: var(--bg);
     --pagefind-ui-border: var(--line);
     --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: var(--radius);
+    --pagefind-ui-border-radius: var(--r-btn);
     --pagefind-ui-tag: var(--soft);
     --pagefind-ui-font: var(--font-sans);
   }
@@ -453,7 +446,7 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
   }
   #search-mount .pagefind-ui__search-input:focus-visible {
     outline: none;
-    box-shadow: inset 0 -2px 0 var(--accent);
+    box-shadow: inset 0 -2px 0 var(--accent-2);
   }
   /* Pagefind 기본값은 안내 글자를 opacity 0.2로 흐리게 해 배경 대비가 1.5:1까지 떨어진다 */
   #search-mount .pagefind-ui__search-input::placeholder {
@@ -507,7 +500,7 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
   /* 결과 행: 제목 1rem/600 + 설명 .875rem 2줄. 고른 행은 옅은 면 + 왼쪽 3px 강조선 */
   #search-mount .pagefind-ui__result {
     display: block;
-    padding: 0.55rem 0.6rem;
+    padding: 0.55rem 0.75rem;
     border: 0;
     border-radius: var(--radius);
   }
@@ -517,7 +510,7 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
   #search-mount .pagefind-ui__result:hover,
   #search-mount .pagefind-ui__result:focus-within {
     background: var(--soft);
-    box-shadow: inset 3px 0 0 var(--accent);
+    box-shadow: inset 3px 0 0 var(--accent-2);
   }
   #search-mount .pagefind-ui__result-inner {
     display: block;
@@ -573,14 +566,14 @@ import { SEARCH_SCOPES } from '@/utils/search-scope.mjs'
   }
   /* 원색 노랑 대신 강조색을 옅게 깐 무채 하이라이트 하나 */
   #search-mount mark {
-    background: color-mix(in srgb, var(--accent) 22%, transparent);
+    background: color-mix(in srgb, var(--accent-2) 22%, transparent);
     color: inherit;
   }
   #search-mount .pagefind-ui__button {
     margin: 0.5rem 0 0;
     height: var(--control-size);
     border: 1px solid var(--line-input);
-    border-radius: var(--radius);
+    border-radius: var(--r-btn);
     background: var(--bg);
     color: var(--fg);
     font: inherit;
