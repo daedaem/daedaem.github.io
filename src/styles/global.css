@@ -1188,7 +1188,8 @@ a.badge:hover {
 .nlist.long {
   gap: 14px;
 }
-.line {
+/* 목록 행. 코드 블록 안 Shiki의 span.line과 이름이 같아 a로 좁힌다 */
+a.line {
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -1228,8 +1229,8 @@ a.badge:hover {
   opacity: 0;
   transition: opacity 0.15s;
 }
-.line:hover .chev,
-.line:focus-visible .chev {
+a.line:hover .chev,
+a.line:focus-visible .chev {
   opacity: 1;
 }
 .line-s {

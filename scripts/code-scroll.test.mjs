@@ -161,3 +161,10 @@ test('list rows show only the authoring date, and the home links onward with col
     )
   }
 })
+
+test('list-row styles do not leak into Shiki code lines (span.line)', () => {
+  const css = readFileSync(new URL('../src/styles/global.css', import.meta.url), 'utf8')
+  // 목록 행 클래스 이름이 코드 블록의 span.line과 같다. 맨 .line 규칙은 코드 줄마다 빈 줄을 만든다
+  assert.doesNotMatch(css, /(^|[\s,}])\.line\s*[{:,]/m)
+  assert.match(css, /a\.line\s*\{/)
+})

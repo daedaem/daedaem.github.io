@@ -248,10 +248,11 @@ test('home reads hero, then recommended cards, recent lines, wiki tiles and lear
 test('numbered lines are one global rule and the whole line is the link', () => {
   const css = source('src/styles/global.css')
   // 시안의 번호 줄: "01." 고정폭 번호, 18px 제목, 가리키면 › 화살표만 나타난다(움직이지 않는다)
-  assert.match(css, /\.line \{[^}]*display: flex;[^}]*padding: 10px 0;[^}]*text-decoration: none;/)
+  // 목록 행은 a.line으로 좁힌다. 맨 .line은 코드 블록의 Shiki span.line까지 flex로 만들어 줄마다 빈 줄이 생긴다
+  assert.match(css, /a\.line \{[^}]*display: flex;[^}]*padding: 10px 0;[^}]*text-decoration: none;/)
   assert.match(css, /\.line-t \{[^}]*font-size: 1\.125rem;[^}]*font-weight: 500;/)
   assert.match(css, /\.chev \{[^}]*opacity: 0;[^}]*transition: opacity 0\.15s;/)
-  assert.match(css, /\.line:hover \.chev,\s*\.line:focus-visible \.chev \{\s*opacity: 1;/)
+  assert.match(css, /a\.line:hover \.chev,\s*a\.line:focus-visible \.chev \{\s*opacity: 1;/)
   const row = source('src/components/PostRow.astro')
   const parts = [
     '<span class="line-n" aria-hidden="true">',
