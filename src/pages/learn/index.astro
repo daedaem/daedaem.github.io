@@ -5,6 +5,7 @@ import PageHead from '@/components/PageHead.astro'
 import LearningNav from '@/components/LearningNav.astro'
 import PostRow from '@/components/PostRow.astro'
 import { noteYearRange } from '@/utils/learning-range.mjs'
+import Icon from '@/components/Icon.astro'
 
 const solutions = await getCollection('solutions')
 const notes = (await getCollection('notes')).sort(
@@ -14,8 +15,6 @@ const boj = solutions.filter((s) => s.data.site === '백준').length
 const pgs = solutions.filter((s) => s.data.site === '프로그래머스').length
 // 노트의 연도 범위(서울 기준). 홈 '더 보기' 행과 같은 함수를 쓴다
 const noteYears = noteYearRange(notes)
-const arrow =
-  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 18l6-6M13 6l6 6"/></svg>'
 ---
 
 <BaseLayout
@@ -30,19 +29,23 @@ const arrow =
     <LearningNav />
 
     <section class="blk" aria-labelledby="learn-algorithms-title">
-      <div class="sec-h"><h2 class="k" id="learn-algorithms-title">알고리즘 풀이</h2></div>
+      <div class="blk-h">
+        <h2 id="learn-algorithms-title">알고리즘 풀이</h2>
+        <a class="more" href="/algorithms/"
+          >풀이 아카이브 보기<Icon name="arrow-right" size={15} /></a
+        >
+      </div>
       <p class="blurb">
         백준 {boj}문제, 프로그래머스 {pgs}문제. 2021년 12월부터 2023년 10월까지의 풀이 {
           solutions.length
         }건을 문제 이름, 난이도, 언어로 찾습니다.
-        <a class="more" href="/algorithms/">풀이 아카이브 보기<Fragment set:html={arrow} /></a>
       </p>
     </section>
 
     <section class="blk" aria-labelledby="learn-notes-title">
-      <div class="sec-h">
-        <h2 class="k" id="learn-notes-title">
-          학습 노트 아카이브 <span class="n">{notes.length}편</span>
+      <div class="blk-h">
+        <h2 id="learn-notes-title">
+          학습 노트 아카이브 <span class="count-b">{notes.length}편</span>
         </h2>
       </div>
       <p class="blurb">
@@ -50,10 +53,11 @@ const arrow =
         오탈자를 고치고 짧은 보충을 덧붙였으며, 지금 보기에 틀린 내용은 지우지 않고 취소선을 그은 뒤
         바로 아래에 바로잡았습니다.
       </p>
-      <ol class="rows">
+      <ol class="nlist">
         {
-          notes.map((note) => (
+          notes.map((note, i) => (
             <PostRow
+              n={i + 1}
               href={`/notes/${note.id}/`}
               title={note.data.title.trim()}
               date={note.data.date}
@@ -68,13 +72,10 @@ const arrow =
 </BaseLayout>
 
 <style>
-  /* 문장 안의 링크. 44px 높이를 갖되 위아래 음수 여백으로 줄 높이를 흔들지 않는다 */
-  .blurb .more {
-    margin: -0.6rem 0 -0.6rem 0.25rem;
-    vertical-align: baseline;
+  .blurb + .nlist {
+    margin-top: 10px;
   }
-  .blurb + .rows {
-    margin-top: 0.5rem;
-    border-top: 1px solid var(--line);
+  .blk-h .count-b {
+    vertical-align: 2px;
   }
 </style>

@@ -1,7 +1,7 @@
 ---
 /**
- * 학습 기록·알고리즘·학습 노트 목록을 오가는 한 줄 텍스트 링크. 각 목록 머리(.phead) 아래에 둔다.
- * 탭 바가 아니라 라벨(.k) 크기의 링크 줄이며, 상세 페이지에는 두지 않는다.
+ * 학습 기록·알고리즘·학습 노트 목록을 오가는 알약 링크 줄. 각 목록 머리(.phead) 아래에 둔다.
+ * 지금 페이지의 알약만 검은 면이다. 상세 페이지에는 두지 않는다.
  */
 const path = Astro.url.pathname
 const links = [
@@ -11,25 +11,19 @@ const links = [
 ]
 ---
 
-<nav class="k subnav" aria-label="학습 기록 탐색" data-pagefind-ignore>
+<nav class="chips subnav" aria-label="학습 기록 탐색" data-pagefind-ignore>
   {
-    links.map((link, index) => (
-      <>
-        {index > 0 && (
-          <span class="sep" aria-hidden="true">
-            ·
-          </span>
-        )}
-        <a
-          href={link.href}
-          aria-current={
-            // 목록 페이지에서만 '현재 페이지'이고, 그 아래 상세 페이지에서는 '현재 구역'이다
-            path === link.href ? 'page' : path.startsWith(link.href) ? 'true' : undefined
-          }
-        >
-          {link.label}
-        </a>
-      </>
+    links.map((link) => (
+      <a
+        class="chip"
+        href={link.href}
+        aria-current={
+          // 목록 페이지에서만 '현재 페이지'이고, 그 아래 상세 페이지에서는 '현재 구역'이다
+          path === link.href ? 'page' : path.startsWith(link.href) ? 'true' : undefined
+        }
+      >
+        {link.label}
+      </a>
     ))
   }
 </nav>

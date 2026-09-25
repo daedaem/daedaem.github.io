@@ -107,13 +107,13 @@ const sections = [
     </PageHead>
     <LearningNav />
 
-    <nav class="chips series-nav" aria-label="시리즈 선택">
-      <a href="#" class="tab chip" data-series="" aria-current="true"
+    <nav class="tabs series-nav" aria-label="시리즈 선택">
+      <a href="#" class="tab" data-series="" aria-current="true"
         >전체 <span class="n">{notes.length}</span></a
       >
       {
         sections.map((s) => (
-          <a href={`#${s.id}`} class="tab chip" data-series={s.id}>
+          <a href={`#${s.id}`} class="tab" data-series={s.id}>
             {s.title} <span class="n">{s.items.length}</span>
           </a>
         ))
@@ -123,16 +123,16 @@ const sections = [
     {
       sections.map((s) => (
         <section class="series blk" id={s.id} data-series={s.id}>
-          <div class="sec-h">
-            <h2 class="k">
-              {s.title}
-              <span class="n">{s.items.length}편</span>
+          <div class="blk-h">
+            <h2>
+              {s.title} <span class="count-b">{s.items.length}편</span>
             </h2>
           </div>
           <p class="blurb note">{s.note}</p>
-          <ol class="rows">
-            {s.items.map((n) => (
+          <ol class="nlist">
+            {s.items.map((n, i) => (
               <PostRow
+                n={i + 1}
                 href={`/notes/${n.id}/`}
                 title={n.data.title.trim()}
                 date={n.data.date}
@@ -148,7 +148,7 @@ const sections = [
 
   <script>
     // 칩은 앵커 링크라 JS 없이도 해당 시리즈로 건너뛴다. JS가 있으면 고른 시리즈만 남기고 주소 해시에 기억한다.
-    const tabs = [...document.querySelectorAll<HTMLAnchorElement>('.tab')]
+    const tabs = [...document.querySelectorAll<HTMLAnchorElement>('.series-nav .tab')]
     const sections = [...document.querySelectorAll<HTMLElement>('.series')]
     const ids = new Set(sections.map((s) => s.dataset.series))
 
@@ -180,17 +180,16 @@ const sections = [
 </BaseLayout>
 
 <style>
-  .series-nav {
-    margin-top: 1rem;
-  }
   .note {
-    margin-top: 0.75rem;
+    margin-top: -4px;
     font-size: 0.9375rem;
     line-height: 1.6;
     color: var(--fg2);
   }
-  .note + .rows {
-    margin-top: 0.5rem;
-    border-top: 1px solid var(--line);
+  .note + .nlist {
+    margin-top: 10px;
+  }
+  .blk-h .count-b {
+    vertical-align: 2px;
   }
 </style>

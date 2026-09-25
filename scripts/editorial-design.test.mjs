@@ -36,9 +36,15 @@ test('approved articles own their covers rather than borrowing a home position',
   )
   const home = source('src/pages/index.astro')
   assert.match(home, /selectHomeContent\(posts\)/)
-  // 홈은 표지를 그리지 않는다. 추천 글 행은 원인 한 줄(frontmatter cause, 없으면 causeSummary)을 보인다
+  // 홈 추천 카드: 표지 그림이 있는 첫 추천 글이 큰 카드이고, 그림은 글의 coverImage 파일만 쓴다(프리셋 표지 없음).
+  // 카드는 원인 한 줄(frontmatter cause, 없으면 causeSummary)을 보인다
   assert.doesNotMatch(home, /resolvePostCover|PostCover/)
-  assert.match(home, /cause=\{post\.data\.cause \?\? post\.causeSummary\}/)
+  assert.match(
+    home,
+    /recommended\.find\(\(post\) => post\.data\.coverImage\) \?\? recommended\[0\]/,
+  )
+  assert.match(home, /<CoverImage\s+class="card-img"\s+src=\{post\.data\.coverImage\}/)
+  assert.match(home, /cause: post\.data\.cause \?\? post\.causeSummary/)
 })
 
 test('custom local covers override presets while empty values stay optional', () => {
@@ -79,24 +85,40 @@ test('cover sources reject remote URLs, traversal, non-images and encoded paths'
   }
 })
 
-test('home, all-post and category lists share one cover-free row without changing reading pages', () => {
+test('home, all-post and category lists share one cover-free numbered line; covers are real images only', () => {
   for (const path of [
     'src/pages/index.astro',
     'src/pages/posts/index.astro',
     'src/pages/categories/[category].astro',
   ]) {
     const text = source(path)
-    assert.doesNotMatch(text, /resolvePostCover|PostCover|readingMinutes/)
+    assert.doesNotMatch(text, /resolvePostCover|PostCover/)
     assert.match(text, /<PostRow[\s\S]*?category=\{(?:post|p)\.data\.category\}/)
   }
+  // 번호 줄에는 표지·읽기 시간이 없다(읽기 시간은 홈 추천 카드와 글 머리에만)
+  for (const path of ['src/pages/posts/index.astro', 'src/pages/categories/[category].astro'])
+    assert.doesNotMatch(source(path), /readingMinutes/)
   const row = source('src/components/PostRow.astro')
   assert.doesNotMatch(row, /PostCover|cover|readingMinutes/)
-  assert.match(row, /<li class="row"[^>]*>\s*<a class="row-a" href=\{href\}>/)
+  assert.match(row, /<li data-id=\{dataId\}>\s*<a class="line" href=\{href\}>/)
+  // 표지 그림: 폭·높이·srcset을 등록 정보에서 읽고, 장식이라 alt를 비우며, 비동기로 푼다
+  const image = source('src/components/CoverImage.astro')
+  assert.match(image, /getCoverImageAttributes\(src\)/)
+  assert.match(image, /width=\{width\}\s*height=\{height\}/)
+  assert.match(image, /alt=""/)
+  assert.match(image, /decoding="async"/)
+  assert.match(image, /loading=\{priority \? 'eager' : 'lazy'\}/)
   const cover = source('src/components/PostCover.astro')
   assert.match(cover, /@container \(max-width: 220px\)/)
   assert.match(cover, /alt=""/)
   assert.doesNotMatch(cover, /0[123] \/ FIELD NOTES/)
-  assert.doesNotMatch(source('src/layouts/PostLayout.astro'), /<PostCover/)
+  // 글 머리의 표지는 넓은 화면에서만 제목 옆에 보인다(모바일 본문 시작 예산을 지킨다)
+  const layout = source('src/layouts/PostLayout.astro')
+  assert.doesNotMatch(layout, /<PostCover/)
+  assert.match(layout, /<CoverImage class="art-cover" src=\{cover\} sizes="200px" \/>/)
+  const css = source('src/styles/global.css')
+  assert.match(css, /\.art-cover \{\s*display: none;/)
+  assert.match(css, /@media \(min-width: 64em\) \{[^@]*\.art-cover \{\s*display: block;/)
   assert.deepEqual(Object.keys(COVER_PRESETS), ['null', 'query', 'legacy'])
 })
 
@@ -190,54 +212,53 @@ test('anchor landings and sticky article/wiki navigation share the header cleara
   }
 })
 
-test('home reads label, name, sentence, then recommended rows, recent rows and link rows in one column', () => {
+test('home reads hero, then recommended cards, recent lines, wiki tiles and learning tiles in one column', () => {
   const home = source('src/pages/index.astro')
   const order = [
-    '<section class="ident"',
+    '<section class="hero"',
     'id="recommended-title"',
+    '<ul class="cards">',
     'id="recent-title"',
-    'id="more-title"',
-    '<ul class="linkrows">',
+    '<ol class="nlist">',
+    'id="wiki-title"',
+    '<div class="bento">',
+    '<ul class="elist"',
+    'id="learn-title"',
   ].map((needle) => home.indexOf(needle))
   assert.ok(
     order.every((index, i) => index >= 0 && (i === 0 || index > order[i - 1])),
     String(order),
   )
-  // 더 보기 행의 건수·기간은 컬렉션에서 센다(위키 상태·기간, 노트 연도, 프로젝트 건수)
-  assert.match(
-    home,
-    /\{wiki\.length\}편 · 정리됨 \{wikiStats\.stable\} · 보완 중 \{wikiStats\.growing\} · \{\s*wikiStats\.from\s*\}부터 \{wikiStats\.to\}까지/,
-  )
-  assert.match(
-    home,
-    /학습 노트 \{notes\.length\}편 \(\{noteYears\}\) · 알고리즘 풀이 \{solutions\.length\}건/,
-  )
-  assert.match(
-    home,
-    /개인 프로젝트 \{PROJECTS\.length\}건 진행 중 · 교육 과정 팀 프로젝트 \{\s*TEAM_PROJECTS\.length\s*\}건/,
-  )
+  // 타일·주제·행의 건수는 컬렉션에서 센다(위키 상태, 주제별 건수, 노트 연도, 풀이 사이트별, 프로젝트)
+  assert.match(home, /정리됨 \{wikiStats\.stable\} · 보완 중 \{wikiStats\.growing\}/)
+  assert.match(home, /href=\{`\/wiki\/\?topic=\$\{topic\.id\}`\}/)
+  assert.match(home, /\{topic\.name\} <span class="n">\{topic\.count\}<\/span>/)
+  assert.match(home, /selectRecentWiki\(wiki, 5\)/)
+  assert.match(home, /formatCompactDate\(revised\)\.slice\(5\)/)
+  assert.match(home, /백준 \{boj\} · 프로그래머스 \{pgs\}/)
+  assert.match(home, /개인 \{PROJECTS\.length\}건 진행 중 · 팀 \{TEAM_PROJECTS\.length\}건/)
   assert.doesNotMatch(home, /주제와 상태로 거르기|2021년 12월부터/)
-  const rows = home.match(/<ul class="linkrows">([\s\S]*?)<\/ul>/)?.[1]
   assert.deepEqual(
-    [...rows.matchAll(/<a href="([^"]+)">/g)].map((m) => m[1]),
-    ['/wiki/', '/learn/', '/projects/'],
+    [...home.matchAll(/<a class="tile" href="([^"]+)">/g)].map((m) => m[1]),
+    ['/wiki/', '/notes/', '/algorithms/', '/projects/'],
   )
-  assert.doesNotMatch(home, /@media|grid-template|reading-rail|archive-links|selectRecentWiki/)
+  assert.doesNotMatch(home, /@media|grid-template|reading-rail|archive-links/)
 })
 
-test('row separators are one global rule and the whole row is the link', () => {
+test('numbered lines are one global rule and the whole line is the link', () => {
   const css = source('src/styles/global.css')
-  assert.match(
-    css,
-    /\.rows > li\s*\{[^}]*position: relative;[^}]*border-bottom: 1px solid var\(--line\);/,
-  )
-  assert.match(css, /\.row-a\s*\{[^}]*padding: 0\.95rem 0 1\.05rem;[^}]*text-decoration: none;/)
+  // 시안의 번호 줄: "01." 고정폭 번호, 18px 제목, 가리키면 › 화살표만 나타난다(움직이지 않는다)
+  assert.match(css, /\.line \{[^}]*display: flex;[^}]*padding: 10px 0;[^}]*text-decoration: none;/)
+  assert.match(css, /\.line-t \{[^}]*font-size: 1\.125rem;[^}]*font-weight: 500;/)
+  assert.match(css, /\.chev \{[^}]*opacity: 0;[^}]*transition: opacity 0\.15s;/)
+  assert.match(css, /\.line:hover \.chev,\s*\.line:focus-visible \.chev \{\s*opacity: 1;/)
   const row = source('src/components/PostRow.astro')
   const parts = [
-    '<span class="k">',
-    '<time datetime={date.toISOString()}>',
-    '<span class="row-t">',
-    '<span class="row-c">',
+    '<span class="line-n" aria-hidden="true">',
+    '<span class="line-t"',
+    '<span class="line-s">',
+    '<time class="mono" datetime={date.toISOString()}',
+    '<span class="line-c">',
   ]
   const at = parts.map((needle) => row.indexOf(needle))
   assert.ok(

@@ -83,22 +83,23 @@ const { tag, list } = Astro.props
     <PageHead title={`#${tag}`} label={`${list.length}건`}>
       <p class="lede">이 태그가 달린 글과 위키 문서입니다.</p>
     </PageHead>
-    <ol class="rows">
+    <ol class="nlist long">
       {
-        list.map((it) => {
+        list.map((it, i) => {
           const topic = it.topic ? getWikiTopic(it.topic) : undefined
           return it.kind === 'wiki' ? (
             <PostRow
+              n={i + 1}
               href={it.href}
               title={it.title}
               description={it.description}
               date={it.date}
               prefix="위키"
               label={topic?.name}
-              hue={topic?.hue}
             />
           ) : (
             <PostRow
+              n={i + 1}
               href={it.href}
               title={it.title}
               description={it.description}

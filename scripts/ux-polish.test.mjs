@@ -76,18 +76,22 @@ test('home summaries are separate from the actual article cause and reading orde
   assert.match(recommended[0].causeSummary, /수신값이 정상 반영되지 않았다/)
 })
 
-test('the whole row is one link whose name is the label line, title and summary in reading order', () => {
+test('the whole line or card is one link whose name is the title, small line and summary in reading order', () => {
   const home = source('src/pages/index.astro')
-  // 홈은 행 부품을 그대로 쓴다. 카드·표지·사이드 레일이 없다
+  // 홈: 추천은 카드, 최근 글은 번호 줄(PostRow), 위키·학습 기록은 타일. 사이드 레일은 없다
+  assert.match(home, /href: `\/posts\/\$\{post\.id\}\/`/)
   assert.match(home, /href=\{`\/posts\/\$\{post\.id\}\/`\}/)
-  assert.doesNotMatch(home, /card-title|editorial-card|wiki-list|archive-links|reading-rail/)
-  assert.match(home, /<ul class="linkrows">/)
+  assert.doesNotMatch(
+    home,
+    /card-title|editorial-card|wiki-list|archive-links|reading-rail|linkrows/,
+  )
   const row = source('src/components/PostRow.astro')
-  assert.match(row, /<a class="row-a" href=\{href\}>/)
+  assert.match(row, /<a class="line" href=\{href\}>/)
   assert.doesNotMatch(row, /aria-labelledby|stretched-link/)
-  assert.match(row, /<span class="row-t">\{title\}<\/span>/)
-  // 추천 글 행은 글의 원인 한 줄을 보인다(없으면 홈 요약)
-  assert.match(home, /cause=\{post\.data\.cause \?\? post\.causeSummary\}/)
+  // 번호("01.")는 장식이라 링크 이름에 넣지 않는다
+  assert.match(row, /<span class="line-n" aria-hidden="true">/)
+  // 추천 카드는 글의 원인 한 줄을 보인다(없으면 홈 요약)
+  assert.match(home, /cause: post\.data\.cause \?\? post\.causeSummary/)
   assert.match(source('src/components/PostCover.astro'), /aria-hidden="true"/)
 })
 

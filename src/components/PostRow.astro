@@ -1,27 +1,31 @@
 ---
 import { getCategory } from '@/consts'
 import { formatCompactDate } from '@/utils/format'
+import Icon from './Icon.astro'
 
 /**
- * 목록 행. 위줄(.k) "●분류 · 사례 시점 … · 2026.09.24" → 제목 → 요약(.row-d) 또는 원인 한 줄(.row-c) → 결과(.row-o).
- * 표지 썸네일과 읽기 시간은 두지 않는다. 행 전체가 링크다.
- * 위줄은 [prefix] · [분류(점) | label(점)] · [extra] · [사례 시점] · 날짜 순으로 있는 것만 잇는다.
+ * 번호 줄(시안의 .nlist 한 줄). "01." → 제목(가리키면 ›) → 작은 줄 "분류 · 사례 시점 … · 2026.09.24"
+ * → 설명(.line-d) 또는 원인 한 줄(.line-c) → 결과(.line-c). 줄 전체가 링크다.
+ * 작은 줄은 [prefix] · [분류 | label] · [extra] · [사례 시점] · 날짜 순으로 있는 것만 잇는다.
  */
 interface Props {
   href: string
   title: string
   date: Date
+  /** 목록 안의 순번(1부터). 있으면 앞에 "01."을 붙인다(장식, 읽지 않는다) */
+  n?: number
   /** 일이 실제로 있었던 시기(frontmatter happened 그대로). 글 행에만 넘긴다 */
   happened?: string
-  /** 글 분류 id. 점은 [data-cat]::before가 그린다 */
+  /** 글 분류 id */
   category?: string
-  /** 분류 대신 쓰는 이름(위키 주제 등). hue가 있으면 색점을 앞에 붙인다 */
+  /** 분류 대신 쓰는 이름(위키 주제 등) */
   label?: string
-  hue?: number
-  /** 위줄 맨 앞 글자(예: '아카이브', '위키') */
+  /** 작은 줄 맨 앞 글자(예: '아카이브', '위키') */
   prefix?: string
   /** 이름과 날짜 사이의 글자(예: '정리됨') */
   extra?: string
+  /** 날짜 앞 낱말(예: '작성') */
+  dateLabel?: string
   /** 한 줄 요약. cause가 있으면 대신 원인 한 줄을 보인다 */
   description?: string
   cause?: string
@@ -35,77 +39,67 @@ const {
   href,
   title,
   date,
+  n,
   happened,
   category,
   label,
-  hue,
   prefix,
   extra,
+  dateLabel,
   description,
   cause,
   outcome,
   dataId,
 } = Astro.props
 const cat = category ? getCategory(category) : undefined
-const name = cat?.name ?? label
+const parts = [prefix, cat?.name ?? label, extra, happened && `사례 시점 ${happened}`].filter(
+  (part): part is string => !!part,
+)
 ---
 
-<li class="row" data-id={dataId}>
-  <a class="row-a" href={href}>
-    <span class="row-b">
-      <span class="k">
-        {prefix}
-        {prefix && (name || extra) && <span class="sep" aria-hidden="true" set:text="·" />}
+<li data-id={dataId}>
+  <a class="line" href={href}>
+    {
+      n !== undefined && (
+        <span class="line-n" aria-hidden="true">
+          {String(n).padStart(2, '0')}.
+        </span>
+      )
+    }
+    <span class="line-b">
+      <span class="line-t"
+        >{title}<Icon name="chevron-right" size={16} class="chev" strokeWidth={2.5} /></span
+      >
+      <span class="line-s">
         {
-          cat && (
-            <span data-cat={cat.id}>
-              <span class="name">{cat.name}</span>
-            </span>
-          )
-        }
-        {
-          !cat && label && (
-            <span class="topic">
-              {hue !== undefined && <i class="dot hue" style={`--wt: ${hue}`} aria-hidden="true" />}
-              <span class="name">{label}</span>
-            </span>
-          )
-        }
-        {name && extra && <span class="sep" aria-hidden="true" set:text="·" />}
-        {extra}
-        {
-          happened && (
+          parts.map((part) => (
             <>
-              {(prefix || name || extra) && <span class="sep" aria-hidden="true" set:text="·" />}
-              <span class="nowrap">사례 시점 {happened}</span>
-            </>
-          )
-        }
-        {/* 날짜는 구분점과 한 덩어리로 줄을 바꾼다(좁은 폭에서 둘째 줄로 함께 내려간다) */}
-        <span class="nowrap">
-          {
-            (prefix || name || extra || happened) && (
+              <span class="nowrap">{part}</span>
               <span class="sep" aria-hidden="true" set:text="·" />
-            )
-          }
-          <time datetime={date.toISOString()}>{formatCompactDate(date)}</time>
+            </>
+          ))
+        }
+        {/* 날짜는 앞 낱말과 한 덩어리로 줄을 바꾼다 */}
+        <span class="nowrap">
+          {dateLabel && `${dateLabel} `}<time class="mono" datetime={date.toISOString()}
+            >{formatCompactDate(date)}</time
+          >
         </span>
       </span>
-      <span class="row-t">{title}</span>
       {
         cause ? (
-          <span class="row-c">
-            <span class="row-ck">원인</span>
+          <span class="line-c">
+            <span class="ck">원인</span>
             {cause}
           </span>
         ) : (
-          description && <span class="row-d">{description}</span>
+          description && <span class="line-d">{description}</span>
         )
       }
       {
         outcome && (
-          <span class="row-c row-o">
-            <span class="row-ck">결과</span>
+          <span class="line-c">
+            <span class="ck">결과</span>
             {outcome}
           </span>
         )

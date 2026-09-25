@@ -136,21 +136,22 @@ test('the inner code scrolls so the label and copy button stay put, and the fade
 
 test('list rows show only the authoring date, and the home links onward with collection counts', () => {
   const home = readFileSync(new URL('../src/pages/index.astro', import.meta.url), 'utf8')
-  // 사례 시점은 글 목록(/posts/)의 행이 그린다. 홈 행은 원인·결과 줄이 이미 있어 첫 화면 예산(첫 글 제목 y ≤480)을 지키려고 넘기지 않는다
+  // 사례 시점은 글 목록(/posts/)의 행이 그린다. 홈 카드는 원인·결과 줄이 이미 있어 첫 화면 예산(첫 카드 제목 y ≤620)을 지키려고 넘기지 않는다
   assert.doesNotMatch(home, /사례 시점/)
   assert.doesNotMatch(home, /happened=\{post\.data\.happened\}/)
   const posts = readFileSync(new URL('../src/pages/posts/index.astro', import.meta.url), 'utf8')
   assert.match(posts, /happened=\{p\.data\.happened\}/)
-  // 주제별 글 레일 대신 '더 보기' 행: 위키 건수·상태·기간, 노트 건수·연도, 풀이 건수는 컬렉션에서 센다
-  assert.match(home, /\{wiki\.length\}편/)
+  // 학습 위키·학습 기록 타일: 위키 건수·상태, 노트 건수·연도, 풀이 건수는 컬렉션에서 센다
+  assert.match(home, /\{wiki\.length\}편 전체/)
   assert.match(
     home,
-    /\{notes\.length\}편 \(\{noteYears\}\) · 알고리즘 풀이 \{solutions\.length\}건/,
+    /<p class="tile-n">\{notes\.length\}<\/p>[\s\S]*?<p class="tile-s mono">\{noteYears\}<\/p>/,
   )
+  assert.match(home, /<p class="tile-n">\{solutions\.length\}<\/p>/)
   const row = readFileSync(new URL('../src/components/PostRow.astro', import.meta.url), 'utf8')
   assert.match(
     row,
-    /<time datetime=\{date\.toISOString\(\)\}>\{formatCompactDate\(date\)\}<\/time>/,
+    /<time class="mono" datetime=\{date\.toISOString\(\)\}\s*>\{formatCompactDate\(date\)\}<\/time\s*>/,
   )
   assert.doesNotMatch(row, /updated/)
   for (const path of ['src/pages/notes/index.astro', 'src/pages/tags/[tag].astro']) {

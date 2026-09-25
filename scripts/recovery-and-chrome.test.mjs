@@ -15,18 +15,18 @@ test('an empty wiki result is announced in the visible count row with a reset be
     wiki,
     /<div id="wiki-empty" class="empty" hidden>[\s\S]*?id="wiki-reset"[\s\S]*?id="wiki-global"/,
   )
-  // 목록의 날짜는 다른 목록과 같은 짧은 형식(PostRow의 formatCompactDate)을 쓴다. 마지막 갱신일이다
+  // 카드의 날짜는 다른 목록과 같은 짧은 형식(formatCompactDate)을 쓴다. 마지막 갱신일이다
   assert.match(
     wiki,
     /const revised = \(entry: [^=]*\) => entry\.data\.updated \?\? entry\.data\.created/,
   )
-  assert.match(wiki, /<PostRow[\s\S]*?date=\{revised\(entry\)\}/)
+  assert.match(wiki, /<a class="wcard"[\s\S]*?formatCompactDate\(revised\(entry\)\)/)
   assert.match(source('src/components/PostRow.astro'), /formatCompactDate\(date\)/)
 })
 
 test('the 404 page names the problem and offers search', () => {
   const page = source('src/pages/404.astro')
-  assert.match(page, /<h1>페이지를 찾을 수 없습니다<\/h1>/)
+  assert.match(page, /<h1>페이지를 찾을 수 없습니다 <span class="count-b">404<\/span><\/h1>/)
   assert.match(page, /id="notfound-search"/)
   assert.match(page, /site-search/)
 })
@@ -62,23 +62,27 @@ test('focus rings share one 2px style and search keeps its text label on small s
   assert.doesNotMatch(search, /#search-open span,\s*#search-open kbd \{\s*display: none;/)
 })
 
-test('the home has no navy panel: the identity block is text on the page background', () => {
+test('the home has no navy panel: the hero is text on the page background', () => {
   const css = source('src/styles/global.css')
   assert.doesNotMatch(css, /--hero-bg|--hero-ink|--cover-navy/)
   const home = source('src/pages/index.astro')
-  assert.doesNotMatch(home, /hero|background:/)
-  assert.match(
-    css,
-    /\.ident\s*\{\s*padding-bottom: 1\.1rem;\s*border-bottom: 1px solid var\(--line\);/,
-  )
+  assert.doesNotMatch(home, /background:/)
+  // 시안의 머리: 판·그림 없이 글자만. 강조는 '원인' 한 낱말의 글자색(그라디언트)뿐이다
+  const hero = css.match(/\.hero \{([^}]*)\}/)?.[1]
+  assert.doesNotMatch(hero, /background|border/)
+  assert.match(css, /\.grad \{[^}]*background-clip: text;[^}]*color: transparent;/)
+  assert.match(css, /@media \(forced-colors: active\) \{\s*\.grad \{[^}]*color: CanvasText;/)
 })
 
 test('recommended posts show their writing date like every other list', () => {
-  // 홈 추천 글도 PostRow를 쓰므로 같은 <time>과 같은 짧은 날짜 형식을 받는다
-  assert.match(source('src/pages/index.astro'), /<PostRow[\s\S]*?date=\{post\.data\.date\}/)
+  // 홈 추천 카드도 번호 줄과 같은 <time>과 같은 짧은 날짜 형식(고정폭 숫자)을 쓴다
+  assert.match(
+    source('src/pages/index.astro'),
+    /<time datetime=\{post\.data\.date\.toISOString\(\)\}>\s*작성 <span class="mono">\{formatCompactDate\(post\.data\.date\)\}<\/span>/,
+  )
   assert.match(
     source('src/components/PostRow.astro'),
-    /<time datetime=\{date\.toISOString\(\)\}>\{formatCompactDate\(date\)\}<\/time>/,
+    /<time class="mono" datetime=\{date\.toISOString\(\)\}\s*>\{formatCompactDate\(date\)\}<\/time\s*>/,
   )
 })
 

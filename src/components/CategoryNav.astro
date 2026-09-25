@@ -22,7 +22,6 @@ const { counts, total, active } = Astro.props
       <a
         href={`/categories/${c.id}/`}
         class="chip"
-        data-cat={c.id}
         aria-current={active === c.id ? 'page' : undefined}
       >
         {c.name} <span class="n">{counts.get(c.id) ?? 0}</span>
@@ -33,6 +32,6 @@ const { counts, total, active } = Astro.props
 
 <style>
   .catnav {
-    margin-top: 1rem;
+    margin-top: 14px;
   }
 </style>

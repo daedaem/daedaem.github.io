@@ -1,0 +1,33 @@
+---
+/**
+ * 글 표지 그림 한 장(장식). 홈 첫 카드와 넓은 화면 글 머리에 쓴다.
+ * 등록된 파일(src/data/post-cover-images.json)이면 320·768·원본 변형을 srcset으로 내고,
+ * 폭·높이를 늘 적어 그림이 늦게 와도 자리가 흔들리지 않는다. 뜻은 옆의 글 제목이 맡으므로 alt는 비운다.
+ */
+import { getCoverImageAttributes } from '@/utils/cover-images.mjs'
+
+interface Props {
+  src: string
+  class: string
+  /** 화면에 그려지는 폭. srcset에서 알맞은 크기를 고르는 데 쓴다 */
+  sizes: string
+  /** 첫 화면의 가장 큰 요소(LCP)일 때만 true */
+  priority?: boolean
+}
+const { src, class: cls, sizes, priority = false } = Astro.props
+const { width, height, srcset } = getCoverImageAttributes(src)
+---
+
+<img
+  class={cls}
+  src={src}
+  srcset={srcset}
+  sizes={srcset ? sizes : undefined}
+  width={width}
+  height={height}
+  alt=""
+  loading={priority ? 'eager' : 'lazy'}
+  fetchpriority={priority ? 'high' : undefined}
+  decoding="async"
+  data-pagefind-ignore
+/>

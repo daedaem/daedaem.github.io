@@ -31,7 +31,7 @@ const { category, posts, counts, total } = Astro.props
 
 <BaseLayout title={category.name} description={category.description} searchIndex={false}>
   <div class="page">
-    <PageHead title={category.name} label={`${posts.length}편`} category={category.id}>
+    <PageHead title={category.name} label={`${posts.length}편`}>
       <p class="lede">{category.description}</p>
       <CategoryNav counts={counts} total={total} active={category.id} />
     </PageHead>
@@ -40,9 +40,11 @@ const { category, posts, counts, total } = Astro.props
       posts.length === 0 ? (
         <p class="empty">아직 이 주제로 발행한 글이 없습니다.</p>
       ) : (
-        <ol class="rows">
-          {posts.map((p) => (
+        <ol class="nlist long">
+          {posts.map((p, i) => (
             <PostRow
+              n={i + 1}
+              dateLabel="작성"
               href={`/posts/${p.id}/`}
               title={p.data.title}
               description={p.data.description}

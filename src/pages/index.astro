@@ -2,11 +2,14 @@
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
-import { SITE } from '@/consts'
+import CoverImage from '@/components/CoverImage.astro'
+import Icon from '@/components/Icon.astro'
+import { SITE, WIKI_TOPICS, getCategory, getWikiTopic } from '@/consts'
 import { CASES } from '@/data/cases'
 import { PROJECTS, TEAM_PROJECTS } from '@/data/projects'
-import { selectHomeContent } from '@/utils/home-content.mjs'
+import { selectHomeContent, selectRecentWiki } from '@/utils/home-content.mjs'
 import { noteYearRange, wikiRange } from '@/utils/learning-range.mjs'
+import { formatCompactDate, readingMinutes } from '@/utils/format'
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
@@ -15,82 +18,150 @@ const wiki = await getCollection('wiki', ({ data }) => !data.draft)
 const notes = await getCollection('notes')
 const solutions = await getCollection('solutions')
 const { recommended, rest } = selectHomeContent(posts)
-// '더 보기' 행의 건수·기간은 컬렉션에서 센다. 손으로 쓴 숫자는 없다
+// 먼저 읽을 글 3편 가운데 표지 그림이 있는 첫 글이 큰 카드, 나머지는 추천 순서대로 반반 카드.
+// 큰 카드의 그림은 넓은 화면(1280) 첫 화면의 LCP라 먼저 받는다(모바일에서는 글 아래라 15KB만 더 받는다)
+const lead = recommended.find((post) => post.data.coverImage) ?? recommended[0]
+const pair = recommended.filter((post) => post !== lead)
+// 타일·주제·행의 건수와 기간은 컬렉션에서 센다. 손으로 쓴 숫자는 없다
 const wikiStats = wikiRange(wiki)
 const noteYears = noteYearRange(notes)
-const arrow =
-  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 18l6-6M13 6l6 6"/></svg>'
+const topics = WIKI_TOPICS.map((topic) => ({
+  ...topic,
+  count: wiki.filter((entry) => entry.data.topic === topic.id).length,
+}))
+  .filter((topic) => topic.count > 0)
+  .sort((a, b) => b.count - a.count)
+const recentWiki = selectRecentWiki(wiki, 5)
+const boj = solutions.filter((s) => s.data.site === '백준').length
+const pgs = solutions.filter((s) => s.data.site === '프로그래머스').length
+// 좌우명에서 강조할 낱말(SITE.mottoAccent)만 강조색으로 칠한다. 없으면 한 덩어리로 둔다
+const accentAt = SITE.motto.indexOf(SITE.mottoAccent)
+const motto =
+  accentAt < 0
+    ? { before: SITE.motto, accent: '', after: '' }
+    : {
+        before: SITE.motto.slice(0, accentAt),
+        accent: SITE.mottoAccent,
+        after: SITE.motto.slice(accentAt + SITE.mottoAccent.length),
+      }
+type Pick = (typeof recommended)[number]
+const card = (post: Pick) => ({
+  href: `/posts/${post.id}/`,
+  category: getCategory(post.data.category)?.name,
+  cause: post.data.cause ?? post.causeSummary,
+  outcome: CASES.find((c) => c.id === post.id)?.outcomePlain,
+  minutes: readingMinutes(post.body ?? ''),
+})
 ---
 
 <BaseLayout title={SITE.title} description={SITE.description} searchIndex={false}>
   <div class="page">
-    <!-- 첫 화면: 이름 · 직무 → 환경 한 줄 → 한 문장 → 소개·연락·GitHub. 히어로가 아니다. 직무는 본문 크기로 이름 옆에 둔다 -->
-    <section class="ident" aria-labelledby="ident-title">
-      <h1 id="ident-title">
-        {SITE.author}{' '}<span class="role"
-          ><span class="sep" aria-hidden="true">·</span>{SITE.role}</span
-        >
+    <!-- 첫 화면: 이름 · 직무 → 좌우명(원인만 강조색) → 소개 한 문장 → 주력 기술 → 알약 링크 -->
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="role">{SITE.author} · {SITE.role}</p>
+      <h1 id="hero-title">
+        {motto.before}{motto.accent && <span class="grad">{motto.accent}</span>}{motto.after}
       </h1>
-      <p class="env">{SITE.environment}</p>
       <p class="lede">{SITE.intro}</p>
-      <p class="links">
-        <a class="more" href="/about/">소개 보기<Fragment set:html={arrow} /></a>
-        <a class="more" href="/about/#contact">연락</a>
-        <a class="more" href={SITE.githubUrl} rel="me noopener">GitHub</a>
-      </p>
+      <p class="env">{SITE.environment}</p>
+      <ul class="pills" aria-label="소개와 연락">
+        <li>
+          <a class="pill" href="/about/"><Icon name="user" size={15} />소개·경력</a>
+        </li>
+        <li>
+          <a class="pill" href="/about/#contact"><Icon name="mail" size={15} />연락</a>
+        </li>
+        <li>
+          <a class="pill" href={SITE.githubUrl} rel="me noopener"
+            ><Icon name="brand-github" size={15} />GitHub</a
+          >
+        </li>
+        <li>
+          <a class="pill" href="/rss.xml"><Icon name="rss" size={15} />RSS</a>
+        </li>
+      </ul>
     </section>
 
     {
-      recommended.length > 0 && (
+      lead && (
         <section class="blk" aria-labelledby="recommended-title">
-          <div class="sec-h">
-            <h2 class="k" id="recommended-title">
-              먼저 읽을 글
-            </h2>
+          <div class="blk-h">
+            <h2 id="recommended-title">먼저 읽을 글</h2>
             <a class="more" href="/posts/">
               전체 글 {posts.length}편
-              <Fragment set:html={arrow} />
+              <Icon name="arrow-right" size={15} />
             </a>
           </div>
-          <ol class="rows">
-            {recommended.map((post) => (
-              <PostRow
-                href={`/posts/${post.id}/`}
-                title={post.data.title}
-                date={post.data.date}
-                category={post.data.category}
-                cause={post.data.cause ?? post.causeSummary}
-                outcome={CASES.find((c) => c.id === post.id)?.outcomePlain}
-                description={post.data.description}
-              />
-            ))}
-          </ol>
+          <ul class="cards">
+            {[lead, ...pair].map((post) => {
+              const c = card(post)
+              const big = post === lead
+              return (
+                <li class:list={{ 'c-big': big }}>
+                  <a class:list={['card', { big }]} href={c.href}>
+                    <div class="card-body">
+                      <div class="card-meta">
+                        {c.category && <span class="badge">{c.category}</span>}
+                        <time datetime={post.data.date.toISOString()}>
+                          작성 <span class="mono">{formatCompactDate(post.data.date)}</span>
+                        </time>
+                        <span>{c.minutes}분 읽기</span>
+                      </div>
+                      <h3 class="card-t">{post.data.title}</h3>
+                      {c.cause ? (
+                        <p class="card-line">
+                          <span class="ck">원인</span>
+                          {c.cause}
+                        </p>
+                      ) : (
+                        <p>{post.data.description}</p>
+                      )}
+                      {c.outcome && (
+                        <p class="card-line">
+                          <span class="ck">결과</span>
+                          {c.outcome}
+                        </p>
+                      )}
+                    </div>
+                    {big && post.data.coverImage && (
+                      <CoverImage
+                        class="card-img"
+                        src={post.data.coverImage}
+                        sizes="(max-width: 640px) calc(100vw - 34px), 240px"
+                        priority
+                      />
+                    )}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
         </section>
       )
     }
 
     <section class="blk" aria-labelledby="recent-title">
-      <div class="sec-h">
-        <h2 class="k" id="recent-title">최근 글</h2>
+      <div class="blk-h">
+        <h2 id="recent-title">최근 글</h2>
         {
-          recommended.length === 0 && (
+          !lead && (
             <a class="more" href="/posts/">
               전체 글 {posts.length}편
-              <Fragment set:html={arrow} />
+              <Icon name="arrow-right" size={15} />
             </a>
           )
         }
       </div>
       {
         rest.length > 0 ? (
-          <ol class="rows">
-            {rest.map((post) => (
+          <ol class="nlist">
+            {rest.map((post, i) => (
               <PostRow
+                n={i + 1}
                 href={`/posts/${post.id}/`}
                 title={post.data.title}
                 date={post.data.date}
                 category={post.data.category}
-                description={post.data.description}
               />
             ))}
           </ol>
@@ -100,41 +171,85 @@ const arrow =
       }
     </section>
 
-    <section class="blk" aria-labelledby="more-title">
-      <div class="sec-h"><h2 class="k" id="more-title">더 보기</h2></div>
-      <ul class="linkrows">
-        <li>
-          <a href="/wiki/">
-            <span class="row-t">학습 위키</span>
-            <span class="row-d"
-              >{wiki.length}편 · 정리됨 {wikiStats.stable} · 보완 중 {wikiStats.growing} · {
-                wikiStats.from
-              }부터 {wikiStats.to}까지</span
-            >
-            <Fragment set:html={arrow} />
-          </a>
-        </li>
-        <li>
-          <a href="/learn/">
-            <span class="row-t">학습 기록</span>
-            <span class="row-d"
-              >학습 노트 {notes.length}편 ({noteYears}) · 알고리즘 풀이 {solutions.length}건</span
-            >
-            <Fragment set:html={arrow} />
-          </a>
-        </li>
-        <li>
-          <a href="/projects/">
-            <span class="row-t">프로젝트</span>
-            <span class="row-d"
-              >개인 프로젝트 {PROJECTS.length}건 진행 중 · 교육 과정 팀 프로젝트 {
-                TEAM_PROJECTS.length
-              }건</span
-            >
-            <Fragment set:html={arrow} />
-          </a>
-        </li>
+    <section class="blk lazy" aria-labelledby="wiki-title">
+      <div class="blk-h">
+        <h2 id="wiki-title">학습 위키</h2>
+        <a class="more" href="/wiki/">
+          {wiki.length}편 전체
+          <Icon name="arrow-right" size={15} />
+        </a>
+      </div>
+      <div class="bento">
+        <a class="tile" href="/wiki/">
+          <p class="tile-n">{wiki.length}</p>
+          <p class="tile-t">문서</p>
+          <p class="tile-s">정리됨 {wikiStats.stable} · 보완 중 {wikiStats.growing}</p>
+        </a>
+        <div class="tile tile-wide">
+          <p class="tile-t" id="wiki-topics-title">주제</p>
+          <ul class="tags" aria-labelledby="wiki-topics-title">
+            {
+              topics.map((topic) => (
+                <li>
+                  <a class="tagb" href={`/wiki/?topic=${topic.id}`}>
+                    {topic.name} <span class="n">{topic.count}</span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+      <ul class="elist" aria-label="최근 갱신한 위키 문서">
+        {
+          recentWiki.map((entry) => {
+            const revised = entry.data.updated ?? entry.data.created
+            return (
+              <li>
+                <a class="erow" href={`/wiki/${entry.id}/`}>
+                  <span class="erow-b">
+                    <span class="erow-t">
+                      {entry.data.title}
+                      <Icon name="arrow-up-right" size={14} class="arr" />
+                    </span>
+                    <span class="erow-s">{getWikiTopic(entry.data.topic)?.name}</span>
+                  </span>
+                  <time class="erow-r mono" datetime={revised.toISOString()}>
+                    {formatCompactDate(revised).slice(5)}
+                  </time>
+                </a>
+              </li>
+            )
+          })
+        }
       </ul>
+    </section>
+
+    <section class="blk lazy" aria-labelledby="learn-title">
+      <div class="blk-h">
+        <h2 id="learn-title">학습 기록</h2>
+        <a class="more" href="/learn/">
+          학습 기록 전체
+          <Icon name="arrow-right" size={15} />
+        </a>
+      </div>
+      <div class="bento">
+        <a class="tile" href="/notes/">
+          <p class="tile-n">{notes.length}</p>
+          <p class="tile-t">학습 노트</p>
+          <p class="tile-s mono">{noteYears}</p>
+        </a>
+        <a class="tile" href="/algorithms/">
+          <p class="tile-n">{solutions.length}</p>
+          <p class="tile-t">알고리즘 풀이</p>
+          <p class="tile-s">백준 {boj} · 프로그래머스 {pgs}</p>
+        </a>
+        <a class="tile" href="/projects/">
+          <p class="tile-n">{PROJECTS.length + TEAM_PROJECTS.length}</p>
+          <p class="tile-t">프로젝트</p>
+          <p class="tile-s">개인 {PROJECTS.length}건 진행 중 · 팀 {TEAM_PROJECTS.length}건</p>
+        </a>
+      </div>
     </section>
   </div>
 </BaseLayout>
@@ -143,5 +258,9 @@ const arrow =
   .empty {
     margin: 1rem 0 0;
     color: var(--fg2);
+  }
+  .pills li,
+  .tags li {
+    display: flex;
   }
 </style>

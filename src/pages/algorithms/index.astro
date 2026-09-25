@@ -231,7 +231,7 @@ const defaultOpen = (name: string) => ['Platinum', 'Gold', 'Level 4', 'Level 3']
     const clearBtn = document.getElementById('clear') as HTMLButtonElement
     const count = document.getElementById('count')!
     const empty = document.getElementById('empty')!
-    const chips = [...document.querySelectorAll<HTMLButtonElement>('.chip')]
+    const chips = [...document.querySelectorAll<HTMLButtonElement>('.facets .chip')]
     const groups = [...document.querySelectorAll<HTMLDetailsElement>('.group')]
     const page = new Map<HTMLDetailsElement, number>()
 
@@ -422,14 +422,15 @@ const defaultOpen = (name: string) => ['Platinum', 'Gold', 'Level 4', 'Level 3']
 
   /* 건수 한 줄. 라벨 크기이며 숫자는 폭이 같은 숫자다. 티어 이름(Gold)은 대문자로 바꾸지 않는다 */
   .stats {
-    margin-top: 1rem;
+    margin: -12px 0 16px;
     text-transform: none;
   }
 
   /* 유형·언어 칩은 접어 둔다. 열면 위키와 같은 칩 묶음이다 */
   .facets-box {
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: var(--r-card);
+    background: var(--card);
   }
   .facets-box > summary {
     display: flex;
@@ -499,9 +500,11 @@ const defaultOpen = (name: string) => ['Platinum', 'Gold', 'Level 4', 'Level 3']
   }
 
   .site-title {
-    margin: 1.5rem 0 0;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--fg);
+    margin: 2rem 0 0.25rem;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    font-weight: 700;
+    letter-spacing: -0.02em;
     color: var(--fg);
   }
 
