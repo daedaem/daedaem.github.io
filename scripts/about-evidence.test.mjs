@@ -81,17 +81,25 @@ test('about identifies the author and shows evidence before general work philoso
   assert.match(about, /<h1>\{SITE.author\}<\/h1>/)
   assert.match(about, /<span>\{SITE\.role\}<\/span>/)
   assert.match(about, /<dl class="at-a-glance">/)
-  // 머리 요약: 환경(consts) · 업무 · 학력 · 자격. 학력·자격은 배경 절이 아니라 머리에 있다
+  // 첫 화면은 현재 역할과 환경을 먼저 보여 주고, 학력·자격은 배경 절에 보존한다.
+  const profile = about.match(/<header class="profile">([\s\S]*?)<\/header>/)?.[1]
+  assert.ok(profile)
+  assert.match(
+    profile.replace(/\s+/g, ' '),
+    /사내 업무시스템을 개발·운영하는 \{SITE\.role\}입니다\. 업무 기능과 시스템 연동을 구현하고, 데이터 오류와 조회 성능 문제를 분석해 개선합니다\./,
+  )
+  assert.doesNotMatch(profile, /<dt>(?:학력|자격)<\/dt>/)
   const glance = about.match(/<dl class="at-a-glance">([\s\S]*?)<\/dl>/)?.[1]
   assert.ok(glance)
   assert.match(glance, /<dt>환경<\/dt><dd>\{SITE\.environment\}<\/dd>/)
-  assert.deepEqual(
-    [...glance.matchAll(/<dt>([^<]+)<\/dt>/g)].map((m) => m[1]),
-    ['환경', '업무', '학력', '자격'],
+  const background = about.split('id="background"')[1].split('</section>')[0]
+  assert.match(
+    background,
+    /<dt>학력<\/dt>\s*<dd>서울대학교 대학원 운동생화학 석사 · 부산대학교 체육교육 학사<\/dd>/,
   )
-  assert.match(glance, /서울대학교 대학원 운동생화학 석사 · 부산대학교 체육교육 학사/)
-  assert.match(glance, /정보처리기사 · SQLD · ADsP/)
+  assert.match(background, /<dt>자격<\/dt>\s*<dd>정보처리기사 · SQLD · ADsP<\/dd>/)
   assert.equal((about.match(/<dt>학력<\/dt>/g) ?? []).length, 1)
+  assert.equal((about.match(/<dt>자격<\/dt>/g) ?? []).length, 1)
   assert.ok(about.indexOf('class="work-highlights"') < about.indexOf('id="approach"'))
   assert.match(about, /AI로 생성한 개념 일러스트/)
   // 구조화 데이터는 ProfilePage(BaseHead의 profile 분기)

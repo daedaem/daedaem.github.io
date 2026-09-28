@@ -52,14 +52,20 @@ test('address work retains observed evidence and contribution without claiming a
   assert.match(body, /연동해 수기 적재를 없앤 것도 이 작업의 성과/)
   assert.doesNotMatch(body, /절반은 남의 성과|힙 덤프로.*확정|OOM 재발 차단/)
 })
-test('numeric incident summaries distinguish a successful fix from an unverified conversion point', () => {
+test('numeric incident reflects the author-confirmed fix without invented claims about unperformed checks', () => {
   const body = read('src/content/posts/integer-overflow-negative-amount.md')
+  const related = read('src/content/posts/retire-flash-module-by-integration.md')
   const data = yaml.load(body.match(/^---\n([\s\S]*?)\n---/)[1])
-  assert.match(data.description, /특정하지 못한 변환·연산 지점/)
-  assert.match(
-    read('src/content/posts/retire-flash-module-by-integration.md'),
-    /정확한 변환·연산 지점까지 특정하지는 못했다/,
-  )
+  assert.match(data.description, /DB 값과 VO 값을 대조하고 int 필드를 long으로 넓혀 해결/)
+  assert.match(data.cause, /long으로 변경한 뒤 정상값이 표시되는 것을 확인/)
+  assert.match(body, /VO의 금액 필드를 `int`에서 `long`으로 변경한 뒤 정상값이 표시되는 것을 확인/)
+  assert.match(related, /VO의 금액 필드를 int에서 long으로 변경해 정상화한 과정/)
+  for (const text of [body, related]) {
+    assert.doesNotMatch(
+      text,
+      /미확정|특정하지 못한 변환|정확한 발생 지점은 확정하지|정확한 변환·연산 지점까지 특정하지는 못했다|그때 갈라 보지 않았다|재현 테스트로 확정할 수 있는 문제지만 아직 하지 않았다/,
+    )
+  }
 })
 test('public content dates are valid and revisions do not predate creation', () => {
   for (const collection of ['posts', 'wiki', 'notes']) {
