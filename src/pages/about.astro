@@ -34,12 +34,9 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
           <span>{SITE.role}</span>
         </div>
         <p class="lead">
-          사내 업무시스템을 개발·운영하는 {SITE.role}입니다. 업무 기능과 시스템 연동을 구현하고,
-          데이터 오류와 조회 성능 문제를 분석해 개선합니다.
+          사내 업무시스템의 기능과 시스템 간 연동을 개발·운영합니다. 레거시 환경에서 반복되는 데이터
+          오류와 느린 조회의 원인을 추적해 개선합니다.
         </p>
-        <dl class="at-a-glance">
-          <div><dt>환경</dt><dd>{SITE.environment}</dd></div>
-        </dl>
         <nav class="profile-links" aria-label="연락 바로가기" data-pagefind-ignore>
           <a href={SITE.githubUrl} rel="me noopener">GitHub</a>
           <a href={`mailto:${SITE.email}`}>이메일</a>
@@ -154,16 +151,8 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
 
         <section>
           <h2 id="stack" tabindex="-1">다루는 기술</h2>
-          <dl class="stack">
-            <div>
-              <dt>실무·주력</dt>
-              <dd>Java, Spring, MyBatis, Oracle, PL/SQL, JSP, jQuery</dd>
-            </div>
-            <div>
-              <dt>실무·병행</dt>
-              <dd>C#/.NET (ASP.NET Web Forms), MSSQL, IIS</dd>
-            </div>
-          </dl>
+          <p>Java·Spring과 Oracle SQL·PL/SQL을 주로 사용합니다.</p>
+          <p>C#/.NET·MSSQL 기반의 업무시스템도 함께 개발·운영합니다.</p>
         </section>
 
         <section>
@@ -328,28 +317,11 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
     line-height: 28px;
     color: var(--fg2);
   }
-  .at-a-glance {
-    display: grid;
-    gap: 8px;
-    margin: 24px 0 0;
-  }
-  .at-a-glance > div {
-    display: grid;
-    grid-template-columns: 56px minmax(0, 1fr);
-    gap: 16px;
-    align-items: baseline;
-  }
-  .at-a-glance dt,
   .stack dt {
     font-size: 15px;
     font-weight: 500;
     line-height: 28px;
     color: var(--muted);
-  }
-  .at-a-glance dd {
-    margin: 0;
-    font-size: 17px;
-    line-height: 28px;
   }
   .profile-links {
     display: flex;
@@ -707,14 +679,9 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
       line-height: 36px;
       letter-spacing: -0.02em;
     }
-    .lead,
-    .at-a-glance dd {
+    .lead {
       font-size: 16px;
       line-height: 27px;
-    }
-    .at-a-glance > div {
-      grid-template-columns: 44px minmax(0, 1fr);
-      gap: 12px;
     }
     .prose {
       line-height: 31px;

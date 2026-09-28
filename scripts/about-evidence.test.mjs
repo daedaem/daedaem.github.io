@@ -80,18 +80,22 @@ test('about emphasizes three supported cases and links only to currently public 
 test('about identifies the author and shows evidence before general work philosophy', () => {
   assert.match(about, /<h1>\{SITE.author\}<\/h1>/)
   assert.match(about, /<span>\{SITE\.role\}<\/span>/)
-  assert.match(about, /<dl class="at-a-glance">/)
-  // 첫 화면은 현재 역할과 환경을 먼저 보여 주고, 학력·자격은 배경 절에 보존한다.
+  // 첫 화면은 하는 일과 사례로 연결하고, 기술·학력·자격은 본문에서 설명한다.
   const profile = about.match(/<header class="profile">([\s\S]*?)<\/header>/)?.[1]
   assert.ok(profile)
   assert.match(
     profile.replace(/\s+/g, ' '),
-    /사내 업무시스템을 개발·운영하는 \{SITE\.role\}입니다\. 업무 기능과 시스템 연동을 구현하고, 데이터 오류와 조회 성능 문제를 분석해 개선합니다\./,
+    /사내 업무시스템의 기능과 시스템 간 연동을 개발·운영합니다\. 레거시 환경에서 반복되는 데이터 오류와 느린 조회의 원인을 추적해 개선합니다\./,
   )
-  assert.doesNotMatch(profile, /<dt>(?:학력|자격)<\/dt>/)
-  const glance = about.match(/<dl class="at-a-glance">([\s\S]*?)<\/dl>/)?.[1]
-  assert.ok(glance)
-  assert.match(glance, /<dt>환경<\/dt><dd>\{SITE\.environment\}<\/dd>/)
+  assert.doesNotMatch(profile, /<dt>(?:환경|학력|자격)<\/dt>|SITE\.environment|MyBatis/)
+  const stack = about.split('id="stack"')[1].split('</section>')[0].replace(/\s+/g, ' ')
+  assert.match(stack, /Java·Spring과 Oracle SQL·PL\/SQL을 주로 사용/)
+  assert.match(stack, /C#\/\.NET·MSSQL 기반의 업무시스템도 함께 개발·운영/)
+  assert.doesNotMatch(stack, /<dl|MyBatis|JSP|jQuery|IIS/)
+  assert.match(
+    read('src/content/posts/integer-overflow-negative-amount.md'),
+    /MyBatis 조회 결과를 받는 VO/,
+  )
   const background = about.split('id="background"')[1].split('</section>')[0]
   assert.match(
     background,
