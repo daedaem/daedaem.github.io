@@ -31,35 +31,35 @@ test('the 404 page names the problem and offers search', () => {
   assert.match(page, /site-search/)
 })
 
-test('the sticky header steps aside while reading only on narrow screens and returns on scroll up, focus or an open dialog', () => {
+test('saved s4 header stays in document flow without obscuring reading or anchor targets', () => {
   const header = source('src/components/Header.astro')
-  // 데스크톱(한 줄 머리줄)은 늘 둔다. 좁은 화면(두 줄)에서만 아래로 읽을 때 올라간다
-  assert.match(header, /const narrow = matchMedia\('\(max-width: 640px\)'\)/)
-  assert.match(
+  assert.match(header, /<header id="site-header" class="top">/)
+  assert.doesNotMatch(
     header,
-    /!narrow\.matches \|\|\s*y < 120 \|\|\s*header\.contains\(document\.activeElement\) \|\|/,
+    /position:\s*(?:sticky|fixed)|is-away|addEventListener\('scroll'|<script/,
   )
-  // 차례로 건너뛴 큰 이동은 방향으로 세지 않는다(숨은 머리줄이 줄어든 착지 여백 위로 내려오지 않게)
-  assert.match(header, /const jumped = Math\.abs\(y - lastY\) > innerHeight/)
-  assert.match(
-    source('src/styles/global.css'),
-    /:root:has\(#site-header\.is-away\) \{\s*--header-clearance: 1\.25rem;/,
-  )
-  assert.match(header, /document\.querySelector\('dialog\[open\]'\)/)
-  assert.match(header, /header\.is-away\s*\{\s*translate: 0 -100%;/)
-  assert.match(header, /addEventListener\('focusin'/)
-  assert.match(header, /prefers-reduced-motion: reduce/)
-  assert.match(header, /position: sticky;\s*top: 0;/)
+  assert.match(header, /\.top-in\s*\{[^}]*min-height:\s*64px/)
+  const css = source('src/styles/global.css')
+  assert.match(css, /--header-h:\s*0px/)
+  assert.match(css, /--header-clearance:\s*24px/)
+  assert.match(css, /scroll-padding-top:\s*var\(--header-clearance\)/)
+  assert.match(header, /<Search\s*\/>/)
+  assert.match(header, /<ThemeToggle\s*\/>/)
 })
 
-test('focus rings share one 2px style and search keeps its text label on small screens', () => {
+test('focus rings share one 2px style and search retains an accessible name on small screens', () => {
   const css = source('src/styles/global.css')
   assert.match(
     css,
     /:where\(a, button, summary, select, input, textarea, \[tabindex\]\):focus-visible \{\s*outline: 2px solid var\(--accent\);/,
   )
   const search = source('src/components/Search.astro')
-  assert.doesNotMatch(search, /#search-open span,\s*#search-open kbd \{\s*display: none;/)
+  assert.match(search, /id="search-open"[\s\S]*?aria-label="검색"/)
+  assert.match(source('src/components/Header.astro'), /#search-open\)\s*\{[^}]*width:\s*44px/)
+  assert.doesNotMatch(
+    source('src/components/Header.astro'),
+    /#search-open\)\s*\{[^}]*display:\s*none/,
+  )
 })
 
 test('the home has no navy panel: the identity block is text on the page background', () => {
@@ -73,12 +73,12 @@ test('the home has no navy panel: the identity block is text on the page backgro
   )
 })
 
-test('recommended posts show their writing date like every other list', () => {
+test('saved s4 posts retain the same authoring date semantics as other lists', () => {
   // 홈 추천 글도 PostRow를 쓰므로 같은 <time>과 같은 짧은 날짜 형식을 받는다
-  assert.match(source('src/pages/index.astro'), /<PostRow[\s\S]*?date=\{post\.data\.date\}/)
+  assert.match(source('src/pages/index.astro'), /<CaseRow[\s\S]*?date=\{post\.data\.date\}/)
   assert.match(
-    source('src/components/PostRow.astro'),
-    /<time datetime=\{date\.toISOString\(\)\}>\{formatCompactDate\(date\)\}<\/time>/,
+    source('src/components/CaseRow.astro'),
+    /<time datetime=\{date\.toISOString\(\)\}\s*>\{formatCompactDate\(date\)\}<\/time>/,
   )
 })
 

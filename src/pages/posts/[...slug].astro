@@ -5,6 +5,7 @@ import { readingMinutes } from '@/utils/format'
 import { selectRelatedPosts } from '@/utils/related-posts.mjs'
 import { relatedRecordIds } from '@/utils/related-records.mjs'
 import { selectWikiReading } from '@/utils/wiki-reading.mjs'
+import { isometricCoverForSlug } from '@/utils/isometric-covers.mjs'
 
 export const getStaticPaths = async () => {
   const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
@@ -70,6 +71,7 @@ const { Content, headings } = await render(post)
   records={records}
   wikiReading={wikiReading}
   cause={post.data.cause}
+  coverKind={isometricCoverForSlug(post.id)}
 >
   <Content />
 </PostLayout>

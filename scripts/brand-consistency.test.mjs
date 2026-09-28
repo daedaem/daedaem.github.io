@@ -16,26 +16,30 @@ const content = {
   subtitle: motto,
 }
 
-test('home identity is the author name under a role label while the social preview keeps the short title and motto', () => {
+test('saved s4 identity and illustrated list preserve factual bindings and existing social identity', () => {
   const home = source('src/pages/index.astro')
   const og = source('src/pages/og/[...slug].png.ts')
   assert.match(source('src/consts.ts'), new RegExp(`identityTitle: '${identityTitle}'`))
   assert.match(source('src/consts.ts'), new RegExp(`motto: '${motto}'`))
-  // 홈 첫 화면: h1 "이름 · 직무"(SITE.role, 본문 크기) → 환경 한 줄(SITE.environment) → 소개 한 문장
-  // → 소개 보기 · 연락 · GitHub. 히어로 판·카드·표지는 없다. 직무·환경은 consts 한 곳에서 온다
-  assert.match(
-    home,
-    /<section class="ident"[^>]*>\s*<h1[^>]*>\s*\{SITE\.author\}\{' '\}<span class="role"[\s\S]*?\{SITE\.role\}<\/span\s*>\s*<\/h1>\s*<p class="env">\{SITE\.environment\}<\/p>\s*<p class="lede">\{SITE\.intro\}<\/p>/,
-  )
-  assert.doesNotMatch(home, /<p class="k">백엔드 개발자<\/p>/)
-  assert.doesNotMatch(home, /<p class="k">.*환경/)
-  assert.match(home, /<p class="links">\s*<a class="more" href="\/about\/">소개 보기/)
-  assert.match(home, /<a class="more" href="\/about\/#contact">연락<\/a>/)
-  assert.match(home, /<a class="more" href=\{SITE\.githubUrl\} rel="me noopener">GitHub<\/a>/)
-  assert.doesNotMatch(home, /mailto:/)
+  // Saved s4 replaces the previous identity/recommendation layout; factual bindings remain.
+  assert.match(home, /\{SITE\.author\} · \{SITE\.role\}/)
+  assert.match(home, /<section class="intro" aria-labelledby="home-title">/)
+  assert.match(home, /<h1 id="home-title">느린 것, 멈춘 것, 틀린 것의/)
+  assert.match(home, /여러 업무 도메인의 레거시 시스템을 개발·운영합니다\./)
+  assert.equal((home.match(/href="\/about\/"/g) ?? []).length, 1)
+  assert.match(home, /href="\/about\/"\s*>소개 보기/)
+  assert.match(home, /getCollection\('posts',[\s\S]*?!data\.draft/)
+  assert.match(home, /b\.data\.date\.valueOf\(\)\s*-\s*a\.data\.date\.valueOf\(\)/)
+  assert.match(home, /posts\.map\(\(?post\)?\s*=>\s*\(?\s*<CaseRow/)
+  assert.match(home, /href=\{`\/posts\/\$\{post\.id\}\/`\}/)
+  assert.match(home, /title=\{post\.data\.title\}/)
+  assert.match(home, /description=\{post\.data\.description\}/)
+  assert.match(home, /date=\{post\.data\.date\}/)
+  assert.match(home, /\{posts.length\}/)
+  assert.match(source('src/components/CaseRow.astro'), /<IsometricCover kind=\{kind\}/)
+  assert.match(source('src/components/IsometricCover.astro'), /aria-hidden="true"/)
   assert.equal([...home.matchAll(/<h1(?:\s|>)/g)].length, 1)
-  assert.match(home, /<h2 class="k" id="recommended-title">\s*먼저 읽을 글\s*<\/h2>/)
-  assert.doesNotMatch(home, /byline|hero|card-title|PostCover|identity-context/)
+  assert.doesNotMatch(home, /mailto:|readingMinutes|causeSummary|outcome=/)
   // 직무 낱말은 consts의 SITE.role 한 곳에만 있다
   assert.match(source('src/consts.ts'), /role: '백엔드 개발자'/)
   for (const path of [
@@ -98,24 +102,28 @@ test('cover disclosure belongs with reader-facing writing principles, not the ed
   assert.doesNotMatch(source('src/pages/admin/index.astro'), /글 표지는 AI로 생성/)
 })
 
-test('the one-row header stays within 64px on desktop and two rows (48 + 44) on mobile', () => {
+test('saved s4 keeps a 64px single-row header with 44px real controls and knowledge navigation', () => {
   const header = source('src/components/Header.astro')
-  // 위 3px 로고색 선, 로고 마크 + 이름, 메뉴, 검색·테마. 모바일 메뉴줄은 링크가 44px 조작 크기를 갖는다
-  assert.match(header, /border-top: 3px solid var\(--mark-bg\);/)
-  assert.match(header, /<Mark size=\{22\} class="brand-mark" \/>/)
-  assert.match(header, /\.brand\s*\{[^}]*min-height:\s*48px;/)
-  assert.match(header, /\.nav\s*\{[^}]*height:\s*44px;/)
-  assert.match(header, /grid-template-areas:\s*'brand tools'\s*'nav nav';/)
-  const desktop = header.split('@media (min-width: 46em)')[1]
-  assert.match(desktop, /\.top-in\s*\{[^}]*min-height:\s*57px;/)
-  assert.match(desktop, /grid-template-areas:\s*'brand nav tools';/)
-  assert.match(header, /min-width:\s*var\(--control-size\)/)
-  // 단축키 표시는 넓은 화면에서만 보인다
-  const search = source('src/components/Search.astro')
-  assert.match(search, /#search-open kbd \{\s*display: none;/)
+  assert.match(header, /\.top-in\s*\{[^}]*min-height:\s*64px/)
   assert.match(
-    search,
-    /@media \(min-width: 46em\) \{\s*#search-open kbd \{\s*display: inline-block;/,
+    header,
+    /<a href="\/" class="brand" aria-label=\{`\$\{SITE.author\} — \$\{SITE.title\} 홈`\}/,
   )
+  assert.match(header, /\{SITE.author\}/)
+  assert.match(header, /PRIMARY_NAV\.filter\(\(?item\)? => item\.href !== '\/learn\/'\)/)
+  assert.match(header, /visibleNav\.map/)
+  assert.match(header, /href=\{item.href\}/)
+  assert.match(header, /aria-current=\{\s*active !== item.href/)
+  const links = header.match(/\.nav a\s*\{([^}]+)\}/)?.[1]
+  assert.match(links, /min-height:\s*(?:44px|var\(--control-size\))/)
+  assert.match(links, /min-width:\s*(?:44px|var\(--control-size\))/)
+  assert.match(header, /<Search\s*\/>/)
+  assert.match(header, /<ThemeToggle\s*\/>/)
+  assert.doesNotMatch(header, /position:\s*(?:fixed|sticky)|<script/)
+  for (const href of ['/wiki/', '/learn/', '/projects/'])
+    assert.ok(source('src/components/Footer.astro').includes(`href="${href}"`))
+  const search = source('src/components/Search.astro')
+  assert.match(search, /id="search-open"/)
   assert.match(search, /shortcut\.textContent[\s\S]*\? '⌘K'\s*: 'Ctrl K'/)
+  assert.match(search, /aria-label="검색/)
 })

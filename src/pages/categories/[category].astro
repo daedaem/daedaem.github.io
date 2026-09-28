@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
-import PostRow from '@/components/PostRow.astro'
+import CaseRow from '@/components/CaseRow.astro'
 import CategoryNav from '@/components/CategoryNav.astro'
 import PageHead from '@/components/PageHead.astro'
 import { CATEGORIES } from '@/consts'
@@ -30,7 +30,7 @@ const { category, posts, counts, total } = Astro.props
 ---
 
 <BaseLayout title={category.name} description={category.description} searchIndex={false}>
-  <div class="page">
+  <div class="page case-page">
     <PageHead title={category.name} label={`${posts.length}편`} category={category.id}>
       <p class="lede">{category.description}</p>
       <CategoryNav counts={counts} total={total} active={category.id} />
@@ -40,9 +40,9 @@ const { category, posts, counts, total } = Astro.props
       posts.length === 0 ? (
         <p class="empty">아직 이 주제로 발행한 글이 없습니다.</p>
       ) : (
-        <ol class="rows">
+        <ol class="case-list">
           {posts.map((p) => (
-            <PostRow
+            <CaseRow
               href={`/posts/${p.id}/`}
               title={p.data.title}
               description={p.data.description}

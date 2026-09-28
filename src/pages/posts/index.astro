@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
-import PostRow from '@/components/PostRow.astro'
+import CaseRow from '@/components/CaseRow.astro'
 import CategoryNav from '@/components/CategoryNav.astro'
 import PageHead from '@/components/PageHead.astro'
 
@@ -17,7 +17,7 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
   description="레거시 시스템 개발·운영 과정에서 데이터 정합성, 조회 성능, 시스템 연동을 개선한 기록. 원인과 선택의 근거를 씁니다."
   searchIndex={false}
 >
-  <div class="page">
+  <div class="page case-page">
     <PageHead title="글" label={`${posts.length}편`}>
       <p class="lede">실제로 맡아 고친 문제를 남깁니다.</p>
       <details class="criteria">
@@ -50,9 +50,9 @@ for (const p of posts) counts.set(p.data.category, (counts.get(p.data.category) 
       posts.length === 0 ? (
         <p class="empty">아직 발행한 글이 없습니다.</p>
       ) : (
-        <ol class="rows">
+        <ol class="case-list">
           {posts.map((p) => (
-            <PostRow
+            <CaseRow
               href={`/posts/${p.id}/`}
               title={p.data.title}
               description={p.data.description}

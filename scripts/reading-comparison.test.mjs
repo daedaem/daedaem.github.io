@@ -19,7 +19,7 @@ test('category navigation is one chip row of real links: no sidebar, no disclosu
   }
 })
 
-test('rows carry a category dot, a compact date and no thumbnail or reading time', () => {
+test('archive rows retain their metadata and case rows add illustrations without inventing reading times', () => {
   const row = source('src/components/PostRow.astro')
   // 분류 이름은 .name으로 감싸 라벨의 대문자 변환을 받지 않는다(Spring은 Spring으로 보인다)
   assert.match(
@@ -37,15 +37,30 @@ test('rows carry a category dot, a compact date and no thumbnail or reading time
     source('src/styles/global.css'),
     /\.dot\.hue\s*\{\s*--dot: hsl\(var\(--wt\) 65% 48%\);/,
   )
+  const caseRow = source('src/components/CaseRow.astro')
+  assert.match(caseRow, /\{cat && <span>\{cat\.name\}<\/span>\}/)
+  assert.match(
+    caseRow,
+    /<time datetime=\{date\.toISOString\(\)\}\s*>\{formatCompactDate\(date\)\}<\/time>/,
+  )
+  assert.match(caseRow, /kind && \(\s*<div class="cover">\s*<IsometricCover kind=\{kind\} \/>/)
+  assert.doesNotMatch(caseRow, /<img|readingMinutes|분 읽기|ContentDates/)
 })
 
-test('both catalog routes use the same rows, head and chip navigation', () => {
+test('both catalog routes use the same s4 case rows, full metadata and real category navigation', () => {
   for (const path of ['src/pages/posts/index.astro', 'src/pages/categories/[category].astro']) {
     const text = source(path)
-    assert.match(text, /<div class="page">/)
+    assert.match(text, /<div class="page case-page">/)
     assert.match(text, /<PageHead title=/)
     assert.match(text, /<CategoryNav counts=\{counts\} total=\{(?:posts\.length|total)\}/)
-    assert.match(text, /<ol class="rows">\s*\{posts\.map\(\(p\) => \(\s*<PostRow/)
+    assert.match(text, /<ol class="case-list">\s*\{posts\.map\(\(p\) => \(\s*<CaseRow/)
+    assert.match(
+      text,
+      /href=\{`\/posts\/\$\{p\.id\}\/`\}[\s\S]*?title=\{p\.data\.title\}[\s\S]*?description=\{p\.data\.description\}[\s\S]*?date=\{p\.data\.date\}[\s\S]*?happened=\{p\.data\.happened\}[\s\S]*?category=\{p\.data\.category\}/,
+    )
+    assert.match(text, /getCollection\('posts', \(\{ data \}\) => !data\.draft\)/)
+    assert.match(text, /b\.data\.date\.valueOf\(\) - a\.data\.date\.valueOf\(\)/)
+    assert.doesNotMatch(text, /headingLevel=\{3\}/)
     assert.doesNotMatch(text, /updated=\{p\.data\.updated\}|ReadingCatalog|wrap-wide/)
   }
   // 분류 페이지 머리는 건수 라벨과 분류 점을 함께 둔다
@@ -60,13 +75,25 @@ test('both catalog routes use the same rows, head and chip navigation', () => {
   )
 })
 
-test('home recommended rows show the cause line and keep the full title in the row link', () => {
+test('home uses one published case list with full titles and descriptions while archive cause lines remain intact', () => {
   const home = source('src/pages/index.astro')
   assert.match(
     home,
-    /\{recommended\.map\(\(post\) => \(\s*<PostRow[\s\S]*?title=\{post\.data\.title\}[\s\S]*?cause=\{post\.data\.cause \?\? post\.causeSummary\}/,
+    /posts\.map\(\(post\) => \(\s*<CaseRow\s+headingLevel=\{3\}[\s\S]*?title=\{post\.data\.title\}[\s\S]*?description=\{post\.data\.description\}[\s\S]*?date=\{post\.data\.date\}/,
   )
   assert.doesNotMatch(home, /splitEditorialTitle|heading\.subtitle|class="subtitle"|card-title/)
+  assert.equal((home.match(/<ol class="case-list">/g) ?? []).length, 1)
+  assert.match(home, /getCollection\('posts', \(\{ data \}\) => !data\.draft\)/)
+  assert.doesNotMatch(home, /recommended\.map|selectHomeContent/)
+  assert.match(home, /<h2 id="posts-title">글 <span>\{posts\.length\}<\/span><\/h2>/)
+  const caseRow = source('src/components/CaseRow.astro')
+  assert.match(caseRow, /headingLevel = 2 \} = Astro\.props/)
+  assert.match(caseRow, /const Heading = headingLevel === 3 \? 'h3' : 'h2'/)
+  assert.match(
+    caseRow,
+    /<a class:list=\{[^\n]+\} href=\{href\}>\s*<Heading class="reading-title">\{title\}<\/Heading>/,
+  )
+  assert.match(caseRow, /\{description && <p class="reading-excerpt">\{description\}<\/p>\}/)
   const row = source('src/components/PostRow.astro')
   assert.match(row, /<span class="row-t">\{title\}<\/span>/)
   assert.match(
@@ -87,7 +114,7 @@ test('catalog explanations are disclosed, not deleted, and original date meaning
 
 test('reader changes are scoped to cases and preserve full title, cause, content and comments', () => {
   const layout = source('src/layouts/PostLayout.astro')
-  // 사례 글도 다른 글과 같은 본문 크기(전역 body)를 쓴다. 강제 다크 코드 면은 없다
+  // 사례 본문은 s4의 18px 읽기 조판이다. 강제 다크 코드 면은 없고 기존 학습 노트는 보존한다.
   assert.doesNotMatch(layout, /data-code-theme/)
   assert.doesNotMatch(layout, /font-size:\s*1\.0625rem/)
   // 제목은 나누지 않고 그대로 h1에 둔다
@@ -96,4 +123,11 @@ test('reader changes are scoped to cases and preserve full title, cause, content
   assert.match(layout, /Astro\.slots\.render\('default'\)/)
   assert.match(layout, /<Comments\s*\/>/)
   assert.match(layout, /\{cause\}/)
+  assert.match(layout, /'is-archived': archived, 'case-article': !archived/)
+  assert.match(layout, /\.case-article \.prose\s*\{\s*font-size: 18px;\s*line-height: 32px;/)
+  assert.match(layout, /if \(document\.querySelector\('\.is-archived'\)\) initTocSheet\(\)/)
+  assert.match(
+    layout,
+    /<details class:list=\{\['toc', \{ 'case-toc': !archived \}\]\} data-pagefind-ignore>/,
+  )
 })

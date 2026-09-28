@@ -57,8 +57,8 @@
   --line-input: #767f8c;
   --soft: #f5f6f8;
   --code: #f7f8fa;
-  --accent: #223e60;
-  --accent-2: #1f3148;
+  --accent: #1b64da;
+  --accent-2: #1a5393;
   --mark-bg: #223e60;
   --mark-ink: #fcfaf5;
   --shadow: 0 12px 32px rgb(15 23 42 / 0.14);
@@ -73,7 +73,7 @@
   --bg-subtle: #f5f6f8;
   --bg-card: #f5f6f8;
   --code-bg: #f7f8fa;
-  --accent-hover: #1f3148;
+  --accent-hover: #1a5393;
 
   /* 카테고리 색. 글자에는 쓰지 않고 점(dot)에만 쓴다. 라벨 글자는 --muted다. */
   --cat-data-integrity: #d9480f;
@@ -179,7 +179,7 @@ h4[tabindex='-1']:focus-visible {
     --line-input: #8a94a3;
     --soft: #1a1f28;
     --code: #1a1f28;
-    --accent: #a8c1e2;
+    --accent: #8ab4f8;
     --accent-2: #c6d7ee;
     --mark-bg: #a8c1e2;
     --mark-ink: #192b43;
@@ -216,7 +216,7 @@ h4[tabindex='-1']:focus-visible {
   --line-input: #8a94a3;
   --soft: #1a1f28;
   --code: #1a1f28;
-  --accent: #a8c1e2;
+  --accent: #8ab4f8;
   --accent-2: #c6d7ee;
   --mark-bg: #a8c1e2;
   --mark-ink: #192b43;
@@ -1831,5 +1831,55 @@ dialog.sheet,
   .fab,
   .toc-fab {
     display: none;
+  }
+}
+
+/* Approved s4: white/blue reading list. Legacy knowledge pages keep their layouts. */
+:root {
+  --header-h: 0px;
+  --header-clearance: 24px;
+  --cv-bg: #f7f8fa;
+  --cv-sh: rgba(25, 31, 40, 0.09);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --cv-bg: #1a1f28;
+    --cv-sh: rgba(0, 0, 0, 0.24);
+    --cv-g0: #283040;
+    --cv-g1: #212835;
+    --cv-g2: #1a2029;
+    --cv-w0: #d5dce6;
+    --cv-w1: #bac3d0;
+    --cv-w2: #9ea9b8;
+    --cv-i0: #7a8699;
+    --cv-i1: #5a6578;
+    --cv-i2: #465063;
+  }
+}
+:root[data-theme='dark'] {
+  --cv-bg: #1a1f28;
+  --cv-sh: rgba(0, 0, 0, 0.24);
+  --cv-g0: #283040;
+  --cv-g1: #212835;
+  --cv-g2: #1a2029;
+  --cv-w0: #d5dce6;
+  --cv-w1: #bac3d0;
+  --cv-w2: #9ea9b8;
+  --cv-i0: #7a8699;
+  --cv-i1: #5a6578;
+  --cv-i2: #465063;
+}
+.case-page {
+  max-width: 904px;
+  padding-inline: 32px;
+}
+.case-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+@media (max-width: 760px) {
+  .case-page {
+    padding-inline: 16px;
   }
 }

@@ -15,17 +15,18 @@ const palettes = [...css.matchAll(/[^{}]*\{([^{}]*--text-muted:\s*#[^{}]*)\}/g)]
   ),
 )
 
-test('the reading canvas is neutral white while the approved navy brand is preserved', () => {
+test('s4 uses a neutral reading canvas with blue controls and preserved legacy identity assets', () => {
   assert.equal(palettes.length, 3)
   const [light, systemDark, selectedDark] = palettes
   assert.equal(light.bg, '#ffffff')
   assert.equal(light.text, '#191f28')
   assert.equal(light['text-secondary'], '#3d4552')
-  assert.equal(light.accent, '#223e60')
+  assert.equal(light.accent, '#1b64da')
   assert.equal(light['mark-bg'], '#223e60')
   assert.equal(light['mark-ink'], '#fcfaf5')
   assert.equal(systemDark.bg, '#14181f')
   assert.equal(systemDark.text, '#e4e9f0')
+  assert.equal(systemDark.accent, '#8ab4f8')
   assert.deepEqual(systemDark, selectedDark)
   // 새 이름(--fg/--fg2/--muted/--line/--soft/--code)과 옛 이름은 같은 값이다
   for (const palette of palettes) {
@@ -37,9 +38,11 @@ test('the reading canvas is neutral white while the approved navy brand is prese
     assert.equal(palette['bg-subtle'], palette.soft)
     assert.equal(palette['code-bg'], palette.code)
   }
-  // 반경은 하나. 알약(999px)과 12px 시트는 목차 시트·FAB에만 남는다
+  // 기존 지식 문서의 기본 반경은 유지하고, s4 표지와 코드 블록만 승인된 반경을 쓴다.
   assert.match(css, /--radius: 4px;/)
   assert.doesNotMatch(css, /border-radius: (?:6|8|10)px/)
+  assert.match(source('src/components/IsometricCover.astro'), /border-radius:\s*10px;/)
+  assert.match(layout, /\.case-article \.prose :global\(pre\)\s*\{[^}]*border-radius:\s*8px;/)
   assert.match(css, /body \{[^}]*font-size: 1\.125rem;[^}]*line-height: 1\.8;/)
   assert.match(
     css,
@@ -59,7 +62,7 @@ test('body and summary tokens exceed 7:1 on each reading surface in both themes'
   }
 })
 
-test('home and list summaries share one row grammar at one size on every width', () => {
+test('case summaries share the s4 row and archive summaries retain their original typography', () => {
   assert.match(css, /--type-body:\s*1rem;/)
   // 행 요약(.row-d)과 원인 한 줄(.row-c)은 전역 한 규칙이다. 모바일에서 따로 줄이지 않는다
   assert.match(
@@ -72,32 +75,72 @@ test('home and list summaries share one row grammar at one size on every width',
   assert.match(row, /<span class="row-d">\{description\}<\/span>/)
   assert.match(row, /<span class="row-c">\s*<span class="row-ck">원인<\/span>\s*\{cause\}/)
   assert.doesNotMatch(row, /<style>/)
-  // 홈은 같은 PostRow를 쓰고 자기만의 요약 글자 크기를 두지 않는다
-  assert.match(home, /<PostRow[\s\S]*?cause=\{post\.data\.cause \?\? post\.causeSummary\}/)
-  assert.doesNotMatch(home, /font-size:/)
+  // 사례 목록은 동일한 CaseRow를 쓰고 16/26 요약을 모바일에서도 유지한다.
+  const caseRow = source('src/components/CaseRow.astro')
+  for (const path of [
+    'src/pages/index.astro',
+    'src/pages/posts/index.astro',
+    'src/pages/categories/[category].astro',
+  ]) {
+    const page = source(path)
+    assert.match(page, /<CaseRow[\s\S]*?description=\{(?:post|p)\.data\.description\}/)
+    assert.doesNotMatch(page, /\.reading-excerpt\s*\{/)
+  }
+  assert.match(caseRow, /<p class="reading-excerpt">\{description\}<\/p>/)
+  assert.match(
+    caseRow,
+    /\.reading-excerpt\s*\{[^}]*color:\s*var\(--fg2\);[^}]*font-size:\s*16px;[^}]*line-height:\s*26px;/,
+  )
+  assert.equal((caseRow.match(/\.reading-excerpt\s*\{/g) ?? []).length, 1)
+  assert.match(caseRow, /\.reading-title\s*\{[^}]*font-size:\s*22px;[^}]*line-height:\s*30px;/)
+  assert.match(
+    caseRow,
+    /@media \(max-width: 760px\)[\s\S]*?\.reading-title\s*\{[^}]*font-size:\s*21px;[^}]*line-height:\s*29px;/,
+  )
 })
 
-test('article cause stays body-size and medium-weight on mobile without rewriting its text', () => {
-  // 원인 한 줄: 라벨(.k, 강조색) + 문장. 본문 크기 그대로, 굵기 500. 문장은 frontmatter의 cause 그대로
+test('article cause stays body-size in the s4 reading surface without rewriting its text', () => {
   assert.match(layout, /<aside class="cause">\s*<p class="k">원인 한 줄<\/p>\s*<p>\{cause\}<\/p>/)
-  const cause = css.match(/aside\.cause p \+ p\s*\{([^}]+)\}/)?.[1]
+  const cause = layout.match(/\.case-article \.cause\s*\{([^}]+)\}/)?.[1]
   assert.ok(cause)
-  assert.match(cause, /font-weight:\s*500;/)
-  assert.doesNotMatch(cause, /font-size:/)
-  assert.doesNotMatch(css.match(/aside\.cause\s*\{([^}]+)\}/)?.[1], /font-size:/)
-  assert.match(css, /aside\.cause \.k\s*\{\s*color: var\(--accent\);/)
-  // 본문은 슬롯을 문자열로 받아 첫머리 고지를 원인 한 줄 아래로 옮긴다
+  assert.match(cause, /font-size:\s*18px;/)
+  assert.match(cause, /line-height:\s*30px;/)
+  assert.match(cause, /border:\s*1px solid var\(--line\);/)
+  assert.match(
+    layout,
+    /\.case-article \.cause p \+ p\s*\{[^}]*font-weight:\s*400;[^}]*line-height:\s*30px;/,
+  )
+  assert.match(
+    layout,
+    /\.case-article \.cause \.k\s*\{[^}]*color:\s*var\(--fg\);[^}]*font-size:\s*15px;/,
+  )
+  assert.match(
+    layout,
+    /\.case-article \.prose\s*\{[^}]*font-size:\s*18px;[^}]*line-height:\s*32px;/,
+  )
   assert.match(layout, /Astro\.slots\.render\('default'\)/)
   assert.match(layout, /<div class="prose">/)
 })
 
-test('lists carry no cover thumbnails while the OG cover component retains full 3:2 assets', () => {
-  // 홈·목록 행에 표지가 없다. 표지 부품은 OG용으로만 남는다
+test('s4 lists use contained local illustrations while full 3:2 legacy image assets remain valid', () => {
+  // 홈은 공통 단면도 행을 사용한다. 옛 이미지 자산과 아카이브 행은 그대로 유지한다.
   assert.doesNotMatch(home, /<PostCover|<img|resolvePostCover/)
   assert.doesNotMatch(source('src/components/PostRow.astro'), /<PostCover|<img|cover/)
   // 옛 목록 폭(.wrap*)과 홈 판 토큰은 사라졌다. 새 화면은 .page 한 열이다
   assert.doesNotMatch(css, /\.wrap(?:-list|-wide)?\s*\{|--hero-bg|--hero-ink|--cover-navy/)
-  assert.match(home, /<div class="page">/)
+  assert.match(home, /<div class="page case-page home">/)
+  assert.match(home, /<CaseRow/)
+  const illustration = source('src/components/IsometricCover.astro')
+  assert.match(illustration, /import\.meta\.glob\('\.\.\/assets\/isometric\/\*\.svg'/)
+  assert.match(illustration, /aria-hidden="true"/)
+  assert.match(illustration, /object-fit:\s*contain;/)
+  assert.doesNotMatch(illustration, /<script|https?:\/\//)
+  const caseRow = source('src/components/CaseRow.astro')
+  assert.match(caseRow, /\.cover\s*\{[^}]*width:\s*220px;[^}]*height:\s*160px;/)
+  assert.match(
+    caseRow,
+    /@media \(max-width: 760px\)[\s\S]*?\.cover\s*\{[^}]*width:\s*100%;[^}]*height:\s*176px;/,
+  )
   for (const src of Object.keys(assets)) {
     const card = getCoverImageAttributes(src)
     assert.equal(card.width / card.height, 3 / 2)

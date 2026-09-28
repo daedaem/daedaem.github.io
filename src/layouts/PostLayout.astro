@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro'
 import AuthorCard from '@/components/AuthorCard.astro'
 import Comments from '@/components/Comments.astro'
 import ContentDates from '@/components/ContentDates.astro'
+import IsometricCover from '@/components/IsometricCover.astro'
 import { SITE, getCategory } from '@/consts'
 import { tagSlug } from '@/utils/format'
 import { linkableTagSlugs } from '@/utils/tags'
@@ -36,6 +37,8 @@ interface Props {
   wikiReading?: { href: string; title: string }[]
   /** 원인 한 줄. 제목 아래 고정된 자리에 나온다 */
   cause?: string
+  /** 승인된 단면도 표지. 글 내용과 독립된 표현 자산이다. */
+  coverKind?: string
 }
 
 const {
@@ -57,6 +60,7 @@ const {
   records = [],
   wikiReading = [],
   cause,
+  coverKind,
 } = Astro.props
 
 const linkable = await linkableTagSlugs()
@@ -85,233 +89,303 @@ const body = rendered.slice(lead.length)
   updatedAt={updated}
   ogSlug={ogSlug}
 >
-  <div class="page">
-    <article class:list={['art', 'post', { 'is-archived': archived }]}>
+  <div class:list={['page', { 'case-page': !archived }]}>
+    <article class:list={['art', 'post', { 'is-archived': archived, 'case-article': !archived }]}>
       <header class="art-head">
-        <p class="meta" data-pagefind-ignore>
-          {
-            archived ? (
-              <>
-                <a href="/learn/" set:text="학습 기록" />
-                <span class="sep" aria-hidden="true" set:text="›" />
-                <a href="/notes/" set:text="노트" />
-              </>
-            ) : (
-              <>
-                <a href="/posts/" set:text="글" />
-                {cat && <span class="sep" aria-hidden="true" set:text="›" />}
-                {cat && <a href={`/categories/${cat.id}/`} data-cat={cat.id} set:text={cat.name} />}
+        {
+          archived ? (
+            <>
+              <p class="meta" data-pagefind-ignore>
+                {archived ? (
+                  <>
+                    <a href="/learn/" set:text="학습 기록" />
+                    <span class="sep" aria-hidden="true" set:text="›" />
+                    <a href="/notes/" set:text="노트" />
+                  </>
+                ) : (
+                  <>
+                    <a href="/posts/" set:text="글" />
+                    {cat && <span class="sep" aria-hidden="true" set:text="›" />}
+                    {cat && (
+                      <a href={`/categories/${cat.id}/`} data-cat={cat.id} set:text={cat.name} />
+                    )}
+                    <span class="sep" aria-hidden="true" set:text="·" />
+                    글쓴이 <a href="/about/" set:text={SITE.author} />
+                    <span class="sep" aria-hidden="true" set:text="·" />
+                    {SITE.role}
+                  </>
+                )}
                 <span class="sep" aria-hidden="true" set:text="·" />
-                글쓴이 <a href="/about/" set:text={SITE.author} />
-                <span class="sep" aria-hidden="true" set:text="·" />
-                {SITE.role}
-              </>
-            )
-          }
-          <span class="sep" aria-hidden="true" set:text="·" />
-          <ContentDates
-            date={date}
-            original={archived}
-            dateLabel={archived ? '원문 작성' : ''}
-            inline
-          />
-          {happened && <span class="sep" aria-hidden="true" set:text="·" />}
-          {happened && <span class="nowrap" set:text={`사례 시점 ${happened}`} />}
-          {readingMinutes && <span class="sep" aria-hidden="true" set:text="·" />}
-          {readingMinutes && <span class="nowrap" set:text={`${readingMinutes}분 읽기`} />}
-        </p>
-        <h1 tabindex="-1">{title}</h1>
+                <ContentDates
+                  date={date}
+                  original={archived}
+                  dateLabel={archived ? '원문 작성' : ''}
+                  inline
+                />
+                {happened && <span class="sep" aria-hidden="true" set:text="·" />}
+                {happened && <span class="nowrap" set:text={`사례 시점 ${happened}`} />}
+                {readingMinutes && <span class="sep" aria-hidden="true" set:text="·" />}
+                {readingMinutes && <span class="nowrap" set:text={`${readingMinutes}분 읽기`} />}
+              </p>
+              <h1 tabindex="-1">{title}</h1>
+            </>
+          ) : (
+            <>
+              <p class="category-line" data-pagefind-ignore>
+                {cat ? <a href={`/categories/${cat.id}/`}>{cat.name}</a> : <a href="/posts/">글</a>}
+              </p>
+              <h1 tabindex="-1">{title}</h1>
+              {description && <p class="deck">{description}</p>}
+              <div class="post-meta" data-pagefind-ignore>
+                <ContentDates date={date} updated={updated} compact />
+                {happened && <span>사례 시점 {happened}</span>}
+                <span>
+                  <a href="/about/">{SITE.author}</a>
+                  {readingMinutes && ` · ${readingMinutes}분 읽기`}
+                </span>
+              </div>
+              {coverKind && (
+                <div class="mobile-cover" aria-hidden="true">
+                  <IsometricCover kind={coverKind} />
+                </div>
+              )}
+            </>
+          )
+        }
       </header>
 
       {
-        cause && (
-          <aside class="cause">
-            <p class="k">원인 한 줄</p>
-            <p>{cause}</p>
-          </aside>
-        )
-      }
-
-      {
-        archived && (
-          <aside class="notice archived" data-pagefind-ignore>
-            <p class="k">
-              {archiveKind === 'personal' ? '개인 기록 아카이브' : '학습 노트 아카이브 (2022~2023)'}
-            </p>
-            {archiveKind === 'personal' ? (
-              <p>
-                당시의 경험과 생각을 남긴 글입니다. 나중에 덧붙인 내용은 본문에 시점을 구분해
-                표시했습니다.
-              </p>
-            ) : (
-              <p>
-                개발자로 전환하며 자바스크립트·타입스크립트의 기초를 정리하던 시기의 글입니다.
-                당시의 이해 수준을 기록으로 남기기 위해 오탈자를 고치고 짧은 보충만 덧붙였으며, 지금
-                보기에 틀린 내용은 지우지 않고 <s>취소선</s>을 그은 뒤 바로 아래에 바로잡았습니다.
-              </p>
+        !archived && (coverKind || hasToc) && (
+          <aside class="post-sidebar" data-pagefind-ignore>
+            {coverKind && (
+              <div class="sidebar-cover" aria-hidden="true">
+                <IsometricCover kind={coverKind} />
+              </div>
             )}
-            <p>
-              <a class="text-link archive-link" href="/notes/">
-                노트 전체 보기
-              </a>
-            </p>
+            {hasToc && (
+              <nav class="rail case-rail" aria-label="차례">
+                <p class="k">차례</p>
+                <ol>
+                  {toc.map((h) => (
+                    <li class:list={{ d3: h.depth === 3 }}>
+                      <a href={`#${h.slug}`}>{h.text}</a>
+                    </li>
+                  ))}
+                </ol>
+                <button type="button" class="totop">
+                  맨 위로
+                </button>
+              </nav>
+            )}
           </aside>
         )
       }
 
-      {lead && <Fragment set:html={lead} />}
-
-      {
-        hasToc && (
-          <details class="toc" data-pagefind-ignore>
-            <summary>
-              <span class="k">
-                차례 <span class="n">{toc.length}</span>
-              </span>
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.75"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </summary>
-            <ol>
-              {toc.map((h) => (
-                <li class:list={{ d3: h.depth === 3 }}>
-                  <a href={`#${h.slug}`}>
-                    {h.num && <span class="tn">{h.num}</span>}
-                    {h.text}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </details>
-        )
-      }
-
-      {
-        /* 넓은 화면의 오른쪽 레일. 초점 순서가 본문보다 앞서도록 차례 바로 뒤에 둔다(배치는 fixed) */
-        hasToc && (
-          <nav class="rail" aria-label="차례" data-pagefind-ignore>
-            <p class="k">차례</p>
-            <ol>
-              {toc.map((h) => (
-                <li class:list={{ d3: h.depth === 3 }}>
-                  <a href={`#${h.slug}`}>
-                    {h.num && <span class="tn">{h.num}</span>}
-                    {h.text}
-                  </a>
-                </li>
-              ))}
-            </ol>
-            <button type="button" class="totop">
-              맨 위로
-            </button>
-          </nav>
-        )
-      }
-
-      <div class="prose">
-        <Fragment set:html={body} />
-      </div>
-
-      <footer class="art-end">
+      <div class="article-reading">
         {
-          tags.length > 0 && (
-            <p class="tags">
-              <span class="k">태그</span>
-              {tags.map((t) =>
-                linkable.has(tagSlug(t)) ? (
-                  <a href={`/tags/${tagSlug(t)}/`}>{t}</a>
-                ) : (
-                  <span class="tag">{t}</span>
-                ),
-              )}
-            </p>
+          cause && (
+            <aside class="cause">
+              <p class="k">원인 한 줄</p>
+              <p>{cause}</p>
+            </aside>
           )
         }
 
         {
-          records.length > 0 && (
-            <p class="rel" data-pagefind-ignore>
-              <span class="k">관련 기록</span>
-              {records.map((r) => (
-                <a href={r.href}>{r.title}</a>
-              ))}
-            </p>
-          )
-        }
-
-        {
-          (prev || next) && (
-            <nav class="pn" aria-label="이전·다음 글" data-pagefind-ignore>
-              {prev ? (
-                <a href={prev.href}>
-                  <span class="k">이전 글</span>
-                  <span class="pn-t">{prev.title}</span>
-                </a>
+          archived && (
+            <aside class="notice archived" data-pagefind-ignore>
+              <p class="k">
+                {archiveKind === 'personal'
+                  ? '개인 기록 아카이브'
+                  : '학습 노트 아카이브 (2022~2023)'}
+              </p>
+              {archiveKind === 'personal' ? (
+                <p>
+                  당시의 경험과 생각을 남긴 글입니다. 나중에 덧붙인 내용은 본문에 시점을 구분해
+                  표시했습니다.
+                </p>
               ) : (
-                <span />
+                <p>
+                  개발자로 전환하며 자바스크립트·타입스크립트의 기초를 정리하던 시기의 글입니다.
+                  당시의 이해 수준을 기록으로 남기기 위해 오탈자를 고치고 짧은 보충만 덧붙였으며,
+                  지금 보기에 틀린 내용은 지우지 않고 <s>취소선</s>을 그은 뒤 바로 아래에
+                  바로잡았습니다.
+                </p>
               )}
-              {next && (
-                <a class="next" href={next.href}>
-                  <span class="k">다음 글</span>
-                  <span class="pn-t">{next.title}</span>
+              <p>
+                <a class="text-link archive-link" href="/notes/">
+                  노트 전체 보기
                 </a>
-              )}
+              </p>
+            </aside>
+          )
+        }
+
+        {lead && <Fragment set:html={lead} />}
+
+        {
+          hasToc && (
+            <details class:list={['toc', { 'case-toc': !archived }]} data-pagefind-ignore>
+              <summary>
+                <span class="k">
+                  {archived ? (
+                    <>
+                      차례 <span class="n">{toc.length}</span>
+                    </>
+                  ) : (
+                    <>
+                      목차{' '}
+                      <span class="toc-current" data-toc-current>
+                        {toc[0]?.text}
+                      </span>
+                    </>
+                  )}
+                </span>
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.75"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+              <ol>
+                {toc.map((h) => (
+                  <li class:list={{ d3: h.depth === 3 }}>
+                    <a href={`#${h.slug}`} data-toc-title={h.text}>
+                      {archived && h.num && <span class="tn">{h.num}</span>}
+                      {h.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </details>
+          )
+        }
+
+        {
+          /* 아카이브의 기존 레일은 보존한다. 사례는 표지와 같은 오른쪽 열에 놓인다. */
+          archived && hasToc && (
+            <nav class="rail" aria-label="차례" data-pagefind-ignore>
+              <p class="k">차례</p>
+              <ol>
+                {toc.map((h) => (
+                  <li class:list={{ d3: h.depth === 3 }}>
+                    <a href={`#${h.slug}`}>
+                      {h.num && <span class="tn">{h.num}</span>}
+                      {h.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+              <button type="button" class="totop">
+                맨 위로
+              </button>
             </nav>
           )
         }
 
-        {
-          !archived && (
-            <AuthorCard ai="사례 글은 직접 작성한 업무 기록을 바탕으로, AI의 도움을 받아 재구성하고 문장을 다듬었습니다." />
-          )
-        }
+        <div class="prose">
+          <Fragment set:html={body} />
+        </div>
 
-        {
-          others.length > 0 && (
-            <section class="back" aria-label="이어 읽을 글" data-pagefind-ignore>
-              <h2 class="k">이어 읽을 글</h2>
-              <ul>
-                {others.map((o) => (
-                  <li>
-                    <a href={o.href}>{o.title}</a>
-                    {o.category && getCategory(o.category) && (
-                      <span class="k-in">{getCategory(o.category)?.name}</span>
-                    )}
-                  </li>
+        <footer class="art-end">
+          {
+            tags.length > 0 && (
+              <p class="tags">
+                <span class="k">태그</span>
+                {tags.map((t) =>
+                  linkable.has(tagSlug(t)) ? (
+                    <a href={`/tags/${tagSlug(t)}/`}>{t}</a>
+                  ) : (
+                    <span class="tag">{t}</span>
+                  ),
+                )}
+              </p>
+            )
+          }
+
+          {
+            records.length > 0 && (
+              <p class="rel" data-pagefind-ignore>
+                <span class="k">관련 기록</span>
+                {records.map((r) => (
+                  <a href={r.href}>{r.title}</a>
                 ))}
-              </ul>
-            </section>
-          )
-        }
+              </p>
+            )
+          }
 
-        {
-          wikiReading.length > 0 && (
-            <section class="back" aria-label="관련 위키" data-pagefind-ignore>
-              <h2 class="k">관련 위키</h2>
-              <ul>
-                {wikiReading.map((w) => (
-                  <li>
-                    <a href={w.href}>{w.title}</a>
-                    <span class="k-in">위키</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )
-        }
-      </footer>
+          {
+            (prev || next) && (
+              <nav class="pn" aria-label="이전·다음 글" data-pagefind-ignore>
+                {prev ? (
+                  <a href={prev.href}>
+                    <span class="k">이전 글</span>
+                    <span class="pn-t">{prev.title}</span>
+                  </a>
+                ) : (
+                  <span />
+                )}
+                {next && (
+                  <a class="next" href={next.href}>
+                    <span class="k">다음 글</span>
+                    <span class="pn-t">{next.title}</span>
+                  </a>
+                )}
+              </nav>
+            )
+          }
 
-      {!archived && <Comments />}
+          {
+            !archived && (
+              <AuthorCard ai="사례 글은 직접 작성한 업무 기록을 바탕으로, AI의 도움을 받아 재구성하고 문장을 다듬었습니다." />
+            )
+          }
+
+          {
+            others.length > 0 && (
+              <section class="back" aria-label="이어 읽을 글" data-pagefind-ignore>
+                <h2 class="k">이어 읽을 글</h2>
+                <ul>
+                  {others.map((o) => (
+                    <li>
+                      <a href={o.href}>{o.title}</a>
+                      {o.category && getCategory(o.category) && (
+                        <span class="k-in">{getCategory(o.category)?.name}</span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+
+          {
+            wikiReading.length > 0 && (
+              <section class="back" aria-label="관련 위키" data-pagefind-ignore>
+                <h2 class="k">관련 위키</h2>
+                <ul>
+                  {wikiReading.map((w) => (
+                    <li>
+                      <a href={w.href}>{w.title}</a>
+                      <span class="k-in">위키</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+        </footer>
+
+        {!archived && <Comments />}
+      </div>
     </article>
   </div>
 </BaseLayout>
@@ -320,7 +394,29 @@ const body = rendered.slice(lead.length)
   import { initCurrentHeading } from '@/utils/current-heading.mjs'
   import { initTocSheet } from '@/utils/toc-sheet.mjs'
   initCurrentHeading()
-  initTocSheet()
+  // 사례는 s4의 작은 native 목차를 사용하고, 학습 노트의 기존 시트는 유지한다.
+  if (document.querySelector('.is-archived')) initTocSheet()
+  const caseToc = document.querySelector<HTMLDetailsElement>('details.case-toc')
+  if (caseToc) {
+    const current = caseToc.querySelector<HTMLElement>('[data-toc-current]')
+    const updateLabel = () => {
+      const selected = caseToc.querySelector<HTMLAnchorElement>('a[aria-current="location"]')
+      if (current && selected?.dataset.tocTitle) current.textContent = selected.dataset.tocTitle
+    }
+    new MutationObserver(updateLabel).observe(caseToc, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['aria-current'],
+    })
+    updateLabel()
+    caseToc.addEventListener('click', (event) => {
+      const click = event as MouseEvent
+      if (click.metaKey || click.ctrlKey || click.shiftKey || click.altKey || click.button) return
+      const link = (event.target as Element)?.closest<HTMLAnchorElement>('a[href^="#"]')
+      // Default anchor navigation runs after this collapse and retains URL/history.
+      if (link) caseToc.open = false
+    })
+  }
   // 레일의 '맨 위로'. 올라간 뒤 초점을 제목에 두어 키보드 위치도 함께 돌아간다.
   document.querySelector<HTMLButtonElement>('.rail .totop')?.addEventListener('click', () => {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -366,6 +462,351 @@ const body = rendered.slice(lead.length)
     .art-head h1 {
       /* 좁은 화면 예산: 첫 화면에 메타·제목·원인 한 줄이 들어온다 */
       margin-top: 0.5rem;
+    }
+  }
+
+  /* 승인된 s4 본문: 내용과 기능은 유지하고 본문/표지/목차의 배치만 옮긴다. */
+  .case-page {
+    max-width: 1008px;
+    padding: 40px 16px 64px;
+  }
+  .case-article {
+    display: grid;
+    grid-template-columns: minmax(0, 680px) 240px;
+    column-gap: 48px;
+    align-items: start;
+  }
+  .case-article > .art-head {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+  .case-article > .article-reading {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+  }
+  .post-sidebar {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: stretch;
+    min-width: 0;
+  }
+  .category-line {
+    margin: 0 0 8px;
+    font-size: 14px;
+    line-height: 24px;
+    color: var(--fg2);
+  }
+  .category-line a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .category-line a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .case-article .art-head h1 {
+    margin: 0;
+    font-size: 34px;
+    line-height: 44px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    word-break: keep-all;
+  }
+  .case-article .deck {
+    margin: 14px 0 0;
+    font-size: 17px;
+    line-height: 28px;
+    color: var(--fg2);
+  }
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 22px;
+  }
+  .post-meta :global(.content-dates),
+  .post-meta :global(time) {
+    font-size: 14px;
+    line-height: 22px;
+    color: inherit;
+  }
+  .post-meta a {
+    color: inherit;
+    text-underline-offset: 3px;
+  }
+  .sidebar-cover {
+    width: 240px;
+    height: 160px;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  .sidebar-cover :global(svg),
+  .mobile-cover :global(svg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .sidebar-cover :global(.isometric-cover),
+  .mobile-cover :global(.isometric-cover) {
+    width: 100%;
+    height: 100%;
+  }
+  .mobile-cover {
+    display: none;
+  }
+  nav.case-rail {
+    display: block;
+    position: sticky;
+    top: 24px;
+    left: auto;
+    width: 240px;
+    margin-top: 24px;
+    max-height: calc(100dvh - 48px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  nav.case-rail > .k {
+    margin: 0 0 10px;
+    color: var(--fg);
+    font-size: 14px;
+  }
+  nav.case-rail ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-left: 1px solid var(--line);
+  }
+  nav.case-rail a {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    margin-left: -1px;
+    padding: 6px 8px 6px 14px;
+    border-left: 2px solid transparent;
+    color: var(--fg2);
+    font-size: 14px;
+    line-height: 22px;
+    text-decoration: none;
+  }
+  nav.case-rail li.d3 a {
+    padding-left: 26px;
+    font-size: 13px;
+  }
+  nav.case-rail a[aria-current='location'] {
+    border-left-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+  nav.case-rail a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .case-rail .totop {
+    min-height: 44px;
+    margin-top: 8px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  details.case-toc {
+    display: none;
+  }
+  .case-article .cause {
+    margin-top: 26px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px 20px;
+    font-size: 18px;
+    line-height: 30px;
+  }
+  .case-article .cause .k {
+    color: var(--fg);
+    font-size: 15px;
+  }
+  .case-article .cause p + p {
+    font-weight: 400;
+    line-height: 30px;
+  }
+  .case-article :global(aside.notice) {
+    margin-top: 20px;
+    padding: 14px 0;
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    font-size: 18px;
+    line-height: 32px;
+  }
+  .case-article .prose {
+    font-size: 18px;
+    line-height: 32px;
+    margin-top: 28px;
+  }
+  .case-article .prose :global(h2) {
+    font-size: 25px;
+    line-height: 34px;
+    letter-spacing: -0.02em;
+  }
+  .case-article .prose :global(h3) {
+    font-size: 21px;
+    line-height: 30px;
+  }
+  .case-article .prose :global(pre) {
+    font-size: 14px;
+    line-height: 24px;
+    border-radius: 8px;
+  }
+  .case-article .prose :global(blockquote) {
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 16px 0;
+    color: var(--fg2);
+  }
+  .case-article .art-end {
+    border-top: 1px solid var(--line);
+  }
+  @media (max-width: 1023px) {
+    .case-page {
+      max-width: 712px;
+      padding-top: 28px;
+    }
+    .case-article {
+      display: block;
+    }
+    .post-sidebar {
+      display: none;
+    }
+    .mobile-cover {
+      display: block;
+      height: 152px;
+      margin-top: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    details.case-toc {
+      display: block;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      margin-top: 22px;
+      border: 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
+      background: var(--bg);
+    }
+    details.case-toc[open] {
+      position: static;
+    }
+    details.case-toc summary {
+      min-height: 44px;
+      padding: 0;
+      gap: 12px;
+    }
+    details.case-toc summary .k {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .toc-current {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--fg);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    details.case-toc summary svg {
+      width: 16px;
+      height: 16px;
+    }
+    details.case-toc ol {
+      max-height: min(60dvh, 420px);
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+    details.case-toc a {
+      min-height: 44px;
+      align-items: center;
+      padding: 8px 10px;
+      font-size: 15px;
+      line-height: 24px;
+    }
+    details.case-toc li.d3 a {
+      padding-left: 24px;
+      font-size: 14px;
+    }
+    details.case-toc a[aria-current='location'] {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .case-article :global(h2),
+    .case-article :global(h3) {
+      scroll-margin-top: 64px;
+    }
+  }
+  @media (max-width: 640px) {
+    .case-page {
+      padding-top: 24px;
+    }
+    .case-article .art-head h1 {
+      font-size: 27px;
+      line-height: 36px;
+      letter-spacing: -0.02em;
+    }
+    .case-article .deck {
+      font-size: 16px;
+      line-height: 27px;
+      margin-top: 12px;
+    }
+    .post-meta {
+      margin-top: 16px;
+      font-size: 13px;
+      line-height: 22px;
+    }
+    .post-meta :global(.content-dates),
+    .post-meta :global(time) {
+      font-size: 13px;
+    }
+    .case-article .prose {
+      font-size: 18px;
+      line-height: 31px;
+    }
+    .case-article .cause {
+      padding: 16px;
+    }
+    .case-article .prose :global(h2) {
+      font-size: 24px;
+      line-height: 32px;
+    }
+  }
+  @media print {
+    .case-page {
+      max-width: none;
+      padding: 0;
+    }
+    .case-article {
+      display: block;
+    }
+    .post-sidebar,
+    .mobile-cover,
+    details.case-toc {
+      display: none;
     }
   }
 </style>

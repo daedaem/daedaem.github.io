@@ -75,12 +75,23 @@ test('wiki contents are a native details element with no tree sidebar or breakpo
   assert.doesNotMatch(source, /WikiTree|side-mobile/)
 })
 
-test('about shortcuts have focusable heading targets and are excluded from article search', () => {
+test('about native contents preserve every focusable heading target and stay out of search excerpts', () => {
   const source = readFileSync(new URL('../src/pages/about.astro', import.meta.url), 'utf8')
-  const nav = source.match(/<nav class="about-nav"[^>]*data-pagefind-ignore>([\s\S]*?)<\/nav>/)?.[1]
+  const nav = source.match(
+    /<details class="toc about-toc"[^>]*data-pagefind-ignore>([\s\S]*?)<\/details>/,
+  )?.[1]
   assert.ok(nav)
   const targets = [...nav.matchAll(/href="#([^"]+)"/g)].map((m) => m[1])
-  assert.deepEqual(targets, ['work', 'stack', 'background', 'projects', 'contact'])
+  assert.deepEqual(targets, [
+    'work',
+    'approach',
+    'stack',
+    'background',
+    'writing',
+    'projects',
+    'contact',
+  ])
   for (const target of targets)
     assert.match(source, new RegExp(`<h2 id="${target}" tabindex="-1">`))
+  assert.match(source, /<aside class="about-rail" data-pagefind-ignore>/)
 })

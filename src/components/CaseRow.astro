@@ -1,0 +1,132 @@
+---
+import IsometricCover from './IsometricCover.astro'
+import { isometricCoverForSlug } from '@/utils/isometric-covers.mjs'
+import { getCategory } from '@/consts'
+import { formatCompactDate } from '@/utils/format'
+interface Props {
+  href: string
+  title: string
+  description?: string
+  date: Date
+  category?: string
+  happened?: string
+  prefix?: string
+  headingLevel?: 2 | 3
+}
+const { href, title, description, date, category, headingLevel = 2 } = Astro.props
+const Heading = headingLevel === 3 ? 'h3' : 'h2'
+const cat = category ? getCategory(category) : undefined
+const kind = isometricCoverForSlug(href.split('/').filter(Boolean).at(-1))
+---
+
+<li class="case-row">
+  <a class:list={['reading-card', { 'without-cover': !kind }]} href={href}>
+    <Heading class="reading-title">{title}</Heading>
+    {
+      kind && (
+        <div class="cover">
+          <IsometricCover kind={kind} />
+        </div>
+      )
+    }
+    <div class="reading-detail">
+      {description && <p class="reading-excerpt">{description}</p>}
+      <p class="reading-meta">
+        {cat && <span>{cat.name}</span>}<time datetime={date.toISOString()}
+          >{formatCompactDate(date)}</time>
+      </p>
+    </div>
+  </a>
+</li>
+<style>
+  .case-row {
+    margin: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .case-row:last-child {
+    border-bottom: 0;
+  }
+  .reading-card {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-areas: 'cover title' 'cover detail';
+    column-gap: 32px;
+    row-gap: 10px;
+    padding: 28px 0;
+    align-content: start;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .reading-title {
+    grid-area: title;
+    margin: 0;
+    font-size: 22px;
+    font-weight: 650;
+    line-height: 30px;
+    letter-spacing: -0.025em;
+    text-wrap: pretty;
+  }
+  .cover {
+    grid-area: cover;
+    align-self: center;
+    width: 220px;
+    height: 160px;
+  }
+  .reading-detail {
+    grid-area: detail;
+    min-width: 0;
+  }
+  .reading-excerpt {
+    margin: 0;
+    color: var(--fg2);
+    font-size: 16px;
+    line-height: 26px;
+    word-break: keep-all;
+  }
+  .reading-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 22px;
+  }
+  time {
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+  }
+  .reading-card:hover .reading-title {
+    color: var(--accent);
+  }
+  .reading-card:focus-visible {
+    outline-offset: 6px;
+  }
+  .without-cover {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'title' 'detail';
+  }
+  @media (max-width: 760px) {
+    .reading-card {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: 'title' 'cover' 'detail';
+      gap: 14px;
+      padding: 24px 0;
+    }
+    .reading-title {
+      font-size: 21px;
+      line-height: 29px;
+    }
+    .cover {
+      width: 100%;
+      height: 176px;
+    }
+    .reading-meta {
+      margin-top: 10px;
+    }
+    .without-cover {
+      grid-template-areas: 'title' 'detail';
+    }
+  }
+</style>

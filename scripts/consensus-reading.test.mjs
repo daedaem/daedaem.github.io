@@ -3,6 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { runInNewContext } from 'node:vm'
 import yaml from 'js-yaml'
+import ts from 'typescript'
 
 const read = (path) => readFileSync(new URL('../' + path, import.meta.url), 'utf8')
 const outlines = ['src/layouts/PostLayout.astro', 'src/pages/wiki/[...slug].astro']
@@ -13,14 +14,11 @@ for (const path of outlines) {
     // 4개 이상일 때만 차례를 두고, 접힌 채로 시작한다(JS 없이도 동작). 폭 분기 스크립트는 없다
     assert.match(source, /const hasToc = toc\.length >= 4/)
     const outline = source.match(
-      /<details class="toc" data-pagefind-ignore>[\s\S]*?<\/details>/,
+      /<details (?:class="toc"|class:list=\{\[\x27toc\x27, \{ \x27case-toc\x27: !archived \}\]\}) data-pagefind-ignore>[\s\S]*?<\/details>/,
     )?.[0]
     assert.ok(outline)
     assert.doesNotMatch(outline, /<details[^>]*\sopen/)
-    assert.match(
-      outline,
-      /<summary>\s*<span class="k">\s*차례 <span class="n">\{toc\.length\}<\/span>/,
-    )
+    assert.match(outline, /차례 <span class="n">\{toc\.length\}<\/span>/)
     assert.match(outline, /<ol>[\s\S]*<li class:list=\{\{ d3: h\.depth === 3 \}\}>/)
     assert.doesNotMatch(source, /<script is:inline>|matchMedia\('\((?:min|max)-width/)
     const body = source.search(/<(?:Content\s*\/>|div class="prose">)/)
@@ -34,39 +32,93 @@ for (const path of outlines) {
     assert.match(source, /\.rail \.totop/)
   })
 
-  test(`${path}: module wires location tracking, the mid-article sheet and the back-to-top button once`, () => {
-    const script = read(path)
+  test(`${path}: location tracking and native/archive contents preserve keyboard behavior`, () => {
+    const raw = read(path)
       .match(/<script>([\s\S]*?)<\/script>/)[1]
       .replace(/^\s*import .+$/gm, '')
-      .replace(/querySelector<[^>]+>/g, 'querySelector')
-    let locationInitializations = 0
-    let tocSheetInitializations = 0
-    let handler
-    const button = { addEventListener: (event, fn) => (event === 'click' ? (handler = fn) : null) }
-    const scrolls = []
-    const heading = { focus: (options) => scrolls.push(['focus', options]) }
-    runInNewContext(script, {
-      document: {
-        querySelector: (selector) => (selector === '.rail .totop' ? button : heading),
-      },
-      matchMedia: () => ({ matches: true }),
-      scrollTo: (options) => scrolls.push(['scroll', options]),
-      initCurrentHeading: () => locationInitializations++,
-      initTocSheet: () => tocSheetInitializations++,
-    })
-    assert.equal(locationInitializations, 1)
-    assert.equal(tocSheetInitializations, 1)
-    assert.equal(typeof handler, 'function')
-    handler()
-    // 동작 줄이기에서는 바로 올라가고, 초점은 제목으로 옮긴다
-    // vm 컨텍스트의 객체는 프로토타입이 달라 값만 비교한다
-    assert.equal(
-      JSON.stringify(scrolls),
-      JSON.stringify([
-        ['scroll', { top: 0, behavior: 'auto' }],
-        ['focus', { preventScroll: true }],
-      ]),
-    )
+    const script = ts.transpileModule(raw, {
+      compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext },
+    }).outputText
+    const isPost = path.endsWith('PostLayout.astro')
+    for (const archived of isPost ? [false, true] : [false]) {
+      let locationInitializations = 0,
+        tocSheetInitializations = 0,
+        handler,
+        click,
+        observer
+      const scrolls = [],
+        label = { textContent: '' }
+      let selected = { dataset: { tocTitle: '첫 절' } }
+      const contents = {
+        open: true,
+        querySelector: (selector) => (selector === '[data-toc-current]' ? label : selected),
+        addEventListener: (event, fn) => {
+          if (event === 'click') click = fn
+        },
+      }
+      const button = {
+        addEventListener: (event, fn) => {
+          if (event === 'click') handler = fn
+        },
+      }
+      const heading = { focus: (options) => scrolls.push(['focus', options]) }
+      runInNewContext(script, {
+        document: {
+          querySelector: (selector) =>
+            selector === '.rail .totop'
+              ? button
+              : selector === '.art-head h1'
+                ? heading
+                : selector === '.is-archived'
+                  ? archived
+                    ? {}
+                    : null
+                  : selector === 'details.case-toc'
+                    ? isPost && !archived
+                      ? contents
+                      : null
+                    : null,
+        },
+        matchMedia: () => ({ matches: true }),
+        scrollTo: (options) => scrolls.push(['scroll', options]),
+        initCurrentHeading: () => locationInitializations++,
+        initTocSheet: () => tocSheetInitializations++,
+        MutationObserver: class {
+          constructor(fn) {
+            observer = fn
+          }
+          observe() {}
+        },
+      })
+      assert.equal(locationInitializations, 1)
+      assert.equal(tocSheetInitializations, !isPost || archived ? 1 : 0)
+      assert.equal(typeof handler, 'function')
+      handler()
+      assert.equal(
+        JSON.stringify(scrolls),
+        JSON.stringify([
+          ['scroll', { top: 0, behavior: 'auto' }],
+          ['focus', { preventScroll: true }],
+        ]),
+      )
+      if (isPost && !archived) {
+        assert.equal(label.textContent, '첫 절')
+        selected = { dataset: { tocTitle: '다음 절' } }
+        observer()
+        assert.equal(label.textContent, '다음 절')
+        assert.equal(typeof click, 'function')
+        click({ target: { closest: () => ({}) }, button: 0 })
+        assert.equal(contents.open, false)
+        for (const modifier of ['ctrlKey', 'metaKey', 'shiftKey', 'altKey']) {
+          contents.open = true
+          click({ target: { closest: () => ({}) }, button: 0, [modifier]: true })
+          assert.equal(contents.open, true, modifier)
+        }
+        contents.open = true
+        click({ target: { closest: () => null }, button: 0 })
+        assert.equal(contents.open, true, 'non-anchor click keeps native contents open')
+      }
+    }
   })
 }
 

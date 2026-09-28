@@ -1,147 +1,137 @@
 ---
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
-import PostRow from '@/components/PostRow.astro'
+import CaseRow from '@/components/CaseRow.astro'
 import { SITE } from '@/consts'
-import { CASES } from '@/data/cases'
-import { PROJECTS, TEAM_PROJECTS } from '@/data/projects'
-import { selectHomeContent } from '@/utils/home-content.mjs'
-import { noteYearRange, wikiRange } from '@/utils/learning-range.mjs'
-
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf() || b.id.localeCompare(a.id),
 )
-const wiki = await getCollection('wiki', ({ data }) => !data.draft)
-const notes = await getCollection('notes')
-const solutions = await getCollection('solutions')
-const { recommended, rest } = selectHomeContent(posts)
-// '더 보기' 행의 건수·기간은 컬렉션에서 센다. 손으로 쓴 숫자는 없다
-const wikiStats = wikiRange(wiki)
-const noteYears = noteYearRange(notes)
-const arrow =
-  '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 18l6-6M13 6l6 6"/></svg>'
 ---
 
 <BaseLayout title={SITE.title} description={SITE.description} searchIndex={false}>
-  <div class="page">
-    <!-- 첫 화면: 이름 · 직무 → 환경 한 줄 → 한 문장 → 소개·연락·GitHub. 히어로가 아니다. 직무는 본문 크기로 이름 옆에 둔다 -->
-    <section class="ident" aria-labelledby="ident-title">
-      <h1 id="ident-title">
-        {SITE.author}{' '}<span class="role"
-          ><span class="sep" aria-hidden="true">·</span>{SITE.role}</span
-        >
-      </h1>
-      <p class="env">{SITE.environment}</p>
-      <p class="lede">{SITE.intro}</p>
-      <p class="links">
-        <a class="more" href="/about/">소개 보기<Fragment set:html={arrow} /></a>
-        <a class="more" href="/about/#contact">연락</a>
-        <a class="more" href={SITE.githubUrl} rel="me noopener">GitHub</a>
+  <div class="page case-page home">
+    <section class="intro" aria-labelledby="home-title">
+      <div class="kicker">
+        <span>{SITE.author} · {SITE.role}</span><a href="/about/"
+          >소개 보기 <span aria-hidden="true">→</span></a>
+      </div>
+      <h1 id="home-title">느린 것, 멈춘 것, 틀린 것의 <b>원인</b>을 끝까지 찾습니다.</h1>
+      <p>
+        여러 업무 도메인의 레거시 시스템을 개발·운영합니다. 운영에서 만난 문제를 원인까지 따라가고,
+        판단한 근거와 바뀐 결과를 글로 남깁니다.
       </p>
     </section>
-
-    {
-      recommended.length > 0 && (
-        <section class="blk" aria-labelledby="recommended-title">
-          <div class="sec-h">
-            <h2 class="k" id="recommended-title">
-              먼저 읽을 글
-            </h2>
-            <a class="more" href="/posts/">
-              전체 글 {posts.length}편
-              <Fragment set:html={arrow} />
-            </a>
-          </div>
-          <ol class="rows">
-            {recommended.map((post) => (
-              <PostRow
-                href={`/posts/${post.id}/`}
-                title={post.data.title}
-                date={post.data.date}
-                category={post.data.category}
-                cause={post.data.cause ?? post.causeSummary}
-                outcome={CASES.find((c) => c.id === post.id)?.outcomePlain}
-                description={post.data.description}
-              />
-            ))}
-          </ol>
-        </section>
-      )
-    }
-
-    <section class="blk" aria-labelledby="recent-title">
-      <div class="sec-h">
-        <h2 class="k" id="recent-title">최근 글</h2>
-        {
-          recommended.length === 0 && (
-            <a class="more" href="/posts/">
-              전체 글 {posts.length}편
-              <Fragment set:html={arrow} />
-            </a>
-          )
-        }
+    <section aria-labelledby="posts-title">
+      <div class="listhead">
+        <h2 id="posts-title">글 <span>{posts.length}</span></h2><a href="/rss.xml">RSS</a>
       </div>
-      {
-        rest.length > 0 ? (
-          <ol class="rows">
-            {rest.map((post) => (
-              <PostRow
-                href={`/posts/${post.id}/`}
-                title={post.data.title}
-                date={post.data.date}
-                category={post.data.category}
-                description={post.data.description}
-              />
-            ))}
-          </ol>
-        ) : (
-          <p class="empty">새로운 문제 해결 기록을 준비하고 있습니다.</p>
-        )
-      }
-    </section>
-
-    <section class="blk" aria-labelledby="more-title">
-      <div class="sec-h"><h2 class="k" id="more-title">더 보기</h2></div>
-      <ul class="linkrows">
-        <li>
-          <a href="/wiki/">
-            <span class="row-t">학습 위키</span>
-            <span class="row-d"
-              >{wiki.length}편 · 정리됨 {wikiStats.stable} · 보완 중 {wikiStats.growing} · {
-                wikiStats.from
-              }부터 {wikiStats.to}까지</span
-            >
-            <Fragment set:html={arrow} />
-          </a>
-        </li>
-        <li>
-          <a href="/learn/">
-            <span class="row-t">학습 기록</span>
-            <span class="row-d"
-              >학습 노트 {notes.length}편 ({noteYears}) · 알고리즘 풀이 {solutions.length}건</span
-            >
-            <Fragment set:html={arrow} />
-          </a>
-        </li>
-        <li>
-          <a href="/projects/">
-            <span class="row-t">프로젝트</span>
-            <span class="row-d"
-              >개인 프로젝트 {PROJECTS.length}건 진행 중 · 교육 과정 팀 프로젝트 {
-                TEAM_PROJECTS.length
-              }건</span
-            >
-            <Fragment set:html={arrow} />
-          </a>
-        </li>
-      </ul>
+      <ol class="case-list">
+        {
+          posts.map((post) => (
+            <CaseRow
+              headingLevel={3}
+              href={`/posts/${post.id}/`}
+              title={post.data.title}
+              description={post.data.description}
+              date={post.data.date}
+              category={post.data.category}
+            />
+          ))
+        }
+      </ol>
     </section>
   </div>
 </BaseLayout>
-
 <style>
-  .empty {
-    margin: 1rem 0 0;
+  .home {
+    padding-top: 0;
+  }
+  .intro {
+    padding: 40px 0 28px;
+  }
+  .kicker {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 12px;
     color: var(--fg2);
+    font-size: 15px;
+    line-height: 24px;
+  }
+  .kicker a {
+    margin-left: auto;
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .intro h1 {
+    margin: 8px 0 0;
+    max-width: 800px;
+    font-size: 34px;
+    line-height: 44px;
+    letter-spacing: -0.025em;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+  .intro b {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .intro p {
+    margin: 12px 0 0;
+    max-width: 42em;
+    font-size: 17px;
+    line-height: 28px;
+    color: var(--fg2);
+    text-wrap: pretty;
+  }
+  .listhead {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 22px 0 14px;
+    border-top: 1px solid var(--line);
+  }
+  .listhead h2 {
+    margin: 0;
+    font-size: 17px;
+    line-height: 24px;
+  }
+  .listhead h2 span {
+    margin-left: 8px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .listhead > a {
+    color: var(--muted);
+    font-size: 15px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    margin-block: -10px;
+  }
+  @media (max-width: 760px) {
+    .intro {
+      padding: 24px 0;
+    }
+    .intro h1 {
+      font-size: 27px;
+      line-height: 36px;
+    }
+    .intro p {
+      font-size: 16px;
+      line-height: 27px;
+    }
+    .kicker {
+      font-size: 14px;
+    }
+    .listhead {
+      padding: 20px 0 0;
+    }
   }
 </style>

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PostRow from '@/components/PostRow.astro'
+import CaseRow from '@/components/CaseRow.astro'
 import PageHead from '@/components/PageHead.astro'
 import { getWikiTopic } from '@/consts'
 import { tagSlug } from '@/utils/format'
@@ -79,7 +80,7 @@ const { tag, list } = Astro.props
   description={`#${tag} 태그가 달린 글과 위키 문서 ${list.length}건.`}
   searchIndex={false}
 >
-  <div class="page">
+  <div class="page case-page">
     <PageHead title={`#${tag}`} label={`${list.length}건`}>
       <p class="lede">이 태그가 달린 글과 위키 문서입니다.</p>
     </PageHead>
@@ -98,7 +99,7 @@ const { tag, list } = Astro.props
               hue={topic?.hue}
             />
           ) : (
-            <PostRow
+            <CaseRow
               href={it.href}
               title={it.title}
               description={it.description}

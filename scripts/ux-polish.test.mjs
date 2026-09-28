@@ -76,28 +76,29 @@ test('home summaries are separate from the actual article cause and reading orde
   assert.match(recommended[0].causeSummary, /수신값이 정상 반영되지 않았다/)
 })
 
-test('the whole row is one link whose name is the label line, title and summary in reading order', () => {
+test('each s4 row is one link with full title and summary and a decorative cover', () => {
   const home = source('src/pages/index.astro')
-  // 홈은 행 부품을 그대로 쓴다. 카드·표지·사이드 레일이 없다
   assert.match(home, /href=\{`\/posts\/\$\{post\.id\}\/`\}/)
-  assert.doesNotMatch(home, /card-title|editorial-card|wiki-list|archive-links|reading-rail/)
-  assert.match(home, /<ul class="linkrows">/)
-  const row = source('src/components/PostRow.astro')
-  assert.match(row, /<a class="row-a" href=\{href\}>/)
-  assert.doesNotMatch(row, /aria-labelledby|stretched-link/)
-  assert.match(row, /<span class="row-t">\{title\}<\/span>/)
-  // 추천 글 행은 글의 원인 한 줄을 보인다(없으면 홈 요약)
-  assert.match(home, /cause=\{post\.data\.cause \?\? post\.causeSummary\}/)
-  assert.match(source('src/components/PostCover.astro'), /aria-hidden="true"/)
+  const row = source('src/components/CaseRow.astro')
+  assert.equal((row.match(/<a(?:\s|>)/g) ?? []).length, 1)
+  assert.match(row, /href=\{href\}/)
+  assert.doesNotMatch(row, /aria-labelledby|stretched-link|line-clamp/)
+  assert.match(row, /<Heading class="reading-title">\{title\}<\/Heading>/)
+  assert.match(row, /const Heading = headingLevel === 3 \? 'h3' : 'h2'/)
+  assert.match(home, /headingLevel=\{3\}/)
+  const title = row.indexOf('<Heading class="reading-title">'),
+    summary = row.indexOf('<p class="reading-excerpt">')
+  assert.ok(title >= 0 && summary > title)
+  assert.match(source('src/components/IsometricCover.astro'), /aria-hidden="true"/)
 })
 
-test('global motion preference and header targets remain explicit', () => {
+test('global motion preference and 44px s4 header targets remain explicit', () => {
   assert.match(source('src/styles/global.css'), /@media \(prefers-reduced-motion: reduce\)/)
   const header = source('src/components/Header.astro')
-  // 모바일·넓은 화면 모두 메뉴 링크는 44px 조작 크기
-  const mobile = header.match(/\.nav a \{([^}]+)\}/)?.[1]
-  assert.match(mobile, /min-height: var\(--control-size\)/)
-  assert.match(mobile, /min-width: var\(--control-size\)/)
-  const desktop = header.split('@media (min-width: 46em)')[1].match(/\.nav a \{([^}]+)\}/)?.[1]
-  assert.match(desktop, /min-height: var\(--control-size\)/)
+  const links = header.match(/\.nav a\s*\{([^}]+)\}/)?.[1]
+  assert.match(links, /min-height:\s*(?:44px|var\(--control-size\))/)
+  assert.match(links, /min-width:\s*(?:44px|var\(--control-size\))/)
+  const mobile = header.split(/@media\s*\(max-width:\s*760px\)/)[1]
+  assert.ok(mobile)
+  assert.doesNotMatch(mobile, /\.nav a\s*\{[^}]*(?:height|width):\s*(?:[0-3]?\d)px/)
 })

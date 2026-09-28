@@ -2,23 +2,22 @@
 import { SITE } from '@/consts'
 import Search from './Search.astro'
 import ThemeToggle from './ThemeToggle.astro'
-import Mark from './Mark.astro'
 import { PRIMARY_NAV, activeNavigation } from '@/utils/navigation.mjs'
-
 const path = Astro.url.pathname
-const active = activeNavigation(path)
+const active = path === '/' ? '/posts/' : activeNavigation(path)
+// Saved s4 has three primary links; learning archives remain linked from the footer and wiki.
+const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
 ---
 
 <header id="site-header" class="top">
   <div class="top-in">
-    <a href="/" class="brand">
-      <Mark size={22} class="brand-mark" />
-      <span>{SITE.title}</span>
-    </a>
+    <a href="/" class="brand" aria-label={`${SITE.author} — ${SITE.title} 홈`}
+      ><i aria-hidden="true"></i>{SITE.author}</a
+    >
     <nav class="nav" aria-label="주요 메뉴">
       <ul>
         {
-          PRIMARY_NAV.map((item) => (
+          visibleNav.map((item) => (
             <li>
               <a
                 href={item.href}
@@ -33,190 +32,132 @@ const active = activeNavigation(path)
         }
       </ul>
     </nav>
-    <div class="tools">
-      <Search />
-      <ThemeToggle />
-    </div>
+    <div class="tools"><Search /><ThemeToggle /></div>
   </div>
 </header>
-
-<script>
-  /*
-   * 좁은 화면(≤640px)에서만, 아래로 120px 넘게 읽어 내려가면 두 줄 머리줄을 위로 올려 두고 위로
-   * 스크롤하면 다시 내린다. 넓은 화면은 한 줄이라 늘 둔다(글 중간에서 메뉴·검색이 한 번에 닿는다).
-   * 머리줄 안에 키보드 초점이 있거나 대화상자가 열려 있으면 숨기지 않는다.
-   * 차례로 건너뛴 한 번의 큰 이동(화면 높이 이상)은 스크롤 방향으로 세지 않는다. 그래야 머리줄이
-   * 숨은 채 줄어든 착지 여백(--header-clearance)으로 간 제목 위에 머리줄이 다시 내려오지 않는다.
-   */
-  const header = document.getElementById('site-header')!
-  const narrow = matchMedia('(max-width: 640px)')
-  let lastY = scrollY
-  let scheduled = false
-  function place() {
-    scheduled = false
-    const y = scrollY
-    const keep =
-      !narrow.matches ||
-      y < 120 ||
-      header.contains(document.activeElement) ||
-      document.querySelector('dialog[open]')
-    const jumped = Math.abs(y - lastY) > innerHeight
-    if (keep || (!jumped && y < lastY - 6)) header.classList.remove('is-away')
-    else if (!jumped && y > lastY + 6) header.classList.add('is-away')
-    lastY = y
-  }
-  addEventListener(
-    'scroll',
-    () => {
-      if (scheduled) return
-      scheduled = true
-      requestAnimationFrame(place)
-    },
-    { passive: true },
-  )
-  narrow.addEventListener('change', place)
-  header.addEventListener('focusin', () => header.classList.remove('is-away'))
-</script>
-
 <style>
-  /* 위 3px 남색 선 위에 한 줄. 모바일은 로고줄 48 + 메뉴줄 44(메뉴 링크가 44px 조작 크기), 데스크톱은 57 */
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    border-top: 3px solid var(--mark-bg);
-    border-bottom: 1px solid var(--line);
+  .top {
     background: var(--bg);
-    transition: translate 0.2s ease-out;
   }
-  header.is-away {
-    translate: 0 -100%;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    header {
-      transition: none;
-    }
-  }
-
   .top-in {
-    max-width: 45rem;
+    max-width: 1184px;
     margin: 0 auto;
-    padding: 0 1rem;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      'brand tools'
-      'nav nav';
+    padding: 0 32px;
+    min-height: 64px;
+    display: flex;
     align-items: center;
+    gap: 4px;
+    position: relative;
   }
-
+  .top-in::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 32px;
+    right: 32px;
+    border-bottom: 1px solid var(--line);
+  }
   .brand {
-    grid-area: brand;
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
-    min-height: 48px;
-    font-size: 1rem;
-    font-weight: 650;
-    letter-spacing: -0.01em;
+    gap: 10px;
+    min-height: 44px;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
     text-decoration: none;
     white-space: nowrap;
   }
-  .brand :global(.brand-mark) {
-    flex-shrink: 0;
+  .brand i {
+    width: 9px;
+    height: 9px;
+    border-radius: 1.5px;
+    background: var(--accent);
+    transform: rotate(45deg);
   }
-
-  /* 모바일 둘째 줄: 가로로 넘기는 메뉴 */
   .nav {
-    grid-area: nav;
-    height: 44px;
-    margin: 0 -1rem;
-    padding: 0 0.5rem;
-    border-top: 1px solid var(--line);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .nav::-webkit-scrollbar {
-    display: none;
+    margin-left: auto;
   }
   .nav ul {
     display: flex;
-    height: 100%;
-    margin: 0;
-    padding: 0;
+    gap: 4px;
     list-style: none;
+    padding: 0;
+    margin: 0;
   }
   .nav a {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    height: 100%;
-    min-height: var(--control-size);
-    min-width: var(--control-size);
-    padding: 0 0.55rem;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    letter-spacing: -0.005em;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 12px;
+    font-size: 15px;
+    line-height: 24px;
+    font-weight: 500;
     color: var(--fg2);
     text-decoration: none;
-    white-space: nowrap;
+  }
+  .nav a[aria-current] {
+    color: var(--fg);
+    font-weight: 600;
+    box-shadow: inset 0 -2px var(--accent);
   }
   .nav a:hover {
     background: var(--soft);
-    color: var(--fg);
   }
-  /*
-   * 현재 메뉴: 아래 2px 강조선. 모든 메뉴가 같은 굵기의 밑선 자리를 갖고(투명), 현재 메뉴만 색이 든다.
-   * 강제 색상 모드에서는 투명 선도 시스템 색으로 그려지므로, 현재 메뉴 말고는 선을 없앤다.
-   */
-  .nav a {
-    border-bottom: 2px solid transparent;
-  }
-  nav a[aria-current] {
-    color: var(--fg);
-    border-bottom-color: var(--accent);
-  }
-  @media (forced-colors: active) {
-    .nav a {
-      border-bottom-style: none;
-    }
-    nav a[aria-current] {
-      border-bottom-style: solid;
-    }
-  }
-
   .tools {
-    grid-area: tools;
     display: flex;
     align-items: center;
-    gap: 0.125rem;
-    margin-right: -0.5rem;
   }
-
-  @media (min-width: 46em) {
+  @media (max-width: 760px) {
     .top-in {
-      grid-template-columns: auto 1fr auto;
-      grid-template-areas: 'brand nav tools';
-      min-height: 57px;
+      padding: 0 16px;
+    }
+    .top-in::after {
+      left: 16px;
+      right: 16px;
     }
     .brand {
-      min-height: var(--control-size);
+      font-size: 18px;
+      gap: 8px;
     }
-    .nav {
-      height: auto;
-      margin: 0 0 0 1.25rem;
-      padding: 0;
-      border: 0;
-      overflow: visible;
+    .brand i {
+      width: 7px;
+      height: 7px;
+    }
+    .nav ul {
+      gap: 0;
     }
     .nav a {
-      min-height: var(--control-size);
-      padding: 0 0.7rem;
+      font-size: 14px;
+      padding: 0;
+    }
+    .tools :global(#search-open) {
+      width: 44px;
+      padding: 0;
+      justify-content: center;
+    }
+    .tools :global(#search-open .tb-l),
+    .tools :global(#search-open kbd) {
+      display: none;
     }
   }
-  @media (min-width: 75em) {
+  @media (max-width: 359px) {
+    .brand {
+      font-size: 16px;
+    }
+    .brand i {
+      display: none;
+    }
     .top-in {
-      max-width: none;
-      padding: 0 2rem;
+      gap: 0;
+    }
+  }
+  @media (forced-colors: active) {
+    .nav a[aria-current] {
+      border-bottom: 2px solid LinkText;
     }
   }
 </style>

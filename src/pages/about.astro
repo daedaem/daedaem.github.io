@@ -2,6 +2,22 @@
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import { SITE } from '@/consts'
 import { CASES } from '@/data/cases'
+import IsometricCover from '@/components/IsometricCover.astro'
+
+const sections = [
+  ['work', '해 온 일'],
+  ['approach', '일하는 방식'],
+  ['stack', '다루는 기술'],
+  ['background', '어떻게 여기까지 왔는지'],
+  ['writing', '글을 쓸 때 지키는 것'],
+  ['projects', '프로젝트'],
+  ['contact', '연락'],
+]
+const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
+  'null-and-empty-string-sync-failure': 'nullsync',
+  'address-search-9s-to-100ms': 'address',
+  'retire-flash-module-by-integration': 'flash',
+}
 ---
 
 <BaseLayout
@@ -9,403 +25,580 @@ import { CASES } from '@/data/cases'
   type="profile"
   description="여러 업무 도메인의 레거시 시스템을 개발·운영하는 백엔드 개발자 조해성입니다. 맡아 해결한 사례와 기술, 연구에서 개발로 전환한 배경을 소개합니다."
 >
-  <div class="page">
-    <header class="phead head">
-      <p class="k">소개</p>
-      <div class="name-line">
-        <h1>{SITE.author}</h1>
-        <span>{SITE.role}</span>
-      </div>
-      <p class="lead">여러 업무 도메인의 레거시 시스템을 개발·운영합니다.</p>
-      <dl class="at-a-glance">
-        <div><dt>환경</dt><dd>{SITE.environment}</dd></div>
-        <div><dt>업무</dt><dd>신규 기능 개발 · 유지보수 · 운영 문제의 원인 분석</dd></div>
-        <div>
-          <dt>학력</dt>
-          <dd>서울대학교 대학원 운동생화학 석사 · 부산대학교 체육교육 학사</dd>
+  <div class="page about-page">
+    <header class="profile">
+      <div class="profile-copy">
+        <p class="k">소개</p>
+        <div class="name-line">
+          <h1>{SITE.author}</h1>
+          <span>{SITE.role}</span>
         </div>
-        <div>
-          <dt>자격</dt>
-          <dd>정보처리기사 · SQLD · ADsP</dd>
-        </div>
-      </dl>
-      <nav class="about-nav" aria-label="소개 바로가기" data-pagefind-ignore>
-        <a href="#work">해 온 일</a>
-        <a href="#stack">기술</a>
-        <a href="#background">전공·전환</a>
-        <a href="#projects">프로젝트</a>
-        <a href="#contact">연락</a>
-      </nav>
-    </header>
-
-    <div class="prose">
-      <section class="evidence">
-        <h2 id="work" tabindex="-1">해 온 일</h2>
-        <p>실제로 맡아 해결한 문제들입니다. 자세한 판단 과정은 각 글에 있습니다.</p>
-        <ul class="work-highlights" aria-label="대표 사례">
-          {
-            /* 문장은 src/data/cases.ts 한 곳에 있다. 홈 '먼저 읽을 글'의 결과 줄과 같은 출처다 */
-            CASES.map((c) => (
-              <li>
-                <h3>
-                  <a href={`/posts/${c.id}/`}>{c.title}</a>
-                </h3>
-                <dl class="case-summary">
-                  <div>
-                    <dt>판단</dt>
-                    <dd>{c.judgement}</dd>
-                  </div>
-                  <div>
-                    <dt>변경·결과</dt>
-                    <dd>{c.outcome}</dd>
-                  </div>
-                </dl>
-              </li>
-            ))
-          }
-        </ul>
-        <h3 class="other-work-title">다른 사례</h3>
-        <ul class="work">
-          <li>
-            <a href="/posts/disk-99-percent-check-before-expanding/"
-              >디스크 99% 알람에서 증설 전 확인할 지표를 분리</a
-            >
-          </li>
-          <li>
-            <a href="/posts/integer-overflow-negative-amount/"
-              >계약 시스템 연동 전환의 검증 단계에서 찾아낸 정수 오버플로</a
-            >
-          </li>
-          <li>
-            <a href="/posts/phantom-batch-after-was-migration/"
-              >개발 환경의 WAS 전환 중 잔존 배치 프로세스를 추적</a
-            >
-          </li>
-        </ul>
-      </section>
-
-      <section>
-        <h2 id="approach" tabindex="-1">일하는 방식</h2>
-        <p>
-          무엇을 바꾸기 전에 영향 범위를 확인하고, 고친 뒤에는 같은 증상이 남아 있는지 다시
-          살핍니다.
-        </p>
-      </section>
-
-      <section>
-        <h2 id="stack" tabindex="-1">다루는 기술</h2>
-        <dl class="stack">
+        <p class="lead">여러 업무 도메인의 레거시 시스템을 개발·운영합니다.</p>
+        <dl class="at-a-glance">
+          <div><dt>환경</dt><dd>{SITE.environment}</dd></div>
+          <div><dt>업무</dt><dd>신규 기능 개발 · 유지보수 · 운영 문제의 원인 분석</dd></div>
           <div>
-            <dt>실무·주력</dt>
-            <dd>Java, Spring, MyBatis, Oracle, PL/SQL, JSP, jQuery</dd>
+            <dt>학력</dt>
+            <dd>서울대학교 대학원 운동생화학 석사 · 부산대학교 체육교육 학사</dd>
           </div>
           <div>
-            <dt>실무·병행</dt>
-            <dd>C#/.NET (ASP.NET Web Forms), MSSQL, IIS</dd>
+            <dt>자격</dt>
+            <dd>정보처리기사 · SQLD · ADsP</dd>
           </div>
         </dl>
-      </section>
+        <nav class="profile-links" aria-label="연락 바로가기" data-pagefind-ignore>
+          <a href={SITE.githubUrl} rel="me noopener">GitHub</a>
+          <a href={`mailto:${SITE.email}`}>이메일</a>
+        </nav>
+      </div>
+      <div class="profile-art" aria-hidden="true">
+        <IsometricCover kind="hero" />
+      </div>
+    </header>
 
-      <section>
-        <h2 id="background" tabindex="-1">어떻게 여기까지 왔는지</h2>
-        <ol class="background-path" aria-label="연구에서 개발로 이어진 과정">
-          <li>
-            <h3 id="research">체육교육에서 운동생화학으로</h3>
-            <p>
-              체육교육을 전공한 뒤, 운동이 정신건강에 이로운 이유를 기전으로 설명하고 싶어
-              운동생화학을 연구했습니다. 서울대학교 대학원에서 석사 학위를 받았고, KCI 등재지
-              1저자·SCI 저널 공저자로 논문을 발표했습니다.
-            </p>
-          </li>
-          <li>
-            <h3 id="interest">연구에서 개발로</h3>
-            <p>
-              연구 중 박사 선배가 IBM Watson으로 몇 개월씩 걸리던 타깃 물질 발굴을 몇 주로 줄이는
-              것을 봤습니다. 제가 직접 다뤄 본 것은 Python으로 만든 데이터 통계 프로그램을 잠깐 써
-              본 정도였지만, 도구를 어떻게 고르느냐에 따라 연구의 속도가 달라진다는 것을 그때
-              느꼈고, 연구에 IT를 쓰는 일에 흥미가 생겼습니다. 다만 진로를 바로 바꾸지는 않았습니다.
-            </p>
-          </li>
-          <li>
-            <h3 id="training">개발 교육과 팀 프로젝트</h3>
-            <p>
-              SSAFY에서 프로그래밍을 처음 배웠습니다. 웹 풀스택 1,600시간 교육을 받으며 소프트웨어를
-              만드는 일에 재미를 붙였고, 개발 직무로 방향을 정했습니다.
-              <a href="/projects/#team-projects">팀 프로젝트</a>에서는 화면 구현과 API 연동을
-              맡았습니다.
-            </p>
-            <p>
-              이후 삼성전자 DX부문의 채용연계형 교육 과정인 SCSA에 선발되어 6개월간 SW 교육을
-              받았습니다. 최종 입사하지는 못했으며, 당시 과정과 결과는
-              <a href="/notes/scsa/">별도의 회고</a>에 남겼습니다.
-            </p>
-          </li>
-        </ol>
-      </section>
+    <div class="about-layout">
+      <details class="toc about-toc" data-pagefind-ignore>
+        <summary>
+          <span>차례</span>
+          <b data-about-current>해 온 일</b>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg
+          >
+        </summary>
+        <nav aria-label="소개 바로가기">
+          <ol>
+            <li><a href="#work">해 온 일</a></li>
+            <li><a href="#approach">일하는 방식</a></li>
+            <li><a href="#stack">다루는 기술</a></li>
+            <li><a href="#background">어떻게 여기까지 왔는지</a></li>
+            <li><a href="#writing">글을 쓸 때 지키는 것</a></li>
+            <li><a href="#projects">프로젝트</a></li>
+            <li><a href="#contact">연락</a></li>
+          </ol>
+        </nav>
+      </details>
+      <aside class="about-rail" data-pagefind-ignore>
+        <nav class="rail" aria-label="소개 차례">
+          <p class="toc-label">차례</p>
+          <ol>
+            {
+              sections.map(([id, label]) => (
+                <li>
+                  <a href={`#${id}`}>{label}</a>
+                </li>
+              ))
+            }
+          </ol>
+        </nav>
+      </aside>
+      <div class="prose">
+        <section class="evidence">
+          <h2 id="work" tabindex="-1">해 온 일</h2>
+          <p>실제로 맡아 해결한 문제들입니다. 자세한 판단 과정은 각 글에 있습니다.</p>
+          <ul class="work-highlights" aria-label="대표 사례">
+            {
+              /* 문장은 src/data/cases.ts 한 곳에 있다. 홈 '먼저 읽을 글'의 결과 줄과 같은 출처다 */
+              CASES.map((c) => (
+                <li>
+                  <div class="case-cover" aria-hidden="true">
+                    <IsometricCover kind={caseCovers[c.id]} />
+                  </div>
+                  <div class="case-copy">
+                    <h3>
+                      <a href={`/posts/${c.id}/`}>{c.title}</a>
+                    </h3>
+                    <dl class="case-summary">
+                      <div>
+                        <dt>판단</dt>
+                        <dd>{c.judgement}</dd>
+                      </div>
+                      <div>
+                        <dt>변경·결과</dt>
+                        <dd>{c.outcome}</dd>
+                      </div>
+                    </dl>
+                  </div>
+                </li>
+              ))
+            }
+          </ul>
+          <h3 class="other-work-title">다른 사례</h3>
+          <ul class="work">
+            <li>
+              <a href="/posts/disk-99-percent-check-before-expanding/"
+                >디스크 99% 알람에서 증설 전 확인할 지표를 분리</a
+              >
+            </li>
+            <li>
+              <a href="/posts/integer-overflow-negative-amount/"
+                >계약 시스템 연동 전환의 검증 단계에서 찾아낸 정수 오버플로</a
+              >
+            </li>
+            <li>
+              <a href="/posts/phantom-batch-after-was-migration/"
+                >개발 환경의 WAS 전환 중 잔존 배치 프로세스를 추적</a
+              >
+            </li>
+          </ul>
+        </section>
 
-      <section>
-        <h2 id="writing" tabindex="-1">글을 쓸 때 지키는 것</h2>
-        <p>
-          해결한 사례는 <a href="/posts/">글</a>에, 공부하며 확인한 원리는 <a href="/wiki/">위키</a
-          >에 기록합니다.
-        </p>
-        <p>
-          사례 글은 직접 작성한 업무 기록을 바탕으로, AI의 도움을 받아 재구성하고 문장을
-          다듬었습니다. 학습 내용을 정리하는 데에도 AI를 활용합니다.
-        </p>
-        <p>
-          회사·고객사·시스템을 특정할 수 있는 것은 쓰지 않습니다. 증상보다 원인을 쓰려고 하고, 왜
-          다른 방법을 고르지 않았는지도 같이 적습니다. 실측이 아닌 수치에는 예시라고 표시해 둡니다.
-        </p>
-        <p>일부 글 표지는 AI로 생성한 개념 일러스트이며, 실제 화면이나 시스템 구성도가 아닙니다.</p>
-      </section>
+        <section>
+          <h2 id="approach" tabindex="-1">일하는 방식</h2>
+          <p>
+            무엇을 바꾸기 전에 영향 범위를 확인하고, 고친 뒤에는 같은 증상이 남아 있는지 다시
+            살핍니다.
+          </p>
+        </section>
 
-      <section>
-        <h2 id="projects" tabindex="-1">프로젝트</h2>
-        <p>
-          개인 프로젝트의 현재 진행 상태와 교육 과정에서 참여한 팀 프로젝트는 <a href="/projects/"
-            >프로젝트 페이지</a
-          >에 따로 정리했습니다.
-        </p>
-      </section>
+        <section>
+          <h2 id="stack" tabindex="-1">다루는 기술</h2>
+          <dl class="stack">
+            <div>
+              <dt>실무·주력</dt>
+              <dd>Java, Spring, MyBatis, Oracle, PL/SQL, JSP, jQuery</dd>
+            </div>
+            <div>
+              <dt>실무·병행</dt>
+              <dd>C#/.NET (ASP.NET Web Forms), MSSQL, IIS</dd>
+            </div>
+          </dl>
+        </section>
 
-      <section>
-        <h2 id="contact" tabindex="-1">연락</h2>
-        <ul class="contact">
-          <li>
-            <span>Email</span>
-            <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
-          </li>
-          <li>
-            <span>GitHub</span>
-            <a href={SITE.githubUrl} rel="me noopener">github.com/daedaem</a>
-          </li>
-          <li>
-            <span>LinkedIn</span>
-            <a href={SITE.linkedinUrl} rel="me noopener">프로필 보기</a>
-          </li>
-        </ul>
-      </section>
+        <section>
+          <h2 id="background" tabindex="-1">어떻게 여기까지 왔는지</h2>
+          <ol class="background-path" aria-label="연구에서 개발로 이어진 과정">
+            <li>
+              <h3 id="research">체육교육에서 운동생화학으로</h3>
+              <p>
+                체육교육을 전공한 뒤, 운동이 정신건강에 이로운 이유를 기전으로 설명하고 싶어
+                운동생화학을 연구했습니다. 서울대학교 대학원에서 석사 학위를 받았고, KCI 등재지
+                1저자·SCI 저널 공저자로 논문을 발표했습니다.
+              </p>
+            </li>
+            <li>
+              <h3 id="interest">연구에서 개발로</h3>
+              <p>
+                연구 중 박사 선배가 IBM Watson으로 몇 개월씩 걸리던 타깃 물질 발굴을 몇 주로 줄이는
+                것을 봤습니다. 제가 직접 다뤄 본 것은 Python으로 만든 데이터 통계 프로그램을 잠깐 써
+                본 정도였지만, 도구를 어떻게 고르느냐에 따라 연구의 속도가 달라진다는 것을 그때
+                느꼈고, 연구에 IT를 쓰는 일에 흥미가 생겼습니다. 다만 진로를 바로 바꾸지는
+                않았습니다.
+              </p>
+            </li>
+            <li>
+              <h3 id="training">개발 교육과 팀 프로젝트</h3>
+              <p>
+                SSAFY에서 프로그래밍을 처음 배웠습니다. 웹 풀스택 1,600시간 교육을 받으며
+                소프트웨어를 만드는 일에 재미를 붙였고, 개발 직무로 방향을 정했습니다.
+                <a href="/projects/#team-projects">팀 프로젝트</a>에서는 화면 구현과 API 연동을
+                맡았습니다.
+              </p>
+              <p>
+                이후 삼성전자 DX부문의 채용연계형 교육 과정인 SCSA에 선발되어 6개월간 SW 교육을
+                받았습니다. 최종 입사하지는 못했으며, 당시 과정과 결과는
+                <a href="/notes/scsa/">별도의 회고</a>에 남겼습니다.
+              </p>
+            </li>
+          </ol>
+        </section>
+
+        <section>
+          <h2 id="writing" tabindex="-1">글을 쓸 때 지키는 것</h2>
+          <p>
+            해결한 사례는 <a href="/posts/">글</a>에, 공부하며 확인한 원리는 <a href="/wiki/"
+              >위키</a
+            >에 기록합니다.
+          </p>
+          <p>
+            사례 글은 직접 작성한 업무 기록을 바탕으로, AI의 도움을 받아 재구성하고 문장을
+            다듬었습니다. 학습 내용을 정리하는 데에도 AI를 활용합니다.
+          </p>
+          <p>
+            회사·고객사·시스템을 특정할 수 있는 것은 쓰지 않습니다. 증상보다 원인을 쓰려고 하고, 왜
+            다른 방법을 고르지 않았는지도 같이 적습니다. 실측이 아닌 수치에는 예시라고 표시해
+            둡니다.
+          </p>
+          <p>
+            일부 글 표지는 AI로 생성한 개념 일러스트이며, 실제 화면이나 시스템 구성도가 아닙니다.
+          </p>
+        </section>
+
+        <section>
+          <h2 id="projects" tabindex="-1">프로젝트</h2>
+          <p>
+            개인 프로젝트의 현재 진행 상태와 교육 과정에서 참여한 팀 프로젝트는 <a href="/projects/"
+              >프로젝트 페이지</a
+            >에 따로 정리했습니다.
+          </p>
+        </section>
+
+        <section>
+          <h2 id="contact" tabindex="-1">연락</h2>
+          <ul class="contact">
+            <li>
+              <span>Email</span>
+              <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+            </li>
+            <li>
+              <span>GitHub</span>
+              <a href={SITE.githubUrl} rel="me noopener">github.com/daedaem</a>
+            </li>
+            <li>
+              <span>LinkedIn</span>
+              <a href={SITE.linkedinUrl} rel="me noopener">프로필 보기</a>
+            </li>
+          </ul>
+        </section>
+      </div>
     </div>
   </div>
 </BaseLayout>
 
+<script>
+  import { initCurrentHeading } from '@/utils/current-heading.mjs'
+  initCurrentHeading()
+
+  const toc = document.querySelector<HTMLDetailsElement>('.about-toc')
+  const current = document.querySelector<HTMLElement>('[data-about-current]')
+  const rail = document.querySelector('.about-rail .rail')
+  const syncCurrentLabel = () => {
+    const active = rail?.querySelector('[aria-current="location"]')
+    if (current) current.textContent = active?.textContent?.trim() || '해 온 일'
+  }
+  if (rail) {
+    new MutationObserver(syncCurrentLabel).observe(rail, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['aria-current'],
+    })
+  }
+  syncCurrentLabel()
+  toc?.addEventListener('click', (event) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button) return
+    const target = event.target instanceof Element ? event.target : null
+    if (target?.closest('a[href^="#"]')) toc.open = false
+  })
+</script>
+
 <style>
-  /* 머리: 라벨 → 이름 + 직무 → 한 문장 → 요약 → 바로가기. 본문은 .prose 조판 */
+  .about-page {
+    max-width: 1004px;
+    padding: 36px 32px 80px;
+  }
+  .profile {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 48px;
+    align-items: start;
+  }
   .name-line {
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 0.25rem 1rem;
+    gap: 4px 16px;
+    margin-top: 8px;
+  }
+  .name-line h1 {
+    margin: 0;
+    font-size: 34px;
+    line-height: 44px;
+    letter-spacing: -0.025em;
+    font-weight: 700;
   }
   .name-line > span {
+    font-size: 17px;
+    line-height: 28px;
     color: var(--fg2);
   }
   .lead {
-    margin: 0.6rem 0 0;
-    max-width: 36rem;
-    font-size: 1.0625rem;
-    line-height: 1.7;
+    margin: 8px 0 0;
+    font-size: 17px;
+    line-height: 28px;
     color: var(--fg2);
-  }
-  @media (min-width: 46em) {
-    .lead {
-      font-size: 1.125rem;
-    }
   }
   .at-a-glance {
     display: grid;
-    gap: 0.5rem;
-    margin: 1.25rem 0 0;
-    padding-left: 1rem;
-    border-left: 3px solid var(--accent);
+    gap: 8px;
+    margin: 24px 0 0;
   }
   .at-a-glance > div {
     display: grid;
-    grid-template-columns: 2.5rem minmax(0, 1fr);
-    gap: 0.75rem;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 16px;
     align-items: baseline;
   }
   .at-a-glance dt,
-  .case-summary dt,
-  .stack dt,
-  .contact span {
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
+  .stack dt {
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 28px;
     color: var(--muted);
   }
   .at-a-glance dd {
     margin: 0;
-    line-height: 1.7;
+    font-size: 17px;
+    line-height: 28px;
   }
-  .about-nav {
+  .profile-links {
     display: flex;
+    gap: 8px;
     flex-wrap: wrap;
-    gap: 0 1.25rem;
-    margin-top: 0.5rem;
+    margin-top: 24px;
   }
-  .about-nav a {
+  .profile-links a {
     display: inline-flex;
+    min-height: var(--control-size);
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border: 1px solid var(--line2);
+    border-radius: 6px;
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 15px;
+    line-height: 24px;
+    font-weight: 600;
+  }
+  .profile-links a:hover {
+    background: var(--soft);
+    border-color: var(--fg);
+  }
+  .profile-art {
+    height: 190px;
+    margin-top: 12px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: var(--cv-bg, var(--soft));
+  }
+  .about-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 660px) 232px;
+    gap: 48px;
+    grid-template-areas: 'body rail';
+    margin-top: 48px;
+  }
+  .about-rail {
+    grid-area: rail;
+    min-width: 0;
+  }
+  .about-rail > .rail {
+    display: block;
+    position: sticky;
+    top: 24px;
+    left: auto;
+    width: auto;
+    max-height: calc(100dvh - 48px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .toc-label {
+    margin: 0 0 16px;
+    font-size: 15px;
+    line-height: 24px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .about-rail ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-left: 1px solid var(--line);
+  }
+  .about-rail .rail a {
+    display: flex;
     align-items: center;
     min-height: var(--control-size);
-    min-width: var(--control-size);
-    font-size: 0.9375rem;
+    padding: 8px 12px;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    border-radius: 0 6px 6px 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 24px;
+    text-decoration: none;
+  }
+  .about-rail .rail a:hover {
+    color: var(--fg);
+    background: var(--soft);
+  }
+  .about-rail .rail a[aria-current='location'] {
+    border-left-color: var(--accent);
+    color: var(--fg);
+    background: var(--soft);
     font-weight: 600;
-    color: var(--fg2);
   }
-  .about-nav a:focus-visible,
-  h2:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
+  details.about-toc {
+    display: none;
   }
-  /* 절: 위 1px 선. h2는 .prose의 선을 겹쳐 긋지 않는다 */
-  section {
-    margin-top: 2.5rem;
-    padding-top: 1.25rem;
+  .prose {
+    grid-area: body;
+    min-width: 0;
+    margin: 0;
+    font-size: 18px;
+    line-height: 32px;
+  }
+  .prose > section {
+    margin: 56px 0 0;
+    padding-top: 20px;
     border-top: 1px solid var(--line);
   }
   .prose > section:first-child {
     margin-top: 0;
-    border-top: 0;
-    padding-top: 0;
-  }
-  section h2 {
-    margin-top: 0;
     padding-top: 0;
     border-top: 0;
   }
-  .stack {
-    margin: 1.25rem 0 0;
-    display: grid;
-    gap: 0.85rem;
-  }
-  .stack div {
-    display: grid;
-    grid-template-columns: 6.5rem 1fr;
-    gap: 0.75rem;
-    align-items: baseline;
-  }
-  .stack dd {
-    margin: 0;
-    line-height: 1.7;
-  }
-  .background-path {
-    list-style: none;
-    margin: 1.5rem 0 0;
+  .prose h2 {
+    margin: 0 0 16px;
     padding: 0;
+    border: 0;
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    scroll-margin-top: 24px;
   }
-  .background-path li {
-    padding: 0 0 1.5rem 1.25rem;
-    border-left: 2px solid var(--line2);
+  .prose p {
+    margin: 0 0 22px;
   }
-  .background-path li:last-child {
-    padding-bottom: 0;
-  }
-  .background-path h3 {
-    margin: 0;
-    font-size: 1.125rem;
-    line-height: 1.5;
+  .prose h3 {
+    font-size: 20px;
+    line-height: 28px;
+    letter-spacing: -0.015em;
     font-weight: 650;
   }
-  .background-path p {
-    margin: 0.5rem 0 0;
-  }
-  .background-path li + li {
-    margin-top: 0;
-  }
-  .work,
-  .work-highlights {
+  .prose .work-highlights,
+  .prose .work,
+  .prose .background-path,
+  .prose .contact {
     list-style: none;
-    margin: 1.25rem 0 0;
     padding: 0;
   }
-  .work-highlights li {
-    padding: 1.25rem 0;
+  .work-highlights {
+    margin: 0;
+  }
+  .work-highlights > li {
+    display: grid;
+    grid-template-columns: 160px minmax(0, 1fr);
+    gap: 24px;
+    padding: 28px 0;
     border-top: 1px solid var(--line);
+  }
+  .work-highlights > li:first-child {
+    padding-top: 8px;
+    border-top: 0;
   }
   .work-highlights li + li,
   .work li + li {
     margin-top: 0;
   }
+  .case-cover {
+    width: 160px;
+    height: 120px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: var(--cv-bg, var(--soft));
+  }
+  .case-copy {
+    min-width: 0;
+  }
   .work-highlights h3 {
-    margin: 0;
-    font-size: 1.1875rem;
-    font-weight: 650;
-    line-height: 1.4;
+    margin: 0 0 12px;
   }
   .work-highlights h3 a {
     display: flex;
     align-items: center;
     min-height: var(--control-size);
+    color: var(--fg);
     text-decoration: none;
   }
-  .work-highlights h3 a::after {
-    content: '→';
-    margin-left: auto;
-    padding-left: 0.75rem;
-    color: var(--muted);
-  }
   .work-highlights h3 a:hover {
+    color: var(--accent);
     text-decoration: underline;
-    text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
   }
   .case-summary {
     display: grid;
-    gap: 0.5rem;
-    margin: 0.625rem 0 0;
+    gap: 12px;
+    margin: 0;
+    font-size: 16px;
+    line-height: 27px;
   }
   .case-summary > div {
     display: grid;
-    grid-template-columns: 4.5rem minmax(0, 1fr);
-    align-items: baseline;
-    gap: 0.75rem;
+    gap: 4px;
+  }
+  .case-summary dt,
+  .contact span {
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--muted);
   }
   .case-summary dd {
     margin: 0;
-    line-height: 1.7;
     color: var(--fg2);
   }
-  .work-highlights a:focus-visible,
-  .work a:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-  }
   .other-work-title {
-    margin: 1.5rem 0 0;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    color: var(--muted);
+    margin: 28px 0 12px;
   }
-  .other-work-title + .work {
-    margin-top: 0.5rem;
+  .work {
+    margin: 0;
   }
   .work li {
     border-top: 1px solid var(--line);
   }
   .work a {
     display: block;
-    padding: 0.75rem 0;
     min-height: var(--control-size);
-    font-weight: 500;
+    padding: 12px 0;
     text-decoration: none;
+    font-size: 17px;
+    line-height: 28px;
   }
   .work a:hover {
     text-decoration: underline;
-    text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
   }
-  .contact {
-    list-style: none;
+  .stack {
+    display: grid;
+    gap: 16px;
     margin: 0;
-    padding: 0;
+  }
+  .stack > div {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 16px;
+  }
+  .stack dd {
+    margin: 0;
+  }
+  .background-path {
+    margin: 0;
+  }
+  .background-path li + li {
+    margin-top: 32px;
+  }
+  .background-path h3 {
+    margin: 0 0 12px;
+  }
+  .background-path p:last-child {
+    margin-bottom: 0;
+  }
+  .contact {
+    margin: 0;
   }
   .contact li {
     display: grid;
-    grid-template-columns: 5.5rem minmax(0, 1fr);
-    gap: 0.75rem;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 16px;
     align-items: center;
     border-top: 1px solid var(--line);
   }
@@ -416,27 +609,145 @@ import { CASES } from '@/data/cases'
     display: flex;
     align-items: center;
     min-height: var(--control-size);
-    padding-block: 0.5rem;
+    padding-block: 8px;
     overflow-wrap: anywhere;
   }
   .contact a:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
   }
-  @media (max-width: 30rem) {
-    .about-nav {
-      column-gap: 0.375rem;
+  @media (max-width: 1023px) {
+    .about-page {
+      max-width: 744px;
+      padding-top: 28px;
     }
-    .case-summary > div {
-      grid-template-columns: 1fr;
-      gap: 0.125rem;
+    .profile {
+      display: block;
     }
-    .case-summary {
-      gap: 0.75rem;
+    .profile-art,
+    .about-rail {
+      display: none;
     }
-    .stack div {
-      grid-template-columns: 1fr;
-      gap: 0.15rem;
+    .about-layout {
+      display: block;
+      margin-top: 24px;
+    }
+    details.about-toc {
+      display: block;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      margin: 0 0 32px;
+      border: 0;
+      border-block: 1px solid var(--line);
+      border-radius: 0;
+      background: var(--bg);
+    }
+    details.about-toc[open] {
+      position: relative;
+      z-index: 1;
+    }
+    details.about-toc summary {
+      min-height: var(--control-size);
+      padding: 0;
+      gap: 12px;
+      font-size: 14px;
+      line-height: 24px;
+      color: var(--muted);
+    }
+    .about-toc summary b {
+      flex: 1;
+      min-width: 0;
+      color: var(--fg);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .about-toc nav {
+      max-height: 40dvh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    details.about-toc ol {
+      border-top: 0;
+      padding: 0 0 8px;
+    }
+    details.about-toc a {
+      min-height: var(--control-size);
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 15px;
+      line-height: 24px;
+    }
+    details.about-toc a[aria-current='location'] {
+      background: var(--soft);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .prose h2,
+    .prose h3 {
+      scroll-margin-top: 64px;
+    }
+  }
+  @media (max-width: 760px) {
+    .about-page {
+      padding: 28px 20px 64px;
+    }
+    .name-line h1 {
+      font-size: 27px;
+      line-height: 36px;
+      letter-spacing: -0.02em;
+    }
+    .lead,
+    .at-a-glance dd {
+      font-size: 16px;
+      line-height: 27px;
+    }
+    .at-a-glance > div {
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 12px;
+    }
+    .prose {
+      line-height: 31px;
+    }
+    .work-highlights > li {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 16px;
+      padding: 24px 0;
+    }
+    .case-cover {
+      width: 100%;
+      height: 160px;
+    }
+    .stack > div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 4px;
+    }
+    .contact li {
+      grid-template-columns: 64px minmax(0, 1fr);
+      gap: 12px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .about-toc summary svg {
+      transition: none;
+    }
+  }
+  @media print {
+    .about-rail,
+    details.about-toc {
+      display: none;
+    }
+    .about-layout {
+      display: block;
+    }
+    .profile {
+      display: block;
+    }
+    .profile-art {
+      display: none;
     }
   }
 </style>

@@ -46,7 +46,7 @@ export function renderOgCard({ title, kicker, siteTitle, identityTitle, subtitle
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#ffffff"/>
   <rect width="1200" height="8" fill="#223e60"/>
-  <text x="80" y="120" font-family="Pretendard" font-size="26" font-weight="600" fill="#223e60">${esc(kicker)}</text>
+  <text x="80" y="120" font-family="Pretendard" font-size="26" font-weight="600" fill="#1b64da">${esc(kicker)}</text>
   <text y="250" font-family="Pretendard" font-size="60" font-weight="700" fill="#191f28" letter-spacing="-2">${rows}</text>
   <g transform="translate(80 520) scale(2)">
     <rect width="34" height="34" rx="9" fill="#223e60"/>

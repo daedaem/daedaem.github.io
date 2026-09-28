@@ -127,7 +127,10 @@ test('wiki and case outlines share location behavior without replacing native an
     assert.match(source, /initCurrentHeading\(\)/)
     assert.match(source, /href=\{`#\$\{h.slug\}`\}/)
     // 본문 위 차례와 넓은 화면 레일이 같은 앵커를 쓴다
-    assert.match(source, /<details class="toc" data-pagefind-ignore>/)
+    assert.match(
+      source,
+      /<details (?:class="toc"|class:list=\{\[\x27toc\x27, \{ \x27case-toc\x27: !archived \}\]\}) data-pagefind-ignore>/,
+    )
     assert.match(source, /<nav class="rail" aria-label="차례" data-pagefind-ignore>/)
   }
   // 현재 절 표시는 두 목록에 함께 붙고, 모양은 전역 CSS가 정한다

@@ -18,17 +18,16 @@ const CASES = [
 ]
 const caseText = CASES.map((c) => `${c.title} ${c.judgement} ${c.outcome}`).join(' ')
 
-test('home keeps factual identity: role label, author name and the one intro sentence', () => {
+test('saved s4 home keeps the factual author identity, approved introduction and authored summaries', () => {
   const home = read('src/pages/index.astro')
-  // 직무는 13px 라벨이 아니라 이름 옆 본문 크기의 글자다. 낱말은 consts의 SITE.role 한 곳에서 온다
-  assert.match(home, /<span class="role"[\s\S]*?\{SITE\.role\}<\/span/)
-  // 이름과 직무 사이의 공백이 있어 접근 가능한 이름이 '조해성 백엔드 개발자'로 읽힌다
-  assert.match(home, /<h1[^>]*>\s*\{SITE\.author\}\{' '\}<span class="role"/)
-  assert.match(home, /<p class="env">\{SITE\.environment\}<\/p>/)
-  assert.match(home, /<p class="lede">\{SITE\.intro\}<\/p>/)
-  assert.doesNotMatch(home, /백엔드 · 레거시 시스템 · 문제 해결|남긴 기록입니다/)
-  // 추천 글 행의 결과 줄은 cases.ts의 outcomePlain(한다체). 원인 한 줄(frontmatter, 한다체)과 말투를 맞춘다
-  assert.match(home, /outcome=\{CASES\.find\(\(c\) => c\.id === post\.id\)\?\.outcomePlain\}/)
+  assert.match(home, /\{SITE\.author\} · \{SITE\.role\}/)
+  assert.match(home, /href="\/about\/"\s*>소개 보기/)
+  assert.match(home, /느린 것, 멈춘 것, 틀린 것의 <b>원인<\/b>을 끝까지 찾습니다\./)
+  assert.match(home, /여러 업무 도메인의 레거시 시스템을 개발·운영합니다\./)
+  assert.match(home, /판단한 근거와 바뀐 결과를 글로 남깁니다\./)
+  assert.match(home, /description=\{post\.data\.description\}/)
+  assert.match(home, /title=\{post\.data\.title\}/)
+  assert.doesNotMatch(home, /outcome=|causeSummary|성과|이력서/)
 })
 
 test('AI disclosure distinguishes author records from editing help without claiming full verification', () => {

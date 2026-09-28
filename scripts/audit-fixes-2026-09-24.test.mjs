@@ -28,18 +28,18 @@ test('넓은 화면의 차례 레일은 본문보다 앞에 있어 키보드로 
   }
 })
 
-test('강제 색상에서도 눌린 칩과 현재 메뉴가 구분된다', () => {
+test('강제 색상에서도 눌린 칩과 s4 현재 메뉴가 구분된다', () => {
   assert.match(
     css,
     /@media \(forced-colors: active\) \{\s*\.chip\[aria-pressed='true'\],\s*\.chip\[aria-current\]:not\(\[aria-current='false'\]\) \{\s*forced-color-adjust: none;\s*background: Highlight;/,
   )
   const header = source('src/components/Header.astro')
-  assert.match(header, /nav a\[aria-current\] \{[^}]*border-bottom-color: var\(--accent\);/)
-  assert.doesNotMatch(header, /box-shadow: inset 0 -2px 0/)
+  assert.match(header, /\.nav a\[aria-current\]\s*\{[^}]*font-weight:\s*600/)
   assert.match(
     header,
-    /@media \(forced-colors: active\) \{\s*\.nav a \{\s*border-bottom-style: none;\s*\}\s*nav a\[aria-current\] \{\s*border-bottom-style: solid;/,
+    /@media\s*\(forced-colors:\s*active\)\s*\{\s*\.nav a\[aria-current\]\s*\{[^}]*border-bottom:\s*2px solid LinkText/,
   )
+  assert.match(header, /aria-current=\{\s*active !== item.href/)
 })
 
 test('위키 칩은 다른 축의 조건으로 건수를 다시 세고, 0편인 칩은 누를 수 없다', () => {

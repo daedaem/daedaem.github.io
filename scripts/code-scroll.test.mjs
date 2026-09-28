@@ -134,29 +134,22 @@ test('the inner code scrolls so the label and copy button stay put, and the fade
   assert.match(layout, /markScrollableTable\(table\)/)
 })
 
-test('list rows show only the authoring date, and the home links onward with collection counts', () => {
-  const home = readFileSync(new URL('../src/pages/index.astro', import.meta.url), 'utf8')
-  // 사례 시점은 글 목록(/posts/)의 행이 그린다. 홈 행은 원인·결과 줄이 이미 있어 첫 화면 예산(첫 글 제목 y ≤480)을 지키려고 넘기지 않는다
-  assert.doesNotMatch(home, /사례 시점/)
-  assert.doesNotMatch(home, /happened=\{post\.data\.happened\}/)
-  const posts = readFileSync(new URL('../src/pages/posts/index.astro', import.meta.url), 'utf8')
-  assert.match(posts, /happened=\{p\.data\.happened\}/)
-  // 주제별 글 레일 대신 '더 보기' 행: 위키 건수·상태·기간, 노트 건수·연도, 풀이 건수는 컬렉션에서 센다
-  assert.match(home, /\{wiki\.length\}편/)
-  assert.match(
-    home,
-    /\{notes\.length\}편 \(\{noteYears\}\) · 알고리즘 풀이 \{solutions\.length\}건/,
-  )
-  const row = readFileSync(new URL('../src/components/PostRow.astro', import.meta.url), 'utf8')
-  assert.match(
-    row,
-    /<time datetime=\{date\.toISOString\(\)\}>\{formatCompactDate\(date\)\}<\/time>/,
-  )
-  assert.doesNotMatch(row, /updated/)
-  for (const path of ['src/pages/notes/index.astro', 'src/pages/tags/[tag].astro']) {
-    assert.doesNotMatch(
-      readFileSync(new URL(`../${path}`, import.meta.url), 'utf8'),
-      /<ContentDates[^>]*updated=/,
+test('case lists keep authoring dates and knowledge navigation remains in the footer', () => {
+  const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
+  const home = source('src/pages/index.astro')
+  assert.doesNotMatch(home, /사례 시점|happened=\{post\.data\.happened\}/)
+  assert.match(home, /date=\{post\.data\.date\}/)
+  assert.match(home, /href="\/rss.xml"/)
+  for (const route of ['/wiki/', '/learn/', '/projects/'])
+    assert.ok(source('src/components/Footer.astro').includes(`href="${route}"`))
+  for (const component of ['PostRow', 'CaseRow']) {
+    const row = source(`src/components/${component}.astro`)
+    assert.match(
+      row,
+      /<time datetime=\{date\.toISOString\(\)\}\s*>\{formatCompactDate\(date\)\}<\/time>/,
     )
+    assert.doesNotMatch(row, /updated/)
   }
+  for (const path of ['src/pages/notes/index.astro', 'src/pages/tags/[tag].astro'])
+    assert.doesNotMatch(source(path), /<ContentDates[^>]*updated=/)
 })

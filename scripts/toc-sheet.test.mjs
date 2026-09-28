@@ -4,11 +4,17 @@ import { readFileSync } from 'node:fs'
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
-test('case articles, notes and wiki pages open the table of contents mid-article when it has scrolled away', () => {
+test('cases use native sticky contents while notes and wiki retain the mid-article sheet', () => {
   for (const page of ['src/layouts/PostLayout.astro', 'src/pages/wiki/[...slug].astro']) {
     const text = source(page)
     assert.match(text, /import \{ initTocSheet \} from '@\/utils\/toc-sheet\.mjs'/, page)
-    assert.match(text, /initCurrentHeading\(\)\s*\n\s*initTocSheet\(\)/, page)
+    assert.match(text, /initCurrentHeading\(\)/, page)
+    if (page.endsWith('PostLayout.astro')) {
+      assert.match(text, /if \(document.querySelector\('\.is-archived'\)\) initTocSheet\(\)/)
+      assert.match(text, /querySelector<HTMLDetailsElement>\('details\.case-toc'\)/)
+      assert.match(text, /if \(link\) caseToc.open = false/)
+      assert.match(text, /details.case-toc\s*\{[^}]*position:\s*sticky/)
+    } else assert.match(text, /initTocSheet\(\)/, page)
   }
   const sheet = source('src/utils/toc-sheet.mjs')
   // 본문 목차와 같은 #앵커를 복제해 주소·방문 기록이 남고, 지금 절 표시를 옮겨 온다.
