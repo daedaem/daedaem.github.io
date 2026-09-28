@@ -708,7 +708,8 @@ const body = rendered.slice(lead.length)
       background: var(--bg);
     }
     details.case-toc[open] {
-      position: static;
+      /* Keep the contents visible when reopened after scrolling down the article. */
+      position: sticky;
     }
     details.case-toc summary {
       min-height: 44px;

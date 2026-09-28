@@ -28,3 +28,27 @@ test('cases use native sticky contents while notes and wiki retain the mid-artic
   assert.match(css, /\.toc-fab\s*\{[^}]*position: fixed;[^}]*min-height: var\(--control-size\);/)
   assert.match(css, /\.toc-sheet a\s*\{[^}]*min-height: var\(--control-size\);/)
 })
+
+for (const [path, kind, list] of [
+  ['src/layouts/PostLayout.astro', 'case', 'ol'],
+  ['src/pages/about.astro', 'about', 'nav'],
+]) {
+  test(`mobile ${kind} contents remain sticky when reopened mid-page`, () => {
+    const text = source(path).split('@media (max-width: 1023px)')[1]?.split('@media')[0]
+    assert.ok(text, 'mobile contents rules exist')
+    const base = text.match(new RegExp(`details\\.${kind}-toc\\s*\\{([^}]+)\\}`))?.[1]
+    const open = text.match(new RegExp(`details\\.${kind}-toc\\[open\\]\\s*\\{([^}]+)\\}`))?.[1]
+    assert.match(base, /position:\s*sticky/)
+    assert.match(base, /top:\s*0/)
+    assert.match(base, /z-index:\s*5/)
+    // An open-state static/relative override sends the expanded contents back above
+    // the viewport after the reader has already navigated to a later heading.
+    assert.match(open, /position:\s*sticky/)
+    assert.doesNotMatch(open, /position:\s*(?:static|relative)|z-index:\s*[0-4]\b/)
+    const scroller = text.match(
+      new RegExp(`(?:details\\.)?${kind}-toc ${list}\\s*\\{([^}]+)\\}`),
+    )?.[1]
+    assert.match(scroller, /max-height:[^;]*dvh/)
+    assert.match(scroller, /overflow-y:\s*auto/)
+  })
+}

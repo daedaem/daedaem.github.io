@@ -644,8 +644,8 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
       background: var(--bg);
     }
     details.about-toc[open] {
-      position: relative;
-      z-index: 1;
+      /* Keep the contents visible when reopened after scrolling down the profile. */
+      position: sticky;
     }
     details.about-toc summary {
       min-height: var(--control-size);
