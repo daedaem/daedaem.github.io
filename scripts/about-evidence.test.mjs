@@ -164,12 +164,16 @@ test('author background uses the stated research motivation without implying AI 
   // 정확한 문구는 고정하지 않는다. 문장 사이의 모순은 편집 검토로 본다.
   assert.match(training, /SSAFY[\s\S]*프로그래밍[\s\S]*처음/)
   // 2026-09-29: 역할 설명은 프로젝트 페이지에 맡기고 소개는 링크만 둔다
-  assert.match(training, /SSAFY[\s\S]*href="\/projects\/#team-projects">팀 프로젝트<\/a>/)
+  assert.match(training, /흥미가 생겼고, 그 흥미를 따라 SSAFY에 들어가 프로그래밍을 처음 배웠습니다/)
+  assert.match(training, /href="\/projects\/#team-projects">팀 프로젝트<\/a>/)
   assert.doesNotMatch(training, /팀장|스마트 컨트랙트|블록체인/)
   assert.match(training, /채용연계형[\s\S]*SCSA[\s\S]*6개월/)
   // 입사하지 못한 사실은 회고 글에 맡기되, 다음 문단이 '다른 회사에 입사'로 이어져 삼성전자 입사로 읽히지 않게 한다
   const now = aboutText.match(/<h3 id="now">([\s\S]*?)<\/li>/)?.[1]
   assert.match(now, /지금 회사에서 여러 업무 도메인의 레거시 시스템을 개발하고 운영합니다\./)
+  // 관심사 두 가지: 원인까지 따라가 고치기(글이 기록), AI 이후 개발자의 일. 주인이 직접 말한 것만 쓴다
+  assert.match(now, /AI가 들어온 뒤 개발자의 일이 어디로 옮겨/)
+  assert.match(now, /AI와 함께 만들고/)
   // 자료에서 추론한 '꿈'이나 근거 없는 성향 문장은 쓰지 않는다
   assert.doesNotMatch(now, /되고 싶었|잘 맞습니다|잘하는 일/)
   assert.doesNotMatch(now, /SCSA를 마친 뒤/)
