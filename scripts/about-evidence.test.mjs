@@ -149,7 +149,8 @@ test('author background uses the stated research motivation without implying AI 
   const training = aboutText.match(/<h3 id="training">([\s\S]*?)<\/li>/)?.[1]
   const interest = training.split('</p>')[0]
   // 1. 발굴 기간을 줄인 것은 본인이 아니다. 본인을 주어로 쓰거나 직접 다룬 것처럼 쓰지 않는다
-  assert.match(interest, /IBM Watson/)
+  // 2026-09-29: 도구 이름(IBM Watson)은 빼고 '소프트웨어로 몇 주 만에'라는 사실만 남긴다
+  assert.match(interest, /소프트웨어로 몇 주 만에/)
   assert.doesNotMatch(interest, /제가[\s\S]*(줄였|단축했)/)
   assert.doesNotMatch(interest, /IBM Watson[^.]*(체험했|사용했|활용했|다뤘)/)
   // 2. 바이오인포매틱스를 배웠거나 연구한 것처럼 쓰지 않는다
@@ -162,11 +163,15 @@ test('author background uses the stated research motivation without implying AI 
   // SCSA는 채용연계형 교육 과정, 삼성전자 입사 사실 없음.
   // 정확한 문구는 고정하지 않는다. 문장 사이의 모순은 편집 검토로 본다.
   assert.match(training, /SSAFY[\s\S]*프로그래밍[\s\S]*처음/)
-  assert.match(training, /SSAFY[\s\S]*팀 프로젝트[\s\S]*프론트엔드[\s\S]*팀장/)
+  // 2026-09-29: 역할 설명은 프로젝트 페이지에 맡기고 소개는 링크만 둔다
+  assert.match(training, /SSAFY[\s\S]*href="\/projects\/#team-projects">팀 프로젝트<\/a>/)
+  assert.doesNotMatch(training, /팀장|스마트 컨트랙트|블록체인/)
   assert.match(training, /채용연계형[\s\S]*SCSA[\s\S]*6개월/)
   // 입사하지 못한 사실은 회고 글에 맡기되, 다음 문단이 '다른 회사에 입사'로 이어져 삼성전자 입사로 읽히지 않게 한다
   const now = aboutText.match(/<h3 id="now">([\s\S]*?)<\/li>/)?.[1]
-  assert.match(now, /지금 회사에서는 여러 업무 도메인의 레거시 시스템/)
+  assert.match(now, /지금 회사에서 여러 업무 도메인의 레거시 시스템을 개발하고 운영합니다\./)
+  // 자료에서 추론한 '꿈'이나 근거 없는 성향 문장은 쓰지 않는다
+  assert.doesNotMatch(now, /되고 싶었|잘 맞습니다|잘하는 일/)
   assert.doesNotMatch(now, /SCSA를 마친 뒤/)
   assert.doesNotMatch(now, /삼성/)
   assert.match(training, /href="\/notes\/scsa\/"/)
