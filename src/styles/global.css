@@ -1095,12 +1095,12 @@ code {
   display: inline-flex;
   align-items: center;
   min-height: var(--control-size);
-  padding: 0 0.8rem;
+  padding: 0 0.75rem;
   border: 1px solid var(--line2);
   border-radius: var(--radius);
   background: var(--bg);
   color: var(--fg2);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;

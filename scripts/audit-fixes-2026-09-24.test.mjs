@@ -47,11 +47,13 @@ test('위키 칩은 다른 축의 조건으로 건수를 다시 세고, 0편인 
   assert.match(wiki, /import \{ selectDocuments, facetCounts \} from '@\/utils\/wiki-library\.mjs'/)
   assert.match(wiki, /const counts = facetCounts\(docs, \{ query: query\.value, topic, status \}\)/)
   assert.match(wiki, /pressChips\(topics, 'topic', topic, counts\.topic\)/)
-  assert.match(wiki, /pressChips\(statusChips, 'status', status, counts\.status\)/)
+  // 2026-09-29: 상태 칩은 없앴다. 주제 칩만 건수를 다시 센다. '전체' 칩은 건수를 달지 않는다
+  assert.doesNotMatch(wiki, /statusChips/)
+  assert.match(wiki, /data-topic="" aria-pressed="true">\s*전체\s*<\/button>/)
   assert.match(wiki, /if \(!pressed && count === 0\) chip\.setAttribute\('aria-disabled', 'true'\)/)
   assert.equal(
     (wiki.match(/if \(chip\.getAttribute\('aria-disabled'\) === 'true'\) return/g) ?? []).length,
-    2,
+    1,
   )
   assert.match(css, /\.chip\[aria-disabled='true'\] \{[^}]*cursor: default;/)
   // 빈 결과의 '조건 초기화'를 누르면 초점이 찾기 입력으로 간다
