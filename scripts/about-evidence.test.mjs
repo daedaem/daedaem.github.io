@@ -156,7 +156,7 @@ test('author background uses the stated research motivation without implying AI 
   // 2. 바이오인포매틱스를 배웠거나 연구한 것처럼 쓰지 않는다
   assert.doesNotMatch(interest, /바이오인포매틱스를 (배웠|연구|공부했)/)
   // 3. 그때 생긴 것은 흥미까지다. 진로를 정한 시점은 뒤의 교육 문단이 말한다
-  assert.match(interest, /IT 기술에 흥미/)
+  assert.match(interest, /IT 기술의\s+힘을 처음 느꼈고, 처음에는 그 힘을 활용하는 쪽을 생각했습니다/)
   assert.doesNotMatch(interest, /(익히기로|배우기로|진로를 정했|결심)/)
   assert.doesNotMatch(interest, /시간이 지난 뒤/)
   // 교육 문단이 보호할 사실: SSAFY가 첫 프로그래밍 학습, 팀 프로젝트 역할은 프로젝트 페이지 기록과 같게,
@@ -164,7 +164,8 @@ test('author background uses the stated research motivation without implying AI 
   // 정확한 문구는 고정하지 않는다. 문장 사이의 모순은 편집 검토로 본다.
   assert.match(training, /SSAFY[\s\S]*프로그래밍[\s\S]*처음/)
   // 2026-09-29: 역할 설명은 프로젝트 페이지에 맡기고 소개는 링크만 둔다
-  assert.match(training, /흥미가 생겼고, 그 흥미를 따라 SSAFY에 들어가 프로그래밍을 처음 배웠습니다/)
+  assert.match(training, /활용하는 것과\s+만들 수 있는 것은 다르다는 걸 알았습니다/)
+  assert.match(training, /깨달을수록\s+흥미도 커졌고/)
   assert.match(training, /href="\/projects\/#team-projects">팀 프로젝트<\/a>/)
   assert.doesNotMatch(training, /팀장|스마트 컨트랙트|블록체인/)
   assert.match(training, /채용연계형[\s\S]*SCSA[\s\S]*6개월/)
