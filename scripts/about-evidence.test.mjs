@@ -166,7 +166,8 @@ test('author background uses the stated research motivation without implying AI 
   assert.match(training, /채용연계형[\s\S]*SCSA[\s\S]*6개월/)
   // 입사하지 못한 사실은 회고 글에 맡기되, 다음 문단이 '다른 회사에 입사'로 이어져 삼성전자 입사로 읽히지 않게 한다
   const now = aboutText.match(/<h3 id="now">([\s\S]*?)<\/li>/)?.[1]
-  assert.match(now, /SCSA를 마친 뒤 지금 회사에 입사/)
+  assert.match(now, /지금 회사에서는 여러 업무 도메인의 레거시 시스템/)
+  assert.doesNotMatch(now, /SCSA를 마친 뒤/)
   assert.doesNotMatch(now, /삼성/)
   assert.match(training, /href="\/notes\/scsa\/"/)
   // 삼성전자 공채 합격이나 근무 경력처럼 읽히는 표현은 금지한다
