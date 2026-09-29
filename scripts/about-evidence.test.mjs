@@ -138,9 +138,14 @@ test('author background uses the stated research motivation without implying AI 
   // 석사 연구는 기전을 '설명'했다고 쓰지 않고 '탐구'했다고 쓴다(사용자 판단 2026-09-29)
   assert.match(aboutText, /운동이 정신건강에 이로운 이유를 기전 수준에서 탐구하고 싶어/)
   assert.doesNotMatch(aboutText, /기전으로 설명하고 싶어/)
+  // 실험 종류(세포·동물·사람)는 무섭게 읽힐 수 있어 쓰지 않는다
+  assert.doesNotMatch(aboutText, /동물 실험|사람 실험|세포·동물·사람/)
   // 전환 계기 문단이 보호할 사실. 문장은 "연구실에서 본 일 → IT 기술에 처음 흥미"로만 짧게 쓴다는
   // 사용자 판단(2026-09-29)에 따라, 선배를 주어로 세우는 말투와 Python·진로 단서 문장은 요구하지 않는다.
-  const interest = aboutText.match(/<h3 id="interest">([\s\S]*?)<\/li>/)?.[1]
+  // 소제목을 '체육교육에서 운동생화학으로 → 운동생화학에서 프로그래밍으로 → 그리고 지금' 세 단계로 줄이면서(2026-09-29)
+  // IT 흥미 문단은 프로그래밍 단계(#training) 첫 문단에 들어갔다
+  const training = aboutText.match(/<h3 id="training">([\s\S]*?)<\/li>/)?.[1]
+  const interest = training.split('</p>')[0]
   // 1. 발굴 기간을 줄인 것은 본인이 아니다. 본인을 주어로 쓰거나 직접 다룬 것처럼 쓰지 않는다
   assert.match(interest, /IBM Watson/)
   assert.doesNotMatch(interest, /제가[\s\S]*(줄였|단축했)/)
@@ -154,7 +159,6 @@ test('author background uses the stated research motivation without implying AI 
   // 교육 문단이 보호할 사실: SSAFY가 첫 프로그래밍 학습, 팀 프로젝트 역할은 프로젝트 페이지 기록과 같게,
   // SCSA는 채용연계형 교육 과정, 삼성전자 입사 사실 없음.
   // 정확한 문구는 고정하지 않는다. 문장 사이의 모순은 편집 검토로 본다.
-  const training = aboutText.match(/<h3 id="training">([\s\S]*?)<\/li>/)?.[1]
   assert.match(training, /SSAFY[\s\S]*프로그래밍[\s\S]*처음/)
   assert.match(training, /SSAFY[\s\S]*팀 프로젝트[\s\S]*프론트엔드[\s\S]*팀장/)
   assert.match(training, /채용연계형[\s\S]*SCSA[\s\S]*6개월/)
@@ -212,7 +216,7 @@ test('work approach stays concise and private ongoing company projects remain wi
 
 test('background stages and contact navigation remain readable and keyboard accessible', () => {
   assert.match(about, /href="#background"/)
-  for (const id of ['research', 'interest', 'training', 'now'])
+  for (const id of ['research', 'training', 'now'])
     assert.match(about, new RegExp(`<h3 id="${id}">`))
   assert.match(about, /href="\/projects\/#team-projects"/)
   assert.match(about, /\.contact a \{[^}]*min-height: var\(--control-size\)/)
