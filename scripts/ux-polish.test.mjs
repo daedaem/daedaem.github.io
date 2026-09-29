@@ -83,7 +83,7 @@ test('each s4 row is one link with full title and summary and a decorative cover
   assert.equal((row.match(/<a(?:\s|>)/g) ?? []).length, 1)
   assert.match(row, /href=\{href\}/)
   assert.doesNotMatch(row, /aria-labelledby|stretched-link|line-clamp/)
-  assert.match(row, /<Heading class="reading-title">\{title\}<\/Heading>/)
+  assert.match(row, /<Heading class="reading-title"><TitleText title=\{title\} \/><\/Heading>/)
   assert.match(row, /const Heading = headingLevel === 3 \? 'h3' : 'h2'/)
   assert.match(home, /headingLevel=\{3\}/)
   const title = row.indexOf('<Heading class="reading-title">'),

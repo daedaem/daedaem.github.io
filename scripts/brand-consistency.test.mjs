@@ -7,7 +7,7 @@ import { renderOgCard, wrapOgTitle } from '../src/utils/og-card.mjs'
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const identityTitle = '조해성의 기술 블로그'
-const motto = '증상이 아니라 원인을 고칩니다'
+const motto = '운영에서 만난 문제를 원인까지 따라간 기록'
 const content = {
   title: '대댐 로그',
   kicker: identityTitle,
@@ -71,7 +71,7 @@ test('OG renderer reuses the approved mark and current light palette', () => {
   assert.match(svg, /<tspan x="80" dy="0">대댐 로그<\/tspan>/)
   assert.match(svg, />조해성의 기술 블로그</)
   assert.match(svg, />조해성 · 백엔드 개발자</)
-  assert.match(svg, /증상이 아니라 원인을 고칩니다/)
+  assert.match(svg, /운영에서 만난 문제를 원인까지 따라간 기록/)
   const png = new Resvg(svg, { font: { loadSystemFonts: false } }).render().asPng()
   assert.equal(png.toString('hex', 0, 8), '89504e470d0a1a0a')
   assert.equal(png.readUInt32BE(16), 1200)

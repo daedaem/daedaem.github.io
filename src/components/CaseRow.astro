@@ -1,5 +1,6 @@
 ---
 import IsometricCover from './IsometricCover.astro'
+import TitleText from './TitleText.astro'
 import { isometricCoverForSlug } from '@/utils/isometric-covers.mjs'
 import { getCategory } from '@/consts'
 import { formatCompactDate } from '@/utils/format'
@@ -21,7 +22,7 @@ const kind = isometricCoverForSlug(href.split('/').filter(Boolean).at(-1))
 
 <li class="case-row">
   <a class:list={['reading-card', { 'without-cover': !kind }]} href={href}>
-    <Heading class="reading-title">{title}</Heading>
+    <Heading class="reading-title"><TitleText title={title} /></Heading>
     {
       kind && (
         <div class="cover">

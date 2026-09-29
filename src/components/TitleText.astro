@@ -1,0 +1,29 @@
+---
+import { splitEditorialTitle } from '@/utils/editorial.mjs'
+/**
+ * 제목을 나누지 않고 같은 모양 그대로 보여 준다. 다만 줄이 넘칠 때는 첫 ': ' 뒤에서 넘어가게
+ * 앞뒤 구절을 각각 한 덩어리(inline-block)로 둔다. 한 줄에 들어가면 그대로 한 줄이다.
+ * 읽기·검색 텍스트는 원래 제목과 똑같다.
+ */
+interface Props {
+  title: string
+}
+const { title } = Astro.props
+const { main, separator, subtitle } = splitEditorialTitle(title)
+---
+
+{
+  subtitle ? (
+    <>
+      <span class="phrase">{main + separator.trimEnd()}</span>{' '}
+      <span class="phrase">{subtitle}</span>
+    </>
+  ) : (
+    title
+  )
+}
+<style>
+  .phrase {
+    display: inline-block;
+  }
+</style>

@@ -163,8 +163,12 @@ test('title styling preserves every character and only splits the first colon-sp
     subtitle: '둘째: 셋째',
   })
   const layout = source('src/layouts/PostLayout.astro')
-  // 제목은 나누지 않고 그대로 둔다. 본문은 슬롯을 문자열로 받아 첫머리 고지를 앞으로 옮긴다
-  assert.match(layout, /<h1 tabindex="-1">\{title\}<\/h1>/)
+  // 제목은 같은 모양 그대로 둔다(줄바꿈 자리만 콜론 뒤). 본문은 슬롯을 문자열로 받아 첫머리 고지를 앞으로 옮긴다
+  assert.match(layout, /<h1 tabindex="-1"><TitleText title=\{title\} \/><\/h1>/)
+  const titleText = source('src/components/TitleText.astro')
+  assert.match(titleText, /splitEditorialTitle\(title\)/)
+  assert.match(titleText, /display: inline-block/)
+  assert.doesNotMatch(titleText, /font-weight|font-size|class="subtitle"/)
   assert.match(layout, /Astro\.slots\.render\('default'\)/)
   assert.match(layout, /original=\{archived\}/)
   assert.match(layout, /publishedAt=\{date\}/)

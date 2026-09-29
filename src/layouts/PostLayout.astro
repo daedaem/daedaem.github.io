@@ -4,6 +4,7 @@ import AuthorCard from '@/components/AuthorCard.astro'
 import Comments from '@/components/Comments.astro'
 import ContentDates from '@/components/ContentDates.astro'
 import IsometricCover from '@/components/IsometricCover.astro'
+import TitleText from '@/components/TitleText.astro'
 import { SITE, getCategory } from '@/consts'
 import { tagSlug } from '@/utils/format'
 import { linkableTagSlugs } from '@/utils/tags'
@@ -127,14 +128,14 @@ const body = rendered.slice(lead.length)
                 {readingMinutes && <span class="sep" aria-hidden="true" set:text="·" />}
                 {readingMinutes && <span class="nowrap" set:text={`${readingMinutes}분 읽기`} />}
               </p>
-              <h1 tabindex="-1">{title}</h1>
+              <h1 tabindex="-1"><TitleText title={title} /></h1>
             </>
           ) : (
             <>
               <p class="category-line" data-pagefind-ignore>
                 {cat ? <a href={`/categories/${cat.id}/`}>{cat.name}</a> : <a href="/posts/">글</a>}
               </p>
-              <h1 tabindex="-1">{title}</h1>
+              <h1 tabindex="-1"><TitleText title={title} /></h1>
               {description && <p class="deck">{description}</p>}
               <div class="post-meta" data-pagefind-ignore>
                 <ContentDates date={date} updated={updated} compact />

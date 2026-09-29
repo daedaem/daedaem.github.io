@@ -91,7 +91,7 @@ test('home uses one published case list with full titles and descriptions while 
   assert.match(caseRow, /const Heading = headingLevel === 3 \? 'h3' : 'h2'/)
   assert.match(
     caseRow,
-    /<a class:list=\{[^\n]+\} href=\{href\}>\s*<Heading class="reading-title">\{title\}<\/Heading>/,
+    /<a class:list=\{[^\n]+\} href=\{href\}>\s*<Heading class="reading-title"><TitleText title=\{title\} \/><\/Heading>/,
   )
   assert.match(caseRow, /\{description && <p class="reading-excerpt">\{description\}<\/p>\}/)
   const row = source('src/components/PostRow.astro')
@@ -117,9 +117,9 @@ test('reader changes are scoped to cases and preserve full title, cause, content
   // 사례 본문은 s4의 18px 읽기 조판이다. 강제 다크 코드 면은 없고 기존 학습 노트는 보존한다.
   assert.doesNotMatch(layout, /data-code-theme/)
   assert.doesNotMatch(layout, /font-size:\s*1\.0625rem/)
-  // 제목은 나누지 않고 그대로 h1에 둔다
-  assert.match(layout, /<h1 tabindex="-1">\{title\}<\/h1>/)
-  assert.doesNotMatch(layout, /splitEditorialTitle|class="subtitle"/)
+  // 제목은 부제처럼 나누지 않고 같은 모양 그대로 h1에 둔다(줄바꿈만 콜론 뒤에서)
+  assert.match(layout, /<h1 tabindex="-1"><TitleText title=\{title\} \/><\/h1>/)
+  assert.doesNotMatch(layout, /class="subtitle"/)
   assert.match(layout, /Astro\.slots\.render\('default'\)/)
   assert.match(layout, /<Comments\s*\/>/)
   assert.match(layout, /\{cause\}/)
