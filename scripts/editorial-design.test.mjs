@@ -175,8 +175,8 @@ test('title styling preserves every character and only splits the first colon-sp
 
 test('s4 header identity and all preserved favicon sizes have their approved assets', () => {
   const header = source('src/components/Header.astro')
-  assert.match(header, /aria-label=\{`[^`]*\$\{SITE\.author\}[^`]*`\}/)
-  assert.match(header, /<Mark size=\{20\} class="mark" \/>\{SITE\.author\}/)
+  assert.match(header, /aria-label=\{`\$\{SITE\.title\} 홈`\}/)
+  assert.match(header, /<Mark size=\{20\} class="mark" \/>\{SITE\.title\}/)
   assert.doesNotMatch(header, /rotate\(45deg\)/)
   const mark = source('src/components/Mark.astro')
   assert.match(mark, /d=\{MARK_PATH\}/)

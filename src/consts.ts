@@ -4,7 +4,7 @@ export const SITE = {
   homeTitle: '대댐 로그 — 조해성 기술 블로그',
   /** 붙여 쓴 표기·영문 표기. 검색엔진에 같은 사이트의 다른 이름으로 알린다 */
   altNames: ['대댐로그', 'daedaem log', 'daedaem'],
-  /** 홈 H1과 링크 공유 이미지 제목. 직무는 카드 kicker(SITE.role)가 맡는다. */
+  /** 사이트 공유 이미지의 kicker. 큰 제목은 블로그 이름(title)이 맡는다. */
   identityTitle: '조해성의 기술 블로그',
   /** 링크 공유 이미지 부제. 화면에서는 쓰지 않는다. */
   motto: '증상이 아니라 원인을 고칩니다',
