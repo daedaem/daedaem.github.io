@@ -24,7 +24,7 @@ test('saved s4 identity and illustrated list preserve factual bindings and exist
   // Saved s4 replaces the previous identity/recommendation layout; factual bindings remain.
   assert.match(home, /\{SITE\.author\} · \{SITE\.role\}/)
   assert.match(home, /<section class="intro" aria-labelledby="home-title">/)
-  assert.match(home, /<h1 id="home-title">느린 것, 멈춘 것, 틀린 것의/)
+  assert.match(home, /<h1 id="home-title">운영에서 만난 문제를/)
   assert.match(home, /여러 업무 도메인의 레거시 시스템을 개발·운영합니다\./)
   assert.equal((home.match(/href="\/about\/"/g) ?? []).length, 1)
   assert.match(home, /href="\/about\/"\s*>소개 보기/)
