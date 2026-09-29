@@ -42,9 +42,6 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
           <a href={`mailto:${SITE.email}`}>이메일</a>
         </nav>
       </div>
-      <div class="profile-art" aria-hidden="true">
-        <IsometricCover kind="hero" />
-      </div>
     </header>
 
     <div class="about-layout">
@@ -293,10 +290,8 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
     padding: 36px 32px 80px;
   }
   .profile {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 320px;
-    gap: 48px;
-    align-items: start;
+    display: block;
+    max-width: 660px;
   }
   .name-line {
     display: flex;
@@ -352,13 +347,6 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
   .profile-links a:hover {
     background: var(--soft);
     border-color: var(--fg);
-  }
-  .profile-art {
-    height: 190px;
-    margin-top: 12px;
-    overflow: hidden;
-    border-radius: 10px;
-    background: var(--cv-bg, var(--soft));
   }
   .about-layout {
     display: grid;
@@ -609,7 +597,6 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
     .profile {
       display: block;
     }
-    .profile-art,
     .about-rail {
       display: none;
     }
@@ -722,12 +709,6 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
     }
     .about-layout {
       display: block;
-    }
-    .profile {
-      display: block;
-    }
-    .profile-art {
-      display: none;
     }
   }
 </style>
