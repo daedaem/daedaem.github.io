@@ -1,4 +1,4 @@
-import { MARK_DOT, MARK_PATH, MARK_TILE_TRANSFORM } from './brand.mjs'
+import { MARK_DOT, MARK_LANE, MARK_PATH, MARK_STROKE, MARK_TILE_TRANSFORM } from './brand.mjs'
 
 /**
  * 어절 단위로 나누고 긴 단일 어절만 잘라낸다. 상세 글의 기존 세 줄 한도를 유지한다.
@@ -50,9 +50,10 @@ export function renderOgCard({ title, kicker, siteTitle, identityTitle, subtitle
   <text y="250" font-family="Pretendard" font-size="60" font-weight="700" fill="#191f28" letter-spacing="-2">${rows}</text>
   <g transform="translate(80 518) scale(2.2)">
     <rect width="32" height="32" rx="8" fill="#1b64da"/>
-    <g transform="${MARK_TILE_TRANSFORM}">
-      <path d="${MARK_PATH}" fill-rule="evenodd" fill="#ffffff"/>
-      <circle cx="${MARK_DOT.cx}" cy="${MARK_DOT.cy}" r="${MARK_DOT.r}" fill="#eca574"/>
+    <g transform="${MARK_TILE_TRANSFORM}" fill="none" stroke-width="${MARK_STROKE}" stroke-linecap="round">
+      <path d="${MARK_PATH}" stroke="#ffffff"/>
+      <path d="${MARK_LANE}" stroke="#ffffff" opacity="0.55"/>
+      <circle cx="${MARK_DOT.cx}" cy="${MARK_DOT.cy}" r="${MARK_DOT.r}" fill="#eca574" stroke="none"/>
     </g>
   </g>
   <text x="170" y="550" font-family="Pretendard" font-size="28" font-weight="600" fill="#191f28">${esc(siteTitle)}</text>

@@ -1,10 +1,12 @@
-// 표식 '절개': 겉을 잘라 안의 원인(점)을 보는 D. 표지 그림(단면)과 같은 말을 한다.
-// 헤더의 맨 마크, 파비콘, OG 카드가 같은 경로를 쓴다. viewBox 0 0 32 32.
+// 표식 '두 레인': 두 트랙이 돌아 나오고 끝에 원인 점. viewBox 0 0 32 32.
+// 헤더의 맨 마크, 파비콘, OG 카드가 같은 경로를 쓴다.
 export const MARK_VIEWBOX = '0 0 32 32'
-// D 몸체에서 왼쪽 가운데를 가로로 잘라낸 형태(evenodd로 틈을 비운다).
-// 틈 높이 7과 점 반지름 2.8은 헤더 20px·파비콘 16px에서도 점이 보이도록 잡은 값이다.
-export const MARK_PATH = 'M5 4h10.5a12 12 0 0 1 0 24H5Zm0 8.5v7h12.5a3.5 3.5 0 0 0 0-7Z'
-// 잘린 틈 끝에 놓인 원인 점
-export const MARK_DOT = { cx: 17.5, cy: 16, r: 2.8 }
-// 타일(파비콘·OG)에서는 몸체를 조금 줄여 여백을 둔다
-export const MARK_TILE_TRANSFORM = 'translate(16 16) scale(0.74) translate(-16 -16)'
+// 바깥 트랙(굵은 선). 헤더에서는 강조색, 타일에서는 흰색
+export const MARK_PATH = 'M25 8H14a8 8 0 0 0 0 16h11'
+// 안쪽 트랙(연한 선)
+export const MARK_LANE = 'M25 16H14'
+export const MARK_STROKE = 4
+// 트랙 끝의 원인 점
+export const MARK_DOT = { cx: 25.5, cy: 24, r: 2.6 }
+// 타일(파비콘·OG)에서는 조금 줄여 여백을 둔다
+export const MARK_TILE_TRANSFORM = 'translate(16 16) scale(0.72) translate(-16 -16)'

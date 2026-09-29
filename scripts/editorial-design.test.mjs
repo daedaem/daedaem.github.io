@@ -180,7 +180,7 @@ test('s4 header identity and all preserved favicon sizes have their approved ass
   assert.doesNotMatch(header, /rotate\(45deg\)/)
   const mark = source('src/components/Mark.astro')
   assert.match(mark, /d=\{MARK_PATH\}/)
-  assert.match(mark, /fill-rule="evenodd"/)
+  assert.match(mark, /d=\{MARK_LANE\}/)
   assert.match(mark, /fill="var\(--mark-dot\)"/)
   assert.ok(source('public/favicon.svg').includes(`d="${MARK_PATH}"`))
   assert.ok(source('public/favicon.svg').includes('fill="#eca574"'))

@@ -62,6 +62,7 @@
   --mark-bg: #1b64da;
   --mark-ink: #ffffff;
   --mark-dot: #eca574;
+  --mark-lane: #9cbdf3;
   --shadow: 0 12px 32px rgb(15 23 42 / 0.14);
 
   /* 별칭 */
@@ -185,6 +186,8 @@ h4[tabindex='-1']:focus-visible {
     --mark-bg: #8ab4f8;
     --mark-ink: #14181f;
     --mark-dot: #f0b287;
+  --mark-lane: #4a6ea6;
+    --mark-lane: #4a6ea6;
     --shadow: 0 12px 32px rgb(0 0 0 / 0.5);
 
     --text: #e4e9f0;
@@ -223,6 +226,7 @@ h4[tabindex='-1']:focus-visible {
   --mark-bg: #8ab4f8;
   --mark-ink: #14181f;
   --mark-dot: #f0b287;
+  --mark-lane: #4a6ea6;
   --shadow: 0 12px 32px rgb(0 0 0 / 0.5);
 
   --text: #e4e9f0;
