@@ -136,21 +136,18 @@ test('about summaries retain the external dependency limit and do not claim an A
 
 test('author background uses the stated research motivation without implying AI work or employment', () => {
   assert.match(aboutText, /운동이 정신건강에 이로운 이유를 기전으로 설명하고 싶어/)
-  // 전환 계기 문단이 보호할 사실 세 가지.
+  // 전환 계기 문단이 보호할 사실. 문장은 "연구실에서 본 일 → IT 기술에 처음 흥미"로만 짧게 쓴다는
+  // 사용자 판단(2026-09-29)에 따라, 선배를 주어로 세우는 말투와 Python·진로 단서 문장은 요구하지 않는다.
   const interest = aboutText.match(/<h3 id="interest">([\s\S]*?)<\/li>/)?.[1]
-  // 1. 발굴 기간을 줄인 것은 본인이 아니라 연구실의 다른 사람이다. 주체를 지우지 않는다
-  assert.match(interest, /(선배|동료)가[\s\S]*(줄이는|단축하는) 것을 (봤|보았)/)
+  // 1. 발굴 기간을 줄인 것은 본인이 아니다. 본인을 주어로 쓰거나 직접 다룬 것처럼 쓰지 않는다
+  assert.match(interest, /IBM Watson/)
   assert.doesNotMatch(interest, /제가[\s\S]*(줄였|단축했)/)
-  // 2. 본인이 직접 다룬 범위는 제한적이었다는 단서를 남긴다
-  assert.match(interest, /Python[\s\S]*(잠깐|간단히|조금)/)
-  assert.doesNotMatch(interest, /IBM Watson[^.]*체험했습니다/)
-  // 3. 바이오인포매틱스를 배웠거나 연구한 것처럼 쓰지 않는다
+  assert.doesNotMatch(interest, /IBM Watson[^.]*(체험했|사용했|활용했|다뤘)/)
+  // 2. 바이오인포매틱스를 배웠거나 연구한 것처럼 쓰지 않는다
   assert.doesNotMatch(interest, /바이오인포매틱스를 (배웠|연구|공부했)/)
-  // 4. 그때 느낀 것은 흥미까지다. 진로를 정한 시점은 뒤의 교육 문단이 말한다
+  // 3. 그때 생긴 것은 흥미까지다. 진로를 정한 시점은 뒤의 교육 문단이 말한다
+  assert.match(interest, /IT 기술에 흥미/)
   assert.doesNotMatch(interest, /(익히기로|배우기로|진로를 정했|결심)/)
-  // 5. 흥미가 생긴 순간 진로를 바꾼 것처럼 쓰지 않는다. 공백 기간을 따로 설명하는 문장은
-  //    어색하다는 사용자 판단에 따라 넣지 않는다
-  assert.match(interest, /(바로|그때)[^.]*(아닙니다|않았습니다)/)
   assert.doesNotMatch(interest, /시간이 지난 뒤/)
   // 교육 문단이 보호할 사실: SSAFY가 첫 프로그래밍 학습, SCSA는 채용연계형 교육 과정, 삼성전자 입사 사실 없음.
   // 정확한 문구는 고정하지 않는다. 문장 사이의 모순은 편집 검토로 본다.
