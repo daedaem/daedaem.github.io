@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { load } from 'js-yaml'
 import {
   COVER_PRESETS,
@@ -10,7 +10,7 @@ import {
 } from '../src/utils/editorial.mjs'
 import { MONOGRAM_PATH } from '../src/utils/brand.mjs'
 import { HOME_READING_PICKS } from '../src/utils/home-content.mjs'
-import { isometricCoverForSlug } from '../src/utils/isometric-covers.mjs'
+import { isometricCoverForSlug, isometricCoverSources } from '../src/utils/isometric-covers.mjs'
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
@@ -53,10 +53,18 @@ test('article-owned cover metadata stays valid and s4 figures resolve by article
   }
   for (const [slug, kind] of Object.entries(expected)) {
     assert.equal(isometricCoverForSlug(slug), kind)
-    const svg = source(`src/assets/isometric/iso-${kind}.svg`)
-    assert.match(svg, /viewBox="0 0 480 320"/)
-    assert.doesNotMatch(svg, /<script|<foreignObject|https?:\/\/[^" ]+\.(?:png|jpe?g|webp)/)
+    const sources = isometricCoverSources(kind)
+    assert.equal(sources.width / sources.height, 1.5)
+    for (const theme of ['light', 'dark']) {
+      assert.match(sources[theme].src, new RegExp(`^/uploads/post-covers/cut-${kind}(?:-dark)?\\.webp$`))
+      for (const width of [320, 768, 1440]) {
+        const file = sources[theme].srcset.match(new RegExp(`(\\S+) ${width}w`))?.[1]
+        assert.ok(file, `${kind} ${theme} ${width}w`)
+        assert.ok(existsSync(new URL(`../public${file}`, import.meta.url)), `${file} exists`)
+      }
+    }
   }
+  assert.equal(isometricCoverSources('hero'), undefined)
   for (const slug of ['new-article', 'toString', '__proto__', '', undefined, null]) {
     assert.equal(isometricCoverForSlug(slug), undefined)
   }
