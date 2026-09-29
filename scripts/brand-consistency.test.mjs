@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { Resvg } from '@resvg/resvg-js'
-import { MONOGRAM_PATH } from '../src/utils/brand.mjs'
+import { MARK_PATH } from '../src/utils/brand.mjs'
 import { renderOgCard, wrapOgTitle } from '../src/utils/og-card.mjs'
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
@@ -62,7 +62,7 @@ test('saved s4 identity and illustrated list preserve factual bindings and exist
 test('OG renderer reuses the approved mark and current light palette', () => {
   const svg = renderOgCard(content)
   const css = source('src/styles/global.css')
-  assert.ok(svg.includes(`d="${MONOGRAM_PATH}"`))
+  assert.ok(svg.includes(`d="${MARK_PATH}"`))
   for (const name of ['bg', 'accent', 'mark-bg', 'mark-ink', 'text', 'text-secondary']) {
     const value = css.match(new RegExp(`--${name}:\\s*(#[0-9a-f]{6})`))[1]
     assert.ok(svg.includes(`"${value}"`), `${name} missing from shared preview`)

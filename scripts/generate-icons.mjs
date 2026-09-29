@@ -1,11 +1,11 @@
 /** Regenerate only the public favicon derivatives from the approved vector. */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { Resvg } from '@resvg/resvg-js'
-import { MONOGRAM_PATH } from '../src/utils/brand.mjs'
+import { MARK_PATH } from '../src/utils/brand.mjs'
 
 const publicDir = new URL('../public/', import.meta.url)
 const svg = readFileSync(new URL('favicon.svg', publicDir), 'utf8')
-if (!svg.includes(`d="${MONOGRAM_PATH}"`)) throw new Error('Header and favicon paths differ')
+if (!svg.includes(`d="${MARK_PATH}"`)) throw new Error('Header and favicon paths differ')
 const png = (size) => new Resvg(svg, { fitTo: { mode: 'width', value: size } }).render().asPng()
 for (const [name, size] of [
   ['favicon-96x96.png', 96],

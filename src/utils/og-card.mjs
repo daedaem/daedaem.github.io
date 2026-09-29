@@ -1,4 +1,4 @@
-import { MONOGRAM_PATH } from './brand.mjs'
+import { MARK_DOT, MARK_PATH, MARK_TILE_TRANSFORM } from './brand.mjs'
 
 /**
  * 어절 단위로 나누고 긴 단일 어절만 잘라낸다. 상세 글의 기존 세 줄 한도를 유지한다.
@@ -45,12 +45,15 @@ export function renderOgCard({ title, kicker, siteTitle, identityTitle, subtitle
     .join('')
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#ffffff"/>
-  <rect width="1200" height="8" fill="#223e60"/>
+  <rect width="1200" height="8" fill="#1b64da"/>
   <text x="80" y="120" font-family="Pretendard" font-size="26" font-weight="600" fill="#1b64da">${esc(kicker)}</text>
   <text y="250" font-family="Pretendard" font-size="60" font-weight="700" fill="#191f28" letter-spacing="-2">${rows}</text>
-  <g transform="translate(80 520) scale(2)">
-    <rect width="34" height="34" rx="9" fill="#223e60"/>
-    <path d="${MONOGRAM_PATH}" fill="none" stroke="#fcfaf5" stroke-width="2.8" stroke-linejoin="round"/>
+  <g transform="translate(80 518) scale(2.2)">
+    <rect width="32" height="32" rx="8" fill="#1b64da"/>
+    <g transform="${MARK_TILE_TRANSFORM}">
+      <path d="${MARK_PATH}" fill-rule="evenodd" fill="#ffffff"/>
+      <circle cx="${MARK_DOT.cx}" cy="${MARK_DOT.cy}" r="${MARK_DOT.r}" fill="#eca574"/>
+    </g>
   </g>
   <text x="170" y="550" font-family="Pretendard" font-size="28" font-weight="600" fill="#191f28">${esc(siteTitle)}</text>
   <text x="170" y="589" font-family="Pretendard" font-size="22" fill="#3d4552">${esc(subtitle)}</text>

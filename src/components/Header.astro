@@ -1,5 +1,6 @@
 ---
 import { SITE } from '@/consts'
+import Mark from './Mark.astro'
 import Search from './Search.astro'
 import ThemeToggle from './ThemeToggle.astro'
 import { PRIMARY_NAV, activeNavigation } from '@/utils/navigation.mjs'
@@ -12,7 +13,7 @@ const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
 <header id="site-header" class="top">
   <div class="top-in">
     <a href="/" class="brand" aria-label={`${SITE.author} — ${SITE.title} 홈`}
-      ><i aria-hidden="true"></i>{SITE.author}</a
+      ><Mark size={20} class="mark" />{SITE.author}</a
     >
     <nav class="nav" aria-label="주요 메뉴">
       <ul>
@@ -69,12 +70,10 @@ const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
     text-decoration: none;
     white-space: nowrap;
   }
-  .brand i {
-    width: 9px;
-    height: 9px;
-    border-radius: 1.5px;
-    background: var(--accent);
-    transform: rotate(45deg);
+  .brand :global(.mark) {
+    flex: none;
+    width: 20px;
+    height: 20px;
   }
   .nav {
     margin-left: auto;
@@ -123,9 +122,9 @@ const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
       font-size: 18px;
       gap: 8px;
     }
-    .brand i {
-      width: 7px;
-      height: 7px;
+    .brand :global(.mark) {
+      width: 18px;
+      height: 18px;
     }
     .nav ul {
       gap: 0;
@@ -148,7 +147,7 @@ const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
     .brand {
       font-size: 16px;
     }
-    .brand i {
+    .brand :global(.mark) {
       display: none;
     }
     .top-in {

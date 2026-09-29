@@ -8,7 +8,7 @@ import {
   resolvePostCover,
   splitEditorialTitle,
 } from '../src/utils/editorial.mjs'
-import { MONOGRAM_PATH } from '../src/utils/brand.mjs'
+import { MARK_PATH } from '../src/utils/brand.mjs'
 import { HOME_READING_PICKS } from '../src/utils/home-content.mjs'
 import { isometricCoverForSlug, isometricCoverSources } from '../src/utils/isometric-covers.mjs'
 
@@ -176,10 +176,14 @@ test('title styling preserves every character and only splits the first colon-sp
 test('s4 header identity and all preserved favicon sizes have their approved assets', () => {
   const header = source('src/components/Header.astro')
   assert.match(header, /aria-label=\{`[^`]*\$\{SITE\.author\}[^`]*`\}/)
-  assert.match(header, /<i aria-hidden="true"><\/i>\{SITE\.author\}/)
-  assert.match(header, /transform:\s*rotate\(45deg\)/)
-  assert.match(source('src/components/Mark.astro'), /d=\{MONOGRAM_PATH\}/)
-  assert.ok(source('public/favicon.svg').includes(`d="${MONOGRAM_PATH}"`))
+  assert.match(header, /<Mark size=\{20\} class="mark" \/>\{SITE\.author\}/)
+  assert.doesNotMatch(header, /rotate\(45deg\)/)
+  const mark = source('src/components/Mark.astro')
+  assert.match(mark, /d=\{MARK_PATH\}/)
+  assert.match(mark, /fill-rule="evenodd"/)
+  assert.match(mark, /fill="var\(--mark-dot\)"/)
+  assert.ok(source('public/favicon.svg').includes(`d="${MARK_PATH}"`))
+  assert.ok(source('public/favicon.svg').includes('fill="#eca574"'))
   for (const [name, size] of [
     ['favicon-96x96.png', 96],
     ['apple-touch-icon.png', 180],
