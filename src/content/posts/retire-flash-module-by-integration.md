@@ -3,7 +3,7 @@ title: '지원이 끝난 계약 모듈을 기존 API 연동으로 대체하기'
 description: '기존 계약 시스템 API로 Flash 기반 계약 모듈을 대체했다. 연동 전후 업무 로직을 새로 개발하고, 상태 동기화와 적재 실패 시 복구 흐름을 구성했다.'
 date: 2026-09-05
 updated: 2026-09-29
-happened: '2025년 9월 – 10월'
+happened: '2025년 7월 – 10월'
 cause: '지원이 끝난 Flash에 계약 기능이 묶여 있었지만, 계약 기능 전체를 다시 만드는 고도화는 진행되지 못하고 있었다.'
 category: 'legacy'
 coverImage: '/uploads/post-covers/retire-flash-module-by-integration-v1.webp'
