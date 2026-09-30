@@ -19,7 +19,7 @@ test('the synchronization account preserves confirmed causes without inventing a
   assert.match(body, /송신 측 데이터 규격에 맞게 NULL·빈 문자열 비교 로직을 수정/)
   assert.match(body, /송수신 데이터 형식을 협의해 맞추고, 인터페이스·프로시저의 반영 로직을 수정/)
   assert.match(body, /당시 운영 SQL이나 수정 전후의 코드를 재현한 것은 아니다/)
-  assert.match(body, /이 오류로 월 34건 반복되던 불필요한 결재를 없앴다/)
+  assert.match(body, /동기화가 필요하지 않은데도 반복되던 결재를 없앴다/)
   assert.match(body, /정정\(2026-09-14\)/)
   assert.doesNotMatch(
     body,

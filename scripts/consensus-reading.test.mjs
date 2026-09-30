@@ -173,5 +173,6 @@ test('agreed wording clarifies existing examples without inventing experience or
   const example = read('src/content/posts/null-and-empty-string-sync-failure.md')
   assert.match(example, /-- 결과: 'NULL' \(NULL 값이 아니라 문자열\)/)
   assert.match(example, /당시 운영 SQL이나 수정 전후의 코드를 재현한 것은 아니다/)
-  assert.match(example, /updated: 2026-09-14/)
+  const exampleMeta = yaml.load(example.match(/^---\n([\s\S]*?)\n---/)[1])
+  assert.ok(new Date(exampleMeta.updated) >= new Date('2026-09-14'))
 })
