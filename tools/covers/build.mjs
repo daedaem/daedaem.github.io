@@ -7,7 +7,7 @@ import { createRequire } from 'node:module'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
-import { BG, CAMERAS, MARGIN, WIDTHS } from './config.mjs'
+import { BG, CAMERAS, MARGIN, SHADE, WIDTHS } from './config.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = join(HERE, 'out') // 중간 결과(.gitignore)
@@ -27,9 +27,10 @@ for (const kind of kinds) {
   for (const [theme, suffix] of [['light', ''], ['dark', '-dark']]) {
     const flat = join(OUT, `${kind}${suffix}-flat.png`)
     const labeled = join(OUT, `${kind}${suffix}.png`)
-    node('shade.mjs', [OUT, kind, flat], theme === 'dark' ? { DARK: '1' } : {})
+    node(SHADE === 'soft' ? 'shade-soft.mjs' : 'shade.mjs', [OUT, kind, flat], theme === 'dark' ? { DARK: '1' } : {})
     node('compose.mjs', [kind, flat, labeled], theme === 'dark' ? { DARK: '1' } : {})
-    const img = await (await frame(labeled, BG[theme], MARGIN)).png().toBuffer()
+    // 부드러운 명암은 바닥 그림자가 넓어, 그림자는 빼고 사물만으로 틀을 잡는다
+    const img = await (await frame(labeled, BG[theme], MARGIN, SHADE === 'soft' ? 40 : 18)).png().toBuffer()
     for (const w of WIDTHS) {
       const size = w === 1440 ? '' : `-${w}`
       await sharp(img)

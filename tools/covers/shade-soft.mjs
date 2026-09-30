@@ -12,7 +12,9 @@ const W = N.w, H = N.h
 const P = DARK
   ? { bg: [26, 31, 40], 1: [218, 224, 234], 2: [52, 66, 92], 3: [74, 84, 102], 4: [118, 162, 246], 5: [236, 160, 112], 7: [96, 106, 124] }
   : { bg: [236, 241, 250], 1: [250, 251, 254], 2: [212, 225, 249], 3: [244, 247, 252], 4: [46, 116, 238], 5: [242, 158, 102], 7: [58, 67, 84] }
-P[8] = P[5]; P[6] = P[3]; P[9] = P[2]; P[10] = P[3]
+P[8] = P[5]; P[6] = P[3]; P[10] = P[3]
+// 9: 실제로 찬 양(연한 코발트)
+P[9] = DARK ? [86, 128, 206] : [150, 186, 246]
 // 광택: 플라스틱처럼 반질한 재질
 const GLOSS = { 3: 0.22, 4: 0.4, 5: 0.3, 10: 0.22, 1: 0.12 }
 
@@ -40,10 +42,10 @@ for (let i = 0; i < W * H; i++) {
     const ndl = n[0] * L[0] + n[1] * L[1] + n[2] * L[2]
     const ndv = Math.max(0, n[0] * V[0] + n[1] * V[1] + n[2] * V[2])
     const ndh = Math.max(0, n[0] * Hh[0] + n[1] * Hh[1] + n[2] * Hh[2])
-    const alb = cut && (mat === 3 || mat === 6 || mat === 10) ? P[4] : (P[mat] || P[3])
+    const alb = cut && (mat === 3 || mat === 6 || mat === 10 || mat === 9) ? P[4] : (P[mat] || P[3])
     const wrap = Math.max(0, Math.min(1, (ndl + 0.4) / 1.4))
-    const lit = 0.8 + 0.26 * wrap * (0.55 + 0.45 * sh)
-    const occ = 0.88 + 0.12 * ao
+    const lit = 0.86 + 0.2 * wrap * (0.55 + 0.45 * sh)
+    const occ = 0.9 + 0.1 * ao
     const shade = 1 - wrap
     c = alb.map((x, k) => x * lit * occ * (1 + (cool[k] - 1) * shade))
     const spec = Math.pow(ndh, 48) * (GLOSS[mat] || 0.1) * 255 * sh
