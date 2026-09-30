@@ -31,7 +31,7 @@ test('the synchronization account preserves confirmed causes without inventing a
 })
 test('contract integration distinguishes the reused API from authored business logic and team decisions', () => {
   const body = read('src/content/posts/retire-flash-module-by-integration.md')
-  assert.match(body, /회의에서[\s\S]*방안이 제안됐고, 그 방안의 구현을 맡았다/)
+  assert.match(body, /외부 서비스와 연동해 대체하기로 했고, 그 구현을 맡았다/)
   assert.match(body, /계약 작성만 외부 서비스의 API를 활용/)
   assert.doesNotMatch(body, /기존 계약 시스템의 API|기존 계약 시스템 API/)
   assert.match(body, /전후 업무 로직을 새로 개발/)
