@@ -156,10 +156,7 @@ test('author background uses the stated research motivation without implying AI 
   // 2. 바이오인포매틱스를 배웠거나 연구한 것처럼 쓰지 않는다
   assert.doesNotMatch(interest, /바이오인포매틱스를 (배웠|연구|공부했)/)
   // 3. 그때 생긴 것은 흥미까지다. 진로를 정한 시점은 뒤의 교육 문단이 말한다
-  assert.match(
-    interest,
-    /IT 기술의\s+힘을 처음 느꼈고, 처음에는 그 힘을 활용하는 쪽을 생각했습니다/,
-  )
+  assert.match(interest, /IT 기술의\s+힘을 처음 느꼈고, 처음에는 그 힘을 활용하는 쪽을 생각했습니다/)
   assert.doesNotMatch(interest, /(익히기로|배우기로|진로를 정했|결심)/)
   assert.doesNotMatch(interest, /시간이 지난 뒤/)
   // 교육 문단이 보호할 사실: SSAFY가 첫 프로그래밍 학습, 팀 프로젝트 역할은 프로젝트 페이지 기록과 같게,
@@ -175,10 +172,8 @@ test('author background uses the stated research motivation without implying AI 
   // 입사하지 못한 사실은 회고 글에 맡기되, 다음 문단이 '다른 회사에 입사'로 이어져 삼성전자 입사로 읽히지 않게 한다
   const now = aboutText.match(/<h3 id="now">([\s\S]*?)<\/li>/)?.[1]
   assert.match(now, /지금 회사에서 여러 업무 도메인의 레거시 시스템을 개발하고 운영합니다\./)
-  // 관심사 두 가지: 원인까지 따라가 고치기(글이 기록), AI의 답에서 빠진 조건을 되묻기.
-  // AI 활용은 질문하고 재검토하는 태도만 서술하며, 코드 검증 완료를 주장하지 않는다.
-  assert.match(now, /AI가 들어온 뒤 개발자가 무엇을 직접 판단해야/)
-  assert.match(now, /답에 빠진 조건이 없는지 되묻습니다/)
+  // 관심사 두 가지: 원인까지 따라가 고치기(글이 기록), AI 이후 개발자의 일. 주인이 직접 말한 것만 쓴다
+  assert.match(now, /AI가 들어온 뒤 개발자의 일이 어디로 옮겨/)
   assert.match(now, /AI와 함께 만들고/)
   // 자료에서 추론한 '꿈'이나 근거 없는 성향 문장은 쓰지 않는다
   assert.doesNotMatch(now, /되고 싶었|잘 맞습니다|잘하는 일/)
