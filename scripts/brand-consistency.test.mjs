@@ -25,7 +25,7 @@ test('saved s4 identity and illustrated list preserve factual bindings and exist
   assert.match(home, /\{SITE\.author\} · \{SITE\.role\}/)
   assert.match(home, /<section class="intro" aria-labelledby="home-title">/)
   assert.match(home, /<h1 id="home-title">느린 것, 멈춘 것, 틀린 것의/)
-  assert.match(home, /여러 업무 도메인의 레거시 시스템을 개발·운영합니다\./)
+  assert.match(home, /업무 중 만난 문제의 원인을 찾아 해결하는 과정을 기록합니다\./)
   assert.equal((home.match(/href="\/about\/"/g) ?? []).length, 1)
   assert.match(home, /href="\/about\/"\s*>소개 보기/)
   assert.match(home, /getCollection\('posts',[\s\S]*?!data\.draft/)
