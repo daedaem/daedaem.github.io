@@ -7,7 +7,7 @@ import { renderOgCard, wrapOgTitle } from '../src/utils/og-card.mjs'
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const identityTitle = '조해성의 기술 블로그'
-const motto = '업무를 하며 직면한 문제의 증상보다 원인을 찾아 해결하는 과정을 기록합니다.'
+const motto = '백엔드 개발자 조해성의 개발·운영과 학습 기록'
 const content = {
   title: '대댐 로그',
   kicker: identityTitle,
@@ -24,7 +24,7 @@ test('saved s4 identity and illustrated list preserve factual bindings and exist
   // Saved s4 replaces the previous identity/recommendation layout; factual bindings remain.
   assert.match(home, /\{SITE\.author\} · \{SITE\.role\}/)
   assert.match(home, /<section class="intro" aria-labelledby="home-title">/)
-  assert.match(home, /<h1 id="home-title">증상보다 <b>원인<\/b>을\.<\/h1>/)
+  assert.match(home, /<h1 id="home-title">건강한 손목에 <b>건강한 코드<\/b>가 깃든다\.<\/h1>/)
   assert.match(home, /<p>\{SITE\.intro\}<\/p>/)
   assert.equal((home.match(/href="\/about\/"/g) ?? []).length, 1)
   assert.match(home, /href="\/about\/"\s*>소개 보기/)
@@ -107,10 +107,7 @@ test('cover disclosure belongs with reader-facing writing principles, not the ed
 test('saved s4 keeps a 64px single-row header with 44px real controls and knowledge navigation', () => {
   const header = source('src/components/Header.astro')
   assert.match(header, /\.top-in\s*\{[^}]*min-height:\s*64px/)
-  assert.match(
-    header,
-    /<a href="\/" class="brand" aria-label=\{`\$\{SITE.title\} 홈`\}/,
-  )
+  assert.match(header, /<a href="\/" class="brand" aria-label=\{`\$\{SITE.title\} 홈`\}/)
   assert.match(header, /<Mark size=\{20\} class="mark" \/>\{SITE.title\}/)
   assert.doesNotMatch(header, /\{SITE.author\}/)
   assert.match(header, /visibleNav = PRIMARY_NAV\n/)
