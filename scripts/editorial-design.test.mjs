@@ -56,7 +56,10 @@ test('article-owned cover metadata stays valid and s4 figures resolve by article
     const sources = isometricCoverSources(kind)
     assert.equal(sources.width / sources.height, 1.5)
     for (const theme of ['light', 'dark']) {
-      assert.match(sources[theme].src, new RegExp(`^/uploads/post-covers/cut-${kind}(?:-dark)?\\.webp$`))
+      assert.match(
+        sources[theme].src,
+        new RegExp(`^/uploads/post-covers/cut-${kind}(?:-dark)?\\.webp$`),
+      )
       for (const width of [320, 768, 1440]) {
         const file = sources[theme].srcset.match(new RegExp(`(\\S+) ${width}w`))?.[1]
         assert.ok(file, `${kind} ${theme} ${width}w`)
@@ -214,7 +217,7 @@ test('production design retains navigation and real search without mock controls
   const header = source('src/components/Header.astro')
   assert.match(header, /visibleNav\s*=\s*PRIMARY_NAV\n/)
   assert.match(header, /visibleNav\.map/)
-  assert.match(source('src/utils/navigation.mjs'), /href: '\/learn\/', label: '학습 기록'/)
+  assert.match(source('src/utils/navigation.mjs'), /href: '\/learn\/',\s*label: '학습 기록'/)
   assert.match(header, /<Search\s*\/>/)
   assert.match(header, /<ThemeToggle\s*\/>/)
   const home = source('src/pages/index.astro')
