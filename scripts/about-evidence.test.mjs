@@ -85,7 +85,7 @@ test('about identifies the author and shows evidence before general work philoso
   assert.ok(profile)
   assert.match(
     profile.replace(/\s+/g, ' '),
-    /사내 업무시스템의 기능과 시스템 간 연동을 개발·운영합니다\. 레거시 환경에서 반복되는 데이터 오류와 느린 조회의 원인을 추적해 개선합니다\./,
+    /사내 업무시스템을 개발하고 운영합니다\. 새로운 기능을 만들고 기존 시스템을 연결하며, 운영 중 만난 문제의 원인을 찾아 해결합니다\./,
   )
   assert.doesNotMatch(profile, /<dt>(?:환경|학력|자격)<\/dt>|SITE\.environment|MyBatis/)
   const stack = about.split('id="stack"')[1].split('</section>')[0].replace(/\s+/g, ' ')
