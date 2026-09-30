@@ -223,17 +223,19 @@ test('production design retains navigation and real search without mock controls
   const home = source('src/pages/index.astro')
   assert.doesNotMatch(home, /dd-editorial|data-palette|Tweak|search-dialog|fonts\.googleapis/)
   assert.match(source('src/layouts/PostLayout.astro'), /<Comments\s*\/>/)
-  // 바닥글: 글 · 위키 · 학습 기록 · 소개 · 프로젝트 · RSS · GitHub · Email · LinkedIn.
-  // 작성자 도구(/admin/)는 바닥글에 두지 않는다(페이지는 남아 주소로 연다)
+  // 바닥글 끝에 작성자용 편집 안내를 두되, 주요 메뉴에는 넣지 않는다.
   const footer = source('src/components/Footer.astro')
-  assert.doesNotMatch(footer, /href="\/admin\/"/)
+  assert.match(footer, /href="\/admin\/"/)
   assert.match(footer, /href="\/projects\/"/)
   assert.match(footer, /mailto:\$\{SITE\.email\}/)
   assert.match(footer, /SITE\.linkedinUrl/)
   assert.deepEqual(
     [...footer.matchAll(/<a href=[^>]*>([^<]+)<\/a>/g)].map((m) => m[1]),
-    ['글', '위키', '학습 기록', '소개', '프로젝트', 'RSS', 'GitHub', 'Email', 'LinkedIn'],
+    ['글', '위키', '학습 기록', '소개', '프로젝트', 'RSS', 'GitHub', 'Email', 'LinkedIn', '글 관리'],
   )
+  const admin = source('src/pages/admin/index.astro')
+  assert.match(admin, /noindex=\{true\}/)
+  assert.match(admin, /href="https:\/\/app\.pagescms\.org\/"/)
 })
 
 test('static s4 header keeps safe anchor landings and sticky article/wiki navigation', () => {
