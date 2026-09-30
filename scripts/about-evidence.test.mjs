@@ -154,7 +154,10 @@ test('author background uses the stated research motivation without implying AI 
   // 2. 바이오인포매틱스를 배웠거나 연구한 것처럼 쓰지 않는다
   assert.doesNotMatch(interest, /바이오인포매틱스를 (배웠|연구|공부했)/)
   // 3. 그때 생긴 것은 흥미까지다. 진로를 정한 시점은 뒤의 교육 문단이 말한다
-  assert.match(interest, /IT 기술의\s+힘을 처음 느꼈고, 처음에는 그 힘을 활용하는 쪽을 생각했습니다/)
+  assert.match(
+    interest,
+    /IT 기술의\s+힘을 처음 느꼈고, 처음에는 그 힘을 활용하는 쪽을 생각했습니다/,
+  )
   assert.doesNotMatch(interest, /(익히기로|배우기로|진로를 정했|결심)/)
   assert.doesNotMatch(interest, /시간이 지난 뒤/)
   // 교육 문단이 보호할 사실: SSAFY가 첫 프로그래밍 학습, 팀 프로젝트 역할은 프로젝트 페이지 기록과 같게,
@@ -193,7 +196,8 @@ test('case summaries expose supported implementation and collaboration without i
   assert.match(summary, /NULL·빈 문자열 비교 오류/)
   assert.match(summary, /처리 구분값의 규약 불일치/)
   assert.match(summary, /송수신 규약을 맞추고 비교·반영 로직을 수정/)
-  assert.match(summary, /해당 오류로 월 34건 반복되던 불필요한 결재를 없앴습니다/)
+  assert.match(summary, /동기화가 필요하지 않은데도 반복되던 결재를 없앴습니다/)
+  assert.match(summary, /정상적인 결재 절차는 유지했습니다/)
   assert.match(summary, /외부 서비스와 연동해 대체하는 작업의 구현을 맡았습니다/)
   assert.match(summary, /연동 전후 업무 로직을 새로 개발/)
   assert.match(summary, /상태 동기화·적재 실패 복구/)

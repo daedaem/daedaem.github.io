@@ -36,7 +36,9 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
 >
   <div class="page">
     <PageHead title="학습 위키" label={`${entries.length}편`}>
-      <p class="lede">막혔던 개념과 확인한 원리. 주제로 고르거나 키워드로 다시 찾습니다.</p>
+      <p class="lede">
+        공부하며 계속 보완하는 개념 정리입니다. 주제로 고르거나 키워드로 다시 찾습니다.
+      </p>
     </PageHead>
 
     <form id="wiki-filter" role="search" class="filters" aria-label="위키 문서 거르기">
@@ -53,9 +55,7 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
       <fieldset class="f-g">
         <legend class="k">주제</legend>
         <div class="chips">
-          <button type="button" class="chip" data-topic="" aria-pressed="true">
-            전체
-          </button>
+          <button type="button" class="chip" data-topic="" aria-pressed="true"> 전체 </button>
           {
             groups.map((g) => (
               <button type="button" class="chip" data-topic={g.id} aria-pressed="false">
