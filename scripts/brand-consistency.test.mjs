@@ -7,12 +7,12 @@ import { renderOgCard, wrapOgTitle } from '../src/utils/og-card.mjs'
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 const identityTitle = '조해성의 기술 블로그'
-const motto = '운영에서 만난 문제를 원인까지 따라간 기록'
+const motto = '개발·운영 중 만난 문제와 해결 과정에서 배운 것을 기록합니다.'
 const content = {
-  title: '대댐 로그',
+  title: '증상보다 원인을 고칩니다',
   kicker: identityTitle,
   siteTitle: '조해성 · 백엔드 개발자',
-  identityTitle: '대댐 로그',
+  identityTitle: '증상보다 원인을 고칩니다',
   subtitle: motto,
 }
 
@@ -24,8 +24,8 @@ test('saved s4 identity and illustrated list preserve factual bindings and exist
   // Saved s4 replaces the previous identity/recommendation layout; factual bindings remain.
   assert.match(home, /\{SITE\.author\} · \{SITE\.role\}/)
   assert.match(home, /<section class="intro" aria-labelledby="home-title">/)
-  assert.match(home, /<h1 id="home-title">운영에서 만난 문제를/)
-  assert.match(home, /확인한 것, 판단한 이유, 바뀐 결과를 함께 적습니다\./)
+  assert.match(home, /<h1 id="home-title">\{SITE\.title\}<\/h1>/)
+  assert.match(home, /<p>\{SITE\.intro\}<\/p>/)
   assert.equal((home.match(/href="\/about\/"/g) ?? []).length, 1)
   assert.match(home, /href="\/about\/"\s*>소개 보기/)
   assert.match(home, /getCollection\('posts',[\s\S]*?!data\.draft/)
@@ -68,10 +68,10 @@ test('OG renderer reuses the approved mark and current light palette', () => {
     assert.ok(svg.includes(`"${value}"`), `${name} missing from shared preview`)
   }
   assert.doesNotMatch(svg, /#1f5fd0|M4 6h9M4 12h7M4 18h5/)
-  assert.match(svg, /<tspan x="80" dy="0">대댐 로그<\/tspan>/)
+  assert.ok(svg.includes(`<tspan x="80" dy="0">${content.title}</tspan>`))
   assert.match(svg, />조해성의 기술 블로그</)
   assert.match(svg, />조해성 · 백엔드 개발자</)
-  assert.match(svg, /운영에서 만난 문제를 원인까지 따라간 기록/)
+  assert.ok(svg.includes(motto))
   const png = new Resvg(svg, { font: { loadSystemFonts: false } }).render().asPng()
   assert.equal(png.toString('hex', 0, 8), '89504e470d0a1a0a')
   assert.equal(png.readUInt32BE(16), 1200)
