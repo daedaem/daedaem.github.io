@@ -5,9 +5,9 @@ const base = { pos: [3.7, 3.4, 6.7], fov: 3.4, targetY: 0.5 }
 export const CAMERAS = {
   phantom: base,
   disk: base,
-  overflow: base,
+  overflow: { pos: [3.7, 3.4, 6.7], fov: 2.5, targetY: 0.7 },
   nullsync: { pos: [4.0, 3.7, 7.2], fov: 3.4, targetY: 0.5 },
-  address: base,
+  address: { pos: [3.7, 3.4, 6.7], fov: 2.6, targetY: 0.65 },
   flash: base,
 }
 // 저장 크기와 이름: public/uploads/post-covers/cut-<kind>[-768|-320][-dark].webp

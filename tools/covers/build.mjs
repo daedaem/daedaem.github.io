@@ -28,7 +28,7 @@ for (const kind of kinds) {
     const flat = join(OUT, `${kind}${suffix}-flat.png`)
     const labeled = join(OUT, `${kind}${suffix}.png`)
     node('shade.mjs', [OUT, kind, flat], theme === 'dark' ? { DARK: '1' } : {})
-    node('compose.mjs', [kind, flat, labeled])
+    node('compose.mjs', [kind, flat, labeled], theme === 'dark' ? { DARK: '1' } : {})
     const img = await (await frame(labeled, BG[theme], MARGIN)).png().toBuffer()
     for (const w of WIDTHS) {
       const size = w === 1440 ? '' : `-${w}`

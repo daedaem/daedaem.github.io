@@ -41,7 +41,7 @@ for (const L of labels) {
   const o = L.origin, u = L.u, v = L.v
   const corners = [o, o.map((x, i) => x + u[i] * L.w), o.map((x, i) => x + u[i] * L.w + v[i] * L.h), o.map((x, i) => x + v[i] * L.h)].map(project)
   const pw = 400, ph = Math.round(400 * L.h / L.w)
-  divs += `<div class="lb" style="width:${pw}px;height:${ph}px;transform:${matrix3d(pw, ph, corners)};font:${L.weight || 700} ${Math.round(ph * (L.size || 0.62))}px/${ph}px ${L.font === 'mono' ? "'JetBrains Mono',monospace" : "'Pretendard Variable',Pretendard,sans-serif"};color:${L.color || '#2f3643'};letter-spacing:${L.tracking || '-0.02em'}">${L.text}</div>`
+  divs += `<div class="lb" style="width:${pw}px;height:${ph}px;transform:${matrix3d(pw, ph, corners)};font:${L.weight || 700} ${Math.round(ph * (L.size || 0.62))}px/${ph}px ${L.font === 'mono' ? "'JetBrains Mono',monospace" : "'Pretendard Variable',Pretendard,sans-serif"};color:${(process.env.DARK === '1' && L.colorDark) || L.color || '#2f3643'};letter-spacing:${L.tracking || '-0.02em'}">${L.text}</div>`
 }
 // 사이트 글꼴 CSS는 /fonts/... 절대 경로라 저장소 폴더로 바꿔 끼운다
 const fontCss = ['pretendard/pretendardvariable-dynamic-subset.min.css', 'jetbrains-mono.css']
