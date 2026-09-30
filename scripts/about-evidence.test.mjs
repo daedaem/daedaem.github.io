@@ -22,7 +22,7 @@ test('saved s4 home keeps the factual author identity, approved introduction and
   const home = read('src/pages/index.astro')
   assert.match(home, /\{SITE\.author\} · \{SITE\.role\}/)
   assert.match(home, /href="\/about\/"\s*>소개 보기/)
-  assert.match(home, /<h1 id="home-title">\{SITE\.title\}<\/h1>/)
+  assert.match(home, /<h1 id="home-title">증상보다 <b>원인<\/b>을\.<\/h1>/)
   assert.match(home, /<p>\{SITE\.intro\}<\/p>/)
   assert.doesNotMatch(home, /레거시 시스템을 개발·운영합니다/)
   assert.match(home, /description=\{post\.data\.description\}/)
