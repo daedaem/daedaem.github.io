@@ -160,22 +160,12 @@ const visibleNav = PRIMARY_NAV
       display: none;
     }
   }
-  /* 메뉴 네 칸(44px)과 도구 두 칸이 들어가도록 이름을 조금 줄인다 */
-  @media (max-width: 389px) {
+  /* 블로그 이름이 길어서(메뉴 네 칸 44px + 도구 두 칸과 함께) 휴대폰 폭에서는 표식만 남긴다.
+     이름은 aria-label로 읽히고 홈 첫 화면 제목에 그대로 보인다 */
+  @media (max-width: 539px) {
     .top-in {
       gap: 0;
     }
-    .brand {
-      font-size: 16px;
-      gap: 6px;
-    }
-    .brand :global(.mark) {
-      width: 16px;
-      height: 16px;
-    }
-  }
-  /* 아주 좁은 화면(320px 등)에서는 표식만 남긴다. 이름은 aria-label로 읽힌다 */
-  @media (max-width: 359px) {
     .brand {
       font-size: 0;
       gap: 0;
