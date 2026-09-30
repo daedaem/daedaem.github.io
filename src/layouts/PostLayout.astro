@@ -138,7 +138,7 @@ const body = rendered.slice(lead.length)
               <h1 tabindex="-1"><TitleText title={title} /></h1>
               {description && <p class="deck">{description}</p>}
               <div class="post-meta" data-pagefind-ignore>
-                <ContentDates date={date} updated={updated} compact />
+                <ContentDates date={date} dateLabel="" compact />
                 {happened && <span>사례 시점 {happened}</span>}
                 <span>
                   <a href="/about/">{SITE.author}</a>
