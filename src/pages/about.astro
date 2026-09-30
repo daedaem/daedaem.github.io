@@ -503,18 +503,32 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
   }
   .case-summary > div {
     display: grid;
-    gap: 4px;
+    justify-items: start;
+    gap: 6px;
   }
-  .case-summary dt,
   .contact span {
     font-size: 14px;
     line-height: 24px;
     font-weight: 500;
     color: var(--muted);
   }
+  /* '판단'·'변경·결과'는 본문과 다른 층이라 작은 표찰로 구별한다 */
+  .case-summary dt {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 9px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--accent) 11%, transparent);
+    color: var(--accent);
+    font-size: 13px;
+    line-height: 24px;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+  }
   .case-summary dd {
     margin: 0;
-    color: var(--fg2);
+    color: var(--fg);
   }
   .other-work-title {
     margin: 28px 0 12px;
