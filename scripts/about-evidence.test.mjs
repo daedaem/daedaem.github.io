@@ -196,7 +196,7 @@ test('case summaries expose supported implementation and collaboration without i
   assert.match(summary, /처리 구분값의 규약 불일치/)
   assert.match(summary, /송수신 규약을 맞추고 비교·반영 로직을 수정/)
   assert.match(summary, /해당 오류로 월 34건 반복되던 불필요한 결재를 없앴습니다/)
-  assert.match(summary, /회의에서 제안된 기존 계약 시스템 API 활용 방안의 구현/)
+  assert.match(summary, /회의에서 제안된 외부 서비스 연동 방안의 구현/)
   assert.match(summary, /연동 전후 업무 로직을 새로 개발/)
   assert.match(summary, /상태 동기화·적재 실패 복구/)
   assert.match(summary, /Flash 기반 계약 모듈을 대체/)

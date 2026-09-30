@@ -39,8 +39,8 @@ export const CASES: readonly Case[] = [
   },
   {
     id: 'retire-flash-module-by-integration',
-    title: '기존 계약 API 연동과 전후 업무 로직 개발',
-    judgement: '회의에서 제안된 기존 계약 시스템 API 활용 방안의 구현을 맡았습니다.',
+    title: '외부 서비스 연동과 전후 업무 로직 개발',
+    judgement: '회의에서 제안된 외부 서비스 연동 방안의 구현을 맡았습니다.',
     outcome:
       '연동 전후 업무 로직을 새로 개발하고 상태 동기화·적재 실패 복구를 구성해, Flash 기반 계약 모듈을 대체했습니다.',
     outcomePlain:
