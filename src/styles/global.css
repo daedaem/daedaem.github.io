@@ -1845,7 +1845,7 @@ dialog.sheet,
 :root {
   --header-h: 0px;
   --header-clearance: 24px;
-  --cv-bg: #f7f8fa;
+  --cv-bg: #ecf1fa;
   --cv-sh: rgba(25, 31, 40, 0.09);
 }
 @media (prefers-color-scheme: dark) {

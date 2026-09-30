@@ -113,7 +113,7 @@ test('saved s4 keeps a 64px single-row header with 44px real controls and knowle
   )
   assert.match(header, /<Mark size=\{20\} class="mark" \/>\{SITE.title\}/)
   assert.doesNotMatch(header, /\{SITE.author\}/)
-  assert.match(header, /PRIMARY_NAV\.filter\(\(?item\)? => item\.href !== '\/learn\/'\)/)
+  assert.match(header, /visibleNav = PRIMARY_NAV\n/)
   assert.match(header, /visibleNav\.map/)
   assert.match(header, /href=\{item.href\}/)
   assert.match(header, /aria-current=\{\s*active !== item.href/)

@@ -212,10 +212,7 @@ test('s4 header identity and all preserved favicon sizes have their approved ass
 
 test('production design retains navigation and real search without mock controls or external fonts', () => {
   const header = source('src/components/Header.astro')
-  assert.match(
-    header,
-    /visibleNav\s*=\s*PRIMARY_NAV\.filter\(\(item\)\s*=>\s*item\.href\s*!==\s*'\/learn\/'\)/,
-  )
+  assert.match(header, /visibleNav\s*=\s*PRIMARY_NAV\n/)
   assert.match(header, /visibleNav\.map/)
   assert.match(source('src/utils/navigation.mjs'), /href: '\/learn\/', label: '학습 기록'/)
   assert.match(header, /<Search\s*\/>/)

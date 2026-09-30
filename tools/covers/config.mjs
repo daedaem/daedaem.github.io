@@ -5,7 +5,7 @@ const base = { pos: [3.7, 3.4, 6.7], fov: 3.4, targetY: 0.5 }
 export const CAMERAS = {
   phantom: { pos: [3.7, 3.4, 6.7], fov: 2.8, targetY: 0.7 },
   disk: { pos: [3.7, 3.4, 6.7], fov: 2.9, targetY: 1.0 },
-  overflow: { pos: [3.7, 3.4, 6.7], fov: 3.1, targetY: 0.85 },
+  overflow: { pos: [3.7, 3.4, 6.7], fov: 2.5, targetY: 0.75 },
   nullsync: { pos: [3.7, 3.4, 6.7], fov: 2.8, targetY: 0.8 },
   address: { pos: [3.7, 3.4, 6.7], fov: 2.6, targetY: 0.65 },
   flash: { pos: [3.7, 3.4, 6.7], fov: 2.5, targetY: 0.6 },

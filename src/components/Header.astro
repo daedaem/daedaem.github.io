@@ -6,8 +6,8 @@ import ThemeToggle from './ThemeToggle.astro'
 import { PRIMARY_NAV, activeNavigation } from '@/utils/navigation.mjs'
 const path = Astro.url.pathname
 const active = path === '/' ? '/posts/' : activeNavigation(path)
-// Saved s4 has three primary links; learning archives remain linked from the footer and wiki.
-const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
+// 학습 기록(노트·알고리즘 풀이)도 머리줄에서 바로 들어간다
+const visibleNav = PRIMARY_NAV
 ---
 
 <header id="site-header" class="top">
@@ -25,8 +25,16 @@ const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
                 aria-current={
                   active !== item.href ? undefined : path === item.href ? 'page' : 'true'
                 }
+                aria-label={item.short ? item.label : undefined}
               >
-                {item.label}
+                {item.short ? (
+                  <>
+                    {item.short}
+                    <span class="nav-more">{'\u00a0' + item.label.slice(item.short.length).trim()}</span>
+                  </>
+                ) : (
+                  item.label
+                )}
               </a>
             </li>
           ))
@@ -97,6 +105,7 @@ const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
     font-weight: 500;
     color: var(--fg2);
     text-decoration: none;
+    white-space: nowrap;
   }
   .nav a[aria-current] {
     color: var(--fg);
@@ -141,6 +150,15 @@ const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
     .tools :global(#search-open .tb-l),
     .tools :global(#search-open kbd) {
       display: none;
+    }
+  }
+  /* 좁은 화면에서는 '학습 기록'을 '학습'으로 줄이고 메뉴 칸을 좁혀 한 줄에 둔다(높이는 44px 유지) */
+  @media (max-width: 420px) {
+    .nav-more {
+      display: none;
+    }
+    .nav a {
+      min-width: 38px;
     }
   }
   @media (max-width: 359px) {
