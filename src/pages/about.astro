@@ -42,9 +42,6 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
           <a href={`mailto:${SITE.email}`}>이메일</a>
         </nav>
       </div>
-      <div class="profile-art" aria-hidden="true">
-        <IsometricCover kind="hero" />
-      </div>
     </header>
 
     <div class="about-layout">
@@ -130,7 +127,7 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
             </li>
             <li>
               <a href="/posts/integer-overflow-negative-amount/"
-                >계약 시스템 연동 전환의 검증 단계에서 찾아낸 정수 오버플로</a
+                >계약 기능 연동 전환의 검증 단계에서 찾아낸 정수 오버플로</a
               >
             </li>
             <li>
@@ -161,33 +158,35 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
             <li>
               <h3 id="research">체육교육에서 운동생화학으로</h3>
               <p>
-                체육교육을 전공한 뒤, 운동이 정신건강에 이로운 이유를 기전으로 설명하고 싶어
-                운동생화학을 연구했습니다. 서울대학교 대학원에서 석사 학위를 받았고, KCI 등재지
-                1저자·SCI 저널 공저자로 논문을 발표했습니다.
+                부산대학교에서 체육교육을 전공한 뒤, 운동이 정신건강에 이로운 이유를 기전 수준에서
+                탐구하고 싶어 서울대학교 대학원에서 운동생화학 석사 학위를 받았습니다. 운동이 뇌
+                신경세포와 인지 기능, 노화에 미치는 영향을 연구했고, KCI 등재지 1저자·SCI 저널
+                공저자로 논문을 발표했습니다.
               </p>
             </li>
             <li>
-              <h3 id="interest">연구에서 개발로</h3>
+              <h3 id="training">운동생화학에서 프로그래밍으로</h3>
               <p>
-                연구 중 박사 선배가 IBM Watson으로 몇 개월씩 걸리던 타깃 물질 발굴을 몇 주로 줄이는
-                것을 봤습니다. 제가 직접 다뤄 본 것은 Python으로 만든 데이터 통계 프로그램을 잠깐 써
-                본 정도였지만, 도구를 어떻게 고르느냐에 따라 연구의 속도가 달라진다는 것을 그때
-                느꼈고, 연구에 IT를 쓰는 일에 흥미가 생겼습니다. 다만 진로를 바로 바꾸지는
-                않았습니다.
+                연구실에서 몇 개월 걸리던 분석이 소프트웨어로 몇 주 만에 끝나는 것을 보며 IT 기술의
+                힘을 처음 느꼈고, 처음에는 그 힘을 활용하는 쪽을 생각했습니다.
+              </p>
+              <p>
+                SSAFY에서 프로그래밍을 처음부터 본격적으로 배우고 직접 만들어 보면서, 활용하는 것과
+                만들 수 있는 것은 다르다는 걸 알았습니다. 그 역량이 얼마나 중요한지 깨달을수록
+                흥미도 커졌고, 웹 풀스택 1,600시간 교육과
+                <a href="/projects/#team-projects">팀 프로젝트</a>를 거쳐 개발자로 방향을 정했습니다.
+                이후 삼성전자 DX부문의 채용연계형 교육 과정인 SCSA에서 6개월간 SW 교육을 받았고, 당시
+                과정은 <a href="/notes/scsa/">별도의 회고</a>에 남겼습니다.
               </p>
             </li>
             <li>
-              <h3 id="training">개발 교육과 팀 프로젝트</h3>
+              <h3 id="now">그리고 지금</h3>
               <p>
-                SSAFY에서 프로그래밍을 처음 배웠습니다. 웹 풀스택 1,600시간 교육을 받으며
-                소프트웨어를 만드는 일에 재미를 붙였고, 개발 직무로 방향을 정했습니다.
-                <a href="/projects/#team-projects">팀 프로젝트</a>에서는 화면 구현과 API 연동을
-                맡았습니다.
-              </p>
-              <p>
-                이후 삼성전자 DX부문의 채용연계형 교육 과정인 SCSA에 선발되어 6개월간 SW 교육을
-                받았습니다. 최종 입사하지는 못했으며, 당시 과정과 결과는
-                <a href="/notes/scsa/">별도의 회고</a>에 남겼습니다.
+                지금 회사에서 여러 업무 도메인의 레거시 시스템을 개발하고 운영합니다. 요즘 관심은 두
+                가지입니다. 하나는 오래된 시스템에서 반복되는 문제를 원인까지 따라가 고치는 일이고, 이
+                블로그의 글이 그 기록입니다. 다른 하나는 AI가 들어온 뒤 개발자의 일이 어디로 옮겨
+                가는지입니다. 이 블로그의 글 구성과 표지 그림, 사이트 디자인도 AI와 함께 만들고
+                있습니다.
               </p>
             </li>
           </ol>
@@ -195,6 +194,10 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
             <div>
               <dt>학력</dt>
               <dd>서울대학교 대학원 운동생화학 석사 · 부산대학교 체육교육 학사</dd>
+            </div>
+            <div>
+              <dt>교육</dt>
+              <dd>SSAFY 6기 2021.07–2022.05 · SCSA 19기 2022.07–2022.12</dd>
             </div>
             <div>
               <dt>자격</dt>
@@ -220,7 +223,7 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
             둡니다.
           </p>
           <p>
-            일부 글 표지는 AI로 생성한 개념 일러스트이며, 실제 화면이나 시스템 구성도가 아닙니다.
+            글 표지는 AI로 생성한 개념 일러스트이며, 실제 화면이나 시스템 구성도가 아닙니다.
           </p>
         </section>
 
@@ -287,10 +290,8 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
     padding: 36px 32px 80px;
   }
   .profile {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 320px;
-    gap: 48px;
-    align-items: start;
+    display: block;
+    max-width: 660px;
   }
   .name-line {
     display: flex;
@@ -346,13 +347,6 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
   .profile-links a:hover {
     background: var(--soft);
     border-color: var(--fg);
-  }
-  .profile-art {
-    height: 190px;
-    margin-top: 12px;
-    overflow: hidden;
-    border-radius: 10px;
-    background: var(--cv-bg, var(--soft));
   }
   .about-layout {
     display: grid;
@@ -509,18 +503,32 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
   }
   .case-summary > div {
     display: grid;
-    gap: 4px;
+    justify-items: start;
+    gap: 6px;
   }
-  .case-summary dt,
   .contact span {
     font-size: 14px;
     line-height: 24px;
     font-weight: 500;
     color: var(--muted);
   }
+  /* '판단'·'변경·결과'는 본문과 다른 층이라 작은 표찰로 구별한다 */
+  .case-summary dt {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 9px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--accent) 11%, transparent);
+    color: var(--accent);
+    font-size: 13px;
+    line-height: 24px;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+  }
   .case-summary dd {
     margin: 0;
-    color: var(--fg2);
+    color: var(--fg);
   }
   .other-work-title {
     margin: 28px 0 12px;
@@ -603,7 +611,6 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
     .profile {
       display: block;
     }
-    .profile-art,
     .about-rail {
       display: none;
     }
@@ -716,12 +723,6 @@ const caseCovers: Record<string, 'nullsync' | 'address' | 'flash'> = {
     }
     .about-layout {
       display: block;
-    }
-    .profile {
-      display: block;
-    }
-    .profile-art {
-      display: none;
     }
   }
 </style>

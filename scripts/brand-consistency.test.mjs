@@ -2,17 +2,17 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { Resvg } from '@resvg/resvg-js'
-import { MONOGRAM_PATH } from '../src/utils/brand.mjs'
+import { MARK_PATH } from '../src/utils/brand.mjs'
 import { renderOgCard, wrapOgTitle } from '../src/utils/og-card.mjs'
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
-const identityTitle = '증상보다 원인을 고칩니다'
+const identityTitle = '조해성의 기술 블로그'
 const motto = '개발·운영 중 만난 문제와 해결 과정에서 배운 것을 기록합니다.'
 const content = {
-  title: identityTitle,
-  kicker: '백엔드 개발자',
-  siteTitle: identityTitle,
-  identityTitle,
+  title: '증상보다 원인을 고칩니다',
+  kicker: identityTitle,
+  siteTitle: '조해성 · 백엔드 개발자',
+  identityTitle: '증상보다 원인을 고칩니다',
   subtitle: motto,
 }
 
@@ -51,10 +51,10 @@ test('saved s4 identity and illustrated list preserve factual bindings and exist
   ]) {
     assert.doesNotMatch(source(path).replace(/description="[^"]*"/, ''), /백엔드 개발자/, path)
   }
-  // 공유 카드: 제목은 identityTitle, kicker는 직무(사이트 이름은 카드 아래 마크 옆에 이미 나온다)
-  assert.match(og, /kicker: SITE\.role/)
-  assert.match(og, /title: SITE\.identityTitle/)
-  assert.match(og, /identityTitle: SITE\.identityTitle/)
+  // 공유 카드: 큰 제목은 블로그 이름, kicker는 누구의 블로그인지, 아래 줄은 이름·직무
+  assert.match(og, /title: SITE\.title,\s*kicker: SITE\.identityTitle/)
+  assert.match(og, /siteTitle: `\$\{SITE\.author\} · \$\{SITE\.role\}`/)
+  assert.match(og, /identityTitle: SITE\.title/)
   assert.match(og, /subtitle: SITE\.motto/)
   assert.doesNotMatch(home + og, /SITE\.tagline/)
 })
@@ -62,13 +62,15 @@ test('saved s4 identity and illustrated list preserve factual bindings and exist
 test('OG renderer reuses the approved mark and current light palette', () => {
   const svg = renderOgCard(content)
   const css = source('src/styles/global.css')
-  assert.ok(svg.includes(`d="${MONOGRAM_PATH}"`))
+  assert.ok(svg.includes(`d="${MARK_PATH}"`))
   for (const name of ['bg', 'accent', 'mark-bg', 'mark-ink', 'text', 'text-secondary']) {
     const value = css.match(new RegExp(`--${name}:\\s*(#[0-9a-f]{6})`))[1]
     assert.ok(svg.includes(`"${value}"`), `${name} missing from shared preview`)
   }
   assert.doesNotMatch(svg, /#1f5fd0|M4 6h9M4 12h7M4 18h5/)
-  assert.ok(svg.includes(`<tspan x="80" dy="0">${identityTitle}</tspan>`))
+  assert.ok(svg.includes(`<tspan x="80" dy="0">${content.title}</tspan>`))
+  assert.match(svg, />조해성의 기술 블로그</)
+  assert.match(svg, />조해성 · 백엔드 개발자</)
   assert.ok(svg.includes(motto))
   const png = new Resvg(svg, { font: { loadSystemFonts: false } }).render().asPng()
   assert.equal(png.toString('hex', 0, 8), '89504e470d0a1a0a')
@@ -107,10 +109,11 @@ test('saved s4 keeps a 64px single-row header with 44px real controls and knowle
   assert.match(header, /\.top-in\s*\{[^}]*min-height:\s*64px/)
   assert.match(
     header,
-    /<a href="\/" class="brand" aria-label=\{`\$\{SITE.author\} — \$\{SITE.title\} 홈`\}/,
+    /<a href="\/" class="brand" aria-label=\{`\$\{SITE.title\} 홈`\}/,
   )
-  assert.match(header, /\{SITE.author\}/)
-  assert.match(header, /PRIMARY_NAV\.filter\(\(?item\)? => item\.href !== '\/learn\/'\)/)
+  assert.match(header, /<Mark size=\{20\} class="mark" \/>\{SITE.title\}/)
+  assert.doesNotMatch(header, /\{SITE.author\}/)
+  assert.match(header, /visibleNav = PRIMARY_NAV\n/)
   assert.match(header, /visibleNav\.map/)
   assert.match(header, /href=\{item.href\}/)
   assert.match(header, /aria-current=\{\s*active !== item.href/)

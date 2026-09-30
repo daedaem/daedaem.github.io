@@ -9,8 +9,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await getCollection('posts', ({ data }) => !data.draft)
   const wiki = await getCollection('wiki', ({ data }) => !data.draft)
   return [
-    // 사이트 이름은 카드 아래 마크 옆(siteTitle)에 이미 나온다. kicker는 직무가 맡는다
-    { params: { slug: 'site' }, props: { title: SITE.identityTitle, kicker: SITE.role } },
+    // 사이트 카드: 큰 제목은 블로그 이름, kicker는 누구의 블로그인지, 아래 줄은 이름·직무
+    {
+      params: { slug: 'site' },
+      props: {
+        title: SITE.title,
+        kicker: SITE.identityTitle,
+        siteTitle: `${SITE.author} · ${SITE.role}`,
+      },
+    },
     ...posts.map((p) => ({
       params: { slug: `posts/${p.id}` },
       props: { title: p.data.title, kicker: '글' },
@@ -33,8 +40,8 @@ export const GET: APIRoute = ({ props }) => {
   const svg = renderOgCard({
     title: props.title as string,
     kicker: props.kicker as string,
-    siteTitle: SITE.title,
-    identityTitle: SITE.identityTitle,
+    siteTitle: (props.siteTitle as string | undefined) ?? SITE.title,
+    identityTitle: SITE.title,
     subtitle: SITE.motto,
   })
   const png = new Resvg(svg, {

@@ -24,6 +24,7 @@ test('saved s4 home keeps the factual author identity, approved introduction and
   assert.match(home, /href="\/about\/"\s*>소개 보기/)
   assert.match(home, /<h1 id="home-title">\{SITE\.title\}<\/h1>/)
   assert.match(home, /<p>\{SITE\.intro\}<\/p>/)
+  assert.doesNotMatch(home, /레거시 시스템을 개발·운영합니다/)
   assert.match(home, /description=\{post\.data\.description\}/)
   assert.match(home, /title=\{post\.data\.title\}/)
   assert.doesNotMatch(home, /outcome=|causeSummary|성과|이력서/)
@@ -134,30 +135,48 @@ test('about summaries retain the external dependency limit and do not claim an A
 })
 
 test('author background uses the stated research motivation without implying AI work or employment', () => {
-  assert.match(aboutText, /운동이 정신건강에 이로운 이유를 기전으로 설명하고 싶어/)
-  // 전환 계기 문단이 보호할 사실 세 가지.
-  const interest = aboutText.match(/<h3 id="interest">([\s\S]*?)<\/li>/)?.[1]
-  // 1. 발굴 기간을 줄인 것은 본인이 아니라 연구실의 다른 사람이다. 주체를 지우지 않는다
-  assert.match(interest, /(선배|동료)가[\s\S]*(줄이는|단축하는) 것을 (봤|보았)/)
-  assert.doesNotMatch(interest, /제가[\s\S]*(줄였|단축했)/)
-  // 2. 본인이 직접 다룬 범위는 제한적이었다는 단서를 남긴다
-  assert.match(interest, /Python[\s\S]*(잠깐|간단히|조금)/)
-  assert.doesNotMatch(interest, /IBM Watson[^.]*체험했습니다/)
-  // 3. 바이오인포매틱스를 배웠거나 연구한 것처럼 쓰지 않는다
-  assert.doesNotMatch(interest, /바이오인포매틱스를 (배웠|연구|공부했)/)
-  // 4. 그때 느낀 것은 흥미까지다. 진로를 정한 시점은 뒤의 교육 문단이 말한다
-  assert.doesNotMatch(interest, /(익히기로|배우기로|진로를 정했|결심)/)
-  // 5. 흥미가 생긴 순간 진로를 바꾼 것처럼 쓰지 않는다. 공백 기간을 따로 설명하는 문장은
-  //    어색하다는 사용자 판단에 따라 넣지 않는다
-  assert.match(interest, /(바로|그때)[^.]*(아닙니다|않았습니다)/)
-  assert.doesNotMatch(interest, /시간이 지난 뒤/)
-  // 교육 문단이 보호할 사실: SSAFY가 첫 프로그래밍 학습, SCSA는 채용연계형 교육 과정, 삼성전자 입사 사실 없음.
-  // 정확한 문구는 고정하지 않는다. 문장 사이의 모순은 편집 검토로 본다.
+  // 석사 연구는 기전을 '설명'했다고 쓰지 않고 '탐구'했다고 쓴다(사용자 판단 2026-09-29)
+  assert.match(aboutText, /운동이 정신건강에 이로운 이유를 기전 수준에서 탐구하고 싶어/)
+  assert.doesNotMatch(aboutText, /기전으로 설명하고 싶어/)
+  // 실험 종류(세포·동물·사람)는 무섭게 읽힐 수 있어 쓰지 않는다
+  assert.doesNotMatch(aboutText, /동물 실험|사람 실험|세포·동물·사람/)
+  // 전환 계기 문단이 보호할 사실. 문장은 "연구실에서 본 일 → IT 기술에 처음 흥미"로만 짧게 쓴다는
+  // 사용자 판단(2026-09-29)에 따라, 선배를 주어로 세우는 말투와 Python·진로 단서 문장은 요구하지 않는다.
+  // 소제목을 '체육교육에서 운동생화학으로 → 운동생화학에서 프로그래밍으로 → 그리고 지금' 세 단계로 줄이면서(2026-09-29)
+  // IT 흥미 문단은 프로그래밍 단계(#training) 첫 문단에 들어갔다
   const training = aboutText.match(/<h3 id="training">([\s\S]*?)<\/li>/)?.[1]
+  const interest = training.split('</p>')[0]
+  // 1. 발굴 기간을 줄인 것은 본인이 아니다. 본인을 주어로 쓰거나 직접 다룬 것처럼 쓰지 않는다
+  // 2026-09-29: 도구 이름(IBM Watson)은 빼고 '소프트웨어로 몇 주 만에'라는 사실만 남긴다
+  assert.match(interest, /소프트웨어로 몇 주 만에/)
+  assert.doesNotMatch(interest, /제가[\s\S]*(줄였|단축했)/)
+  assert.doesNotMatch(interest, /IBM Watson[^.]*(체험했|사용했|활용했|다뤘)/)
+  // 2. 바이오인포매틱스를 배웠거나 연구한 것처럼 쓰지 않는다
+  assert.doesNotMatch(interest, /바이오인포매틱스를 (배웠|연구|공부했)/)
+  // 3. 그때 생긴 것은 흥미까지다. 진로를 정한 시점은 뒤의 교육 문단이 말한다
+  assert.match(interest, /IT 기술의\s+힘을 처음 느꼈고, 처음에는 그 힘을 활용하는 쪽을 생각했습니다/)
+  assert.doesNotMatch(interest, /(익히기로|배우기로|진로를 정했|결심)/)
+  assert.doesNotMatch(interest, /시간이 지난 뒤/)
+  // 교육 문단이 보호할 사실: SSAFY가 첫 프로그래밍 학습, 팀 프로젝트 역할은 프로젝트 페이지 기록과 같게,
+  // SCSA는 채용연계형 교육 과정, 삼성전자 입사 사실 없음.
+  // 정확한 문구는 고정하지 않는다. 문장 사이의 모순은 편집 검토로 본다.
   assert.match(training, /SSAFY[\s\S]*프로그래밍[\s\S]*처음/)
-  assert.match(training, /SSAFY[\s\S]*팀 프로젝트[\s\S]*화면 구현과 API 연동/)
+  // 2026-09-29: 역할 설명은 프로젝트 페이지에 맡기고 소개는 링크만 둔다
+  assert.match(training, /활용하는 것과\s+만들 수 있는 것은 다르다는 걸 알았습니다/)
+  assert.match(training, /깨달을수록\s+흥미도 커졌고/)
+  assert.match(training, /href="\/projects\/#team-projects">팀 프로젝트<\/a>/)
+  assert.doesNotMatch(training, /팀장|스마트 컨트랙트|블록체인/)
   assert.match(training, /채용연계형[\s\S]*SCSA[\s\S]*6개월/)
-  assert.match(training, /최종 입사(하지는 못했|는 불발|로 이어지지)/)
+  // 입사하지 못한 사실은 회고 글에 맡기되, 다음 문단이 '다른 회사에 입사'로 이어져 삼성전자 입사로 읽히지 않게 한다
+  const now = aboutText.match(/<h3 id="now">([\s\S]*?)<\/li>/)?.[1]
+  assert.match(now, /지금 회사에서 여러 업무 도메인의 레거시 시스템을 개발하고 운영합니다\./)
+  // 관심사 두 가지: 원인까지 따라가 고치기(글이 기록), AI 이후 개발자의 일. 주인이 직접 말한 것만 쓴다
+  assert.match(now, /AI가 들어온 뒤 개발자의 일이 어디로 옮겨/)
+  assert.match(now, /AI와 함께 만들고/)
+  // 자료에서 추론한 '꿈'이나 근거 없는 성향 문장은 쓰지 않는다
+  assert.doesNotMatch(now, /되고 싶었|잘 맞습니다|잘하는 일/)
+  assert.doesNotMatch(now, /SCSA를 마친 뒤/)
+  assert.doesNotMatch(now, /삼성/)
   assert.match(training, /href="\/notes\/scsa\/"/)
   // 삼성전자 공채 합격이나 근무 경력처럼 읽히는 표현은 금지한다
   assert.doesNotMatch(
@@ -175,7 +194,7 @@ test('case summaries expose supported implementation and collaboration without i
   assert.match(summary, /처리 구분값의 규약 불일치/)
   assert.match(summary, /송수신 규약을 맞추고 비교·반영 로직을 수정/)
   assert.match(summary, /해당 오류로 월 34건 반복되던 불필요한 결재를 없앴습니다/)
-  assert.match(summary, /회의에서 제안된 기존 계약 시스템 API 활용 방안의 구현/)
+  assert.match(summary, /외부 서비스와 연동해 대체하는 작업의 구현을 맡았습니다/)
   assert.match(summary, /연동 전후 업무 로직을 새로 개발/)
   assert.match(summary, /상태 동기화·적재 실패 복구/)
   assert.match(summary, /Flash 기반 계약 모듈을 대체/)
@@ -208,7 +227,7 @@ test('work approach stays concise and private ongoing company projects remain wi
 
 test('background stages and contact navigation remain readable and keyboard accessible', () => {
   assert.match(about, /href="#background"/)
-  for (const id of ['research', 'interest', 'training'])
+  for (const id of ['research', 'training', 'now'])
     assert.match(about, new RegExp(`<h3 id="${id}">`))
   assert.match(about, /href="\/projects\/#team-projects"/)
   assert.match(about, /\.contact a \{[^}]*min-height: var\(--control-size\)/)

@@ -3,9 +3,15 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import CaseRow from '@/components/CaseRow.astro'
 import { SITE } from '@/consts'
+import { noteYearRange } from '@/utils/learning-range.mjs'
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf() || b.id.localeCompare(a.id),
 )
+// 공부한 기록으로 가는 길. 건수는 컬렉션에서 센다
+const wiki = await getCollection('wiki', ({ data }) => !data.draft)
+const notes = await getCollection('notes')
+const solutions = await getCollection('solutions')
+const noteYears = noteYearRange(notes)
 ---
 
 <BaseLayout title={SITE.title} description={SITE.description} searchIndex={false}>
@@ -13,7 +19,8 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
     <section class="intro" aria-labelledby="home-title">
       <div class="kicker">
         <span>{SITE.author} · {SITE.role}</span><a href="/about/"
-          >소개 보기 <span aria-hidden="true">→</span></a>
+          >소개 보기 <span aria-hidden="true">→</span></a
+        >
       </div>
       <h1 id="home-title">{SITE.title}</h1>
       <p>{SITE.intro}</p>
@@ -36,6 +43,23 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
           ))
         }
       </ol>
+    </section>
+    <section aria-labelledby="study-title" class="study">
+      <div class="listhead"><h2 id="study-title">공부한 기록</h2></div>
+      <ul>
+        <li>
+          <a href="/wiki/"
+            ><b>위키</b><span>개념 정리 {wiki.length}편</span><i aria-hidden="true">→</i></a
+          >
+        </li>
+        <li>
+          <a href="/learn/"
+            ><b>학습 기록</b><span
+              >학습 노트 {notes.length}편 ({noteYears}) · 알고리즘 풀이 {solutions.length}건</span
+            ><i aria-hidden="true">→</i></a
+          >
+        </li>
+      </ul>
     </section>
   </div>
 </BaseLayout>
@@ -111,6 +135,46 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
     display: inline-flex;
     align-items: center;
     margin-block: -10px;
+  }
+  .study {
+    margin-top: 32px;
+  }
+  .study ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .study li + li {
+    border-top: 1px solid var(--line);
+  }
+  .study a {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 2px 12px;
+    min-height: 44px;
+    padding: 12px 0;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .study b {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 650;
+  }
+  .study span {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 22px;
+    font-variant-numeric: tabular-nums;
+  }
+  .study i {
+    margin-left: auto;
+    color: var(--muted);
+    font-style: normal;
+  }
+  .study a:hover b {
+    color: var(--accent);
   }
   @media (max-width: 760px) {
     .intro {

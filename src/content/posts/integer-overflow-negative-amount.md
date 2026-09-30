@@ -2,9 +2,9 @@
 title: '금액이 마이너스로 찍혔다: VO의 int를 무엇으로 바꿀 것인가'
 description: '레거시 연동 전환을 검증하다 금액이 음수로 표기되는 현상을 만났다. DB 값과 VO 값을 대조하고 int 필드를 long으로 넓혀 해결했다. 정수 금액에 long을 선택한 이유와 금액 타입의 선택 기준을 정리한다.'
 date: 2026-08-12
-updated: 2026-09-29
+updated: 2026-09-30
 happened: '2025년 7월 – 10월'
-cause: 'DB 금액은 정상이었지만 VO의 int 필드에는 음수가 담겼다. 금액 필드를 long으로 변경한 뒤 정상값이 표시되는 것을 확인했다.'
+cause: 'DB 금액은 정상이었지만, 이를 받는 VO의 금액 필드가 int여서 금액이 큰 건에서만 음수가 담겼다. 금액 필드를 long으로 변경한 뒤 정상값이 표시되는 것을 확인했다.'
 category: 'legacy'
 coverImage: '/uploads/post-covers/integer-overflow-negative-amount-v1.webp'
 tags: ['Java', 'MyBatis', 'VO', '오버플로', 'BigDecimal', '마이그레이션']
@@ -13,11 +13,9 @@ draft: false
 
 > 코드와 테이블명은 문제의 구조를 보여주기 위해 일반적인 형태로 옮긴 것이다. 실제 시스템의 코드가 아니다.
 
-Flash 기반 모듈이 하나 남아 있었다. Flash는 지원이 끝났고 브라우저에서 실행되지 않으니 손을 대야 했다.
+전환한 결과를 기존 화면과 대조하던 중, **일부 건의 금액이 음수로 표기됐다.** 실제로는 큰 양수여야 할 값이었다.
 
-기존 계약 시스템 API를 활용하는 방안의 구현을 맡아, 연동 전후의 업무 로직을 새로 개발했다. 맡은 범위와 전환 과정은 [따로 적었다](/posts/retire-flash-module-by-integration/).
-
-전환한 결과를 기존 화면과 대조하는 검증 단계에서, **일부 건의 금액이 음수로 표기됐다.** 실제로는 큰 양수여야 할 값이었다.
+지원이 끝난 Flash 기반 계약 모듈을 외부 서비스 연동으로 바꾸는 작업의 검증 단계였다. 맡은 범위와 전환 과정은 [따로 적었다](/posts/retire-flash-module-by-integration/).
 
 ## 음수는 어디서 오는가
 

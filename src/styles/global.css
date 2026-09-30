@@ -59,8 +59,10 @@
   --code: #f7f8fa;
   --accent: #1b64da;
   --accent-2: #1a5393;
-  --mark-bg: #223e60;
-  --mark-ink: #fcfaf5;
+  --mark-bg: #1b64da;
+  --mark-ink: #ffffff;
+  --mark-dot: #eca574;
+  --mark-lane: #9cbdf3;
   --shadow: 0 12px 32px rgb(15 23 42 / 0.14);
 
   /* 별칭 */
@@ -181,8 +183,11 @@ h4[tabindex='-1']:focus-visible {
     --code: #1a1f28;
     --accent: #8ab4f8;
     --accent-2: #c6d7ee;
-    --mark-bg: #a8c1e2;
-    --mark-ink: #192b43;
+    --mark-bg: #8ab4f8;
+    --mark-ink: #14181f;
+    --mark-dot: #f0b287;
+  --mark-lane: #4a6ea6;
+    --mark-lane: #4a6ea6;
     --shadow: 0 12px 32px rgb(0 0 0 / 0.5);
 
     --text: #e4e9f0;
@@ -218,8 +223,10 @@ h4[tabindex='-1']:focus-visible {
   --code: #1a1f28;
   --accent: #8ab4f8;
   --accent-2: #c6d7ee;
-  --mark-bg: #a8c1e2;
-  --mark-ink: #192b43;
+  --mark-bg: #8ab4f8;
+  --mark-ink: #14181f;
+  --mark-dot: #f0b287;
+  --mark-lane: #4a6ea6;
   --shadow: 0 12px 32px rgb(0 0 0 / 0.5);
 
   --text: #e4e9f0;
@@ -1095,12 +1102,12 @@ code {
   display: inline-flex;
   align-items: center;
   min-height: var(--control-size);
-  padding: 0 0.8rem;
+  padding: 0 0.75rem;
   border: 1px solid var(--line2);
   border-radius: var(--radius);
   background: var(--bg);
   color: var(--fg2);
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
@@ -1838,7 +1845,7 @@ dialog.sheet,
 :root {
   --header-h: 0px;
   --header-clearance: 24px;
-  --cv-bg: #f7f8fa;
+  --cv-bg: #ecf1fa;
   --cv-sh: rgba(25, 31, 40, 0.09);
 }
 @media (prefers-color-scheme: dark) {

@@ -13,7 +13,7 @@ export const HOME_READING_PICKS = [
   },
   {
     id: 'retire-flash-module-by-integration',
-    readingNote: '기존 API 연동에 맞춘 업무 로직 개발과 계약 상태 동기화, 적재 실패 복구 과정.',
+    readingNote: '외부 서비스 연동에 맞춘 업무 로직과 결재 상태 흐름 개발, 적재 실패 복구 과정.',
   },
 ]
 

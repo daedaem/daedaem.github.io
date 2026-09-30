@@ -1,5 +1,6 @@
 ---
 import IsometricCover from './IsometricCover.astro'
+import TitleText from './TitleText.astro'
 import { isometricCoverForSlug } from '@/utils/isometric-covers.mjs'
 import { getCategory } from '@/consts'
 import { formatCompactDate } from '@/utils/format'
@@ -21,7 +22,7 @@ const kind = isometricCoverForSlug(href.split('/').filter(Boolean).at(-1))
 
 <li class="case-row">
   <a class:list={['reading-card', { 'without-cover': !kind }]} href={href}>
-    <Heading class="reading-title">{title}</Heading>
+    <Heading class="reading-title"><TitleText title={title} /></Heading>
     {
       kind && (
         <div class="cover">
@@ -102,6 +103,23 @@ const kind = isometricCoverForSlug(href.split('/').filter(Boolean).at(-1))
   }
   .reading-card:focus-visible {
     outline-offset: 6px;
+  }
+  /* 표지는 칸 안에서만 아주 살짝 다가온다. 칸 크기와 글 배치는 그대로다 */
+  .cover :global(img) {
+    transition: transform 360ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  @media (hover: hover) {
+    .reading-card:hover .cover :global(img) {
+      transform: scale(1.035);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cover :global(img) {
+      transition: none;
+    }
+    .reading-card:hover .cover :global(img) {
+      transform: none;
+    }
   }
   .without-cover {
     grid-template-columns: 1fr;

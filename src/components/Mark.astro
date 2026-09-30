@@ -1,23 +1,38 @@
 ---
-import { MONOGRAM_PATH } from '@/utils/brand.mjs'
-/** 사용자 승인 네이비 시안의 dd 모노그램. 이름·별명은 그대로 유지한다. */
+import {
+  MARK_DOT,
+  MARK_LANE,
+  MARK_PATH,
+  MARK_STROKE,
+  MARK_TILE_TRANSFORM,
+  MARK_VIEWBOX,
+} from '@/utils/brand.mjs'
+/** 표식 '두 레인'. 기본은 헤더용 맨 마크, tile이면 파비콘과 같은 타일 판. */
 interface Props {
   size?: number
+  tile?: boolean
   class?: string
 }
-const { size = 18, class: cls } = Astro.props
+const { size = 20, tile = false, class: cls } = Astro.props
 ---
 
 <svg
   class={cls}
   width={size}
   height={size}
-  viewBox="0 0 34 34"
-  fill="none"
+  viewBox={MARK_VIEWBOX}
   aria-hidden="true"
   focusable="false"
 >
-  <rect width="34" height="34" rx="9" fill="var(--mark-bg)"></rect>
-  <path d={MONOGRAM_PATH} stroke="var(--mark-ink)" stroke-width="2.8" stroke-linejoin="round"
-  ></path>
+  {tile && <rect width="32" height="32" rx="8" fill="var(--mark-bg)" />}
+  <g
+    transform={tile ? MARK_TILE_TRANSFORM : undefined}
+    fill="none"
+    stroke-width={MARK_STROKE}
+    stroke-linecap="round"
+  >
+    <path d={MARK_PATH} stroke={tile ? 'var(--mark-ink)' : 'var(--accent)'} />
+    <path d={MARK_LANE} stroke={tile ? 'var(--mark-ink)' : 'var(--mark-lane)'} opacity={tile ? 0.55 : 1} />
+    <circle cx={MARK_DOT.cx} cy={MARK_DOT.cy} r={MARK_DOT.r} fill="var(--mark-dot)" stroke="none" />
+  </g>
 </svg>

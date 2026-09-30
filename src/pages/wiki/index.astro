@@ -12,22 +12,10 @@ const groups = WIKI_TOPICS.map((topic) => ({
   ...topic,
   count: entries.filter((e) => e.data.topic === topic.id).length,
 })).filter((g) => g.count)
-// 상태는 두 가지로 보인다. 뼈대만 있는 문서(seed)도 '보완 중'이다(위키 문서 머리와 같은 기준)
+// 상태는 두 가지로 보인다. 뼈대만 있는 문서(seed)도 '보완 중'이다(위키 문서 머리와 같은 기준).
+// 거르는 조건으로는 두지 않고 행의 배지로만 보인다. 조건은 주제와 찾기 두 가지면 충분하다.
 const STATUS_LABELS = { stable: '정리됨', growing: '보완 중' }
-const STATUS_NOTES = { stable: '한 차례 정리', growing: '설명 추가 중' }
 const normalizeStatus = (status: string) => (status === 'stable' ? 'stable' : 'growing')
-// 문서가 없는 상태를 칩에 두면 고르는 순간 빈 목록만 나오므로, 실제로 있는 상태만 보인다
-const statuses = Object.fromEntries(
-  Object.entries(STATUS_LABELS).filter(([value]) =>
-    entries.some((entry) => normalizeStatus(entry.data.status) === value),
-  ),
-) as Partial<typeof STATUS_LABELS>
-const statusCounts = Object.fromEntries(
-  Object.keys(statuses).map((value) => [
-    value,
-    entries.filter((entry) => normalizeStatus(entry.data.status) === value).length,
-  ]),
-)
 const documents = entries.map((entry) => ({
   id: entry.id,
   title: entry.data.title,
@@ -66,7 +54,7 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
         <legend class="k">주제</legend>
         <div class="chips">
           <button type="button" class="chip" data-topic="" aria-pressed="true">
-            전체 <span class="n">{entries.length}</span>
+            전체
           </button>
           {
             groups.map((g) => (
@@ -77,30 +65,6 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
             ))
           }
         </div>
-      </fieldset>
-      <fieldset class="f-g">
-        <legend class="k">상태</legend>
-        <div class="chips">
-          <button type="button" class="chip" data-status="" aria-pressed="true">
-            전체 <span class="n">{entries.length}</span>
-          </button>
-          {
-            Object.entries(statuses).map(([value, label]) => (
-              <button type="button" class="chip" data-status={value} aria-pressed="false">
-                {label} <span class="n">{statusCounts[value]}</span>
-              </button>
-            ))
-          }
-        </div>
-        <p class="legend">
-          {
-            Object.entries(statuses)
-              .map(
-                ([value, label]) => `${label}: ${STATUS_NOTES[value as keyof typeof STATUS_NOTES]}`,
-              )
-              .join(' · ')
-          }
-        </p>
       </fieldset>
     </form>
 
@@ -128,7 +92,7 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
     </ol>
 
     <div id="wiki-empty" class="empty" hidden>
-      <p>조건에 맞는 문서가 없습니다. 검색어를 줄이거나 주제·상태를 바꿔 보세요.</p>
+      <p>조건에 맞는 문서가 없습니다. 검색어를 줄이거나 주제를 바꿔 보세요.</p>
       <div class="acts">
         <button type="button" id="wiki-reset" class="btn">조건 초기화</button>
         <button type="button" id="wiki-global" class="btn">본문까지 전체 검색</button>
@@ -164,26 +128,28 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
   const form = document.getElementById('wiki-filter') as HTMLFormElement
   const query = document.getElementById('wiki-query') as HTMLInputElement
   const topics = [...form.querySelectorAll<HTMLButtonElement>('[data-topic]')]
-  const statusChips = [...form.querySelectorAll<HTMLButtonElement>('[data-status]')]
   const previous = document.getElementById('wiki-prev') as HTMLButtonElement
   const next = document.getElementById('wiki-next') as HTMLButtonElement
   const PAGE = 12
   let topic = '',
-    status = '',
     page = 1
+  // 상태 조건은 없다. 문서 고르기 함수의 인자 형태만 맞춘다
+  const status = ''
   // 칩의 눌림과 건수. 지금 조건에서 0편인 칩은 누를 수 없게 두되, 눌린 칩은 항상 살아 있다
+  // '전체' 칩은 건수를 달지 않는다(조건에 따라 바뀌는 숫자가 '전체'라는 말과 어긋나 보인다)
   const pressChips = (
     chips: HTMLButtonElement[],
-    key: 'topic' | 'status',
+    key: 'topic',
     value: string,
     counts: Record<string, number>,
   ) => {
     for (const chip of chips) {
       const own = chip.dataset[key]!
       const pressed = own === value
-      const count = counts[own] ?? 0
+      const count = own ? (counts[own] ?? 0) : docs.length
       chip.setAttribute('aria-pressed', String(pressed))
-      chip.querySelector('.n')!.textContent = String(count)
+      const n = chip.querySelector('.n')
+      if (n) n.textContent = String(count)
       if (!pressed && count === 0) chip.setAttribute('aria-disabled', 'true')
       else chip.removeAttribute('aria-disabled')
     }
@@ -205,7 +171,6 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
     }
     const counts = facetCounts(docs, { query: query.value, topic, status })
     pressChips(topics, 'topic', topic, counts.topic)
-    pressChips(statusChips, 'status', status, counts.status)
     const active = !!(query.value.trim() || topic || status)
     document.getElementById('wiki-heading')!.textContent = topic
       ? topics
@@ -248,12 +213,6 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
   function readURL() {
     const params = new URLSearchParams(location.search)
     query.value = params.get('q') ?? ''
-    // 옛 주소의 status=seed는 '보완 중'으로 읽는다
-    const requestedStatus =
-      params.get('status') === 'seed' ? 'growing' : (params.get('status') ?? '')
-    status = statusChips.some((chip) => chip.dataset.status === requestedStatus)
-      ? requestedStatus
-      : ''
     const requested = location.hash.slice(1) || params.get('topic') || ''
     topic = topics.some((chip) => chip.dataset.topic === requested) ? requested : ''
     page = Number(params.get('page')) || 1
@@ -261,7 +220,6 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
   }
   function reset() {
     query.value = ''
-    status = ''
     topic = ''
     page = 1
     show()
@@ -279,13 +237,6 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
     chip.addEventListener('click', () => {
       if (chip.getAttribute('aria-disabled') === 'true') return
       topic = chip.dataset.topic!
-      page = 1
-      show()
-    })
-  for (const chip of statusChips)
-    chip.addEventListener('click', () => {
-      if (chip.getAttribute('aria-disabled') === 'true') return
-      status = chip.dataset.status!
       page = 1
       show()
     })
@@ -341,13 +292,26 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
     margin: 0;
     color: var(--muted);
   }
-  /* 44px 높이를 갖되 위아래 음수 여백으로 건수 줄 높이는 그대로 둔다 */
+  /* 건수 줄의 '조건 초기화'는 테두리 상자가 아니라 글자 링크로 둔다. 상자면 13px 줄보다 커서
+     아래 2px 선을 넘어 떠 보인다. 44px 조작 높이는 위아래 음수 여백으로 두어 줄 높이는 그대로다 */
   #wiki-clear {
     margin: -0.6rem 0 -0.6rem auto;
     min-height: var(--control-size);
-    padding: 0 0.6rem;
+    padding: 0 0.25rem;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: var(--muted);
     font-size: 0.8125rem;
+    font-weight: 600;
     letter-spacing: 0;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+  #wiki-clear:hover {
+    color: var(--fg);
+    background: none;
   }
   .empty p {
     margin: 0;

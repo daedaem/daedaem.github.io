@@ -50,12 +50,10 @@ test('글이 없는 분류와 문서가 없는 정리 상태는 만들지 않는
     source('src/pages/categories/[category].astro'),
     /CATEGORIES\.filter\(\(category\) => \(counts\.get\(category\.id\) \?\? 0\) > 0\)/,
   )
-  // 위키 상태 칩은 정리됨/보완 중 두 가지이고, 뼈대만 있는 문서(seed)는 보완 중으로 센다
+  // 위키 상태는 정리됨/보완 중 두 가지이고, 뼈대만 있는 문서(seed)는 보완 중으로 센다.
+  // 2026-09-29: 상태는 거르는 칩이 아니라 행의 배지로만 보인다(칩 두 개 + 설명 줄이 첫 화면을 차지했다)
   const wiki = source('src/pages/wiki/index.astro')
-  assert.match(
-    wiki,
-    /entries\.some\(\(entry\) => normalizeStatus\(entry\.data\.status\) === value\)/,
-  )
+  assert.doesNotMatch(wiki, /data-status=/)
   assert.match(
     wiki,
     /const normalizeStatus = \(status: string\) => \(status === 'stable' \? 'stable' : 'growing'\)/,

@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { load } from 'js-yaml'
 import {
   COVER_PRESETS,
@@ -8,9 +8,9 @@ import {
   resolvePostCover,
   splitEditorialTitle,
 } from '../src/utils/editorial.mjs'
-import { MONOGRAM_PATH } from '../src/utils/brand.mjs'
+import { MARK_PATH } from '../src/utils/brand.mjs'
 import { HOME_READING_PICKS } from '../src/utils/home-content.mjs'
-import { isometricCoverForSlug } from '../src/utils/isometric-covers.mjs'
+import { isometricCoverForSlug, isometricCoverSources } from '../src/utils/isometric-covers.mjs'
 
 const source = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8')
 
@@ -53,10 +53,21 @@ test('article-owned cover metadata stays valid and s4 figures resolve by article
   }
   for (const [slug, kind] of Object.entries(expected)) {
     assert.equal(isometricCoverForSlug(slug), kind)
-    const svg = source(`src/assets/isometric/iso-${kind}.svg`)
-    assert.match(svg, /viewBox="0 0 480 320"/)
-    assert.doesNotMatch(svg, /<script|<foreignObject|https?:\/\/[^" ]+\.(?:png|jpe?g|webp)/)
+    const sources = isometricCoverSources(kind)
+    assert.equal(sources.width / sources.height, 1.5)
+    for (const theme of ['light', 'dark']) {
+      assert.match(
+        sources[theme].src,
+        new RegExp(`^/uploads/post-covers/cut-${kind}(?:-dark)?\\.webp$`),
+      )
+      for (const width of [320, 768, 1440]) {
+        const file = sources[theme].srcset.match(new RegExp(`(\\S+) ${width}w`))?.[1]
+        assert.ok(file, `${kind} ${theme} ${width}w`)
+        assert.ok(existsSync(new URL(`../public${file}`, import.meta.url)), `${file} exists`)
+      }
+    }
   }
+  assert.equal(isometricCoverSources('hero'), undefined)
   for (const slug of ['new-article', 'toString', '__proto__', '', undefined, null]) {
     assert.equal(isometricCoverForSlug(slug), undefined)
   }
@@ -155,8 +166,12 @@ test('title styling preserves every character and only splits the first colon-sp
     subtitle: '둘째: 셋째',
   })
   const layout = source('src/layouts/PostLayout.astro')
-  // 제목은 나누지 않고 그대로 둔다. 본문은 슬롯을 문자열로 받아 첫머리 고지를 앞으로 옮긴다
-  assert.match(layout, /<h1 tabindex="-1">\{title\}<\/h1>/)
+  // 제목은 같은 모양 그대로 둔다(줄바꿈 자리만 콜론 뒤). 본문은 슬롯을 문자열로 받아 첫머리 고지를 앞으로 옮긴다
+  assert.match(layout, /<h1 tabindex="-1"><TitleText title=\{title\} \/><\/h1>/)
+  const titleText = source('src/components/TitleText.astro')
+  assert.match(titleText, /splitEditorialTitle\(title\)/)
+  assert.match(titleText, /display: inline-block/)
+  assert.doesNotMatch(titleText, /font-weight|font-size|class="subtitle"/)
   assert.match(layout, /Astro\.slots\.render\('default'\)/)
   assert.match(layout, /original=\{archived\}/)
   assert.match(layout, /publishedAt=\{date\}/)
@@ -167,11 +182,15 @@ test('title styling preserves every character and only splits the first colon-sp
 
 test('s4 header identity and all preserved favicon sizes have their approved assets', () => {
   const header = source('src/components/Header.astro')
-  assert.match(header, /aria-label=\{`[^`]*\$\{SITE\.author\}[^`]*`\}/)
-  assert.match(header, /<i aria-hidden="true"><\/i>\{SITE\.author\}/)
-  assert.match(header, /transform:\s*rotate\(45deg\)/)
-  assert.match(source('src/components/Mark.astro'), /d=\{MONOGRAM_PATH\}/)
-  assert.ok(source('public/favicon.svg').includes(`d="${MONOGRAM_PATH}"`))
+  assert.match(header, /aria-label=\{`\$\{SITE\.title\} 홈`\}/)
+  assert.match(header, /<Mark size=\{20\} class="mark" \/>\{SITE\.title\}/)
+  assert.doesNotMatch(header, /rotate\(45deg\)/)
+  const mark = source('src/components/Mark.astro')
+  assert.match(mark, /d=\{MARK_PATH\}/)
+  assert.match(mark, /d=\{MARK_LANE\}/)
+  assert.match(mark, /fill="var\(--mark-dot\)"/)
+  assert.ok(source('public/favicon.svg').includes(`d="${MARK_PATH}"`))
+  assert.ok(source('public/favicon.svg').includes('fill="#eca574"'))
   for (const [name, size] of [
     ['favicon-96x96.png', 96],
     ['apple-touch-icon.png', 180],
@@ -196,28 +215,27 @@ test('s4 header identity and all preserved favicon sizes have their approved ass
 
 test('production design retains navigation and real search without mock controls or external fonts', () => {
   const header = source('src/components/Header.astro')
-  assert.match(
-    header,
-    /visibleNav\s*=\s*PRIMARY_NAV\.filter\(\(item\)\s*=>\s*item\.href\s*!==\s*'\/learn\/'\)/,
-  )
+  assert.match(header, /visibleNav\s*=\s*PRIMARY_NAV\n/)
   assert.match(header, /visibleNav\.map/)
-  assert.match(source('src/utils/navigation.mjs'), /href: '\/learn\/', label: '학습 기록'/)
+  assert.match(source('src/utils/navigation.mjs'), /href: '\/learn\/',\s*label: '학습 기록'/)
   assert.match(header, /<Search\s*\/>/)
   assert.match(header, /<ThemeToggle\s*\/>/)
   const home = source('src/pages/index.astro')
   assert.doesNotMatch(home, /dd-editorial|data-palette|Tweak|search-dialog|fonts\.googleapis/)
   assert.match(source('src/layouts/PostLayout.astro'), /<Comments\s*\/>/)
-  // 바닥글: 글 · 위키 · 학습 기록 · 소개 · 프로젝트 · RSS · GitHub · Email · LinkedIn.
-  // 작성자 도구(/admin/)는 바닥글에 두지 않는다(페이지는 남아 주소로 연다)
+  // 바닥글 끝에 작성자용 편집 안내를 두되, 주요 메뉴에는 넣지 않는다.
   const footer = source('src/components/Footer.astro')
-  assert.doesNotMatch(footer, /href="\/admin\/"/)
+  assert.match(footer, /href="\/admin\/"/)
   assert.match(footer, /href="\/projects\/"/)
   assert.match(footer, /mailto:\$\{SITE\.email\}/)
   assert.match(footer, /SITE\.linkedinUrl/)
   assert.deepEqual(
     [...footer.matchAll(/<a href=[^>]*>([^<]+)<\/a>/g)].map((m) => m[1]),
-    ['글', '위키', '학습 기록', '소개', '프로젝트', 'RSS', 'GitHub', 'Email', 'LinkedIn'],
+    ['글', '위키', '학습 기록', '소개', '프로젝트', 'RSS', 'GitHub', 'Email', 'LinkedIn', '글 관리'],
   )
+  const admin = source('src/pages/admin/index.astro')
+  assert.match(admin, /noindex=\{true\}/)
+  assert.match(admin, /href="https:\/\/app\.pagescms\.org\/"/)
 })
 
 test('static s4 header keeps safe anchor landings and sticky article/wiki navigation', () => {

@@ -1,7 +1,12 @@
 export const PRIMARY_NAV = [
   { href: '/posts/', label: '글', roots: ['/posts/', '/categories/'] },
   { href: '/wiki/', label: '위키', roots: ['/wiki/'] },
-  { href: '/learn/', label: '학습 기록', roots: ['/learn/', '/algorithms/', '/notes/'] },
+  {
+    href: '/learn/',
+    label: '학습 기록',
+    short: '학습',
+    roots: ['/learn/', '/algorithms/', '/notes/'],
+  },
   { href: '/about/', label: '소개', roots: ['/about/', '/projects/'] },
 ]
 

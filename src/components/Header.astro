@@ -1,18 +1,19 @@
 ---
 import { SITE } from '@/consts'
+import Mark from './Mark.astro'
 import Search from './Search.astro'
 import ThemeToggle from './ThemeToggle.astro'
 import { PRIMARY_NAV, activeNavigation } from '@/utils/navigation.mjs'
 const path = Astro.url.pathname
 const active = path === '/' ? '/posts/' : activeNavigation(path)
-// Saved s4 has three primary links; learning archives remain linked from the footer and wiki.
-const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
+// 학습 기록(노트·알고리즘 풀이)도 머리줄에서 바로 들어간다
+const visibleNav = PRIMARY_NAV
 ---
 
 <header id="site-header" class="top">
   <div class="top-in">
-    <a href="/" class="brand" aria-label={`${SITE.author} — ${SITE.title} 홈`}
-      ><i aria-hidden="true"></i>{SITE.author}</a
+    <a href="/" class="brand" aria-label={`${SITE.title} 홈`}
+      ><Mark size={20} class="mark" />{SITE.title}</a
     >
     <nav class="nav" aria-label="주요 메뉴">
       <ul>
@@ -24,8 +25,18 @@ const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
                 aria-current={
                   active !== item.href ? undefined : path === item.href ? 'page' : 'true'
                 }
+                aria-label={item.short ? item.label : undefined}
               >
-                {item.label}
+                {item.short ? (
+                  <>
+                    {item.short}
+                    <span class="nav-more">
+                      {'\u00a0' + item.label.slice(item.short.length).trim()}
+                    </span>
+                  </>
+                ) : (
+                  item.label
+                )}
               </a>
             </li>
           ))
@@ -69,12 +80,10 @@ const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
     text-decoration: none;
     white-space: nowrap;
   }
-  .brand i {
-    width: 9px;
-    height: 9px;
-    border-radius: 1.5px;
-    background: var(--accent);
-    transform: rotate(45deg);
+  .brand :global(.mark) {
+    flex: none;
+    width: 20px;
+    height: 20px;
   }
   .nav {
     margin-left: auto;
@@ -98,6 +107,7 @@ const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
     font-weight: 500;
     color: var(--fg2);
     text-decoration: none;
+    white-space: nowrap;
   }
   .nav a[aria-current] {
     color: var(--fg);
@@ -123,9 +133,9 @@ const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
       font-size: 18px;
       gap: 8px;
     }
-    .brand i {
-      width: 7px;
-      height: 7px;
+    .brand :global(.mark) {
+      width: 18px;
+      height: 18px;
     }
     .nav ul {
       gap: 0;
@@ -144,15 +154,35 @@ const visibleNav = PRIMARY_NAV.filter((item) => item.href !== '/learn/')
       display: none;
     }
   }
-  @media (max-width: 359px) {
-    .brand {
-      font-size: 16px;
-    }
-    .brand i {
+  /* 좁은 화면에서는 '학습 기록'을 '학습'으로 줄여 한 줄에 둔다 */
+  @media (max-width: 420px) {
+    .nav-more {
       display: none;
     }
+  }
+  /* 메뉴 네 칸(44px)과 도구 두 칸이 들어가도록 이름을 조금 줄인다 */
+  @media (max-width: 389px) {
     .top-in {
       gap: 0;
+    }
+    .brand {
+      font-size: 16px;
+      gap: 6px;
+    }
+    .brand :global(.mark) {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  /* 아주 좁은 화면(320px 등)에서는 표식만 남긴다. 이름은 aria-label로 읽힌다 */
+  @media (max-width: 359px) {
+    .brand {
+      font-size: 0;
+      gap: 0;
+    }
+    .brand :global(.mark) {
+      width: 22px;
+      height: 22px;
     }
   }
   @media (forced-colors: active) {
