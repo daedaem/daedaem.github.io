@@ -3,12 +3,12 @@
 export const SIZE = { w: 1536, h: 1024 }
 const base = { pos: [3.7, 3.4, 6.7], fov: 3.4, targetY: 0.5 }
 export const CAMERAS = {
-  phantom: base,
+  phantom: { pos: [3.7, 3.4, 6.7], fov: 2.8, targetY: 0.7 },
   disk: { pos: [3.7, 3.4, 6.7], fov: 2.9, targetY: 1.0 },
   overflow: { pos: [3.7, 3.4, 6.7], fov: 3.1, targetY: 0.85 },
-  nullsync: { pos: [4.0, 3.7, 7.2], fov: 3.4, targetY: 0.5 },
+  nullsync: { pos: [3.7, 3.4, 6.7], fov: 2.8, targetY: 0.8 },
   address: { pos: [3.7, 3.4, 6.7], fov: 2.6, targetY: 0.65 },
-  flash: base,
+  flash: { pos: [3.7, 3.4, 6.7], fov: 2.5, targetY: 0.6 },
 }
 // 저장 크기와 이름: public/uploads/post-covers/cut-<kind>[-768|-320][-dark].webp
 export const WIDTHS = [1440, 768, 320]

@@ -1,20 +1,28 @@
-// 지원 끝난 모듈 대체: 코발트 서버를 잘라 보니 슬롯에서 먹지 Flash 카트리지(× 스티커)가 빠져나오고, 윗면엔 API 띠.
+// Flash 계약 모듈을 걷어 내고 외부 전자계약 SaaS와 연동: 서버 앞 빈 슬롯(살구색), 빠진 Flash 카트리지는 바닥에,
+// 서버와 SaaS 카드 사이를 오가는 두 화살표(계약 작성 요청, 결재 상태 회신).
 float rb(vec3 p, vec3 b) { return sdRBox(p, b, 0.012); }
-float sdCylZ(vec3 p, float h, float r) { vec2 d = abs(vec2(length(p.xy), p.z)) - vec2(r, h); return min(max(d.x, d.y), 0.0) + length(max(d, 0.0)); }
 vec2 solid(vec3 p) {
-  vec3 q = p - vec3(0.15, 0.60, 0.0);
-  float outer = rb(q, vec3(0.75, 0.60, 0.50));
-  float slot = sdBox(q - vec3(0.0, 0.05, 0.15), vec3(0.52, 0.13, 0.50));
+  vec3 q = p - vec3(-1.1, 0.62, 0.0);
+  float outer = rb(q, vec3(0.55, 0.62, 0.45));
+  float slot = sdBox(q - vec3(0.0, 0.15, 0.45), vec3(0.34, 0.08, 0.2));
   vec2 r = vec2(opSub(outer, slot), M_COBALT);
-  float lining = opSub(sdBox(q - vec3(0.0, 0.05, 0.15), vec3(0.55, 0.16, 0.50)), slot);
+  float lining = opSub(sdBox(q - vec3(0.0, 0.15, 0.45), vec3(0.37, 0.11, 0.19)), slot);
   r = U(r, vec2(max(lining, outer), M_APRICOT));
-  r = U(r, vec2(rb(q - vec3(-0.49, 0.36, 0.508), vec3(0.20, 0.09, 0.008)), M_WHITE));
+  r = U(r, vec2(rb(p - vec3(1.2, 0.8, 0.0), vec3(0.66, 0.58, 0.1)), M_WHITE));   // SaaS 카드
   return r;
+}
+vec2 arrow(vec3 p, vec3 a, vec3 b, float dir) {
+  float d = sdCapsule(p, a, b, 0.05);
+  vec3 tip = dir > 0.0 ? b : a, back = dir > 0.0 ? vec3(-0.2, 0.0, 0.0) : vec3(0.2, 0.0, 0.0);
+  d = min(d, sdCapsule(p, tip, tip + back + vec3(0.0, 0.16, 0.0), 0.05));
+  d = min(d, sdCapsule(p, tip, tip + back - vec3(0.0, 0.16, 0.0), 0.05));
+  return vec2(d, M_MEDIUM);
 }
 vec2 loose(vec3 p) {
-  vec3 c = p - vec3(0.15, 0.65, 0.45);
-  vec2 r = vec2(rb(c, vec3(0.48, 0.10, 0.30)), M_INK);
+  vec2 r = vec2(rb(rotY(p - vec3(-1.05, 0.075, 0.95), 0.35), vec3(0.36, 0.065, 0.22)), M_INK);  // 빠진 Flash
+  r = U(r, arrow(p, vec3(-0.4, 0.98, 0.2), vec3(0.4, 0.98, 0.2), 1.0));
+  r = U(r, arrow(p, vec3(-0.4, 0.58, 0.2), vec3(0.4, 0.58, 0.2), -1.0));
   return r;
 }
-float cutSDF(vec3 p) { return max(-0.15 - p.x, -0.10 - p.z); }
+float cutSDF(vec3 p) { return 1e9; }
 vec3 cutStripeDir() { return vec3(0.0, 1.0, 0.0); }
