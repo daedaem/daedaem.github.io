@@ -4,6 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import PageHead from '@/components/PageHead.astro'
 import LearningNav from '@/components/LearningNav.astro'
 import { orderedNoteGroups } from '@/utils/note-series.mjs'
+import { getWikiTopic } from '@/consts'
 
 const solutions = await getCollection('solutions')
 const notes = (await getCollection('notes')).sort(
@@ -12,6 +13,36 @@ const notes = (await getCollection('notes')).sort(
 const series = orderedNoteGroups(notes)
 const boj = solutions.filter((s) => s.data.site === '백준').length
 const pgs = solutions.filter((s) => s.data.site === '프로그래머스').length
+// 분야별 입구. 글이 실제로 있는 분야만 보이고, 숫자는 컬렉션에서 센다(AI는 글이 생기면 연다)
+const wiki = await getCollection('wiki', ({ data }) => !data.draft)
+const wikiCount = (ids: string[]) => wiki.filter((w) => ids.includes(w.data.topic)).length
+const wikiLink = (id: string) => ({ href: `/wiki/#${id}`, label: getWikiTopic(id)?.name ?? id })
+const frontNotes = notes.filter((n) => n.data.categories?.includes('Web Frontend')).length
+const backendTopics = ['java', 'spring', 'database', 'dotnet', 'infra']
+const fields = [
+  {
+    id: 'backend',
+    name: '백엔드',
+    count: `위키 ${wikiCount(backendTopics)}편`,
+    links: backendTopics.filter((id) => wikiCount([id])).map(wikiLink),
+  },
+  {
+    id: 'frontend',
+    name: '프론트엔드',
+    count: `학습 노트 ${frontNotes}편 · 위키 ${wikiCount(['web'])}편`,
+    links: [
+      { href: '/notes/#core-js', label: 'JavaScript' },
+      { href: '/notes/#ts', label: 'TypeScript' },
+      wikiLink('web'),
+    ],
+  },
+  {
+    id: 'cs',
+    name: 'CS · 알고리즘',
+    count: `위키 ${wikiCount(['cs'])}편 · 풀이 ${solutions.length}건`,
+    links: [wikiLink('cs'), { href: '/algorithms/', label: '알고리즘 풀이' }],
+  },
+].filter((field) => field.links.length)
 const arrow =
   '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 18l6-6M13 6l6 6"/></svg>'
 ---
@@ -30,6 +61,25 @@ const arrow =
       </p>
     </PageHead>
     <LearningNav />
+
+    <section class="blk" aria-labelledby="learn-fields-title">
+      <div class="sec-h"><h2 class="k" id="learn-fields-title">분야별로 보기</h2></div>
+      <ul class="fields">
+        {
+          fields.map((field) => (
+            <li>
+              <h3>{field.name}</h3>
+              <p class="fcount">{field.count}</p>
+              <p class="links">
+                {field.links.map((link) => (
+                  <a href={link.href}>{link.label}</a>
+                ))}
+              </p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
 
     <section class="blk" aria-labelledby="learn-notes-title">
       <div class="sec-h">
@@ -70,6 +120,48 @@ const arrow =
 </BaseLayout>
 
 <style>
+  .fields {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .fields li {
+    padding: 16px 18px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .fields h3 {
+    margin: 0;
+    font-size: 17px;
+    line-height: 26px;
+  }
+  .fields .fcount {
+    margin: 2px 0 8px;
+    color: var(--fg2);
+    font-size: 14px;
+    line-height: 22px;
+    font-variant-numeric: tabular-nums;
+  }
+  .fields .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 14px;
+    margin: 0;
+  }
+  .fields .links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 15px;
+  }
+  @media (max-width: 760px) {
+    .fields {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
   .group-overview {
     list-style: none;
     padding: 0;
