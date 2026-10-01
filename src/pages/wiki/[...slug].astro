@@ -78,13 +78,7 @@ const hasToc = toc.length >= 4
           <span class="sep" aria-hidden="true" set:text="·" />
           <span set:text={status} />
           <span class="sep" aria-hidden="true" set:text="·" />
-          <ContentDates
-            date={entry.data.created}
-            updated={entry.data.updated}
-            dateLabel="만듦"
-            updatedLabel="갱신"
-            inline
-          />
+          <ContentDates date={entry.data.created} dateLabel="" inline />
           {
             /* 역링크가 있을 때만, 첫 화면에서 문서 끝의 목록으로 바로 간다 */
             references.length > 0 && (

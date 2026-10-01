@@ -4,9 +4,9 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import PageHead from '@/components/PageHead.astro'
 import PostRow from '@/components/PostRow.astro'
 import { WIKI_TOPICS, getWikiTopic } from '@/consts'
+// 목록은 처음 쓴 날 순서. 고칠 때마다 날짜가 바뀌면 전부 최근 날짜로 보이기 때문이다
 const entries = (await getCollection('wiki', ({ data }) => !data.draft)).sort(
-  (a, b) =>
-    (b.data.updated ?? b.data.created).valueOf() - (a.data.updated ?? a.data.created).valueOf(),
+  (a, b) => b.data.created.valueOf() - a.data.created.valueOf(),
 )
 const groups = WIKI_TOPICS.map((topic) => ({
   ...topic,
@@ -23,10 +23,11 @@ const documents = entries.map((entry) => ({
   topic: entry.data.topic,
   tags: entry.data.tags,
   status: normalizeStatus(entry.data.status),
-  updated: (entry.data.updated ?? entry.data.created).valueOf(),
+  // 거르기 뒤 정렬 기준(wiki-library의 updated 키). 목록과 같게 처음 쓴 날을 넣는다
+  updated: entry.data.created.valueOf(),
 }))
-// 행의 날짜는 마지막 갱신일. 짧은 형식(2026.09.05)은 PostRow가 다른 목록과 같이 맞춘다
-const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry.data.created
+// 행의 날짜는 처음 쓴 날. 짧은 형식(2026.09.05)은 PostRow가 다른 목록과 같이 맞춘다
+const revised = (entry: (typeof entries)[number]) => entry.data.created
 ---
 
 <BaseLayout
@@ -69,7 +70,7 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
     </form>
 
     <div class="count">
-      <h2 id="wiki-heading" tabindex="-1">최근 갱신한 문서</h2>
+      <h2 id="wiki-heading" tabindex="-1">최근 작성한 문서</h2>
       <p id="wiki-count" role="status" aria-live="polite">{entries.length}편</p>
       <button type="button" id="wiki-clear" class="btn" hidden>조건 초기화</button>
     </div>
@@ -179,7 +180,7 @@ const revised = (entry: (typeof entries)[number]) => entry.data.updated ?? entry
           .trim()
       : active
         ? '검색 결과'
-        : '최근 갱신한 문서'
+        : '최근 작성한 문서'
     // 결과가 없을 때의 안내는 모바일에서 첫 화면 밖에 놓이므로, 화면 안의 건수 줄이 대신 알린다.
     document.getElementById('wiki-count')!.textContent =
       result.total +

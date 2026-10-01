@@ -137,7 +137,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
         if (!existsSync(output)) result.errors.push(`Published wiki missing: ${slug}`)
         else
           result.errors.push(
-            ...checkDateDisplay(readFileSync(output, 'utf8'), data.created, data.updated).map(
+            // 위키 문서는 처음 쓴 날만 보인다(2026-10-01). 수정 시각은 화면에 내지 않는다
+            ...checkDateDisplay(readFileSync(output, 'utf8'), data.created).map(
               (error) => `wiki/${slug}: ${error}`,
             ),
           )

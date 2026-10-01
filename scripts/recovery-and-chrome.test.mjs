@@ -15,11 +15,8 @@ test('an empty wiki result is announced in the visible count row with a reset be
     wiki,
     /<div id="wiki-empty" class="empty" hidden>[\s\S]*?id="wiki-reset"[\s\S]*?id="wiki-global"/,
   )
-  // 목록의 날짜는 다른 목록과 같은 짧은 형식(PostRow의 formatCompactDate)을 쓴다. 마지막 갱신일이다
-  assert.match(
-    wiki,
-    /const revised = \(entry: [^=]*\) => entry\.data\.updated \?\? entry\.data\.created/,
-  )
+  // 목록의 날짜는 다른 목록과 같은 짧은 형식(PostRow의 formatCompactDate)을 쓴다. 처음 쓴 날이다
+  assert.match(wiki, /const revised = \(entry: [^=]*\) => entry\.data\.created\n/)
   assert.match(wiki, /<PostRow[\s\S]*?date=\{revised\(entry\)\}/)
   assert.match(source('src/components/PostRow.astro'), /formatCompactDate\(date\)/)
 })

@@ -144,14 +144,13 @@ test('wiki and case outlines share location behavior without replacing native an
 
 test('wiki title precedes dates and navigation is separate from publication metadata', () => {
   const source = read('src/pages/wiki/[...slug].astro')
-  // 메타 줄(위키 › 주제 · 상태 · 만듦 · 갱신)이 제목 위에 온다. 검색 색인에서는 뺀다
+  // 메타 줄(위키 › 주제 · 상태 · 작성일)이 제목 위에 온다. 검색 색인에서는 뺀다
   assert.match(source, /<p class="meta" data-pagefind-ignore>/)
   assert.ok(source.indexOf('<p class="meta"') < source.indexOf('<h1 tabindex="-1">'))
   assert.ok(source.indexOf('<ContentDates') < source.indexOf('<h1 tabindex="-1">'))
   assert.match(source, /date=\{entry.data.created\}/)
-  assert.match(source, /updated=\{entry.data.updated\}/)
-  assert.match(source, /dateLabel="만듦"/)
-  assert.match(source, /updatedLabel="갱신"/)
+  // 처음 쓴 날만 보인다(2026-10-01). 수정 시각은 검색엔진용 메타에만 남긴다
+  assert.doesNotMatch(source, /updatedLabel="갱신"/)
   assert.match(source, /<p class="deck">\{entry.data.description\}<\/p>/)
   assert.match(source, /<Content\s*\/>/)
 })
