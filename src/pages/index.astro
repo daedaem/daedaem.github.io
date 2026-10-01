@@ -4,7 +4,6 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import CaseRow from '@/components/CaseRow.astro'
 import { SITE } from '@/consts'
 import { HOME_SUMMARIES } from '@/data/home-summaries'
-import { noteYearRange } from '@/utils/learning-range.mjs'
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf() || b.id.localeCompare(a.id),
 )
@@ -12,7 +11,6 @@ const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
 const wiki = await getCollection('wiki', ({ data }) => !data.draft)
 const notes = await getCollection('notes')
 const solutions = await getCollection('solutions')
-const noteYears = noteYearRange(notes)
 ---
 
 <BaseLayout title={SITE.title} description={SITE.description} searchIndex={false}>
@@ -56,7 +54,7 @@ const noteYears = noteYearRange(notes)
         <li>
           <a href="/learn/"
             ><b>학습 기록</b><span
-              >학습 노트 {notes.length}편 ({noteYears}) · 알고리즘 풀이 {solutions.length}건</span
+              >학습 노트 {notes.length}편 · 알고리즘 풀이 {solutions.length}건</span
             ><i aria-hidden="true">→</i></a
           >
         </li>

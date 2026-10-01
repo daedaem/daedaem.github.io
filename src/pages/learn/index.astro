@@ -4,7 +4,6 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import PageHead from '@/components/PageHead.astro'
 import LearningNav from '@/components/LearningNav.astro'
 import { orderedNoteGroups } from '@/utils/note-series.mjs'
-import { noteYearRange } from '@/utils/learning-range.mjs'
 
 const solutions = await getCollection('solutions')
 const notes = (await getCollection('notes')).sort(
@@ -13,15 +12,13 @@ const notes = (await getCollection('notes')).sort(
 const series = orderedNoteGroups(notes)
 const boj = solutions.filter((s) => s.data.site === '백준').length
 const pgs = solutions.filter((s) => s.data.site === '프로그래머스').length
-// 노트의 연도 범위(서울 기준). 홈 '더 보기' 행과 같은 함수를 쓴다
-const noteYears = noteYearRange(notes)
 const arrow =
   '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 18l6-6M13 6l6 6"/></svg>'
 ---
 
 <BaseLayout
   title="학습 기록"
-  description="알고리즘 풀이와 2022~2023년 학습 노트, 개발자로 전환하던 시기의 기록."
+  description="알고리즘 풀이와 학습 노트, 개발자로 전환하던 시기의 기록."
   searchIndex={false}
 >
   <div class="page">
@@ -41,7 +38,7 @@ const arrow =
         </h2>
       </div>
       <p class="blurb">
-        {noteYears}년에 작성한 학습 노트 {notes.length}편을 시리즈와 장 순서로 모았습니다.
+        학습 노트 {notes.length}편을 시리즈와 장 순서로 모았습니다.
       </p>
       <ul class="group-overview" aria-label="학습 노트 시리즈">
         {
@@ -64,9 +61,8 @@ const arrow =
     <section class="blk" aria-labelledby="learn-algorithms-title">
       <div class="sec-h"><h2 class="k" id="learn-algorithms-title">알고리즘 풀이</h2></div>
       <p class="blurb">
-        백준 {boj}문제, 프로그래머스 {pgs}문제. 2021년 12월부터 2023년 10월까지의 풀이 {
-          solutions.length
-        }건을 문제 이름, 난이도, 언어로 찾습니다.
+        백준 {boj}문제, 프로그래머스 {pgs}문제. 풀이 {solutions.length}건을 문제 이름, 난이도,
+        언어로 찾습니다.
         <a class="more" href="/algorithms/">풀이 아카이브 보기<Fragment set:html={arrow} /></a>
       </p>
     </section>
