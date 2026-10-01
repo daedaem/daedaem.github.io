@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import CaseRow from '@/components/CaseRow.astro'
 import { SITE } from '@/consts'
+import { HOME_SUMMARIES } from '@/data/home-summaries'
 import { noteYearRange } from '@/utils/learning-range.mjs'
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf() || b.id.localeCompare(a.id),
@@ -36,7 +37,7 @@ const noteYears = noteYearRange(notes)
               headingLevel={3}
               href={`/posts/${post.id}/`}
               title={post.data.title}
-              description={post.data.description}
+              description={HOME_SUMMARIES[post.id] ?? post.data.description}
               date={post.data.date}
               category={post.data.category}
             />

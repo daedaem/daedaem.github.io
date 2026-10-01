@@ -84,7 +84,9 @@ test('case summaries share the s4 row and archive summaries retain their origina
     'src/pages/categories/[category].astro',
   ]) {
     const page = source(path)
-    assert.match(page, /<CaseRow[\s\S]*?description=\{(?:post|p)\.data\.description\}/)
+    assert.match(page, path === 'src/pages/index.astro'
+      ? /<CaseRow[\s\S]*?description=\{HOME_SUMMARIES\[post\.id\] \?\? post\.data\.description\}/
+      : /<CaseRow[\s\S]*?description=\{(?:post|p)\.data\.description\}/)
     assert.doesNotMatch(page, /\.reading-excerpt\s*\{/)
   }
   assert.match(caseRow, /<p class="reading-excerpt">\{description\}<\/p>/)

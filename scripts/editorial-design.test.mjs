@@ -40,7 +40,7 @@ test('article-owned cover metadata stays valid and s4 figures resolve by article
   assert.match(home, /getCollection\('posts',\s*\(\{\s*data\s*\}\)\s*=>\s*!data\.draft\)/)
   assert.match(
     home,
-    /<CaseRow[\s\S]*?title=\{post\.data\.title\}[\s\S]*?description=\{post\.data\.description\}/,
+    /<CaseRow[\s\S]*?title=\{post\.data\.title\}[\s\S]*?description=\{HOME_SUMMARIES\[post\.id\] \?\? post\.data\.description\}/,
   )
   assert.doesNotMatch(home, /resolvePostCover|PostCover|selectHomeContent/)
   const expected = {

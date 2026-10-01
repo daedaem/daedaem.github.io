@@ -25,7 +25,7 @@ test('saved s4 home keeps the factual author identity, approved introduction and
   assert.match(home, /<h1 id="home-title">증상보다 <b>원인<\/b>을 고칩니다<\/h1>/)
   assert.match(home, /<p>\{SITE\.intro\}<\/p>/)
   assert.doesNotMatch(home, /레거시 시스템을 개발·운영합니다/)
-  assert.match(home, /description=\{post\.data\.description\}/)
+  assert.match(home, /description=\{HOME_SUMMARIES\[post\.id\] \?\? post\.data\.description\}/)
   assert.match(home, /title=\{post\.data\.title\}/)
   assert.doesNotMatch(home, /outcome=|causeSummary|성과|이력서/)
 })

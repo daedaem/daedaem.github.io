@@ -1,14 +1,32 @@
 ---
 import { getCollection, render } from 'astro:content'
 import PostLayout from '@/layouts/PostLayout.astro'
+import NoteSeriesNav from '@/components/NoteSeriesNav.astro'
+import { noteSeriesPosition } from '@/utils/note-series.mjs'
 import { readingMinutes } from '@/utils/format'
 
 export const getStaticPaths = async () => {
   const notes = await getCollection('notes')
-  return notes.map((note) => ({ params: { slug: note.id }, props: { note } }))
+  const byId = new Map(notes.map((note) => [note.id, note]))
+  const link = (id?: string) => {
+    const note = id ? byId.get(id) : undefined
+    return note ? { href: `/notes/${note.id}/`, title: note.data.title.trim() } : undefined
+  }
+  return notes.map((note) => {
+    const series = noteSeriesPosition(note.id)
+    return {
+      params: { slug: note.id },
+      props: {
+        note,
+        series,
+        previous: link(series?.previous),
+        next: link(series?.next),
+      },
+    }
+  })
 }
 
-const { note } = Astro.props
+const { note, series, previous, next } = Astro.props
 const { Content, headings } = await render(note)
 ---
 
@@ -23,5 +41,46 @@ const { Content, headings } = await render(note)
   archived
   archiveKind={note.data.categories.includes('내 이야기') ? 'personal' : 'learning'}
 >
+  {
+    series && (
+      <p slot="before-content" class="series-context" data-pagefind-ignore>
+        <a href={`/learn/#series-${series.id}`}>{series.title} 장 목록</a>
+        <span>
+          {series.chapter}장 · 기록 {series.index + 1}/{series.total}
+        </span>
+      </p>
+    )
+  }
   <Content />
+  {
+    series && (
+      <NoteSeriesNav
+        slot="after-content"
+        title={series.title}
+        id={series.id}
+        previous={previous}
+        next={next}
+      />
+    )
+  }
 </PostLayout>
+
+<style>
+  .series-context {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 12px;
+    margin: 8px 0 20px;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .series-context a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .series-context span {
+    color: var(--fg2);
+  }
+</style>

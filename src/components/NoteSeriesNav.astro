@@ -1,0 +1,89 @@
+---
+interface Props {
+  title: string
+  id: string
+  previous?: { href: string; title: string }
+  next?: { href: string; title: string }
+}
+const { title, id, previous, next } = Astro.props
+---
+
+<nav class="series-nav" aria-label={`${title} 이전·다음 장`} data-pagefind-ignore>
+  <a class="series-index" href={`/learn/#series-${id}`}>{title} 장 목록으로</a>
+  <div class="chapters">
+    {
+      previous ? (
+        <a href={previous.href} rel="prev">
+          <>
+            <span>이전 장</span>
+            <strong>{previous.title}</strong>
+          </>
+        </a>
+      ) : (
+        <p>이 시리즈의 첫 기록입니다.</p>
+      )
+    }
+    {
+      next ? (
+        <a href={next.href} rel="next">
+          <>
+            <span>다음 장</span>
+            <strong>{next.title}</strong>
+          </>
+        </a>
+      ) : (
+        <p>이 시리즈에 남긴 마지막 기록입니다.</p>
+      )
+    }
+  </div>
+</nav>
+<style>
+  .series-nav {
+    margin-top: 40px;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+  .series-index {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 16px;
+  }
+  .chapters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 24px;
+  }
+  .chapters a {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 44px;
+    padding: 12px 0;
+    text-decoration: none;
+    color: var(--fg);
+    overflow-wrap: anywhere;
+  }
+  .chapters span,
+  .chapters p {
+    color: var(--fg2);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .chapters p {
+    margin: 12px 0;
+  }
+  .chapters strong {
+    font-size: 17px;
+    line-height: 1.7;
+    font-weight: 600;
+  }
+  .chapters a:hover strong {
+    color: var(--accent);
+  }
+  @media (max-width: 600px) {
+    .chapters {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

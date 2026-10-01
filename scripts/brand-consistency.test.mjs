@@ -33,7 +33,7 @@ test('saved s4 identity and illustrated list preserve factual bindings and exist
   assert.match(home, /posts\.map\(\(?post\)?\s*=>\s*\(?\s*<CaseRow/)
   assert.match(home, /href=\{`\/posts\/\$\{post\.id\}\/`\}/)
   assert.match(home, /title=\{post\.data\.title\}/)
-  assert.match(home, /description=\{post\.data\.description\}/)
+  assert.match(home, /description=\{HOME_SUMMARIES\[post\.id\] \?\? post\.data\.description\}/)
   assert.match(home, /date=\{post\.data\.date\}/)
   assert.match(home, /\{posts.length\}/)
   assert.match(source('src/components/CaseRow.astro'), /<IsometricCover kind=\{kind\}/)

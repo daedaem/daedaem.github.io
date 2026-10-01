@@ -79,7 +79,7 @@ test('home uses one published case list with full titles and descriptions while 
   const home = source('src/pages/index.astro')
   assert.match(
     home,
-    /posts\.map\(\(post\) => \(\s*<CaseRow\s+headingLevel=\{3\}[\s\S]*?title=\{post\.data\.title\}[\s\S]*?description=\{post\.data\.description\}[\s\S]*?date=\{post\.data\.date\}/,
+    /posts\.map\(\(post\) => \(\s*<CaseRow\s+headingLevel=\{3\}[\s\S]*?title=\{post\.data\.title\}[\s\S]*?description=\{HOME_SUMMARIES\[post\.id\] \?\? post\.data\.description\}[\s\S]*?date=\{post\.data\.date\}/,
   )
   assert.doesNotMatch(home, /splitEditorialTitle|heading\.subtitle|class="subtitle"|card-title/)
   assert.equal((home.match(/<ol class="case-list">/g) ?? []).length, 1)

@@ -287,10 +287,12 @@ const body = rendered.slice(lead.length)
           )
         }
 
+        <slot name="before-content" />
         <div class="prose">
           <Fragment set:html={body} />
         </div>
 
+        <slot name="after-content" />
         <footer class="art-end">
           {
             tags.length > 0 && (
