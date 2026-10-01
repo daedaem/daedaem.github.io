@@ -58,12 +58,11 @@ test('equal chapter numbers and IDs outside the configured prefix are stable', (
   ])
 })
 
-test('real numbered note series are explicitly opted into chapter ordering', () => {
-  const source = readFileSync(new URL('../src/pages/notes/index.astro', import.meta.url), 'utf8')
-  for (const prefix of ['core-javascript-', 'modern-js-deep-dive-', 'typescript-']) {
-    assert.match(source, new RegExp(`prefix: '${prefix}',\\s*chapterOrder: true`))
+test('both archive screens use the shared groups and chapter ordering', () => {
+  for (const path of ['learn/index.astro', 'notes/index.astro']) {
+    const source = readFileSync(new URL(`../src/pages/${path}`, import.meta.url), 'utf8')
+    assert.match(source, /orderedNoteGroups\(notes\)/)
   }
-  assert.match(source, /items:\s*orderNoteSeries\(/)
 })
 
 test('wiki contents are a native details element with no tree sidebar or breakpoint script', () => {

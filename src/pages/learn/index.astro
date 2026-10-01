@@ -3,17 +3,14 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import PageHead from '@/components/PageHead.astro'
 import LearningNav from '@/components/LearningNav.astro'
-import PostRow from '@/components/PostRow.astro'
-import { orderedNoteSeries } from '@/utils/note-series.mjs'
+import { orderedNoteGroups } from '@/utils/note-series.mjs'
 import { noteYearRange } from '@/utils/learning-range.mjs'
 
 const solutions = await getCollection('solutions')
 const notes = (await getCollection('notes')).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 )
-const series = orderedNoteSeries(notes)
-const groupedIds = new Set(series.flatMap((group) => group.chapters.map(({ note }) => note.id)))
-const otherNotes = notes.filter((note) => !groupedIds.has(note.id))
+const series = orderedNoteGroups(notes)
 const boj = solutions.filter((s) => s.data.site === '백준').length
 const pgs = solutions.filter((s) => s.data.site === '프로그래머스').length
 // 노트의 연도 범위(서울 기준). 홈 '더 보기' 행과 같은 함수를 쓴다
@@ -44,56 +41,25 @@ const arrow =
         </h2>
       </div>
       <p class="blurb">
-        {noteYears}년의 노트. JavaScript·TypeScript·웹 기초를 정리한 노트와 그 시기의 이야기입니다.
-        오탈자를 고치고 짧은 보충을 덧붙였으며, 지금 보기에 틀린 내용은 지우지 않고 취소선을 그은 뒤
-        바로 아래에 바로잡았습니다.
+        {noteYears}년에 작성한 학습 노트 {notes.length}편을 시리즈와 장 순서로 모았습니다.
       </p>
-      <nav class="series-jumps" aria-label="학습 시리즈 바로가기">
-        {series.map((group) => <a href={`#series-${group.id}`}>{group.title}</a>)}
-        <a href="#other-notes">그 밖의 노트</a>
-        <a href="#learn-algorithms-title">알고리즘 풀이</a>
-      </nav>
-      <p class="series-help">작성일 대신 장 순서로 모았습니다. 실제 남긴 노트만 보여줍니다.</p>
-      {
-        series.map((group) => (
-          <section class="note-series" aria-labelledby={`series-${group.id}`}>
-            <h3 id={`series-${group.id}`}>
-              {group.title} <span>{group.chapters.length}편</span>
-            </h3>
-            <ol class="chapter-list">
-              {group.chapters.map(({ chapter, note }) => (
-                <li>
-                  <a href={`/notes/${note.id}/`}>
-                    <span class="chapter-number" aria-hidden="true">
-                      {chapter}
-                    </span>
-                    <span>
-                      <strong>{note.data.title.trim()}</strong>
-                      {note.data.summary && (
-                        <span class="chapter-summary">{note.data.summary}</span>
-                      )}
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </section>
-        ))
-      }
-      <h3 id="other-notes">그 밖의 학습 노트 <span class="n">{otherNotes.length}편</span></h3>
-      <ol class="rows">
+      <ul class="group-overview" aria-label="학습 노트 시리즈">
         {
-          otherNotes.map((note) => (
-            <PostRow
-              href={`/notes/${note.id}/`}
-              title={note.data.title.trim()}
-              date={note.data.date}
-              prefix="아카이브"
-              description={note.data.summary || undefined}
-            />
+          series.map((group) => (
+            <li id={group.seriesId ? `series-${group.seriesId}` : group.id}>
+              <a href={`/notes/#${group.id}`}>
+                <>
+                  <span>{group.title}</span>
+                  <span class="n">{group.chapters.length}편 →</span>
+                </>
+              </a>
+            </li>
           ))
         }
-      </ol>
+      </ul>
+      <a class="more" id="other-notes" href="/notes/"
+        >전체 장 목록 보기<Fragment set:html={arrow} /></a
+      >
     </section>
     <section class="blk" aria-labelledby="learn-algorithms-title">
       <div class="sec-h"><h2 class="k" id="learn-algorithms-title">알고리즘 풀이</h2></div>
@@ -108,88 +74,36 @@ const arrow =
 </BaseLayout>
 
 <style>
-  .series-jumps {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 20px;
-    margin-top: 16px;
-  }
-  .series-jumps a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    font-size: 16px;
-  }
-  .series-help {
-    color: var(--fg2);
-    font-size: 15px;
-    line-height: 1.8;
-    margin: 12px 0 24px;
-  }
-  .note-series {
-    margin-top: 32px;
-  }
-  .note-series h3,
-  #other-notes {
-    margin: 32px 0 12px;
-    font-size: 20px;
-    line-height: 1.6;
-    scroll-margin-top: 120px;
-  }
-  .note-series h3 span {
-    margin-left: 8px;
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--fg2);
-  }
-  .chapter-list {
+  .group-overview {
     list-style: none;
-    margin: 0;
     padding: 0;
+    margin: 16px 0 8px;
     border-top: 1px solid var(--line);
   }
-  .chapter-list li {
+  .group-overview li {
     border-bottom: 1px solid var(--line);
+    scroll-margin-top: 120px;
   }
-  .chapter-list a {
-    display: grid;
-    grid-template-columns: 36px minmax(0, 1fr);
+  .group-overview a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 12px;
     min-height: 44px;
-    padding: 18px 0;
+    padding: 12px 0;
     color: var(--fg);
     text-decoration: none;
   }
-  .chapter-number {
-    color: var(--fg2);
-    font-variant-numeric: tabular-nums;
-    line-height: 1.8;
-  }
-  .chapter-list strong {
-    display: block;
-    font-size: 17px;
-    line-height: 1.8;
-    font-weight: 600;
-    overflow-wrap: anywhere;
-  }
-  .chapter-summary {
-    display: block;
-    color: var(--fg2);
-    font-size: 15px;
-    line-height: 1.8;
-    margin-top: 4px;
-  }
-  .chapter-list a:hover strong {
+  .group-overview a:hover {
     color: var(--accent);
   }
-
-  /* 문장 안의 링크. 44px 높이를 갖되 위아래 음수 여백으로 줄 높이를 흔들지 않는다 */
+  .group-overview .n {
+    white-space: nowrap;
+    color: var(--fg2);
+    font-size: 14px;
+  }
   .blurb .more {
     margin: -0.6rem 0 -0.6rem 0.25rem;
     vertical-align: baseline;
-  }
-  .blurb + .rows {
-    margin-top: 0.5rem;
-    border-top: 1px solid var(--line);
   }
 </style>

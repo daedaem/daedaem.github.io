@@ -284,7 +284,7 @@ test('s4 home presents identity then every published article in one list with ar
   assert.match(learning, /getCollection\('notes'\)/)
   assert.match(learning, /getCollection\('solutions'\)/)
   assert.match(learning, /\{\s*solutions\.length\s*\}/)
-  assert.match(learning, /\{noteYears\}년의 노트/)
+  assert.match(learning, /\{noteYears\}년에 작성한 학습 노트/)
   assert.match(source('src/pages/wiki/index.astro'), /\{entries\.length\}편/)
   const css = source('src/styles/global.css')
   assert.match(css, /\.case-page\s*\{[^}]*max-width:\s*904px;[^}]*padding-inline:\s*32px;/)

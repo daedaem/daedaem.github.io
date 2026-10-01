@@ -1,4 +1,5 @@
 ---
+import { noteSeriesAnchor } from '@/utils/note-series.mjs'
 interface Props {
   title: string
   id: string
@@ -9,7 +10,7 @@ const { title, id, previous, next } = Astro.props
 ---
 
 <nav class="series-nav" aria-label={`${title} 이전·다음 장`} data-pagefind-ignore>
-  <a class="series-index" href={`/learn/#series-${id}`}>{title} 장 목록으로</a>
+  <a class="series-index" href={`/notes/#${noteSeriesAnchor(id)}`}>{title} 장 목록으로</a>
   <div class="chapters">
     {
       previous ? (

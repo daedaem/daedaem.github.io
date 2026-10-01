@@ -27,7 +27,7 @@ export const NOTE_SERIES = [
   },
   {
     id: 'modern-js-deep-dive',
-    title: '모던 JS Deep Dive',
+    title: '모던 자바스크립트 Deep Dive',
     chapters: [
       ['1', 'modern-js-deep-dive-01-programming'],
       ['2', 'modern-js-deep-dive-02-what-is-javascript'],
@@ -85,4 +85,59 @@ export function orderNoteSeries(entries, series) {
   }
   // 번호가 없는 부록이나 같은 장 번호는 입력의 시간순을 그대로 유지한다.
   return [...entries].sort((a, b) => chapter(a) - chapter(b) || 0)
+}
+
+/** 두 진입 화면에서 공유하는 이름·순서. 기존 notes 해시는 유지한다. */
+export const NOTE_GROUPS = [
+  { id: 'ts', seriesId: 'typescript', title: NOTE_SERIES[0].title },
+  { id: 'core-js', seriesId: 'core-javascript', title: NOTE_SERIES[1].title },
+  { id: 'deep-dive', seriesId: 'modern-js-deep-dive', title: NOTE_SERIES[2].title },
+  { id: 'js', title: '자바스크립트 기초', prefix: 'javascript-' },
+  { id: 'web', title: '웹과 도메인 지식', ids: ['semantic-html', 'atomic-design', 'blockchain'] },
+  { id: 'transition', title: '전환기의 기록', ids: ['first-post', 'scsa'] },
+]
+
+/** @param {string} id */
+export function noteSeriesAnchor(id) {
+  const group = NOTE_GROUPS.find((group) => group.seriesId === id)
+  if (!group) throw new Error(`시리즈 목록이 없습니다: ${id}`)
+  return group.id
+}
+
+/** @template {{id: string, data: {date: Date}}} T @param {T[]} notes */
+export function orderedNoteGroups(notes) {
+  const chronological = [...notes].sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf())
+  const numbered = orderedNoteSeries(notes)
+  const groups = NOTE_GROUPS.map((group) => ({
+    ...group,
+    chapters: group.seriesId
+      ? numbered.find((series) => series.id === group.seriesId).chapters
+      : chronological
+          .filter((note) =>
+            group.prefix ? note.id.startsWith(group.prefix) : group.ids.includes(note.id),
+          )
+          .map((note) => ({ chapter: '', note })),
+  }))
+  const used = new Set(groups.flatMap((group) => group.chapters.map(({ note }) => note.id)))
+  const others = chronological.filter((note) => !used.has(note.id))
+  if (others.length)
+    groups.push({
+      id: 'others',
+      title: '그 밖의 글',
+      chapters: others.map((note) => ({ chapter: '', note })),
+    })
+  return groups.filter((group) => group.chapters.length)
+}
+
+/** 목록에서만 중복 접두사를 줄인다. 원문 제목과 메타데이터는 건드리지 않는다.
+ * @param {string} title @param {string} chapter */
+export function noteListTitle(title, chapter) {
+  if (!chapter) return title.trim().replace(/^JavaScript\s*-\s*/, '')
+  const subject = title
+    .trim()
+    .replace(
+      /^(?:타입스크립트\s*-\s*|코어자바스크립트\s+ch|모던 JS Deep Dive\s*-\s*)\d+(?:\.\d+)?\.?\s*/,
+      '',
+    )
+  return `${chapter} ${subject}`
 }

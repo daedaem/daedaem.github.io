@@ -129,7 +129,6 @@ test('찾는 목록은 행 전체를 누를 수 있다', () => {
   assert.match(css, /\.row-a \{[^}]*display: flex;/)
   for (const path of [
     'src/pages/notes/index.astro',
-    'src/pages/learn/index.astro',
     'src/pages/tags/[tag].astro',
     'src/pages/wiki/index.astro',
   ]) {
@@ -137,6 +136,10 @@ test('찾는 목록은 행 전체를 누를 수 있다', () => {
     assert.match(text, /<ol[^>]*class="rows"[^>]*>[\s\S]*?<PostRow/, `${path}의 목록 행`)
     assert.doesNotMatch(text, /stretched-link/)
   }
+  const learning = source('src/pages/learn/index.astro')
+  assert.match(learning, /<ul class="group-overview"[\s\S]*?<li[^>]*>[\s\S]*?<a href=/)
+  assert.match(learning, /\.group-overview a \{[^}]*display: flex;[^}]*min-height: 44px;/)
+  assert.doesNotMatch(learning, /stretched-link/)
   // 알고리즘 풀이 목록은 표 같은 행이라 stretched-link를 그대로 쓴다
   assert.match(css, /\.stretched-link::after \{[^}]*inset: 0;/)
   for (const [path, row] of [

@@ -2,7 +2,7 @@
 import { getCollection, render } from 'astro:content'
 import PostLayout from '@/layouts/PostLayout.astro'
 import NoteSeriesNav from '@/components/NoteSeriesNav.astro'
-import { noteSeriesPosition } from '@/utils/note-series.mjs'
+import { noteSeriesPosition, noteSeriesAnchor } from '@/utils/note-series.mjs'
 import { readingMinutes } from '@/utils/format'
 
 export const getStaticPaths = async () => {
@@ -44,7 +44,7 @@ const { Content, headings } = await render(note)
   {
     series && (
       <p slot="before-content" class="series-context" data-pagefind-ignore>
-        <a href={`/learn/#series-${series.id}`}>{series.title} 장 목록</a>
+        <a href={`/notes/#${noteSeriesAnchor(series.id)}`}>{series.title} 장 목록</a>
         <span>
           {series.chapter}장 · 기록 {series.index + 1}/{series.total}
         </span>
