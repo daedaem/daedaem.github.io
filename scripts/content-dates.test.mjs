@@ -61,19 +61,12 @@ test('publication dates and SCSA original record are not replaced by revision da
   assert.doesNotMatch(body, /^### 삼성전자/m)
 })
 
-test('SCSA pressure is a dated personal recollection, not a claim about repayment or exam rules', () => {
+test('SCSA note keeps the admission of insufficient preparation without an excuse-like addendum', () => {
   const { data, body } = read('notes/scsa.md')
-  const addition = body.match(/^> \*\*덧붙임\(2026-09-14\):\*\*[^\n]+/m)?.[0]
-  assert.ok(addition)
   assert.equal(new Date(data.date).toISOString().slice(0, 10), '2022-12-21')
-  assert.ok(new Date(data.updated) >= new Date('2026-09-14'))
-  assert.match(addition, /나는 시험에서 탈락하면 교육비를 반환해야 할 수도 있다고 알고 있었다/)
-  assert.match(addition, /SW 역량테스트 기회도 한 번뿐인 줄 알았고/)
-  assert.match(addition, /두 번째와 세 번째[\s\S]*매번 이번이 마지막 기회라고 생각했다/)
-  assert.match(addition, /압박감 때문에 차분하게 시험에 임하기 어려웠다/)
-  assert.doesNotMatch(addition, /반환해야 했다|반환했다|규정상|기회는 한 번뿐이었다/)
+  // 2026-10-01: 압박감 덧붙임은 탈락 이유를 대는 것처럼 읽혀 작성자 판단으로 뺐다
+  assert.doesNotMatch(body, /덧붙임\(2026-09-14\)|교육비를 반환|압박감 때문에/)
   assert.match(body, /하지만 결국 준비가 부족했던 것이라는 사실을 인정/)
-  assert.ok(body.indexOf(addition) < body.indexOf('하루는 아무것도 못 하고 보냈다'))
 })
 
 test('header controls use the existing 44px control-size token', () => {
