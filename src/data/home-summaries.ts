@@ -1,4 +1,4 @@
-/** 홈에서만 쓰는 짧은 요약. 원문·검색·RSS의 설명과 실제 수행 범위는 보존한다. */
+/** 홈에서만 쓰는 짧은 요약. 원문·검색의 설명과 실제 수행 범위는 보존한다. */
 export const HOME_SUMMARIES: Record<string, string> = {
   'retire-flash-module-by-integration':
     '기존 외부 API에 계약 작성을 연결하고, 연동 전후 업무 로직과 결재 상태 동기화·적재 실패 복구 흐름을 개발했다.',

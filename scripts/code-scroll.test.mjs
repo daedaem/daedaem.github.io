@@ -139,7 +139,7 @@ test('case lists keep authoring dates and knowledge navigation remains in the fo
   const home = source('src/pages/index.astro')
   assert.doesNotMatch(home, /사례 시점|happened=\{post\.data\.happened\}/)
   assert.match(home, /date=\{post\.data\.date\}/)
-  assert.match(home, /href="\/rss.xml"/)
+  assert.doesNotMatch(home, /href="\/rss.xml"/)
   for (const route of ['/wiki/', '/learn/', '/projects/'])
     assert.ok(source('src/components/Footer.astro').includes(`href="${route}"`))
   for (const component of ['PostRow', 'CaseRow']) {

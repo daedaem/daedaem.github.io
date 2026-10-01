@@ -16,7 +16,7 @@ export const SITE = {
   intro: '백엔드 개발자 조해성의 개발·운영과 학습 기록',
   description: '백엔드 개발자 조해성의 개발·운영과 학습 기록',
   author: '조해성',
-  // 이 값 하나가 canonical, sitemap, RSS에 모두 반영됩니다.
+  // 이 값 하나가 canonical, sitemap에 모두 반영됩니다.
   url: 'https://daedaem.github.io',
   locale: 'ko-KR',
   githubUrl: 'https://github.com/daedaem',

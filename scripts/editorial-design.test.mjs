@@ -231,7 +231,7 @@ test('production design retains navigation and real search without mock controls
   assert.match(footer, /SITE\.linkedinUrl/)
   assert.deepEqual(
     [...footer.matchAll(/<a href=[^>]*>([^<]+)<\/a>/g)].map((m) => m[1]),
-    ['글', '위키', '학습 기록', '소개', '프로젝트', 'RSS', 'GitHub', 'Email', 'LinkedIn', '글 관리'],
+    ['글', '위키', '학습 기록', '소개', '프로젝트', 'GitHub', 'Email', 'LinkedIn', '글 관리'],
   )
   const admin = source('src/pages/admin/index.astro')
   assert.match(admin, /noindex=\{true\}/)
@@ -277,7 +277,7 @@ test('s4 home presents identity then every published article in one list with ar
   assert.doesNotMatch(home, /recommended\.map|rest\.map|주제와 상태로 거르기|2021년 12월부터/)
   // Moving archive discovery to the footer must not remove any destination.
   const footer = source('src/components/Footer.astro')
-  for (const href of ['/wiki/', '/learn/', '/projects/', '/rss.xml']) {
+  for (const href of ['/wiki/', '/learn/', '/projects/']) {
     assert.ok(footer.includes(`href="${href}"`), href)
   }
   const learning = source('src/pages/learn/index.astro')

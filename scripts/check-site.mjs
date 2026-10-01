@@ -117,7 +117,6 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
     'pagefind/pagefind.js',
     'pagefind/pagefind-ui.js',
     'pagefind/pagefind-ui.css',
-    'rss.xml',
     'sitemap-index.xml',
     'robots.txt',
   ]) {
