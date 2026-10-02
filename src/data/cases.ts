@@ -31,7 +31,7 @@ export const CASES: readonly Case[] = [
   {
     id: 'address-search-9s-to-100ms',
     title: '주소 조회 튜닝과 데이터 관리 범위 축소',
-    judgement: '조회 성능을 개선해도 주소 갱신 문제가 남아, 외부 주소 검색을 선택했습니다.',
+    judgement: '조회 성능을 개선해도 없는 주소를 그때마다 추가해야 해서, 외부 주소 검색을 선택했습니다.',
     outcome:
       'DB 조회를 9초에서 1초대로 줄인 뒤, 외부 검색 팝업과 콜백을 연동해 수기 적재를 없앴습니다. 외부 서비스 의존은 남았습니다.',
     outcomePlain:

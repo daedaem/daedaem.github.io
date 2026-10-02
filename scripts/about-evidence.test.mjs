@@ -211,7 +211,7 @@ test('case summaries expose supported implementation and collaboration without i
 test('address summary distinguishes the choice from measured DB results and later popup integration', () => {
   const address = CASES.find((c) => c.id === 'address-search-9s-to-100ms')
   assert.ok(address)
-  assert.match(address.judgement, /주소 갱신 문제가 남아, 외부 주소 검색을 선택/)
+  assert.match(address.judgement, /없는 주소를 그때마다 추가해야 해서, 외부 주소 검색을 선택/)
   assert.doesNotMatch(address.judgement, /9초|1초대/)
   assert.match(address.outcome, /DB 조회를 9초에서 1초대로 줄인 뒤/)
   assert.match(address.outcome, /외부 검색 팝업과 콜백을 연동해 수기 적재를 없앴습니다/)
