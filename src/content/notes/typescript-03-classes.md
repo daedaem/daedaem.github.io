@@ -1,13 +1,15 @@
 ---
 slug: 'typescript-03-classes'
 date: '2023-03-23T04:39:45Z'
-updated: '2026-09-05'
+updated: 2026-10-03
 title: '타입스크립트 - 3.1 클래스'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: '클래스, 상속'
 thumbnail: './TypescriptStudy/Typescript_logo.png'
 legacyPath: "/230331_TypeScript - 3.1 클래스/"
 ---
+
+> **보충·정정(2026-10-03):** TypeScript의 `readonly`는 타입 검사에서 해당 프로퍼티의 재할당을 막는다. 참조한 객체 내부까지 불변으로 만들거나 런타임에서 동결하지 않는다. `abstract` 클래스를 상속한 클래스도 추상 클래스라면 추상 멤버 구현을 다음 구체 클래스에 맡길 수 있다.
 
 # 클래스 만들기
 

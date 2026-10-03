@@ -5,7 +5,7 @@ description: 'Code-Behind 구조로 도는 레거시 .NET 화면을 읽기 위�
 topic: 'dotnet'
 tags: ['ASP.NET', 'C#', 'WebForms', 'ViewState', '레거시']
 created: 2025-12-29
-updated: 2026-09-20
+updated: 2026-10-03
 status: 'growing'
 ---
 
@@ -68,7 +68,7 @@ protected void Page_Load(object sender, EventArgs e)
 }
 ```
 
-**`IsPostBack` 검사를 빼면 버튼을 누를 때마다 목록을 다시 조회한다.** 게다가 사용자가 고른 값이 초기 데이터로 덮여 선택이 풀린다. 레거시 화면에서 "선택이 자꾸 초기화된다"는 증상은 대개 여기다.
+**`IsPostBack` 검사를 빼면 버튼을 누를 때마다 목록을 다시 조회한다.** 게다가 사용자가 고른 값이 초기 데이터로 덮여 선택이 풀린다. 레거시 화면에서 "선택이 자꾸 초기화된다"면 먼저 이 바인딩 시점을 확인한다.
 
 ## ViewState — 상태를 어떻게 들고 있나
 
@@ -103,11 +103,12 @@ protected void gvItemList_SelectedIndexChanged(object sender, EventArgs e)
 ```
 1. Page_PreInit
 2. Page_Init
-3. Page_Load          ← 데이터 로드
-4. Control Events     ← 버튼 클릭 등
-5. Page_PreRender
-6. Render (메서드)     ← HTML 생성. 이벤트가 아니라 오버라이드하는 메서드다
-7. Page_Unload
+3. ViewState 복원·PostBack 데이터 처리
+4. Page_Load          ← 데이터 로드
+5. Control Events     ← 버튼 클릭 등
+6. Page_PreRender
+7. Render (메서드)     ← HTML 생성. 이벤트가 아니라 오버라이드하는 메서드다
+8. Page_Unload
 ```
 
 **`Page_Load`가 컨트롤 이벤트보다 먼저 돈다**는 게 중요하다. 버튼을 눌렀을 때도 `Page_Load` → `btnSubmit_Click` 순서다. 그래서 `Page_Load`에서 무조건 데이터를 다시 바인딩하면, 이벤트 핸들러가 보는 값이 사용자가 고른 값이 아닐 수 있다.

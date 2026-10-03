@@ -1,13 +1,15 @@
 ---
 slug: 'typescript-02-compiler-and-config'
 date: '2023-03-20T07:45:54Z'
-updated: '2026-09-05'
+updated: 2026-10-03
 title: '타입스크립트 - 2.컴파일러 및 구성'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: 'tsconfig'
 thumbnail: './TypescriptStudy/Typescript_logo.png'
 legacyPath: "/230327_TypeScript - 2.컴파일러 및 구성/"
 ---
+
+> **보충·정정(2026-10-03):** `lib`는 사용 가능한 내장 API의 타입 선언을 정하며 런타임에 polyfill을 추가하지 않는다. `target`을 낮춰도 모든 API가 구형 환경에서 생기는 것은 아니다. 또한 `tsc file.ts`처럼 입력 파일을 직접 지정하면 `tsconfig.json`이 적용되지 않는다. 프로젝트 설정으로 검사하려면 `tsc -p .`를 사용한다. [TypeScript lib 문서](https://www.typescriptlang.org/tsconfig/lib.html)
 
 ## watch 모드 사용하기
 

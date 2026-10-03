@@ -17,6 +17,11 @@ draft: false
 
 정보가 들어오는 경로는 두 가지였다. MDM에서 직접 등록·수정한 정보가 업무 시스템으로 내려오기도 했고, 업무 시스템에서 등록·변경한 정보가 MDM에 반영된 뒤 다시 내려오기도 했다. 따라서 반복 결재라는 증상만으로는 보내는 데이터, MDM의 반영, 업무 시스템의 수신 처리 중 어디가 잘못됐는지 구분하기 어려웠다.
 
+<figure class="explanation-diagram">
+  <img src="/uploads/diagrams/mdm-input-routes.svg" alt="업무 시스템 변경은 결재와 MDM 반영 후 수신되고, MDM 직접 변경도 같은 업무 시스템 수신 처리로 들어온다." width="560" height="420" loading="lazy" decoding="async" />
+  <figcaption>입력 경로를 단순화한 그림이다. 반복 결재라는 증상만으로 어느 처리 단계가 원인인지 단정할 수 없다.</figcaption>
+</figure>
+
 ## 화면부터 수신 프로시저까지 따라갔다
 
 관련 로직은 화면, Spring 서비스, Oracle 프로시저, 인터페이스에 나뉘어 있었다. 한 지점만 봐서는 잘못된 변경 판단이 어디에서 생기는지 알기 어려웠다. 관련 데이터와 각 계층의 비교·반영 로직을 따라가며 원인을 조사했다.

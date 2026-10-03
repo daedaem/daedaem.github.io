@@ -1,11 +1,11 @@
 ---
 draft: false
 title: 'Oracle은 빈 문자열을 NULL로 저장한다'
-description: "Oracle에서 ''와 NULL은 구분되지 않는다. SQL 표준과 다른 동작이라 다른 DBMS에서 옮겨 오면 반드시 걸린다."
+description: "Oracle에서 ''와 NULL은 구분되지 않는다. 빈 문자열을 구분하는 DBMS와 연동하거나 이관할 때 비교 의미를 확인해야 한다."
 topic: 'database'
 tags: ['Oracle', 'NULL', 'SQL']
 created: 2026-08-12
-updated: 2026-09-05
+updated: 2026-10-03
 status: 'growing'
 ---
 
@@ -21,7 +21,7 @@ SELECT CASE WHEN '' IS NULL THEN 'NULL이다' ELSE '아니다' END FROM dual;
 -- NULL이다
 ```
 
-SQL 표준은 빈 문자열과 NULL을 다른 값으로 본다. PostgreSQL, MySQL, MSSQL은 구분한다. Oracle만 다르다.
+SQL 표준은 빈 문자열과 NULL을 다른 값으로 본다. PostgreSQL, MySQL, SQL Server는 빈 문자열과 NULL을 구분한다. Oracle과의 차이를 이관·연동 시 확인해야 한다. `EMPTY_CLOB()`으로 만든 비어 있는 LOB는 NULL과 다르므로, 문자열의 규칙을 모든 타입에 일반화하지 않는다. [Oracle NULL 문서](https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Nulls.html)
 
 ## 왜 문제가 되는가
 
@@ -53,6 +53,8 @@ private static String normalize(String v) {
 // Objects.equals는 양쪽 null이면 true, 한쪽만 null이면 false를 준다
 boolean changed = !Objects.equals(normalize(a), normalize(b));
 ```
+
+위 코드는 `java.util.Objects`를 사용하는 **Java 7 이상 학습 예시**다. 실제 MDM 사례의 운영 수정 코드를 재현한 것은 아니다. Java 6 환경이라면 동일한 null 비교 규칙을 직접 구현해야 한다.
 
 ## 더 볼 것
 

@@ -1,7 +1,7 @@
 ---
 slug: 'core-javascript-06-prototype'
 date: '2023-02-18T09:07:29Z'
-updated: '2026-09-06'
+updated: 2026-10-03
 title: '코어자바스크립트 ch6. 프로토타입'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: 'prototype / [[Prototype]] / constructor'
@@ -119,6 +119,8 @@ var jay = new Person('제이',25);
 
 ## 3. Prototype Chaining
 
+> **보충·정정(2026-10-03):** 아래의 `suzi(.__proto__)`와 `arr(.__proto__)`는 실행 가능한 JavaScript가 아니라 옛 설명용 표기다. 프로퍼티 조회가 내부 `[[Prototype]]` 체인을 따라가는 것이며, `__proto__`를 문법적으로 생략하는 것은 아니다.
+
 ![prototype chain](./coreJavaScript/prototype_chain.png)
 
 - 인스턴스에는 특정 메서드가 없음에도 불구하고 [[Prototype]] 이라는 매개체 덕분에 생성자 함수의 prototype에 있는 메서드를 자신의 것처럼 쓸 수 있다.
@@ -161,7 +163,7 @@ var instance = new Constructor();
     Person.prototype === suzi.__proto__ // true
     ```
 
-- this를 인스턴스로 사용하고 싶다면 `__proto__`를 생략하면 된다. 원래부터 생략 가능하도록 정의되어 있다. 이런 점 때문에 **생성자 함수의 prototype에 어떤 메서드나 프로퍼티가 있다면 인스턴스에서도 마치 자신의 것처럼 해당 메서드나 프로퍼티에 접근할 수 있게 된다.**
+- ~~this를 인스턴스로 사용하고 싶다면 `__proto__`를 생략하면 된다. 원래부터 생략 가능하도록 정의되어 있다.~~ 이런 점 때문에 **생성자 함수의 prototype에 어떤 메서드나 프로퍼티가 있다면 인스턴스에서도 마치 자신의 것처럼 해당 메서드나 프로퍼티에 접근할 수 있게 된다.**
 
     ```jsx
     suzi.__proto__.getName

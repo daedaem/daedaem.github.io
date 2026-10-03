@@ -1,13 +1,15 @@
 ---
 slug: 'modern-js-deep-dive-04-variables'
 date: '2023-03-19T07:30:56Z'
-updated: '2026-09-04'
+updated: 2026-10-03
 title: '모던 JS Deep Dive - 4. 변수'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '변수 선언, 초기화, 할당'
 thumbnail: './javascript.png'
 legacyPath: "/230316_모던 JS Deep Dive - 4.변수/"
 ---
+
+> **보충·정정(2026-10-03):** 아래 메모리 주소와 값 이동 그림은 개념 설명이며 모든 엔진의 실제 배치를 뜻하지 않는다. `let`·`const`도 선언의 영향을 받지만 초기화 전에는 TDZ에 있어 접근 시 `ReferenceError`가 발생한다. `var`가 선언 전 `undefined`로 보이는 경우와 구분한다.
 
 # 4.1 변수란 무엇인가? 왜 필요한가?
 

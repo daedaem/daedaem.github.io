@@ -1,7 +1,7 @@
 ---
 slug: 'typescript-01-types'
 date: '2023-03-16T15:58:57Z'
-updated: '2026-08-30'
+updated: 2026-10-03
 title: '타입스크립트 - 1.Types'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: '키:타입'
@@ -183,6 +183,8 @@ for (const hobby of person.hobbies) {
 ```
 
 ## tuple
+
+> **보충·정정(2026-10-03):** 튜플은 위치별 타입을 표현한다. 고정 길이가 흔하지만 선택 요소(`?`)나 나머지 요소(`...`)를 사용하면 길이가 달라질 수 있다. 아래의 기존 “길이가 고정된 배열” 설명은 고정 요소만 선언한 예제에 해당한다.
 
 - 자바스크립트에는 없는 타입, ~~항상 두개의 요소~~
   - 배열에 정확히 x개의 값이 필요하고 각 값 타입을 미리 알고 있는 상황에서는 배열보다 튜플을 사용하면 작업 중인 데이터 타입과 예상되는 데이터 타입을 명확하게 파악 가능
@@ -523,6 +525,20 @@ function sayHi(): undefined {
 
 ## Unknown(‘알 수 없는 타입’)
 
+> **보충·정정(2026-10-03):** 아래의 `unknown` 값을 `string` 변수에 대입하려면 타입을 확인해야 한다. 다음은 검사를 통과한 경우만 문자열을 반환하는 완결된 예제다.
+
+```ts
+// 2026-10-03 교정 예제: 값이 아직 좁혀지지 않은 unknown
+function toName(input: unknown): string {
+  if (typeof input !== "string") {
+    throw new TypeError("이름은 문자열이어야 합니다");
+  }
+  return input; // 검사 이후 string
+}
+```
+
+[TypeScript narrowing 문서](https://www.typescriptlang.org/docs/handbook/2/narrowing.html)
+
 - any 타입처럼 unknown 타입에는 **어떤 타입의 값도 할당**할 수 있다.
 - **any 타입의 값은 어느 타입의 변수에도 할당**될 수 있으나, **unknown 타입의 값은 any와 unknown 타입을 제외한 타입의 변수에는 할당이 불가능**
 - any보다 나은 이유는 할 수 없는 작업을 알 수 있도록 타입 검사를 수행할 수 있다.
@@ -544,6 +560,8 @@ userName = userInput;
 ```
 
 ## Never
+
+> **보충·정정(2026-10-03):** `void`는 호출자가 반환값을 사용하지 않는다는 뜻이며 함수는 정상 종료할 수 있다. `never` 반환 함수는 예외를 던지거나 끝없이 실행되어 호출 지점으로 정상 반환하지 않는다. 단순히 `return` 문이 없다는 뜻이 아니다.
 
 - 아래 코드에서 void로 리턴값 타입을 지정할 수 있지만, never를 통해 아무것도 반환하지 않는다는 것을 확실하게 명시할 수 있다. 즉, 코드를 읽는 개발자에게 해당 값의 의도를 명확히 할 수 있음.
 

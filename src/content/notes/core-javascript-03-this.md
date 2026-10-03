@@ -1,13 +1,15 @@
 ---
 slug: 'core-javascript-03-this'
 date: '2023-01-26T12:14:31Z'
-updated: '2026-09-04'
+updated: 2026-10-03
 title: '코어자바스크립트 ch3. This'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '함수 호출 될 때, 결정되는 this'
 thumbnail: './javascript.png'
 legacyPath: "/230209_코어자바스크립트 ch 3. this/"
 ---
+
+> **보충·정정(2026-10-03):** 아래 호출 방식의 규칙은 일반 함수를 중심으로 읽는다. 화살표 함수는 바깥의 `this`를 사용하고, `bind`로 만든 함수는 일반 호출 시 바인딩된 `this`를 사용하므로 호출 위치만으로 판단하지 않는다.
 
 # 정리
 

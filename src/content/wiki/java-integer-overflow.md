@@ -5,7 +5,7 @@ description: 'int 범위를 넘으면 예외 없이 32비트 값이 순환한다
 topic: 'java'
 tags: ['Java', '오버플로', 'BigDecimal']
 created: 2026-08-12
-updated: 2026-09-04
+updated: 2026-10-03
 status: 'growing'
 ---
 
@@ -39,11 +39,11 @@ Math.multiplyExact(a, b);
 Math.toIntExact(longValue);
 ```
 
-조용히 틀리는 것보다 터지는 편이 나은 계산에는 이쪽을 쓴다.
+위 `Math.*Exact` 메서드는 **Java 8 이상**에서 제공한다. 조용히 틀리는 것보다 범위 초과를 예외로 처리하는 편이 나은 계산에 쓴다.
 
 ## 금액에는 무엇을 쓰는가
 
-`double`은 쓰지 않는다. 십진 소수를 이진으로 정확히 표현할 수 없어 오차가 쌓인다.
+`double`은 쓰지 않는다. 0.1 같은 일부 십진 소수를 이진으로 정확히 표현할 수 없어 오차가 쌓인다.
 
 ```java
 System.out.println(0.1 + 0.2);        // 0.30000000000000004
@@ -61,7 +61,9 @@ new BigDecimal("1.0").equals(new BigDecimal("1.00"));    // false — 스케일�
 new BigDecimal("1.0").compareTo(new BigDecimal("1.00")); // 0 — 값 비교는 이쪽
 ```
 
-Oracle `NUMBER`를 Java로 받을 때는 precision과 scale, 실제 업무 범위를 먼저 확인한다. 소수나 큰 정밀도가 필요한 금액은 보통 `BigDecimal`, scale이 0이고 `long` 범위가 보장되는 정수 카운트는 `long`을 쓸 수 있다. 컬럼의 표현 범위에 타입을 맞춰야 "지금은 안 넘는다"는 조건에 기대지 않게 된다.
+`BigDecimal.valueOf`도 이미 계산 중에 잃은 정밀도를 복원하지는 않는다. 정확한 십진 금액은 문자열 등 원래의 정확한 표현에서 변환한다.
+
+Oracle `NUMBER`를 Java로 받을 때는 precision과 scale, 실제 업무 범위를 먼저 확인한다. 소수나 큰 정밀도가 필요한 금액은 보통 `BigDecimal`, scale이 0이고 `long` 범위가 보장되는 정수 금액이나 카운트는 `long`을 쓸 수 있다. 컬럼의 표현 범위에 타입을 맞춰야 "지금은 안 넘는다"는 조건에 기대지 않게 된다.
 
 ## 더 볼 것
 

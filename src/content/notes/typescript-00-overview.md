@@ -1,13 +1,15 @@
 ---
 slug: 'typescript-00-overview'
 date: '2023-03-16T15:00:17Z'
-updated: '2026-09-05'
+updated: 2026-10-03
 title: '타입스크립트 - 0.Overview'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: 'Javascript superset'
 thumbnail: './TypescriptStudy/Typescript_logo.png'
 legacyPath: "/230321_TypeScript - 0.verview/"
 ---
+
+> **보충·정정(2026-10-03):** DOM 조회는 요소가 없으면 `null`을 반환한다. `as HTMLInputElement`나 `!`는 런타임 검증이 아니다. 입력 요소를 읽을 때는 `if (element instanceof HTMLInputElement)`처럼 존재와 종류를 확인한 뒤 `.value`에 접근한다.
 
 # TypeScript란
 

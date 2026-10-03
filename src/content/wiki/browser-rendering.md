@@ -5,7 +5,7 @@ description: 'DNS 조회부터 DOM·CSSOM·Render Tree, Layout과 Paint까지. �
 topic: 'web'
 tags: ['브라우저', '렌더링', 'DOM', 'CSSOM', 'Reflow']
 created: 2023-02-07
-updated: 2026-09-06
+updated: 2026-10-03
 status: 'stable'
 ---
 
@@ -34,13 +34,18 @@ status: 'stable'
 
 ## 렌더링 과정
 
+<figure class="explanation-diagram">
+  <img src="/uploads/diagrams/browser-rendering-flow.svg" alt="DOM과 CSSOM이 스타일 계산을 통해 렌더 트리를 구성한 뒤 Layout, Paint, Composite를 거쳐 화면에 표시된다." width="560" height="454" loading="lazy" decoding="async" />
+  <figcaption>핵심 의존 관계를 단순화했다. 실제 파싱과 다운로드는 겹쳐 진행되며, JS나 스타일 변경으로 일부 단계가 다시 실행될 수 있다.</figcaption>
+</figure>
+
 ### 1. DOM Tree — 무엇을 그릴지
 
 렌더링 엔진이 HTML을 파싱해 브라우저가 이해할 수 있는 자료구조로 만든다. HTML 요소 간의 부모-자식 관계를 반영한 **트리**다.
 
 ### 2. CSSOM Tree — 어떻게 그릴지
 
-CSS를 파싱해 만든다. **HTML 대신 CSS를 대상으로 하는 DOM**이라고 생각하면 된다. JS로 스타일을 동적으로 읽고 수정할 수 있는 통로이기도 하다.
+CSS를 파싱해 스타일시트·규칙 등을 표현하는 **객체 모델**을 만든다. DOM이 문서 구조를 표현한다면 CSSOM은 스타일 정보를 표현한다. JS로 스타일을 동적으로 읽고 수정할 수 있는 통로이기도 하다.
 
 ### 3. 중간에 끼어드는 자바스크립트
 
@@ -99,6 +104,8 @@ DOM과 CSSOM을 결합한다. **표시할 노드만** 포함한다.
 **세 번째가 보통 가장 싸다.** 애니메이션을 `left`/`top`보다 `transform`으로 만드는 이유가 여기 있다. 다만 브라우저가 해당 요소를 합성 레이어로 올렸을 때 Layout과 Paint를 건너뛸 수 있으며, 레이어를 지나치게 늘리면 메모리 비용이 커진다.
 
 어떤 CSS 속성이 어느 단계를 유발하는지는 **CSS Triggers** 같은 자료로 확인할 수 있다.
+
+도식과 단계의 근거: [web.dev 렌더 트리 구성](https://web.dev/articles/critical-rendering-path/render-tree-construction).
 
 ## 더 볼 것
 

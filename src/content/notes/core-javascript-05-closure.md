@@ -1,7 +1,7 @@
 ---
 slug: 'core-javascript-05-closure'
 date: '2023-02-15T14:54:16Z'
-updated: '2026-09-06'
+updated: 2026-10-03
 title: '코어자바스크립트 ch5. 클로저'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '내부 함수와 LexicalEnvironment의 조합에서 나타나는 특별한 현상'
@@ -12,6 +12,8 @@ legacyPath: "/230216_코어자바스크립트 ch 5. 클로저/"
 # Short ver
 
 ## 클로저 정의
+
+> **보충·정정(2026-10-03):** 클로저는 함수와 그 함수가 생성된 어휘적 환경의 조합이다. 바깥 함수가 종료된 뒤 내부 함수가 변수를 계속 쓰는 사례는 대표적인 활용이며, 함수가 외부로 반환되거나 바깥 실행이 끝나야만 클로저가 생기는 것은 아니다. [MDN 클로저](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures)
 
 - ‘내부 함수와 LexicalEnvironment의 조합에서 나타나는 특별한 현상’
 - ex) 실행컨텍스트 A에서 함수 B를 선언<br> ⇒ A의 LexicalEnvironment와 함수 B의 조합에서 나타나는 특별한 현상

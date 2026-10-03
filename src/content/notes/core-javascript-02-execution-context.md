@@ -1,7 +1,7 @@
 ---
 slug: 'core-javascript-02-execution-context'
 date: '2022-12-30T07:23:21Z'
-updated: '2026-09-06'
+updated: 2026-10-03
 title: '코어자바스크립트 ch2. 실행 컨텍스트'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: 'VariableEnvironment, LexicalEnvironment, ThisBinding'
@@ -146,6 +146,8 @@ console.log(a); // 1
 
 ## 04 this
 
+> **보충·정정(2026-10-03):** 일반 함수의 `this`는 호출 방식에 따라 정해진다. 엄격 모드에서 `fn()`처럼 단독 호출하면 `undefined`이며, 화살표 함수는 바깥 스코프의 `this`를 사용한다. 아래 요약의 전역 객체 설명은 비엄격 일반 함수의 단독 호출에 한정된다. [MDN this](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this)
+
 - 실행 컨텍스트의 thisBinding에는 this로 지정된 객체가 저장됨.
 - 실행 컨텍스트 활성화 당시에 this가 지정되지 않은 경우 this에는 전역객체가 저장 (비엄격 모드 기준. 엄격 모드와 ES 모듈에서는 undefined)
 
@@ -187,7 +189,9 @@ VariableEnvironment와 LexicalEnvironment는 식별자 바인딩을 담는 **Env
 ### **this**
 
 - 실행 컨텍스트를 활성화하는 당시에 지정된 this가 저장됨
-- 함수를 호출하는 방법에 따라 값이 달라지는데, 지정되지 않는 경우에는 전역 객체가 저장됨.
+- ~~함수를 호출하는 방법에 따라 값이 달라지는데, 지정되지 않는 경우에는 전역 객체가 저장됨.~~
+
+> **정정(2026-10-03):** 전역 객체를 사용하는 경우는 비엄격 일반 함수의 단독 호출이다. 엄격 모드에서는 `undefined`, 화살표 함수에서는 바깥의 `this`를 사용한다.
 
 # 출처
 

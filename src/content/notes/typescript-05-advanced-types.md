@@ -1,13 +1,15 @@
 ---
 slug: 'typescript-05-advanced-types'
 date: '2023-03-24T14:34:43Z'
-updated: '2026-09-06'
+updated: 2026-10-03
 title: '타입스크립트 - 4. Advanced Typing Concepts'
 categories: ['Web Frontend', 'TIL', 'TypeScript']
 summary: '타입 가드, 식별된 공용체 ,함수 오버로드'
 thumbnail: './TypescriptStudy/Typescript_logo.png'
 legacyPath: "/230406_TypeScript - 4. Advanced Type/"
 ---
+
+> **보충·정정(2026-10-03):** 사용자 정의 타입 가드의 `value is Type`은 개발자가 제공한 판별 결과를 타입 검사기가 신뢰하는 선언이다. 실제 검사가 맞는지는 구현자가 확인해야 한다. 아래 예제들은 독립된 조각이므로 같은 이름의 `const` 선언을 한 파일에 그대로 합치면 중복 선언 오류가 난다.
 
 ## Intersection Types
 

@@ -5,7 +5,7 @@ description: '트랜잭션이 rollback-only로 표시되지 않은 상태에서 
 topic: 'spring'
 tags: ['Spring', '트랜잭션', '예외', '롤백', 'AOP']
 created: 2026-08-26
-updated: 2026-09-20
+updated: 2026-10-03
 status: 'stable'
 ---
 
@@ -21,18 +21,26 @@ status: 'stable'
 - 서비스 안에서 catch해 문자열을 반환하면 프록시 입장에서는 "정상 종료"다. 중간까지 실행된 DB 수정이 그대로 commit된다.
 - 함정이 하나 더 있다. 기본 설정에서는 **RuntimeException과 Error만 롤백**하고 checked 예외는 롤백하지 않는다. catch를 빼더라도 checked 예외가 그대로 나가면 롤백이 안 된다.
 
+<figure class="explanation-diagram">
+  <img src="/uploads/diagrams/transaction-exception-boundary.svg" alt="DB 수정 후 파싱 실패를 catch해서 문자열을 정상 반환하면 커밋될 수 있다. unchecked 예외가 프록시 밖으로 나가면 기본 규칙에 따라 롤백된다." width="560" height="464" loading="lazy" decoding="async" />
+  <figcaption>서비스 프록시가 트랜잭션을 완료하는 경계이고, 별도 rollback-only 표시나 사용자 정의 롤백 규칙이 없다고 가정한다.</figcaption>
+</figure>
+
 ## 결정 — 업무 결과와 시스템 오류를 가른다
 
 구조를 크게 바꾸지 않는 선에서 이렇게 정했다. **업무 결과는 서비스가 문자열로 반환하고, 시스템 오류는 예외로 던져 컨트롤러가 catch해 분기한다.**
 
 1. 서비스: 업무 판단(성공/대기/초과)은 그대로 문자열 반환. 이건 "정상 흐름"이라 commit되는 것이 맞다.
 2. 서비스: checked 예외(파싱 실패 등)는 삼키지 말고 **unchecked로 감싸 다시 던진다.** 원인 예외를 cause로 넘기는 것이 핵심이다.
-3. 컨트롤러: `RuntimeException`을 catch해 로그를 남기고 `"SERVER_ERROR"`를 만든다. 응답 포맷은 유지되고 롤백은 이미 끝난 상태다.
+3. 컨트롤러: `RuntimeException`을 catch해 로그를 남기고 `"SERVER_ERROR"`를 만든다. 응답 포맷은 유지된다. 서비스 프록시가 최상위 트랜잭션 경계라면 컨트롤러가 예외를 받기 전에 롤백이 끝난다. 더 바깥 트랜잭션에 참여하는 경우에는 그 경계에서 완료된다.
+
+아래는 제어 흐름을 설명하는 축약 예제다. `dao.updateBeforeParsing()`은 파싱보다 먼저 실행되는 DB 수정을 가정한 이름이며 실제 업무 메서드가 아니다. 이 수정 후 파싱이 실패할 때, 문자열을 정상 반환하면 앞선 수정이 커밋될 수 있고 unchecked 예외가 프록시 밖으로 나가면 기본 규칙에 따라 롤백된다.
 
 ```java
 // Service (Spring 3.x)
 @Transactional
 public String process(String dateStr) {
+    dao.updateBeforeParsing();          // 같은 트랜잭션에서 이미 실행된 수정
     Date d;
     try {
         d = parse(dateStr);              // checked 예외

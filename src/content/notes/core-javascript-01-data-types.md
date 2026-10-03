@@ -1,13 +1,15 @@
 ---
 slug: 'core-javascript-01-data-types'
 date: '2023-01-08T06:26:16Z'
-updated: '2026-09-04'
+updated: 2026-10-03
 title: '코어자바스크립트 ch1. 데이터 타입'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '원시형 참조형'
 thumbnail: './javascript.png'
 legacyPath: "/230108_코어자바스크립트 ch 1. 데이터 타입/"
 ---
+
+> **보충·정정(2026-10-03):** `undefined`를 직접 할당하지 말라는 설명은 코딩 관례이며 언어의 금지 규칙은 아니다. 배열의 빈 슬롯과 값이 `undefined`인 원소도 구분한다. `0 in [undefined]`는 `true`, `0 in new Array(1)`은 `false`다.
 <!-- Index
 ---
 

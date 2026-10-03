@@ -1,13 +1,15 @@
 ---
 slug: 'modern-js-deep-dive-02-what-is-javascript'
 date: '2023-03-12T05:37:37Z'
-updated: '2026-09-04'
+updated: 2026-10-03
 title: '모던 JS Deep Dive - 2. 자바스크립트란'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: 'imperative, functional, prototype-based'
 thumbnail: './javascript.png'
 legacyPath: "/230314_모던 JS Deep Dive - 2.자바스크립트란/"
 ---
+
+> **보충·정정(2026-10-03):** Web API 사양은 W3C만 관리하는 것이 아니다. WHATWG의 HTML·DOM 등 여러 표준에 나뉘어 있다. JavaScript를 “인터프리터 언어”라고 분류하더라도 실제 엔진은 해석과 JIT 컴파일을 함께 사용할 수 있으며 구현 방식을 언어 규칙과 구분한다.
 
 # 2.1 자바스크립트의 탄생
 

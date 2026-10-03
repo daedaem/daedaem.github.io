@@ -1,13 +1,15 @@
 ---
 slug: 'core-javascript-04-callback'
 date: '2023-02-05T07:06:27Z'
-updated: '2026-09-04'
+updated: 2026-10-03
 title: '코어자바스크립트 ch4. 콜백함수'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: '다른 코드에게 인자로 넘겨줌으로써 그 제어권도 함께 위임한 함수'
 thumbnail: './javascript.png'
 legacyPath: "/230211_코어자바스크립트 ch 4. 콜백함수/"
 ---
+
+> **보충·정정(2026-10-03):** 콜백은 다른 코드에 넘겨 호출을 맡기는 함수다. 콜백이라고 모두 비동기는 아니다. `map`의 콜백은 동기적으로 호출되고, 타이머 콜백은 나중에 실행된다. `setTimeout(fn, 1000)`도 정확히 1초 뒤 실행을 보장하지 않는다.
 
 # 정리
 

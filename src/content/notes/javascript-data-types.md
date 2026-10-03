@@ -1,7 +1,7 @@
 ---
 slug: 'javascript-data-types'
 date: '2022-12-23'
-updated: '2026-09-03'
+updated: 2026-10-03
 title: 'JavaScript - 데이터타입'
 categories: ['Web Frontend', 'TIL', 'JavaScript']
 summary: 'let, const, var'
@@ -19,7 +19,7 @@ legacyPath: "/221223_Javascript-데이터 타입/"
     name = "조해성" //할당
     console.log(name) //조해성
     
-    name이라는 변수가 가리키는 메모리에 내용 할당
+    // name이라는 변수에 값 할당
     ```
 ### let
 - ES6에서 추가
@@ -41,9 +41,9 @@ legacyPath: "/221223_Javascript-데이터 타입/"
     console.log(age); //4
     var age
     
-    name = 4;
+    name = 4; // ReferenceError: 아래 let 선언의 초기화 전에 접근(TDZ)
     let name; 
-    console.log(name); //ReferenceError
+    console.log(name); // 앞에서 예외가 발생하므로 실행되지 않음
     ```
     
     ```jsx
@@ -83,7 +83,9 @@ myNumber = 2 // TypeError: Assignment to constant variable.
     - ~~thread safety (다양한 쓰레드들이 동시 변수에 접근하여 값을 변경가능한 것을 방지)~~
     - reduce human mistake
 
-> **바로잡음(2026-09-03):** 강의 문구를 그대로 옮긴 것인데 둘 다 성립하지 않는다. `const`는 **재할당을 막는 문법 장치**일 뿐 보안 기능이 아니고, 자바스크립트는 단일 스레드라 스레드 안전성 이야기도 맞지 않는다. 남는 이유는 마지막 하나, 실수를 줄인다는 것이다. 그리고 `const`는 바인딩만 고정하므로 객체의 속성은 여전히 바꿀 수 있다.
+> **바로잡음(2026-09-03):** 강의 문구를 그대로 옮긴 것인데 둘 다 성립하지 않는다. `const`는 **재할당을 막는 문법 장치**일 뿐 보안 기능이 아니고, ~~자바스크립트는 단일 스레드라 스레드 안전성 이야기도 맞지 않는다.~~ 남는 이유는 마지막 하나, 실수를 줄인다는 것이다. 그리고 `const`는 바인딩만 고정하므로 객체의 속성은 여전히 바꿀 수 있다.
+
+> **보충·정정(2026-10-03):** 하나의 JavaScript 실행 흐름이 순차적이라는 것과 Worker가 별도 스레드에서 실행되는 것은 구분한다. 공유 메모리를 쓰는 경우에도 `const`가 동기화나 스레드 안전성을 제공하지는 않는다.
 
 ## 3. Variable types
 ### primitive
@@ -108,7 +110,7 @@ myNumber = 2 // TypeError: Assignment to constant variable.
     ```jsx
     const char = 'c';
     const name = 'haesung';
-    const hello = 'hello'+ name // hello haesung
+    const hello = 'hello'+ name // hellohaesung
     
     //template literals(string) 백틱을 이용해 변수값 이용가능
     const hellohaesung = `hi ${name}!`; // hi haesung

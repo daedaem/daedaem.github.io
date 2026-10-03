@@ -2,7 +2,7 @@
 title: '금액이 마이너스로 찍혔다: VO의 int를 무엇으로 바꿀 것인가'
 description: '동료와 함께 진행한 레거시 연동 전환의 테스트 중 기존 금액 처리에서 음수 표시를 발견했다. DB 값과 VO 값을 대조하고 int 필드를 long으로 넓혀 해결했다. 정수 금액에 long을 선택한 이유와 금액 타입의 선택 기준을 정리한다.'
 date: 2026-08-12
-updated: 2026-10-01
+updated: 2026-10-03
 happened: '2025년 7월 – 10월'
 cause: 'DB 금액은 정상이었지만, 이를 받는 VO의 금액 필드가 int여서 금액이 큰 건에서만 음수가 담겼다. 금액 필드를 long으로 변경한 뒤 정상값이 표시되는 것을 확인했다.'
 category: 'legacy'
@@ -114,7 +114,7 @@ BigDecimal.valueOf(0.1);  // 0.1  (내부에서 Double.toString을 거친다)
 
 문자열 생성자나 `valueOf`를 쓴다.
 
-**비교는 `equals`가 아니라 `compareTo`로 한다.** `equals`는 스케일까지 본다.
+**수치가 같은지 비교할 때는 `compareTo`를 쓴다.** `equals`는 스케일까지 비교하므로 값과 스케일을 모두 구분하려는 경우에 쓴다.
 
 ```java
 new BigDecimal("1.0").equals(new BigDecimal("1.00"));      // false

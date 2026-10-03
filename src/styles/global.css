@@ -1890,3 +1890,18 @@ dialog.sheet,
     padding-inline: 16px;
   }
 }
+
+/* In-article explanatory diagrams keep their intrinsic ratio on narrow screens. */
+.prose .explanation-diagram img {
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  margin-inline: auto;
+  border-radius: 12px;
+}
+.prose .explanation-diagram figcaption {
+  margin-top: 0.65rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
