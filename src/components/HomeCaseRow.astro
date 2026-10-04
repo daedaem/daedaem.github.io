@@ -1,0 +1,238 @@
+---
+import IsometricCover from './IsometricCover.astro'
+import TitleText from './TitleText.astro'
+import { isometricCoverForSlug } from '@/utils/isometric-covers.mjs'
+import { getCategory } from '@/consts'
+import { formatCompactDate } from '@/utils/format'
+interface Props {
+  href: string
+  title: string
+  description?: string
+  date: Date
+  category?: string
+  happened?: string
+  prefix?: string
+  headingLevel?: 2 | 3
+  /** 홈의 첫 글만 시각적으로 강조한다. 발행 순서와 제목은 바꾸지 않는다. */
+  featured?: boolean
+}
+const { href, title, description, date, category, headingLevel = 2, featured = false } = Astro.props
+const Heading = headingLevel === 3 ? 'h3' : 'h2'
+const cat = category ? getCategory(category) : undefined
+const kind = isometricCoverForSlug(href.split('/').filter(Boolean).at(-1))
+---
+
+<li class="case-row">
+  <a class:list={['reading-card', { 'without-cover': !kind, featured }]} href={href}>
+    <Heading class="reading-title"><TitleText title={title} /></Heading>
+    {
+      kind && (
+        <div class="cover">
+          <IsometricCover
+            kind={kind}
+            priority={featured}
+            sizes={
+              featured
+                ? '(max-width: 640px) 88px, (max-width: 900px) 160px, 320px'
+                : '(max-width: 640px) 88px, 160px'
+            }
+          />
+        </div>
+      )
+    }
+    <div class="reading-detail">
+      {description && <p class="reading-excerpt">{description}</p>}
+      <p class="reading-meta">
+        {featured && <span class="latest">최신 글</span>}
+        {cat && <span>{cat.name}</span>}<time datetime={date.toISOString()}
+          >{formatCompactDate(date)}</time
+        >
+      </p>
+    </div>
+  </a>
+</li>
+<style>
+  .case-row {
+    margin: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .case-row:last-child {
+    border-bottom: 0;
+  }
+  .reading-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 160px;
+    grid-template-rows: min-content 1fr;
+    grid-template-areas: 'title cover' 'detail cover';
+    column-gap: 32px;
+    row-gap: 12px;
+    padding: 28px 0;
+    align-content: start;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .reading-title {
+    grid-area: title;
+    margin: 0;
+    font-size: 22px;
+    font-weight: 650;
+    line-height: 30px;
+    letter-spacing: -0.025em;
+    text-wrap: pretty;
+  }
+  .cover {
+    grid-area: cover;
+    align-self: center;
+    width: 160px;
+    height: 116px;
+  }
+  .reading-detail {
+    grid-area: detail;
+    min-width: 0;
+  }
+  .reading-excerpt {
+    margin: 0;
+    color: var(--fg2);
+    font-size: 16px;
+    line-height: 26px;
+    word-break: keep-all;
+  }
+  .reading-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 22px;
+  }
+  time {
+    font-family: var(--font-sans);
+    font-variant-numeric: tabular-nums;
+  }
+  .reading-card:hover .reading-title {
+    color: var(--accent);
+  }
+  .reading-card:focus-visible {
+    outline-offset: 6px;
+  }
+  /* 표지는 칸 안에서만 아주 살짝 다가온다. 칸 크기와 글 배치는 그대로다 */
+  .cover :global(img) {
+    transition: transform 360ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  @media (hover: hover) {
+    .reading-card:hover .cover :global(img) {
+      transform: scale(1.035);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cover :global(img) {
+      transition: none;
+    }
+    .reading-card:hover .cover :global(img) {
+      transform: none;
+    }
+  }
+  .without-cover {
+    grid-template-columns: 1fr;
+    grid-template-areas: 'title' 'detail';
+  }
+  /* 최신 글만 PC에서 작게 강조한다. 추천 순위나 대표 경험을 뜻하지 않는다. */
+  .featured {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 14px 32px;
+    padding: 24px;
+    margin: 8px 0 24px;
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+  .featured .reading-title {
+    font-size: 28px;
+    line-height: 38px;
+    letter-spacing: -0.035em;
+  }
+  .featured .cover {
+    width: 320px;
+    height: 200px;
+  }
+  .featured .reading-meta {
+    margin-top: 24px;
+  }
+  .featured.without-cover {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'title' 'detail';
+  }
+  .latest {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  @media (max-width: 900px) {
+    .featured {
+      grid-template-columns: minmax(0, 1fr) 160px;
+      gap: 12px 32px;
+      padding: 28px 0;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+      background: none;
+    }
+    .featured .cover {
+      width: 160px;
+      height: 116px;
+    }
+    .featured .reading-title {
+      font-size: 22px;
+      line-height: 30px;
+      letter-spacing: -0.025em;
+    }
+    .featured .reading-meta {
+      margin-top: 12px;
+    }
+  }
+  @media (max-width: 760px) {
+    .reading-title,
+    .featured .reading-title {
+      font-size: 21px;
+      line-height: 29px;
+    }
+  }
+  @media (max-width: 640px) {
+    .reading-card {
+      grid-template-columns: minmax(0, 1fr) 88px;
+      grid-template-areas: 'title cover' 'detail detail';
+      gap: 14px 16px;
+      padding: 24px 0;
+    }
+    .cover {
+      width: 88px;
+      height: 72px;
+      align-self: start;
+    }
+    .reading-meta {
+      margin-top: 10px;
+    }
+    .without-cover {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: 'title' 'detail';
+    }
+    .featured {
+      grid-template-columns: minmax(0, 1fr) 88px;
+      grid-template-areas: 'title cover' 'detail detail';
+      padding: 24px 0;
+      gap: 14px 16px;
+    }
+    .featured .cover {
+      width: 88px;
+      height: 72px;
+    }
+    .featured .reading-meta {
+      margin-top: 10px;
+    }
+    .featured.without-cover {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'title' 'detail';
+    }
+  }
+</style>

@@ -154,35 +154,57 @@ const visibleNav = PRIMARY_NAV
       display: none;
     }
   }
-  /* 좁은 화면에서는 '학습 기록'을 '학습'으로 줄여 한 줄에 둔다 */
-  @media (max-width: 420px) {
+  /* 모바일은 이름을 숨기지 않는다. 읽기/키보드 순서대로 이름, 메뉴, 도구를 두 줄로 둔다. */
+  @media (max-width: 640px) {
+    .top-in {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: 'brand brand' 'nav tools';
+      padding: 0 20px;
+      gap: 0;
+    }
+    .brand {
+      grid-area: brand;
+      justify-self: start;
+      font-size: 21px;
+      gap: 8px;
+    }
+    .brand :global(.mark) {
+      width: 20px;
+      height: 20px;
+    }
+    .nav {
+      grid-area: nav;
+      margin-left: 0;
+    }
+    .nav ul {
+      justify-content: flex-start;
+      gap: 0;
+    }
+    .nav a {
+      padding: 0 6px;
+    }
+    .top-in::after {
+      left: 20px;
+      right: 20px;
+    }
+    .tools {
+      grid-area: tools;
+    }
+  }
+  @media (max-width: 374px) {
     .nav-more {
       display: none;
     }
-  }
-  /* 메뉴 네 칸(44px)과 도구 두 칸이 들어가도록 이름을 조금 줄인다 */
-  @media (max-width: 389px) {
+    .nav a {
+      padding-inline: 0;
+    }
     .top-in {
-      gap: 0;
+      padding-inline: 16px;
     }
-    .brand {
-      font-size: 16px;
-      gap: 6px;
-    }
-    .brand :global(.mark) {
-      width: 16px;
-      height: 16px;
-    }
-  }
-  /* 아주 좁은 화면(320px 등)에서는 표식만 남긴다. 이름은 aria-label로 읽힌다 */
-  @media (max-width: 359px) {
-    .brand {
-      font-size: 0;
-      gap: 0;
-    }
-    .brand :global(.mark) {
-      width: 22px;
-      height: 22px;
+    .top-in::after {
+      left: 16px;
+      right: 16px;
     }
   }
   @media (forced-colors: active) {

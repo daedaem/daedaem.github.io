@@ -3,8 +3,13 @@ import { isometricCoverSources } from '@/utils/isometric-covers.mjs'
 interface Props {
   kind: string
   sizes?: string
+  priority?: boolean
 }
-const { kind, sizes = '(max-width: 760px) calc(100vw - 40px), 240px' } = Astro.props
+const {
+  kind,
+  sizes = '(max-width: 760px) calc(100vw - 40px), 240px',
+  priority = false,
+} = Astro.props
 const sources = isometricCoverSources(kind)
 ---
 
@@ -19,7 +24,8 @@ const sources = isometricCoverSources(kind)
         width={sources.width}
         height={sources.height}
         alt=""
-        loading="lazy"
+        loading={priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : undefined}
         decoding="async"
       />
       <img
@@ -30,7 +36,8 @@ const sources = isometricCoverSources(kind)
         width={sources.width}
         height={sources.height}
         alt=""
-        loading="lazy"
+        loading={priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : undefined}
         decoding="async"
       />
     </div>
