@@ -198,7 +198,7 @@ test('case summaries expose supported implementation and collaboration without i
   assert.match(summary, /송수신 규약을 맞추고 비교·반영 로직을 수정/)
   assert.match(summary, /동기화가 필요하지 않은데도 반복되던 결재를 없앴습니다/)
   assert.match(summary, /정상적인 결재 절차는 유지했습니다/)
-  assert.match(summary, /외부 서비스와 연동해 대체하는 작업의 구현을 맡았습니다/)
+  assert.match(summary, /현업과 협의해 비슷한 단계를 통합하고 화면 표시와 처리 기준을 정리했습니다/)
   assert.match(summary, /연동 전후 업무 로직을 새로 개발/)
   assert.match(summary, /상태 동기화·적재 실패 복구/)
   assert.match(summary, /Flash 기반 계약 모듈을 대체/)
