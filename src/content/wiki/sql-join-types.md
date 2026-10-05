@@ -5,7 +5,7 @@ description: '오라클 고유 문법과 ANSI 조인의 차이, 그리고 다섯
 topic: 'database'
 tags: ['SQL', 'JOIN', 'Oracle', 'ANSI']
 created: 2023-12-03
-updated: 2026-09-06
+updated: 2026-10-05
 status: 'stable'
 ---
 
@@ -130,13 +130,13 @@ SELECT a.name, b.company_name
 
 ```sql
 SELECT a.name, b.company_name
-  FROM usertable a
-  LEFT JOIN company b ON a.company_id = b.company_id
+  FROM usertable a, company b
+ WHERE a.company_id = b.company_id(+)
 UNION ALL
 SELECT a.name, b.company_name
-  FROM usertable a
- RIGHT JOIN company b ON a.company_id = b.company_id
- WHERE a.user_id IS NULL; -- 왼쪽 PK는 NOT NULL: 짝 없는 행만 선택
+  FROM usertable a, company b
+ WHERE a.company_id(+) = b.company_id
+   AND a.user_id IS NULL; -- 왼쪽 PK는 NOT NULL: 짝 없는 행만 선택
 ```
 
 ## 한눈에
@@ -151,5 +151,5 @@ SELECT a.name, b.company_name
 
 ## 더 볼 것
 
-- [정규화 — 이상현상을 없애는 과정과, 그 대가](/wiki/database-normalization/) — JOIN이 늘어나는 이유
+- [정규화 1NF~BCNF와 반정규화](/wiki/database-normalization/) — JOIN이 늘어나는 이유
 - [Oracle은 빈 문자열을 NULL로 저장한다](/wiki/oracle-empty-string-is-null/) — 아우터 조인 결과의 NULL을 비교할 때

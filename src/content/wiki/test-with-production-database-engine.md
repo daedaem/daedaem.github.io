@@ -1,16 +1,17 @@
 ---
 draft: false
 title: '테스트 DB와 실제 DB가 다를 때 확인할 것'
-description: '인메모리 DB 테스트가 검증하는 범위를 구분하고, 실제 DB 엔진·스키마로 확인해야 하는 제약 조건을 정리한다.'
+description: '인메모리 DB(H2 등) 테스트가 검증하는 범위를 구분하고, 실제 DB 엔진·스키마로 확인해야 하는 제약 조건을 정리한다.'
 topic: 'database'
 tags: ['테스트', 'SQL Server', 'H2', '스키마']
 created: 2026-09-05
+updated: 2026-10-05
 status: 'growing'
 ---
 
 테스트가 통과했다는 것은 그 테스트가 사용한 코드·설정·데이터에서 기대한 결과가 나왔다는 뜻이다. 다른 DB 엔진과 다른 스키마에서도 같은 동작을 보장한다는 뜻은 아니다.
 
-학습 노트에서 DB별 차이를 다시 정리한 문서다. 특정 서비스의 구성이나 결함, 테스트 성과를 옮긴 것은 아니다. 아래 SQL은 분리된 테스트 DB에서 확인할 예제이며 실제 운영 DB에서 실행하는 절차가 아니다.
+학습 노트에서 DB별 차이를 다시 정리한 문서다.
 
 ## 무엇을 검증했는지 나눈다
 
@@ -28,7 +29,7 @@ H2가 쓸모없다는 뜻이 아니다. 빠른 피드백을 얻는 테스트로 
 SQL Server에서 단일 컬럼의 일반 `UNIQUE` 제약은 `NULL`도 한 번만 허용한다. 이 규칙을 다른 DB에서 실행한 테스트만으로 확인할 수는 없다. [Microsoft 문서](https://learn.microsoft.com/en-us/sql/relational-databases/tables/unique-constraints-and-check-constraints?view=sql-server-ver17)
 
 ```sql
--- 분리된 SQL Server 테스트 세션에서만 실행한다.
+-- SQL Server 예제
 CREATE TABLE #sample_unique (
     id INT NOT NULL PRIMARY KEY,
     optional_code VARCHAR(30) NULL UNIQUE

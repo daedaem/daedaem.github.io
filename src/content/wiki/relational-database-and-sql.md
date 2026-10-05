@@ -5,7 +5,7 @@ description: '파일 시스템이 왜 부족했는지부터 계층형·네트워
 topic: 'database'
 tags: ['RDBMS', 'Oracle', 'SQL', '데이터모델링']
 created: 2023-07-23
-updated: 2026-10-03
+updated: 2026-10-05
 status: 'stable'
 ---
 
@@ -123,6 +123,6 @@ SQL은 Structured Query Language의 약자로, RDBMS에서 데이터를 다루�
 
 ## 더 볼 것
 
-- [정규화 — 이상현상을 없애는 과정](/wiki/database-normalization/)
+- [정규화 1NF~BCNF와 반정규화](/wiki/database-normalization/)
 - [JOIN 다섯 가지](/wiki/sql-join-types/)
 - [Oracle은 빈 문자열을 NULL로 저장한다](/wiki/oracle-empty-string-is-null/)

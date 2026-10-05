@@ -5,7 +5,7 @@ description: "Oracle에서 ''와 NULL은 구분되지 않는다. 빈 문자열�
 topic: 'database'
 tags: ['Oracle', 'NULL', 'SQL']
 created: 2026-08-12
-updated: 2026-10-03
+updated: 2026-10-05
 status: 'growing'
 ---
 
@@ -54,8 +54,12 @@ private static String normalize(String v) {
 boolean changed = !Objects.equals(normalize(a), normalize(b));
 ```
 
-위 코드는 `java.util.Objects`를 사용하는 **Java 7 이상 학습 예시**다. 실제 MDM 사례의 운영 수정 코드를 재현한 것은 아니다. Java 6 환경이라면 동일한 null 비교 규칙을 직접 구현해야 한다.
+위 코드는 `java.util.Objects`를 사용하는 Java 7 이상 예시다. `Objects`가 없는 구버전이라면 같은 null 비교 규칙을 직접 구현한다.
 
 ## 더 볼 것
 
-- `NVL`, `COALESCE`, `NULLIF`의 차이는 아직 정리하지 않았다.
+- [바꾼 적 없는데 결재가 또 올라온다](/posts/null-and-empty-string-sync-failure/) — 빈 값 비교가 변경으로 잡히던 사례
+
+## 아직 정리 못 한 것
+
+- `NVL`, `COALESCE`, `NULLIF`의 차이

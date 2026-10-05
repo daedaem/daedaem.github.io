@@ -5,7 +5,7 @@ description: 'Code-Behind 구조로 도는 레거시 .NET 화면을 읽기 위�
 topic: 'dotnet'
 tags: ['ASP.NET', 'C#', 'WebForms', 'ViewState', '레거시']
 created: 2025-12-29
-updated: 2026-10-03
+updated: 2026-10-05
 status: 'growing'
 ---
 
@@ -20,14 +20,14 @@ ApplicationForm.aspx.cs   ← 서버 코드 (Code-Behind)
 
 `.aspx`의 첫 줄이 둘을 묶는다.
 
-```csharp
+```html
 <%@ Page Language="C#" AutoEventWireup="true" CodeFile="ApplicationForm.aspx.cs"
     Inherits="ApplicationForm" %>
 ```
 
 ## 서버 컨트롤 — `runat="server"`
 
-```csharp
+```html
 <asp:GridView ID="gvItemList" runat="server" AutoGenerateColumns="False"
     DataKeyNames="ItemId" OnSelectedIndexChanged="gvItemList_SelectedIndexChanged">
     <Columns>
@@ -42,7 +42,7 @@ ApplicationForm.aspx.cs   ← 서버 코드 (Code-Behind)
 
 `runat="server"`가 붙으면 **서버에서 처리되는 컨트롤**이 되고, C# 코드에서 `txtApplicantName.Text`처럼 직접 접근할 수 있다. 최종적으로는 평범한 HTML로 렌더링된다.
 
-`OnClick="btnSubmit_Click"`은 자바스크립트가 아니라 **서버 메서드**를 가리킨다. 버튼을 누르면 페이지 폼이 서버로 다시 전송된다. 드롭다운 변경도 `AutoPostBack="true"`처럼 PostBack을 일으키도록 설정했을 때 같은 왕복이 생긴다.
+`OnClick="btnSubmit_Click"`은 자바스크립트가 아니라 **서버 메서드**를 가리킨다. 버튼을 누르면 페이지 폼이 서버로 다시 전송된다.
 
 ## PostBack — 이 모델의 핵심
 
@@ -83,7 +83,7 @@ protected void gvItemList_SelectedIndexChanged(object sender, EventArgs e)
 {
     GridViewRow row = gvItemList.SelectedRow;
     if (row == null || gvItemList.SelectedDataKey == null) return;
-    lblSelectedItem.Text = row.Cells[0].Text;  // 항목명. 1열은 선택 버튼이다.
+    lblSelectedItem.Text = row.Cells[0].Text;  // 항목명. 선택 버튼은 Cells[1]이다.
     ViewState["SelectedItemId"] = gvItemList.SelectedDataKey.Value;
 }
 ```

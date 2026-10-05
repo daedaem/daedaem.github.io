@@ -5,7 +5,7 @@ description: 'DML/DDL/SYSTEM 트리거의 구분, BEFORE와 AFTER의 차이, :NE
 topic: 'database'
 tags: ['Oracle', '트리거', 'PL/SQL', 'DML']
 created: 2023-09-10
-updated: 2026-09-05
+updated: 2026-10-05
 status: 'stable'
 ---
 
@@ -120,5 +120,5 @@ UPDATE student SET grade = 7 WHERE studno = 10101;
 
 ## 더 볼 것
 
-- [내린 서버에서 배치가 돌고 있었다](/posts/phantom-batch-after-was-migration/) — 트리거로 접속 IP를 남겨 원인을 찾은 사례
+- [분명히 껐는데 배치가 돌고 있었다](/posts/phantom-batch-after-was-migration/) — 트리거로 접속 IP를 남겨 원인을 찾은 사례
 - [관계형 데이터베이스는 무엇을 해결했나](/wiki/relational-database-and-sql/)

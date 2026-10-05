@@ -5,7 +5,7 @@ description: '개논물 3단계, 외개내 3층 스키마, 모델링의 3요소.
 topic: 'database'
 tags: ['데이터모델링', 'ERD', 'SQLD', '스키마']
 created: 2025-03-07
-updated: 2026-10-03
+updated: 2026-10-05
 status: 'growing'
 ---
 
@@ -80,5 +80,5 @@ status: 'growing'
 
 ## 더 볼 것
 
-- [정규화 — 이상현상을 없애는 과정과, 그 대가](/wiki/database-normalization/) — 논리적 모델링의 핵심
+- [정규화 1NF~BCNF와 반정규화](/wiki/database-normalization/) — 논리적 모델링의 핵심
 - [관계형 데이터베이스는 무엇을 해결했나](/wiki/relational-database-and-sql/)

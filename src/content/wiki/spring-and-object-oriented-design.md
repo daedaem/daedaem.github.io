@@ -5,7 +5,7 @@ description: 'EJB의 겨울에서 스프링이 나온 배경부터 다형성·SO
 topic: 'spring'
 tags: ['Spring', '객체지향', 'SOLID', '다형성', 'DI']
 created: 2023-05-21
-updated: 2026-10-03
+updated: 2026-10-05
 status: 'stable'
 ---
 
@@ -195,5 +195,5 @@ public class MemberService {
 
 ## 더 볼 것
 
-- [웹 서버와 WAS, 그리고 서블릿](/wiki/web-server-was-and-servlet/)
+- [웹 서버와 WAS는 무엇이 다른가](/wiki/web-server-was-and-servlet/)
 - [MVC 패턴](/wiki/mvc-pattern/)

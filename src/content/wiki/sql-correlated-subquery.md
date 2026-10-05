@@ -5,7 +5,7 @@ description: '서브쿼리가 메인 쿼리의 컬럼을 참조하면 무엇이 
 topic: 'database'
 tags: ['SQL', '서브쿼리', 'NOT EXISTS', 'NULL', '성능']
 created: 2025-12-22
-updated: 2026-09-05
+updated: 2026-10-05
 status: 'growing'
 ---
 
@@ -32,7 +32,7 @@ SELECT t.city, t.street
 | 실제 실행 | 옵티마이저가 조인·캐시 등으로 바꿀 수 있음 | 옵티마이저가 세미/안티 조인 등으로 바꿀 수 있음 |
 | 예 | `WHERE id IN (SELECT id FROM ...)` | `WHERE EXISTS (SELECT 1 FROM ... WHERE a.id = t.id)` |
 
-논리적 평가 방식만으로 속도를 판단할 수는 없다. 아래 사례도 비교 조건이 함께 바뀌었으므로, 문법 차이만의 성능 비교로 볼 수 없다.
+논리적 평가 방식만으로 속도를 판단할 수는 없다.
 
 ## 겪은 문제 — 수백만 건 적재가 끝나지 않음
 
@@ -54,8 +54,8 @@ SELECT t.address_id, t.city, t.street, t.zip_code
 `NOT EXISTS`로 바꾸니 **속도가 눈에 띄게 개선됐다.**
 
 ```sql
-INSERT INTO address (city, street, zip_code)
-SELECT t.city, t.street, t.zip_code
+INSERT INTO address (address_id, city, street, zip_code)
+SELECT t.address_id, t.city, t.street, t.zip_code
   FROM temp_address t
  WHERE NOT EXISTS (
        SELECT 1

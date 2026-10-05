@@ -5,7 +5,7 @@ description: 'useState의 지연 초기화, 이전 값에 의존할 때 콜백�
 topic: 'web'
 tags: ['React', 'useState', '렌더링', '배칭']
 created: 2023-01-05
-updated: 2026-09-05
+updated: 2026-10-05
 status: 'stable'
 ---
 
@@ -124,7 +124,7 @@ console.log(count)   // 5가 아니라 이전 값
 import classes from './Card.module.css'
 
 const Card = props => (
-  <div className={`${classes.card} ${props.className}`}>{props.children}</div>
+  <div className={`${classes.card} ${props.className ?? ''}`}>{props.children}</div>
 )
 ```
 

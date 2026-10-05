@@ -5,7 +5,7 @@ description: 'GoF의 세 분류와 싱글톤·팩토리 메서드·전략·옵�
 topic: 'cs'
 tags: ['디자인패턴', '싱글톤', 'DI', 'MVC', 'GoF']
 created: 2023-01-25
-updated: 2026-10-03
+updated: 2026-10-05
 status: 'stable'
 ---
 
@@ -93,4 +93,4 @@ DI는 객체가 의존 대상을 외부에서 받는 방식이고, 아래는 **�
 ## 더 볼 것
 
 - [스프링은 왜 만들어졌고, 객체 지향과 무슨 관계인가](/wiki/spring-and-object-oriented-design/) — DI와 다형성
-- [MVC 패턴 — 무엇을 나누고, 무엇에 의존하면 안 되는가](/wiki/mvc-pattern/)
+- [MVC 패턴](/wiki/mvc-pattern/)

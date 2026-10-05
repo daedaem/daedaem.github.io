@@ -5,7 +5,7 @@ description: 'Model·View·Controller를 나누는 이유와, 셋 사이의 의�
 topic: 'cs'
 tags: ['MVC', '디자인패턴', 'Java', '아키텍처']
 created: 2023-06-11
-updated: 2026-10-03
+updated: 2026-10-05
 status: 'stable'
 ---
 
@@ -107,4 +107,4 @@ public class ProductController {
 ## 더 볼 것
 
 - [스프링은 왜 만들어졌고, 객체 지향과 무슨 관계인가](/wiki/spring-and-object-oriented-design/)
-- [웹 서버와 WAS, 그리고 서블릿](/wiki/web-server-was-and-servlet/)
+- [웹 서버와 WAS는 무엇이 다른가](/wiki/web-server-was-and-servlet/)

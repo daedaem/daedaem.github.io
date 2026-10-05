@@ -5,7 +5,7 @@ description: '트랜잭션이 rollback-only로 표시되지 않은 상태에서 
 topic: 'spring'
 tags: ['Spring', '트랜잭션', '예외', '롤백', 'AOP']
 created: 2026-08-26
-updated: 2026-10-03
+updated: 2026-10-05
 status: 'stable'
 ---
 
@@ -34,10 +34,10 @@ status: 'stable'
 2. 서비스: checked 예외(파싱 실패 등)는 삼키지 말고 **unchecked로 감싸 다시 던진다.** 원인 예외를 cause로 넘기는 것이 핵심이다.
 3. 컨트롤러: `RuntimeException`을 catch해 로그를 남기고 `"SERVER_ERROR"`를 만든다. 응답 포맷은 유지된다. 서비스 프록시가 최상위 트랜잭션 경계라면 컨트롤러가 예외를 받기 전에 롤백이 끝난다. 더 바깥 트랜잭션에 참여하는 경우에는 그 경계에서 완료된다.
 
-아래는 제어 흐름을 설명하는 축약 예제다. `dao.updateBeforeParsing()`은 파싱보다 먼저 실행되는 DB 수정을 가정한 이름이며 실제 업무 메서드가 아니다. 이 수정 후 파싱이 실패할 때, 문자열을 정상 반환하면 앞선 수정이 커밋될 수 있고 unchecked 예외가 프록시 밖으로 나가면 기본 규칙에 따라 롤백된다.
+아래는 제어 흐름을 설명하는 축약 예제다. `dao.updateBeforeParsing()`은 파싱보다 먼저 실행되는 DB 수정을 가정한 이름이다. 이 수정 후 파싱이 실패할 때, 문자열을 정상 반환하면 앞선 수정이 커밋될 수 있고 unchecked 예외가 프록시 밖으로 나가면 기본 규칙에 따라 롤백된다.
 
 ```java
-// Service (Spring 3.x)
+// Service
 @Transactional
 public String process(String dateStr) {
     dao.updateBeforeParsing();          // 같은 트랜잭션에서 이미 실행된 수정
@@ -83,7 +83,7 @@ log4j.logger.org.springframework.jdbc.datasource.DataSourceTransactionManager=DE
 log4j.logger.org.springframework.orm.jpa.JpaTransactionManager=DEBUG
 ```
 
-다른 구현체나 하위 클래스를 쓰면 그 클래스 이름을 확인한다. JTA 매니저처럼 `org.springframework.transaction` 아래에 있는 구현은 기존 패키지 설정으로도 보일 수 있다. rollback-only가 아닌 상태에서 문자열을 정상 반환하는 경로와, 예외가 프록시 밖으로 나가는 경로를 비교해 commit/rollback 로그를 확인한다. Log4j 1.x는 구형 환경을 읽기 위한 설정 예시이지 신규 도입 권장이 아니다.
+다른 구현체나 하위 클래스를 쓰면 그 클래스 이름을 확인한다. JTA 매니저처럼 `org.springframework.transaction` 아래에 있는 구현은 기존 패키지 설정으로도 보일 수 있다. rollback-only가 아닌 상태에서 문자열을 정상 반환하는 경로와, 예외가 프록시 밖으로 나가는 경로를 비교해 commit/rollback 로그를 확인한다.
 
 ## 정리
 
