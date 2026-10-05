@@ -99,7 +99,7 @@ test('cover disclosure belongs with reader-facing writing principles, not the ed
   const about = source('src/pages/about.astro')
   assert.match(
     about,
-    /글을 쓸 때 지키는 것[\s\S]*글 표지는 AI로 생성한 개념 일러스트이며, 실제 화면이나 시스템 구성도가 아닙니다\./,
+    /글을 쓸 때 지키는 것[\s\S]*글 표지는 AI와 함께 만든 개념 일러스트이며, 실제 화면이나 시스템 구성도가 아닙니다\./,
   )
   assert.doesNotMatch(source('src/pages/admin/index.astro'), /글 표지는 AI로 생성/)
 })

@@ -105,7 +105,7 @@ test('about identifies the author and shows evidence before general work philoso
   assert.equal((about.match(/<dt>학력<\/dt>/g) ?? []).length, 1)
   assert.equal((about.match(/<dt>자격<\/dt>/g) ?? []).length, 1)
   assert.ok(about.indexOf('class="work-highlights"') < about.indexOf('id="approach"'))
-  assert.match(about, /AI로 생성한 개념 일러스트/)
+  assert.match(about, /AI와 함께 만든 개념 일러스트/)
   // 구조화 데이터는 ProfilePage(BaseHead의 profile 분기)
   assert.match(about, /<BaseLayout\s+title="소개"\s+type="profile"/)
   const head = read('src/components/BaseHead.astro')
