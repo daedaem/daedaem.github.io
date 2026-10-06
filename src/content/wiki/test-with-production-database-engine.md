@@ -5,8 +5,8 @@ description: '인메모리 DB(H2 등) 테스트가 검증하는 범위를 구분
 topic: 'database'
 tags: ['테스트', 'SQL Server', 'H2', '스키마']
 created: 2026-09-05
-updated: 2026-10-05
-status: 'growing'
+updated: 2026-10-06
+status: 'seed'
 ---
 
 테스트가 통과했다는 것은 그 테스트가 사용한 코드·설정·데이터에서 기대한 결과가 나왔다는 뜻이다. 다른 DB 엔진과 다른 스키마에서도 같은 동작을 보장한다는 뜻은 아니다.
