@@ -13,11 +13,10 @@ const notes = (await getCollection('notes')).sort(
 const series = orderedNoteGroups(notes)
 const boj = solutions.filter((s) => s.data.site === '백준').length
 const pgs = solutions.filter((s) => s.data.site === '프로그래머스').length
-// 분야별 입구. 글이 실제로 있는 분야만 보이고, 숫자는 컬렉션에서 센다(AI는 글이 생기면 연다)
+// 분야별 입구. 지금도 보완하는 위키와 알고리즘 풀이만 센다. 2022~2023년 학습 노트는 바로 아래 아카이브에서 따로 보여 준다
 const wiki = await getCollection('wiki', ({ data }) => !data.draft)
 const wikiCount = (ids: string[]) => wiki.filter((w) => ids.includes(w.data.topic)).length
 const wikiLink = (id: string) => ({ href: `/wiki/#${id}`, label: getWikiTopic(id)?.name ?? id })
-const frontNotes = notes.filter((n) => n.data.categories?.includes('Web Frontend')).length
 const backendTopics = ['java', 'spring', 'database', 'dotnet', 'infra']
 const fields = [
   {
@@ -29,12 +28,8 @@ const fields = [
   {
     id: 'frontend',
     name: '프론트엔드',
-    count: `학습 노트 ${frontNotes}편 · 위키 ${wikiCount(['web'])}편`,
-    links: [
-      { href: '/notes/#core-js', label: 'JavaScript' },
-      { href: '/notes/#ts', label: 'TypeScript' },
-      wikiLink('web'),
-    ],
+    count: `위키 ${wikiCount(['web'])}편`,
+    links: [wikiLink('web')].filter(() => wikiCount(['web'])),
   },
   {
     id: 'cs',
