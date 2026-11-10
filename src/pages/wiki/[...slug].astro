@@ -78,7 +78,7 @@ const hasToc = toc.length >= 4
           <span class="sep" aria-hidden="true" set:text="·" />
           <span set:text={status} />
           <span class="sep" aria-hidden="true" set:text="·" />
-          <ContentDates date={entry.data.created} dateLabel="" inline />
+          <ContentDates date={entry.data.created} dateLabel="" inline compact />
           {
             /* 역링크가 있을 때만, 첫 화면에서 문서 끝의 목록으로 바로 간다 */
             references.length > 0 && (
@@ -130,17 +130,19 @@ const hasToc = toc.length >= 4
         /* 넓은 화면의 오른쪽 레일. 초점 순서가 본문보다 앞서도록 차례 바로 뒤에 둔다(배치는 fixed) */
         hasToc && (
           <nav class="rail" aria-label="차례" data-pagefind-ignore>
-            <p class="k">차례</p>
-            <ol>
-              {toc.map((h) => (
-                <li class:list={{ d3: h.depth === 3 }}>
-                  <a href={`#${h.slug}`}>{h.text}</a>
-                </li>
-              ))}
-            </ol>
-            <button type="button" class="totop">
-              맨 위로
-            </button>
+            <div class="rail-in">
+              <p class="k">차례</p>
+              <ol>
+                {toc.map((h) => (
+                  <li class:list={{ d3: h.depth === 3 }}>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+              <button type="button" class="totop">
+                맨 위로
+              </button>
+            </div>
           </nav>
         )
       }
@@ -220,6 +222,30 @@ const hasToc = toc.length >= 4
 </script>
 
 <style>
+  /*
+   * 차례 레일. 머리줄이 화면에 있는 문서 맨 위에서는 본문과 같은 높이에서 시작하고, 내려가면 화면 위에 붙는다.
+   * 전역 규칙의 fixed는 머리줄이 고정이던 때의 값이라, 맨 위에서 머리줄 아래 선과 겹쳤다.
+   */
+  @media (min-width: 75em) {
+    .art {
+      position: relative;
+    }
+    nav.rail {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: calc(100% + 2.5rem);
+      max-height: none;
+      overflow: visible;
+    }
+    .rail-in {
+      position: sticky;
+      top: 1.5rem;
+      max-height: calc(100dvh - 3rem);
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+  }
   /* 주제 점. 색은 점에만 쓰고 글자는 --muted다 */
   .meta .dot {
     --dot: hsl(var(--wt) 65% 48%);
