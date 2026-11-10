@@ -223,15 +223,15 @@ test('production design retains navigation and real search without mock controls
   const home = source('src/pages/index.astro')
   assert.doesNotMatch(home, /dd-editorial|data-palette|Tweak|search-dialog|fonts\.googleapis/)
   assert.match(source('src/layouts/PostLayout.astro'), /<Comments\s*\/>/)
-  // 바닥글 끝에 작성자용 편집 안내를 두되, 주요 메뉴에는 넣지 않는다.
+  // 작성자용 편집 안내(/admin/)는 방문자에게 보이는 바닥글에 내지 않는다(2026-11-10 작성자 결정). 주소로 직접 들어간다.
   const footer = source('src/components/Footer.astro')
-  assert.match(footer, /href="\/admin\/"/)
+  assert.doesNotMatch(footer, /href="\/admin\/"/)
   assert.match(footer, /href="\/projects\/"/)
   assert.match(footer, /mailto:\$\{SITE\.email\}/)
   assert.match(footer, /SITE\.linkedinUrl/)
   assert.deepEqual(
     [...footer.matchAll(/<a href=[^>]*>([^<]+)<\/a>/g)].map((m) => m[1]),
-    ['글', '위키', '학습 기록', '소개', '프로젝트', 'GitHub', 'Email', 'LinkedIn', '글 관리'],
+    ['글', '위키', '학습 기록', '소개', '프로젝트', 'GitHub', 'Email', 'LinkedIn'],
   )
   const admin = source('src/pages/admin/index.astro')
   assert.match(admin, /noindex=\{true\}/)
