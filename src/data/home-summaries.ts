@@ -7,7 +7,7 @@ export const HOME_SUMMARIES: Record<string, string> = {
   'phantom-batch-after-was-migration':
     '개발 서버에서 옛 컨테이너를 내려도 갱신이 계속됐다. UPDATE 트리거에 접속 IP를 남겨 잔존 프로세스를 찾았다.',
   'null-and-empty-string-sync-failure':
-    'NULL·빈 문자열 비교와 인터페이스 처리 구분값의 규약 불일치를 각각 수정해, 불필요하게 반복되던 결재를 없앴다.',
+    'NULL·빈 문자열 비교와 인터페이스 처리 구분값의 규약 불일치를 각각 수정해, 5년 넘게 반복되던 불필요한 결재를 없앴다.',
   'integer-overflow-negative-amount':
     '동료와 개발하던 중 테스트에서 기존 금액 처리의 음수 표시를 발견했다. DB·VO 값을 대조하고 정수 금액의 범위를 고려해 long으로 바꿔 정상 표시를 확인했다.',
   'address-search-9s-to-100ms':
