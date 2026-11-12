@@ -7,6 +7,9 @@ const covers = {
   'null-and-empty-string-sync-failure': 'nullsync',
   'integer-overflow-negative-amount': 'overflow',
   'address-search-9s-to-100ms': 'address',
+  'chat-ai-only-rebuild-log-check-tool': 'log-review',
+  'webtob-https-self-signed-first': 'tls-test',
+  'webtob-boot0012-encrypted-private-key': 'pfx-key',
 }
 const kinds = new Set(Object.values(covers))
 const WIDTHS = [320, 768, 1440]

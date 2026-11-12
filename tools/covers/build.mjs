@@ -1,6 +1,6 @@
 // 사용: node tools/covers/build.mjs [kind ...]
 // 장면을 렌더하고(render) 평면으로 칠하고(shade) 라벨을 얹고(compose) 틀을 잡아(frame)
-// public/uploads/post-covers/cut-<kind>[-768|-320][-dark].webp 로 저장한다. kind를 안 주면 여섯 장 전부.
+// public/uploads/post-covers/cut-<kind>[-768|-320][-dark].webp 로 저장한다. kind를 안 주면 등록된 표지 전부.
 import { execFileSync } from 'node:child_process'
 import { mkdirSync } from 'node:fs'
 import { createRequire } from 'node:module'

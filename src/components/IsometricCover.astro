@@ -58,7 +58,7 @@ const sources = isometricCoverSources(kind)
     object-fit: contain;
   }
   /* 그림은 밝은 판과 어두운 판을 따로 그렸다. 사이트 테마 규칙(global.css)과 같은 순서로 고른다. */
-  .cover-dark {
+  .isometric-cover > .cover-dark {
     display: none;
   }
   @media (prefers-color-scheme: dark) {

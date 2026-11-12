@@ -9,6 +9,9 @@ export const CAMERAS = {
   nullsync: { pos: [3.7, 3.4, 6.7], fov: 2.8, targetY: 0.8 },
   address: { pos: [3.7, 3.4, 6.7], fov: 2.6, targetY: 0.65 },
   flash: { pos: [3.7, 3.4, 6.7], fov: 2.5, targetY: 0.6 },
+  'log-review': { pos: [3.7, 3.4, 6.7], fov: 2.7, targetY: 0.9 },
+  'tls-test': { pos: [3.7, 3.4, 6.7], fov: 2.6, targetY: 0.7 },
+  'pfx-key': { pos: [3.7, 3.4, 6.7], fov: 2.7, targetY: 0.85 },
 }
 // 저장 크기와 이름: public/uploads/post-covers/cut-<kind>[-768|-320][-dark].webp
 export const WIDTHS = [1440, 768, 320]

@@ -1,6 +1,6 @@
 # 글 표지 만들기
 
-글 목록·글 본문 옆·소개 사례에 쓰는 '가벼운 단면' 표지 여섯 장을 다시 만드는 도구입니다.
+글 목록·글 본문 옆·소개 사례에 쓰는 '가벼운 단면' 표지를 다시 만드는 도구입니다.
 
 ## 규칙
 
@@ -14,7 +14,7 @@
 
 ```sh
 npm i --no-save playwright-core     # 처음 한 번
-node tools/covers/build.mjs          # 여섯 장 전부
+node tools/covers/build.mjs          # 등록된 표지 전부
 node tools/covers/build.mjs disk     # 한 장만
 ```
 
