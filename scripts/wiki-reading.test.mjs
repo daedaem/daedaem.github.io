@@ -180,7 +180,10 @@ test('all 26 reviewed wiki outputs match the agreed reading graph and keep backl
       'java-enum-state-transitions',
       'data-modeling-basics',
     ],
-    'tls-handshake-and-jdk-version': [],
+    'tls-handshake-and-jdk-version': [
+      'webtob-https-self-signed-first',
+      'webtob-boot0012-encrypted-private-key',
+    ],
     'web-server-was-and-servlet': ['phantom-batch-after-was-migration', 'session-and-cookie'],
   }
   const pool = publicEntries()
