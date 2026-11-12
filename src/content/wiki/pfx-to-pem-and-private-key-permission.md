@@ -9,7 +9,7 @@ updated: 2026-11-13
 status: 'stable'
 ---
 
-**한 줄 요약.** WebtoB는 Windows 인증서 저장소가 아니라 **PEM 파일 경로**를 읽는다. PFX는 인증서, 개인키, 체인으로 나눠서 적용하고, 서비스로 기동하는 서버에서는 **개인키에 암호를 걸지 않는 대신 파일 권한으로 보호**한다. 암호 걸린 개인키 때문에 기동이 멈춘 사례는 [WebtoB가 기동 중에 멈췄다](/posts/webtob-boot0012-encrypted-private-key/)에 있다.
+**한 줄 요약.** WebtoB는 Windows 인증서 저장소가 아니라 **PEM 파일 경로**를 읽는다. PFX는 인증서, 개인키, 체인으로 나눠서 적용하고, 서비스로 기동하는 서버에서는 **개인키에 암호를 걸지 않는 대신 파일 권한으로 보호**한다. 개발 서버 시험에서 암호 걸린 개인키 문제를 찾은 사례는 [개발 서버 시험에서 미리 찾은 개인키 암호 문제](/posts/webtob-boot0012-encrypted-private-key/)에 있다.
 
 > 경로와 계정은 예시 값이다. 전체 적용 순서는 [WebtoB(Windows)에 사설 인증서로 HTTPS 적용하는 절차](/wiki/webtob-https-on-windows/)를 본다.
 
