@@ -1,15 +1,15 @@
 ---
 draft: false
 title: 'PFX를 PEM으로 나누기와 개인키 파일 권한'
-description: 'PFX로 받은 인증서를 WebtoB가 읽는 PEM 파일로 나누고, 인증서와 개인키의 짝을 확인하고, 암호 없는 개인키를 파일 권한으로 보호하는 방법.'
+description: 'PFX로 받은 인증서를 WebtoB가 읽는 PEM 파일로 나누고, 인증서와 개인키의 짝을 확인하고, 개인키 암호를 암호 파일이나 파일 권한으로 다루는 방법.'
 topic: 'infra'
 tags: ['OpenSSL', 'PFX', 'PEM', 'WebtoB', 'Windows Server']
 created: 2026-10-26
-updated: 2026-11-13
+updated: 2026-11-17
 status: 'stable'
 ---
 
-**한 줄 요약.** WebtoB는 Windows 인증서 저장소가 아니라 **PEM 파일 경로**를 읽는다. PFX는 인증서, 개인키, 체인으로 나눠서 적용하고, 서비스로 기동하는 서버에서는 **개인키에 암호를 걸지 않는 대신 파일 권한으로 보호**한다. 개발 서버 시험에서 암호 걸린 개인키 문제를 찾은 사례는 [개발 서버 시험에서 미리 찾은 개인키 암호 문제](/posts/webtob-boot0012-encrypted-private-key/)에 있다.
+**한 줄 요약.** WebtoB는 Windows 인증서 저장소가 아니라 **PEM 파일 경로**를 읽는다. PFX는 인증서, 개인키, 체인으로 나눠서 적용하고, 서비스로 기동하는 서버는 개인키 암호를 입력받을 수 없으므로, **암호 파일을 지정하거나 암호 없는 개인키를 파일 권한으로 보호**한다. 개발 서버 시험에서 암호 걸린 개인키 문제를 찾은 사례는 [개발 서버 시험에서 미리 찾은 개인키 암호 문제](/posts/webtob-boot0012-encrypted-private-key/)에 있다.
 
 > 경로와 계정은 예시 값이다. 전체 적용 순서는 [WebtoB(Windows)에 사설 인증서로 HTTPS 적용하는 절차](/wiki/webtob-https-on-windows/)를 본다.
 
@@ -44,7 +44,7 @@ status: 'stable'
 & $OpenSSL pkcs12 -in "C:\work\cert\server.pfx" -clcerts -nokeys `
   -out "C:\work\cert\server.crt" -legacy
 
-# 개인키. 서비스로 기동하는 서버에 쓸 키라면 -noenc(구버전은 -nodes)로 암호 없이 뽑는다
+# 개인키. -noenc(구버전은 -nodes)는 암호 없이 뽑는다. 암호를 걸려면 이 옵션을 뺀다
 & $OpenSSL pkcs12 -in "C:\work\cert\server.pfx" -nocerts -noenc `
   -out "C:\work\cert\server.key" -legacy
 
@@ -104,6 +104,24 @@ ssl_app
     Protocols            = "-TLSv1, -TLSv1.1, TLSv1.2"
 ```
 
+## 개인키에 암호를 둔다면 암호 파일을 지정한다
+
+암호가 걸린 개인키를 그대로 쓰면 서비스로 기동하는 WebtoB는 암호를 입력받지 못해 기동에 실패한다(`BOOT0012`). `wsmkppd`로 암호 파일을 만들고 `*SSL` 절의 `PassPhraseDialog`에 지정하면 기동할 때 그 파일을 읽는다.
+
+```shell
+# wsmkppd [-p 암호] 암호파일 SSL절이름. -p를 빼면 암호를 물어본다
+wsmkppd C:\WebtoB\ssl\ssl_app.ppd ssl_app
+```
+
+```txt
+*SSL
+ssl_app
+    CertificateKeyFile = "C:/WebtoB/ssl/server.key",
+    PassPhraseDialog   = "file:C:/WebtoB/ssl/ssl_app.ppd"
+```
+
+문법은 버전마다 다를 수 있으니 쓰는 버전의 매뉴얼과 대조한다. 암호 파일도 개인키와 같은 서버에 있으므로 아래의 폴더 권한 정리는 이 방식에서도 필요하다.
+
 ## 암호 없는 개인키는 파일 권한으로 보호한다
 
 개인키 파일의 암호를 없애도 HTTPS 통신의 암호화 수준은 그대로다. 파일 암호는 디스크에 저장된 키를 지키는 것이고 통신 암호화와는 별개다. 대신 파일을 읽을 수 있는 사람이 곧 키를 가질 수 있으므로 파일 권한이 유일한 보호 수단이 된다. 이 방식이 조직의 보안 정책상 허용되는지 먼저 확인한다.
@@ -152,4 +170,4 @@ Get-FileHash "C:\WebtoB\ssl\server.crt","C:\WebtoB\ssl\server-nopass.key" -Algor
 | 추출 파일이 안 생김 | `-noout`은 확인 전용 | 추출 명령을 따로 실행 |
 | `CFL0367` | 안내 메시지 (실패 아님) | 개인키가 암호화돼 있는지 확인 |
 | `HTH0267 Cannot open certificate file` | 파일이 서버에 없거나 경로·권한 문제 | 서버 경로에 배치, 권한 확인 |
-| `BOOT0012 hth.exe has not answered in time` | 암호화된 개인키의 암호 입력 대기 | 같은 키를 암호 없이 저장하고 권한 제한 |
+| `BOOT0012 hth.exe has not answered in time` | 암호화된 개인키의 암호 입력 대기 | `PassPhraseDialog`에 암호 파일 지정, 또는 같은 키를 암호 없이 저장하고 권한 제한 |
