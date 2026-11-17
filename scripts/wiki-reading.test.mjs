@@ -181,8 +181,8 @@ test('all 26 reviewed wiki outputs match the agreed reading graph and keep backl
       'data-modeling-basics',
     ],
     'tls-handshake-and-jdk-version': [
-      'webtob-https-on-windows',
       'webtob-boot0012-encrypted-private-key',
+      'webtob-https-on-windows',
     ],
     'web-server-was-and-servlet': ['phantom-batch-after-was-migration', 'session-and-cookie'],
   }
